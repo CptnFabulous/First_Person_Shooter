@@ -1,9 +1,11 @@
 fileFormatVersion: 2
-guid: e5fb5f72a56cb8648b0acf4b4d5097e8
+guid: bb79afb836021dc4da89cdad59de7611
 TextureImporter:
   fileIDToRecycleName:
-    21300000: M4A1_0
-    21300002: M4A1_1
+    21300000: remington870dm_0
+    21300002: remington870dm_1
+    21300004: remington870dm_2
+    21300006: remington870dm_3
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -44,7 +46,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 0
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
@@ -105,7 +107,7 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
-    buildTarget: WebGL
+    buildTarget: Windows Store Apps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -116,7 +118,7 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
-    buildTarget: Windows Store Apps
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -130,13 +132,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: M4A1_0
+      name: remington870dm_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 14
+        y: 13
         width: 40
-        height: 14
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -144,19 +146,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78df92d13d7ca244e8b23cd7a6b84e92
+      spriteID: d3a864e55bcfe6846bfeca454e8bc192
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: M4A1_1
+      name: remington870dm_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 40
+        y: 13
         width: 40
-        height: 14
+        height: 13
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -164,7 +166,47 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d34b0735d386ded4ca3d20f741664dab
+      spriteID: a4a03304ee8f548489fad1a66cced1d2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: remington870dm_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1656c9a62e044584cbd8ee8c618ace49
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: remington870dm_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e58dc0dc8fa90c84bb93a1f7dccbf295
       vertices: []
       indices: 
       edges: []
@@ -172,7 +214,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6b430f9a9c8046946a2e113e08ee17fc
     vertices: []
     indices: 
     edges: []

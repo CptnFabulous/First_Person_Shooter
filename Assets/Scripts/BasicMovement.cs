@@ -116,4 +116,6 @@ public class BasicMovement : MonoBehaviour
 
         rb.AddForce(Physics.gravity * rb.mass);
     }
+
+
 }

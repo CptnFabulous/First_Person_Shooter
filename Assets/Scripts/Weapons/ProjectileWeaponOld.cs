@@ -187,7 +187,7 @@ public class ProjectileWeapon : MonoBehaviour
 
 using UnityEngine;
 
-public class ProjectileWeapon : MonoBehaviour
+public class ProjectileWeaponOld : MonoBehaviour
 {
 
     [Header("References")]
@@ -302,7 +302,7 @@ public class ProjectileWeapon : MonoBehaviour
         GameObject projectile = (GameObject)Instantiate(projectilePrefab, weaponMuzzle.transform.position, transform.rotation * bulletDirection);
         Vector3 direction = (target - weaponMuzzle.transform.position).normalized;
 
-        LaunchedProjectile projectileData = projectile.GetComponent<LaunchedProjectile>();
+        RigidbodyProjectile projectileData = projectile.GetComponent<RigidbodyProjectile>();
         projectileData.impactEffect = impactEffect;
 
         Rigidbody projectileRigidbody = projectile.GetComponent<Rigidbody>(); // Obtains rigidbody script for projectile, to alter physics variables

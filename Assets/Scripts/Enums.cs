@@ -2,30 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public enum AmmunitionType
 {
-    rimfire,
-    pistolLight,
-    pistolHeavy,
-    magnum,
+    Rimfire,
+    PistolLight,
+    PistolHeavy,
+    Magnum,
     PDW,
-    rifleLight,
-    rifleHeavy,
-    sniperLight,
-    sniperHeavy,
-    buckshot,
-    slugs,
-    grenade,
-    napalm
+    RifleLight,
+    RifleHeavy,
+    SniperLight,
+    SniperHeavy,
+    Buckshot,
+    Slugs,
+    Grenade,
+    Napalm
 }
 
-public enum CauseofDeath
+
+
+public enum DamageType
 {
-    shot,
-    headshot,
-    burned,
-    impact,
-    gibbed
+    Shot,
+    Headshot,
+    Burned,
+    KnockedOut,
+    Gibbed
 }
 
 public class Enums : MonoBehaviour {

@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    //public Animator a;
-
+    
     public int maxHealth = 100;
     public int currentHealth = 100;
     int prevHealth;
 
-    int lastDamageIndex; // Used to calculate source of damage/death. This might need to be changed to an enum
-
-
+    DamageType lastDamageSource;
 
     
     // Start is called before the first frame update
@@ -22,7 +19,7 @@ public class Health : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
 
 
@@ -37,25 +34,20 @@ public class Health : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            Die(lastDamageIndex);
+            Die(lastDamageSource);
         }
 
         // When inheriting from this script, override this function and use the base, then add additional command such as pain animations
     }
 
-    public virtual void TakeDamage(int damageAmount, int damageIndex)
+    public virtual void TakeDamage(int damageAmount, DamageType damageSource)
     {
         currentHealth -= damageAmount;
-        lastDamageIndex = damageIndex;
+        lastDamageSource = damageSource;
     }
 
-    public virtual void Die(int deathIndex)
+    public virtual void Die(DamageType causeOfDeath)
     {
         Destroy(gameObject); // Destroy gameobject upon death, when using inherited classes override this function to implement different code such as death animations etc.)
-        /*
-        a.SetInteger("DeathType",deathIndex);
-
-        Upon death, 
-        */
     }
 }

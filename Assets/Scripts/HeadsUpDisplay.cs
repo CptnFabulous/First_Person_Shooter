@@ -8,8 +8,7 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("References")]
     public Camera camera;
     public CanvasScaler hud;
-    public ProjectileWeapon weaponEquipped;
-    PlayerResources prs;
+    public Weapon weaponEquipped;
     
     int healthPrev;
 
@@ -28,7 +27,10 @@ public class HeadsUpDisplay : MonoBehaviour
 
 
 
-    [Header("Health Meter")]
+    //[Header("Health Meter")]
+
+
+    /*
     public RectTransform heartGridOrigin;
     public Vector2Int heartGridSize;
     public enum gridAxis
@@ -41,7 +43,7 @@ public class HeadsUpDisplay : MonoBehaviour
     public int heartSpacing;
     int heartRowLength;
     int heartRowNumber;
-
+    */
 
 
     // Use this for initialization
@@ -58,11 +60,14 @@ public class HeadsUpDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         reticlePositions = new Vector2(weaponEquipped.weaponSpread * Screen.height / camera.fieldOfView, weaponEquipped.weaponSpread * Screen.height / camera.fieldOfView);
         reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
         reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
         reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);
         reticleRight.rectTransform.anchoredPosition = new Vector3(reticlePositions.x, 0, 0);
+        */
+
 
         /*
         if (prs.healthCurrent != healthPrev)

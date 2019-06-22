@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RangedWeapon : MonoBehaviour
+public class RangedWeaponOld : MonoBehaviour
 {
     [Header("References")]
     public GameObject Inventory;
@@ -166,8 +166,9 @@ public class RangedWeapon : MonoBehaviour
         }
         */
 
+        /*
         GameObject bullet = bulletPrefab; // 'Creates' an instance of a bullet
-        BulletManager bulletData = bullet.GetComponent<BulletManager>(); // Accesses the bullet's script
+        RaycastProjectile bulletData = bullet.GetComponent<RaycastProjectile>(); // Accesses the bullet's script
 
         // Applies appropriate physical stats to the bullet
         bulletData.mass = projectileMass;
@@ -185,5 +186,6 @@ public class RangedWeapon : MonoBehaviour
         Quaternion bulletDirection = Quaternion.Euler(Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread)); // Calculates weapon spread
         bulletDirection = Quaternion.Euler(transform.eulerAngles + bulletDirection.eulerAngles); // Creates a quaternion that combines the direction the player is looking in and the spread modifier
         Instantiate(bullet, transform.position, bulletDirection); // Spawns the bullet with appropriate statistics, in the correct direction.
+        */
     }
 }
