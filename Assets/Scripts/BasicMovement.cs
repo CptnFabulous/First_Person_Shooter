@@ -15,10 +15,10 @@ public class BasicMovement : MonoBehaviour
 
     [Header("Camera control")]
     [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it.")]
-    [Range(-10, 10)]
+    [Range(-100, 100)]
     public float sensitivityX;
     [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it.")]
-    [Range(-10, 10)]
+    [Range(-100, 100)]
     public float sensitivityY;
     Vector2 Camera;
 
@@ -60,25 +60,28 @@ public class BasicMovement : MonoBehaviour
         head.transform.localRotation = Quaternion.Euler(Camera.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
         */
 
-        Camera.x = Input.GetAxis("MouseX") * sensitivityX; // Camera X input is set to player's mouse X axis, multiplied by float 'sensitivityX'.
-        Camera.y = Input.GetAxis("MouseY") * -sensitivityY; // Camera Y input is set to player's mouse Y axis, multiplied by float 'sensitivityY'.
+        Camera.x = Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime; // Camera X input is set to player's mouse X axis, multiplied by float 'sensitivityX'.
+        Camera.y = Input.GetAxis("MouseY") * -sensitivityY * Time.deltaTime; // Camera Y input is set to player's mouse Y axis, multiplied by float 'sensitivityY'.
         if (canMove)
         {
             //Camera.y = Mathf.Clamp(Camera.y, -90f, 90f); // Player head rotation is clamped between 90* and -90* to prevent them from flipping the camera over completely
             transform.Rotate(0, Camera.x, 0); // Player is rotated on y axis based on Camera.x, for turning left and right
             head.transform.Rotate(Camera.y, 0, 0); // Player head is rotated on x axis based on Camera.y, for looking up and down
         }
+        //head.transform.rotation = Quaternion.Euler(Mathf.Clamp(head.transform.rotation.x, -90, 90), head.transform.rotation.y, head.transform.rotation.z);
+        
         
         
         //head.transform.localRotation = Quaternion.Euler(Mathf.Clamp(head.transform.localRotation.y, -90f, 90f), 0, 0);
 
         //head.transform.localRotation = Quaternion.Euler(head.transform.localRotation.y + Camera.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
 
-        moveInput.x = Input.GetAxis("MoveLR"); // Set to AD keys or analog stick.
-        moveInput.y = Input.GetAxis("MoveFB"); // Set to WS keys or analog stick.
+        moveInput.x = Input.GetAxis("Horizontal"); // Set to AD keys or analog stick.
+        moveInput.y = Input.GetAxis("Vertical"); // Set to WS keys or analog stick.
         moveInput.Normalize(); // Subtract X and Y values so they add up to 1 but retain the same ratio. Ensures player moves at same speed regardless of direction.
         movementValue = new Vector3(moveInput.x * speedRun, 0, moveInput.y * speedRun); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
+
         
         isGrounded.origin = transform.position; // Sets the origin of isGrounded ray to the player's body
         isGrounded.direction = Vector3.down; // Sets isGrounded direction to cast directly down under the player's 'feet'

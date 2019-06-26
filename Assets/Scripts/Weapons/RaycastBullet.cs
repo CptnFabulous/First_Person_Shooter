@@ -9,7 +9,7 @@ public class RaycastBullet : MonoBehaviour
     [HideInInspector] public float mass;
     [HideInInspector] public float diameter;
     [HideInInspector] public float velocity;
-    [HideInInspector] public bool gravityAffected;
+    //[HideInInspector] public bool gravityAffected;
     float resolution;
 
     // Damage stats
@@ -58,7 +58,7 @@ public class RaycastBullet : MonoBehaviour
 
     void OnHit()
     {
-        Instantiate(impactPrefab, bulletHit.point, Quaternion.LookRotation(bulletHit.normal));
+        //Instantiate(impactPrefab, bulletHit.point, Quaternion.LookRotation(bulletHit.normal));
 
         // do stuff like deal damage, spawn impact prefab
         Destroy(gameObject);
@@ -69,13 +69,22 @@ public class RaycastBullet : MonoBehaviour
         transform.position += transform.forward * resolution; // Moves entire bullet gameobject
         bulletRay.origin = transform.position;
 
-        if (gravityAffected)
+        if (mass > 0)
         {
             Vector3 gravityModifier = transform.position + transform.forward * resolution + Physics.gravity * mass * Time.deltaTime;
             transform.LookAt(gravityModifier);
             bulletRay.direction = transform.forward;
             // Update direction
         }
+
+
+
+        /*
+        if (gravityAffected)
+        {
+            
+        }
+        */
     }
 
 }

@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//public class Ammunition : MonoBehaviour
-public class AmmoInventory : MonoBehaviour
+
+//public class AmmoInventory : MonoBehaviour
+public class Ammunition : MonoBehaviour
 {
 
     [System.Serializable]
     public struct AmmoEntry
     {
+        
         // Include name field for editing convenience only - not needed in-game.
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         [HideInInspector]
-        public string name;
-        #endif
-        public int maxCapacity;
-        public int stock;
+        public string refName;
+#endif
+        //public string name;
+        public int stockMax;
+        public int stockCurrent;
     }
 
     // Keep a private list of ammo stocks, so we can enforce capacity rules.
@@ -24,18 +27,18 @@ public class AmmoInventory : MonoBehaviour
 
     // Since our enum is "really" an integer, we can use it
     // as an index to jump straight to the entry we want.
-    public int GetStock(AmmoType type)
+    public int GetStock(AmmunitionType type)
     {
-        return _inventory[(int)type].stock;
+        return _inventory[(int)type].stockCurrent;
     }
 
     // Returns amount collected, so you can choose to not consume
     // pickups if you're already full (ie. return value is zero).
-    public int Collect(AmmoType type, int amount)
+    public int Collect(AmmunitionType type, int amount)
     {
         AmmoEntry held = _inventory[(int)type];
-        int collect = Mathf.Min(amount, held.maxCapacity - held.stock);
-        held.stock += collect;
+        int collect = Mathf.Min(amount, held.stockMax - held.stockCurrent);
+        held.stockCurrent += collect;
         _inventory[(int)type] = held;
         return collect;
     }
@@ -43,32 +46,39 @@ public class AmmoInventory : MonoBehaviour
     // Returns the amount actually spent, in case firing a full round
     // would drop us below 0 ammo, you can scale down the last shot.
     // You could also implement a TrySpend that aborts for insufficient ammo.
-    public int Spend(AmmoType type, int amount)
+    public int Spend(AmmunitionType type, int amount)
     {
         AmmoEntry held = _inventory[(int)type];
-        int spend = Mathf.Min(amount, held.stock);
-        held.stock -= spend;
+        int spend = Mathf.Min(amount, held.stockCurrent);
+        held.stockCurrent -= spend;
         _inventory[(int)type] = held;
         return spend;
     }
 
     // Ensure our inventory list always matches the enum in the event of code changes.
     // You could also use a custom editor to maintain this more efficiently.
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     void Reset() { OnValidate(); }
-    void OnValidate() {
-        var ammoNames = System.Enum.GetNames(typeof(AmmoType));
-        var inventory = new List<AmmoEntry>(ammoNames.Length);        
-        for(int i = 0; i < ammoNames.Length; i++) {
-            var existing = _inventory.Find(
-                (entry) => { return entry.name == ammoNames[i]; });
+    void OnValidate()
+    {
+        var ammoNames = System.Enum.GetNames(typeof(AmmunitionType));
+        var inventory = new List<AmmoEntry>(ammoNames.Length);
+        for (int i = 0; i < ammoNames.Length; i++)
+        {
+            /*
+            var existing = _inventory.Find((entry) => { return entry.name == ammoNames[i]; });
             existing.name = ammoNames[i];
-            existing.stock = Mathf.Min(existing.stock, existing.maxCapacity);
+            */
+
+            var existing = _inventory.Find((entry) => { return entry.refName == ammoNames[i]; });
+            existing.refName = ammoNames[i];
+
+            existing.stockCurrent = Mathf.Min(existing.stockCurrent, existing.stockMax);
             inventory.Add(existing);
         }
         _inventory = inventory;
     }
-    #endif
+#endif
 
 
 

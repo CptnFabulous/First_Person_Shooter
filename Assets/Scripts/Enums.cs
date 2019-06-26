@@ -5,7 +5,8 @@ using UnityEngine;
 
 public enum AmmunitionType
 {
-    Rimfire,
+
+    /*Rimfire,
     PistolLight,
     PistolHeavy,
     Magnum,
@@ -17,7 +18,15 @@ public enum AmmunitionType
     Buckshot,
     Slugs,
     Grenade,
-    Napalm
+    Napalm,
+    */
+    Pistol,
+    Buckshot,
+    Slugs,
+    DragonsBreath,
+    Rifle,
+    Grenade,
+    Petrol
 }
 
 

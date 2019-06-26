@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileWeapon : Weapon
+public class RifledFirearm : MonoBehaviour
 {
-    public float criticalModifier;
+    
 
     [Header("Accuracy")]
     public float weaponSpread;
@@ -17,19 +17,22 @@ public class ProjectileWeapon : Weapon
 
     [Header("Fire Rate")]
     public float roundsPerMinute;
+    public int burstCount;
     float fireTimer;
+    float shotsInBurst;
 
     [Header("Projectile")]
-    public GameObject projectilePrefab;
+    public RaycastBullet projectile;
     public Transform weaponMuzzle;
-    public int projectileCount;
     public float projectileDiameter;
+    public float projectileMass; // Determines gravity effect on projectile for bullet drop, set to zero to disable bullet drop
     public float projectileVelocity;
-    public bool gravityAffected;
+    //public bool gravityAffected;
 
     [Header("Ammunition")]
-    //public Ammunition ammoType;
-    public int magazineCapacity;
+    public Ammunition ammoSource; // The 'ammunition supply' e.g. the player shooting the gun
+    public AmmunitionType caliber;
+    [Min(1)] public int magazineCapacity;
     public int roundsInMagazine;
     public float reloadTime;
     bool isReloading;
@@ -43,6 +46,24 @@ public class ProjectileWeapon : Weapon
     // Update is called once per frame
     void Update()
     {
+        fireTimer += Time.deltaTime;
+
+
+        if (Input.GetButton("MouseLeft") && fireTimer >= 60 / roundsPerMinute && roundsInMagazine > 0 && (shotsInBurst < burstCount || burstCount <= 0)) // If fire button is pressed, previous shot has finished firing, ammo remains in magazine and maximum burst count has not been exceeded
+        {
+            LaunchProjectile();
+
+            fireTimer = 0;
+            if (burstCount > 0)
+            {
+                shotsInBurst += 1;
+            }
+        }
+        else if (Input.GetButtonUp("MouseLeft"))
+        {
+            shotsInBurst = 0;
+        }
+
         if ((Input.GetButtonDown("Reload") && roundsInMagazine < magazineCapacity) || (roundsInMagazine <= 0 && fireTimer >= 60 / roundsPerMinute && isReloading == false))
         {
             StartCoroutine(Reload());
@@ -55,10 +76,12 @@ public class ProjectileWeapon : Weapon
         Vector3 target = new Vector3();
 
         targetRay.origin = transform.position;
+        /*
         Vector3 raySpread = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
         raySpread.Normalize();
         targetRay.direction = Quaternion.Euler(raySpread.x * weaponSpread, raySpread.y * weaponSpread, raySpread.z * weaponSpread) * transform.forward;
-        //targetRay.direction = Quaternion.Euler(Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread)) * transform.forward;
+        */
+        targetRay.direction = Quaternion.Euler(Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread), Random.Range(-weaponSpread, weaponSpread)) * transform.forward;
 
         if (Physics.Raycast(targetRay, out targetFound, rayRange, rayDetection))
         {
@@ -69,7 +92,7 @@ public class ProjectileWeapon : Weapon
             target = targetRay.direction * 9999999999;
         }
 
-
+        /*
         #region Raycast-based projectiles
         GameObject projectile = Instantiate(projectilePrefab, weaponMuzzle.transform.position, Quaternion.LookRotation(target, Vector3.up));
         RaycastBullet projectileData = GetComponent<RaycastBullet>();
@@ -77,6 +100,14 @@ public class ProjectileWeapon : Weapon
         projectileData.diameter = projectileDiameter;
         projectileData.velocity = projectileVelocity;
         #endregion
+        */
+
+        GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation(target, Vector3.up));
+        projectile.diameter = projectileDiameter;
+        projectile.mass = projectileMass;
+        projectile.velocity = projectileVelocity;
+        //projectile.gravityAffected = gravityAffected;
+
     }
 
     IEnumerator Reload()

@@ -121,7 +121,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.05
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -149,7 +149,7 @@ LineRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0}
-      key1: {r: 1, g: 0.67058825, b: 0, a: 1}
+      key1: {r: 1, g: 0.84971046, b: 0.4575472, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -181,7 +181,7 @@ LineRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
-  m_UseWorldSpace: 1
+  m_UseWorldSpace: 0
   m_Loop: 0
 --- !u!114 &114048494040817688
 MonoBehaviour:
@@ -196,12 +196,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mass: 0.25
-  radius: 0.01
+  diameter: 0
   velocity: 750
-  gravityAffected: 1
-  resolution: 0
   damage: 5
   criticalModifier: 2
-  projectileVisual: {fileID: 0}
   impactPrefab: {fileID: 100010, guid: 645413a00f7bd0242bbd6d0e5eb6f439, type: 3}
   projectileLifetime: 20

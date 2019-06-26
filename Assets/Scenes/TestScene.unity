@@ -5181,7 +5181,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 337938845}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2, y: 0.015, z: 0}
+  m_LocalPosition: {x: -0.6, y: 0.0433, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1796772670}
@@ -10181,8 +10181,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 804254422}
-  sensitivityX: 2
-  sensitivityY: 2
+  sensitivityX: 60
+  sensitivityY: 60
   speedRun: 10
   speedCrouch: 5
   forceJump: 7
@@ -10310,6 +10310,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a47989a16b33f4c80ae7e0183faafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inventory:
+  - refName: Pistol
+    stockMax: 0
+    stockCurrent: 0
+  - refName: Buckshot
+    stockMax: 0
+    stockCurrent: 0
+  - refName: Slugs
+    stockMax: 0
+    stockCurrent: 0
+  - refName: DragonsBreath
+    stockMax: 0
+    stockCurrent: 0
+  - refName: Rifle
+    stockMax: 0
+    stockCurrent: 0
+  - refName: Grenade
+    stockMax: 0
+    stockCurrent: 0
+  - refName: Petrol
+    stockMax: 0
+    stockCurrent: 0
 --- !u!114 &607835264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10891,6 +10913,7 @@ GameObject:
   - component: {fileID: 1001392274}
   - component: {fileID: 1001392275}
   - component: {fileID: 1001392276}
+  - component: {fileID: 1001392277}
   m_Layer: 0
   m_Name: M4A1
   m_TagString: Untagged
@@ -11007,7 +11030,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001392272}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c01af9d3dcb92f4492bffe2a2719dac, type: 3}
   m_Name: 
@@ -11029,10 +11052,41 @@ MonoBehaviour:
   projectileDiameter: 0.1
   projectileVelocity: 50
   gravityAffected: 0
-  ammoType: {fileID: 0}
   magazineCapacity: 0
   roundsInMagazine: 0
   reloadTime: 0
+--- !u!114 &1001392277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001392272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2168d73b1ed31c144a9845bc69dae380, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSpread: 5
+  recoil: 0
+  recoilRecovery: 0
+  rayRange: 1000
+  rayDetection:
+    serializedVersion: 2
+    m_Bits: 55
+  roundsPerMinute: 900
+  burstCount: 0
+  projectile: {fileID: 114048494040817688, guid: c3731547c5ee6374e8e4338e963eaeec,
+    type: 3}
+  weaponMuzzle: {fileID: 337938846}
+  projectileDiameter: 0.15
+  projectileMass: 0
+  projectileVelocity: 50
+  ammoSource: {fileID: 0}
+  caliber: 4
+  magazineCapacity: 30
+  roundsInMagazine: 30
+  reloadTime: 2
 --- !u!1 &1048462584
 GameObject:
   m_ObjectHideFlags: 0
@@ -17067,7 +17121,7 @@ GameObject:
   - component: {fileID: 1796772670}
   - component: {fileID: 1796772671}
   m_Layer: 0
-  m_Name: weaponSprite
+  m_Name: weaponVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21914,8 +21968,8 @@ MonoBehaviour:
   m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: MoveLR
-  m_VerticalAxis: MoveFB
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
