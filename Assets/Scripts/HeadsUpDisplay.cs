@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HeadsUpDisplay : MonoBehaviour
 {
     [Header("References")]
-    public Camera camera;
+    //public Camera camera;
     public CanvasScaler hud;
     public Weapon weaponEquipped;
     

@@ -34,7 +34,7 @@ public enum AmmunitionType
 public enum DamageType
 {
     Shot,
-    Headshot,
+    CriticalShot,
     Burned,
     KnockedOut,
     Gibbed

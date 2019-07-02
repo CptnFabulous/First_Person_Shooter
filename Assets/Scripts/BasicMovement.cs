@@ -51,15 +51,16 @@ public class BasicMovement : MonoBehaviour
         jumpTimer += Time.deltaTime;
 
 
-        /*
+        
         //X and Y values of Vector2 Camera are set to the moveInput of the player's mouse, multiplied by sensitivityX and sensitivityY to determine the player's camera sensitivity. Camera.y is then clamped to ensure it does not move past 90* or 90*, ensuring that the player does not flip the camera over completely.
-        Camera.x = Input.GetAxis("MouseX") * sensitivityX;
-        Camera.y -= Input.GetAxis("MouseY") * sensitivityY;
+        Camera.x = Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime; // Camera X input is set to player's mouse X axis, multiplied by float 'sensitivityX'.
+        Camera.y -= Input.GetAxis("MouseY") * sensitivityY * Time.deltaTime; // Camera Y input is set to player's mouse Y axis, multiplied by float 'sensitivityY'.
         Camera.y = Mathf.Clamp(Camera.y, -90f, 90f); // Player head rotation is clamped to prevent them from looking too far up or down
         transform.Rotate(0, Camera.x, 0); // Player is rotated on y axis based on Camera.x, for turning left and right
         head.transform.localRotation = Quaternion.Euler(Camera.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
-        */
+        
 
+        /*
         Camera.x = Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime; // Camera X input is set to player's mouse X axis, multiplied by float 'sensitivityX'.
         Camera.y = Input.GetAxis("MouseY") * -sensitivityY * Time.deltaTime; // Camera Y input is set to player's mouse Y axis, multiplied by float 'sensitivityY'.
         if (canMove)
@@ -69,7 +70,7 @@ public class BasicMovement : MonoBehaviour
             head.transform.Rotate(Camera.y, 0, 0); // Player head is rotated on x axis based on Camera.y, for looking up and down
         }
         //head.transform.rotation = Quaternion.Euler(Mathf.Clamp(head.transform.rotation.x, -90, 90), head.transform.rotation.y, head.transform.rotation.z);
-        
+        */
         
         
         //head.transform.localRotation = Quaternion.Euler(Mathf.Clamp(head.transform.localRotation.y, -90f, 90f), 0, 0);
@@ -107,7 +108,13 @@ public class BasicMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(transform.position + movementValue * Time.deltaTime);
+        if (moveInput != Vector2.zero)
+        {
+            //rb.MovePosition(transform.position + movementValue * Time.deltaTime);
+            rb.MovePosition(transform.position + movementValue * Time.fixedDeltaTime);
+        }
+
+        
 
         if (willJump)
         {
