@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    
+    [Header("1")]
     public int maxHealth = 100;
+    [Header("2")]
     public int currentHealth = 100;
     int prevHealth;
 

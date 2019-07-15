@@ -99,16 +99,38 @@ public class RaycastBullet : MonoBehaviour
     {
         transform.position = ballisticDirection; // Moves bullet forwards according to ballisticDirection
 
+        /*
         ballisticDirection = transform.position + (desiredVelocity * Time.deltaTime); // Updates ballisticDirection to be relative to bullet's new position
         if (gravityMultiplier > 0) // Mass/gravity code, is ignored when gravityMultiplier is zero for bullets unaffected by gravity
         {
             gravityModifier += Physics.gravity * gravityMultiplier * Time.deltaTime; // gravity force slowly increases 
             if (Time.timeScale != 0)  // Only applies gravity if time is actually moving in either direction, to ensure gravity does not apply while paused. This feels like a band-aid solution equivalent to a bool saying 'ifUnpaused' and may need changing
             {
-                ballisticDirection += gravityModifier; // Adds gravity modifier to ballisticDirection, so it affects the projectile's velocity
+                ballisticDirection += gravityModifier; // Adds gravity modifier to ballisticDirection, so it affects the projectile's velocity.
+                // This may be weird on computers with higher framerates. CHECK THIS OUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             transform.LookAt(ballisticDirection); // Rotates projectile to point in direction it is about to move to appropriately calculate raycasts next frame
         }
+        */
+
+        // This bit is functionally identical to the above section of code that is commented out, but is formatted to look neater.
+        ballisticDirection = transform.position + (desiredVelocity * Time.deltaTime); // Updates ballisticDirection to be relative to bullet's new position
+        if (gravityMultiplier > 0 && Time.timeScale != 0) // If projectile is actually affected by gravity, and if time is moving in either direction
+        {
+            gravityModifier += Physics.gravity * gravityMultiplier * Time.deltaTime; // gravity force slowly increases based on Time.deltaTime, which factors in framerates and the speed the game is moving at
+            ballisticDirection += gravityModifier; // gravityModifier is added to ballisticDirection so that the bullet attempts to move in the original direction but is dragged down by gravity
+            transform.LookAt(ballisticDirection); // Rotates projectile to point in direction it is about to move to appropriately calculate raycasts next frame
+        }
+
+
+
+
+
+
+
+
+
+
 
         /*
         ballisticDirection = transform.position + (desiredVelocity * Time.deltaTime);

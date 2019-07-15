@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RifledFirearm : MonoBehaviour
+public class RifledFirearm : Weapon
 {
     /*
     A weapon script for all guns that shoot regular bullets, e.g. rifles, handguns and machine guns.
@@ -10,7 +10,7 @@ public class RifledFirearm : MonoBehaviour
 
 
     [Header("Damage")]
-    public int damage = 10;
+    //public int damage = 10;
     public float criticalModifier = 2;
 
     [Header("Accuracy")]
@@ -42,6 +42,9 @@ public class RifledFirearm : MonoBehaviour
     public AmmunitionType caliber;
     [Min(1)] public int magazineCapacity;
     public int roundsInMagazine = 30;
+
+    [Header("Handling")]
+    //public float switchSpeed;
     public float reloadTime = 2;
     bool isReloading;
     float reloadTimer;
@@ -131,10 +134,8 @@ public class RifledFirearm : MonoBehaviour
         projectile.diameter = projectileDiameter;
         projectile.gravityMultiplier = gravityMultiplier;
         projectile.velocity = projectileVelocity;
-
         projectile.damage = damage;
         projectile.criticalModifier = criticalModifier;
-
         projectile.rayDetection = rayDetection;
 
     }

@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [Header("UI")]
+    [Header("General Stats")]
+    public int damage = 10;
+    public float switchSpeed = 0.75f;
     public Sprite icon;
 
     /*
-    [Header("General stats")]
-    public int damage = 10;
-    */
+    
 
-    /*
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +23,12 @@ public class Weapon : MonoBehaviour
     void Update()
     {
         
+    }
+    
+
+    void Damage()
+    {
+
     }
     */
 }
