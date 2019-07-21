@@ -5109,13 +5109,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 337938846}
+  - component: {fileID: 337938847}
   m_Layer: 0
   m_Name: muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &337938846
 Transform:
   m_ObjectHideFlags: 0
@@ -5133,6 +5134,44 @@ Transform:
   m_Father: {fileID: 1796772670}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!108 &337938847
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337938845}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 0.8671905, b: 0.2028302, a: 1}
+  m_Intensity: 5
+  m_Range: 2
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1 &362423068
 GameObject:
   m_ObjectHideFlags: 0
@@ -5301,7 +5340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &480111977
 Transform:
   m_ObjectHideFlags: 0
@@ -10508,7 +10547,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 607835255}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 22.07, z: -21.93}
+  m_LocalPosition: {x: 0, y: 4.94, z: 18.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 804254423}
@@ -10775,7 +10814,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804254422}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 286389101}
@@ -11242,6 +11281,7 @@ GameObject:
   - component: {fileID: 1001392275}
   - component: {fileID: 1001392276}
   - component: {fileID: 1001392277}
+  - component: {fileID: 1001392278}
   m_Layer: 0
   m_Name: M4A1
   m_TagString: Untagged
@@ -11397,6 +11437,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
+  switchSpeed: 0
+  icon: {fileID: 0}
   criticalModifier: 2
   projectileSpread: 2
   recoil: 0
@@ -11417,10 +11459,45 @@ MonoBehaviour:
   caliber: 4
   magazineCapacity: 30
   roundsInMagazine: 30
-  switchSpeed: 0
   reloadTime: 2
   muzzleFlashEffect: {fileID: 0}
   impactEffect: {fileID: 0}
+--- !u!114 &1001392278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001392272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b01729b389e5e74583f7d4868824017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  switchSpeed: 0.75
+  icon: {fileID: 0}
+  projectileSpread: 5
+  recoil: 10
+  recoilRecovery: 10
+  range: 1000
+  rayDetection:
+    serializedVersion: 2
+    m_Bits: 0
+  roundsPerMinute: 600
+  projectileCount: 1
+  burstCount: 0
+  ammoSource: {fileID: 0}
+  caliber: 0
+  magazineCapacity: 30
+  roundsInMagazine: 30
+  reloadTime: 2
+  criticalModifier: 2
+  projectile: {fileID: 0}
+  weaponMuzzle: {fileID: 0}
+  projectileDiameter: 0.1
+  gravityMultiplier: 0.1
+  projectileVelocity: 100
 --- !u!1 &1048462584
 GameObject:
   m_ObjectHideFlags: 0
@@ -17071,7 +17148,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1546519273
 Transform:
   m_ObjectHideFlags: 0
@@ -17529,7 +17606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1741791158
 Transform:
   m_ObjectHideFlags: 0

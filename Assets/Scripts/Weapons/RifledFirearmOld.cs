@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RifledFirearm : Weapon
+public class RifledFirearmOld : Weapon
 {
     /*
     A weapon script for all guns that shoot regular bullets, e.g. rifles, handguns and machine guns.
     */
 
 
-    [Header("Damage")]
+    [Header("Damage", order = 0)]
     //public int damage = 10;
     public float criticalModifier = 2;
 
@@ -42,9 +42,6 @@ public class RifledFirearm : Weapon
     public AmmunitionType caliber;
     [Min(1)] public int magazineCapacity;
     public int roundsInMagazine = 30;
-
-    [Header("Handling")]
-    //public float switchSpeed;
     public float reloadTime = 2;
     bool isReloading;
     float reloadTimer;
@@ -126,7 +123,7 @@ public class RifledFirearm : Weapon
         }
         else
         {
-            target = targetRay.direction * 9999999999;
+            target = targetRay.direction * rayRange;
         }
 
         GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation(target - weaponMuzzle.transform.position, Vector3.up));

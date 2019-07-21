@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    
     [Header("General Stats")]
     public int damage = 10;
     public float switchSpeed = 0.75f;
