@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerHealth : Health
 {
     
-    public int healthCriticalThreshold = 20;
     
     // Start is called before the first frame update
     void Start()

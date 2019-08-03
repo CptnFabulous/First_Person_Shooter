@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [Header("1")]
     public int maxHealth = 100;
-    [Header("2")]
     public int currentHealth = 100;
+    [Tooltip("The point where the player's health is considered critical. Percentage or HP value?")]
+    public int criticalPercentage = 20;
     int prevHealth;
 
     DamageType lastDamageSource;
@@ -38,7 +38,7 @@ public class Health : MonoBehaviour
             Die(lastDamageSource);
         }
 
-        // When inheriting from this script, override this function and use the base, then add additional command such as pain animations
+        // DO ADDITIONAL STUFF HERE IN DERIVED CLASSES, e.g. pain/death animations
     }
 
     public virtual void TakeDamage(int damageAmount, DamageType damageSource)

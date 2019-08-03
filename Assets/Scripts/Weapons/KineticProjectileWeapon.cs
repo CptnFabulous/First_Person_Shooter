@@ -21,10 +21,12 @@ public class KineticProjectileWeapon : ProjectileWeapon
     // public ParticleSystem shellEjection;
     // public GameObject shellPrefab;
 
+    /*
     public override void Update()
     {
         base.Update(); // DOES ALL THE IMPORTANT STUFF IN UPDATE, STUFF EXCLUSIVE TO THIS SCRIPT IS PLACED BEFORE OR AFTER THIS.
-
+        
+        
         if (muzzleFlashTimer >= 60 / roundsPerMinute * muzzleFlashDuration)
         {
             muzzleFlash.SetActive(false);
@@ -33,22 +35,26 @@ public class KineticProjectileWeapon : ProjectileWeapon
         {
             muzzleFlashTimer += Time.deltaTime;
         }
+        
     }
 
     public override void Shoot()
     {
         base.Shoot();
 
-        // Do cosmetic stuff
-        muzzleFlash.SetActive(true);
-    }
+        // Play appropriate firing animations
 
+        
+        muzzleFlash.SetActive(true);
+        muzzleFlashTimer = 0;
+        
+    }
+    */
     public override void LaunchProjectile()
     {
         base.LaunchProjectile();
 
-        // GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation( - weaponMuzzle.transform.position, Vector3.up));
-        // How to reference bullet ray impact point
+        GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation(target - weaponMuzzle.transform.position, Vector3.up));
         projectile.diameter = projectileDiameter;
         projectile.gravityMultiplier = gravityMultiplier;
         projectile.velocity = projectileVelocity;

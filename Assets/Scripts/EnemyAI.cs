@@ -14,11 +14,11 @@ public class EnemyAI : MonoBehaviour
 
 
     [Header("Enemy Detection")]
-    [Min(0)] public float viewRange;
+    [Min(0)] public float viewRange = 50;
     [Range(0, 180)]
-    public float horizontalFOV;
+    public float horizontalFOV = 60;
     [Range(0, 180)]
-    public float verticalFOV;
+    public float verticalFOV = 30;
     RaycastHit fovLineOfSight;
     public GameObject[] viewedObjects;
     public GameObject[] targets;

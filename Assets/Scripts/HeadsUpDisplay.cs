@@ -3,25 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
 public class HeadsUpDisplay : MonoBehaviour
 {
     [Header("References")]
-    //public Camera camera;
+    public Camera camera;
     public CanvasScaler hud;
-    public Weapon weaponEquipped;
+    public Weapon equippedWeapon;
+    Ammunition ammoSource;
+    PlayerHealth health;
     
-    int healthPrev;
+    
 
-    [Header("Weapon Reticle")]
+
+    public Image weaponGraphic;
+
+    [Header("Health elements")]
+    public GameObject healthDisplay;
+    public Text healthCounter;
+    public Color normalColour;
+    public Color criticalColour;
+
+    [Header("Ranged Weapon elements")]
+    public GameObject reticle;
     public Image reticleUp;
     public Image reticleDown;
     public Image reticleLeft;
     public Image reticleRight;
-
     Vector2 reticlePositions;
 
-    [Header("Weapon Ammunition")]
-    public Image weaponGraphic;
+    public GameObject ammoDisplay;
     public Text ammoCounter;
 
 
@@ -49,6 +61,9 @@ public class HeadsUpDisplay : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        ammoSource = GetComponent<Ammunition>();
+        health = GetComponent<PlayerHealth>();
+
         /*
         prs = GetComponent<PlayerResources>();
         healthPrev = prs.healthCurrent;
@@ -60,14 +75,6 @@ public class HeadsUpDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        reticlePositions = new Vector2(weaponEquipped.weaponSpread * Screen.height / camera.fieldOfView, weaponEquipped.weaponSpread * Screen.height / camera.fieldOfView);
-        reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
-        reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
-        reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);
-        reticleRight.rectTransform.anchoredPosition = new Vector3(reticlePositions.x, 0, 0);
-        */
-
 
         /*
         if (prs.healthCurrent != healthPrev)
@@ -76,7 +83,103 @@ public class HeadsUpDisplay : MonoBehaviour
         }
         healthPrev = prs.healthCurrent;
         */
+
+        
+
+        WeaponType equippedType = equippedWeapon.type; // Finds type of equipped weapon
+        switch(equippedType) // Checks type
+        {
+            case WeaponType.projectile:// If projectile weapon
+                ProjectileHUD(); // Display appropriate HUD
+                break;
+            case WeaponType.melee: // If melee weapon
+                MeleeHUD(); // Display appropriate HUD
+                break;
+            case WeaponType.throwable: // If throwable weapon
+                ThrowableHUD(); // Display appropriate HUD
+                break;
+        }
+
     }
+
+    void HealthHUD()
+    {
+        healthCounter.text = health.currentHealth + "/" + health.maxHealth;
+        if (health.currentHealth < health.maxHealth / 100 * health.criticalPercentage)
+        {
+            healthCounter.color = criticalColour;
+            // Do other stuff for critical health e.g. greyscale screen, warnings
+        }
+        else
+        {
+            healthCounter.color = normalColour;
+        }
+    }
+    #region Weapon HUDs
+    void ProjectileHUD()
+    {
+        ProjectileWeapon epw = equippedWeapon.GetComponent<ProjectileWeapon>();
+        
+        reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
+        reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
+        reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
+        reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);
+        reticleRight.rectTransform.anchoredPosition = new Vector3(reticlePositions.x, 0, 0);
+
+
+        if (epw.ammoPerShot <= 0 && epw.magazineCapacity <= 0) // If infinite ammunition and does not require reloading
+        {
+            ammoCounter.text = "INFINITE";
+        }
+        else if (epw.ammoPerShot <= 0) // If empties magazine but can be reloaded infinitely
+        {
+            ammoCounter.text = epw.roundsInMagazine + "/INF";
+        }
+        else if (epw.magazineCapacity <= 0) // If consumes ammunition but does not require reloading
+        {
+            ammoCounter.text = ammoSource.GetStock(epw.caliber).ToString();
+        }
+        else // if normal weapon, i.e. consumes ammunition and must be reloaded
+        {
+            ammoCounter.text = epw.roundsInMagazine + "/" + (ammoSource.GetStock(epw.caliber) - epw.roundsInMagazine);
+        }
+
+
+        
+    }
+    void MeleeHUD()
+    {
+
+    }
+    void ThrowableHUD()
+    {
+
+    }
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     void HealthMeterUpdate()
