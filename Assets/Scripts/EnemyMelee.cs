@@ -4,19 +4,31 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof (NavMeshAgent))]
+
 public class EnemyMelee : MonoBehaviour
 {
     NavMeshAgent na;
 
     public GameObject head;
 
-    public float movementSpeed;
-
-    public int damage;
-    public float executeRange;
-    public float attackRange;
-
     public GameObject targetedCharacter;
+
+    public float movementSpeed = 5;
+
+    public int meleeDamage = 10;
+    public float meleeExecuteRange = 2;
+    public float meleeAttackRange = 3;
+    public float meleeAttackDelay = 0.5f;
+    float meleeDelayTimer;
+    public float meleeCooldown = 1;
+    float meleeCooldownTimer = 9999999;
+    bool isMeleeAttacking;
+
+    Vector3 enemyAttackDirection;
+    RaycastHit meleeHitDetection;
+
+
+    
 
     
     // Start is called before the first frame update
@@ -28,21 +40,104 @@ public class EnemyMelee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        meleeCooldownTimer += Time.deltaTime;
+
+        SeekEnemy();
+
+        MeleeAttack();
+
+        /*
+        if (isMeleeAttacking == true)
+        {
+            meleeDelayTimer += Time.deltaTime;
+            print(meleeDelayTimer);
+            if (meleeDelayTimer >= meleeAttackDelay)
+            {
+                ExecuteMeleeAttack();
+                print("Melee attack executed");
+                isMeleeAttacking = false;
+                meleeCooldownTimer = 0;
+            }
+        }
+        */
     }
 
-    void SeekEnemy(GameObject enemy) // Enemy will seek out a character it is hostile towards and considers an enemy
+    void SeekEnemy() // Enemy will seek out a character it is hostile towards and considers an targetedCharacter
     {
-        na.destination = enemy.transform.position;
-
-        if (Vector3.Distance(transform.position, enemy.transform.position) <= executeRange)
+        na.destination = targetedCharacter.transform.position;
+        /*
+        if (Vector3.Distance(transform.position, targetedCharacter.transform.position) <= meleeExecuteRange && isMeleeAttacking == false && meleeCooldownTimer >= meleeCooldown)
         {
+            InitiateMeleeAttack();
+        }
+        */
+    }
 
+    void MeleeAttack() // DOES NOT WORK PROPERLY, THE PROBLEM SEEMS TO BE WITH THE RAYCAST
+    {
+        if (Vector3.Distance(transform.position, targetedCharacter.transform.position) <= meleeExecuteRange && isMeleeAttacking == false && meleeCooldownTimer >= meleeCooldown)
+        {
+            //na.destination = transform.position;
+            na.isStopped = true;
+            enemyAttackDirection = new Vector3(targetedCharacter.transform.position.x, transform.position.y, targetedCharacter.transform.position.z);
+            transform.LookAt(enemyAttackDirection);
+            enemyAttackDirection = targetedCharacter.transform.position - transform.position;
+            isMeleeAttacking = true;
+            meleeDelayTimer = 0;
+        }
+
+        if (isMeleeAttacking == true)
+        {
+            meleeDelayTimer += Time.deltaTime;
+            print(meleeDelayTimer);
+            if (meleeDelayTimer >= meleeAttackDelay)
+            {
+                print("Raycast launched");
+                if (Physics.Raycast(transform.position, enemyAttackDirection, out meleeHitDetection, meleeAttackRange))
+                {
+                    print("Raycast hit");
+                    DamageHitbox enemyHitbox = meleeHitDetection.collider.GetComponent<DamageHitbox>();
+                    print("Enemy struck");
+                    if (enemyHitbox != null)
+                    {
+                        enemyHitbox.Damage(meleeDamage, DamageType.KnockedOut);
+                    }
+                }
+
+                print("Melee attack executed");
+                isMeleeAttacking = false;
+                meleeCooldownTimer = 0;
+
+                na.isStopped = false;
+            }
         }
     }
 
-    void MeleeAttack()
-    {
 
+    /*
+    void InitiateMeleeAttack()
+    {
+        na.destination = transform.position;
+        enemyAttackDirection = new Vector3(targetedCharacter.transform.position.x, transform.position.y, targetedCharacter.transform.position.z);
+        transform.LookAt(enemyAttackDirection);
+        enemyAttackDirection = targetedCharacter.transform.position - transform.position;
+        isMeleeAttacking = true;
+        meleeDelayTimer = 0;
     }
+
+    void ExecuteMeleeAttack()
+    {
+        print("Raycast launched");
+        if (Physics.Raycast(transform.position, enemyAttackDirection, out meleeHitDetection, meleeAttackRange))
+        {
+            print("Raycast hit");
+            DamageHitbox enemyHitbox = meleeHitDetection.collider.GetComponent<DamageHitbox>();
+            print("Enemy struck");
+            if (enemyHitbox != null)
+            {
+                enemyHitbox.Damage(meleeDamage, DamageType.KnockedOut);
+            }
+        }
+    }
+    */
 }

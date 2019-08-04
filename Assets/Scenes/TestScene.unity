@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10575,6 +10575,7 @@ GameObject:
   - component: {fileID: 607835262}
   - component: {fileID: 607835263}
   - component: {fileID: 607835264}
+  - component: {fileID: 607835265}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -10767,6 +10768,22 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   criticalPercentage: 20
+--- !u!114 &607835265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607835255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb061503c4774e04e8613657a2bde385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  degreesFromHealth: 0
+  damageModifier: 1
+  critical: 0
+  ricochetsBullets: 0
 --- !u!1 &622503049
 GameObject:
   m_ObjectHideFlags: 0
@@ -12520,7 +12537,7 @@ GameObject:
   - component: {fileID: 1381087072}
   - component: {fileID: 1381087071}
   m_Layer: 0
-  m_Name: Gun
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12533,13 +12550,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1381087069}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0.3, y: -0.29999995, z: 0.5}
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children: []
   m_Father: {fileID: 640222437}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!65 &1381087071
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18160,6 +18177,7 @@ GameObject:
   - component: {fileID: 1732789659}
   - component: {fileID: 1732789658}
   - component: {fileID: 1732789657}
+  - component: {fileID: 1732789660}
   m_Layer: 0
   m_Name: Enemy_Melee
   m_TagString: Untagged
@@ -18221,6 +18239,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1732789660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732789656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4bd7bcdfb18f214a8314c0f8d0358aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  head: {fileID: 0}
+  targetedCharacter: {fileID: 607835255}
+  movementSpeed: 5
+  meleeDamage: 10
+  meleeExecuteRange: 2
+  meleeAttackRange: 3
+  meleeAttackDelay: 0.5
+  meleeCooldown: 1
 --- !u!1 &1741791157
 GameObject:
   m_ObjectHideFlags: 0
