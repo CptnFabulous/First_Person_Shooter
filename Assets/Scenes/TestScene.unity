@@ -10359,7 +10359,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549373982}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.43, y: 1, z: -39.08}
+  m_LocalPosition: {x: 3.43, y: 17.6, z: 5.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1341092326}
@@ -18230,7 +18230,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1732789656}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.12, y: 1, z: -39.08}
+  m_LocalPosition: {x: -0.12, y: 17.6, z: 5.4000015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1443815289}
@@ -18255,8 +18255,8 @@ MonoBehaviour:
   targetedCharacter: {fileID: 607835255}
   movementSpeed: 5
   meleeDamage: 10
-  meleeExecuteRange: 2
-  meleeAttackRange: 3
+  meleeExecuteRange: 3
+  meleeAttackRange: 6
   meleeAttackDelay: 0.5
   meleeCooldown: 1
 --- !u!1 &1741791157

@@ -35,6 +35,7 @@ public class EnemyMelee : MonoBehaviour
     void Start()
     {
         na = GetComponent<NavMeshAgent>();
+        na.speed = movementSpeed;
     }
 
     // Update is called once per frame
@@ -78,7 +79,9 @@ public class EnemyMelee : MonoBehaviour
         if (Vector3.Distance(transform.position, targetedCharacter.transform.position) <= meleeExecuteRange && isMeleeAttacking == false && meleeCooldownTimer >= meleeCooldown)
         {
             //na.destination = transform.position;
+            
             na.isStopped = true;
+            na.enabled = false;
             enemyAttackDirection = new Vector3(targetedCharacter.transform.position.x, transform.position.y, targetedCharacter.transform.position.z);
             transform.LookAt(enemyAttackDirection);
             enemyAttackDirection = targetedCharacter.transform.position - transform.position;
@@ -108,7 +111,9 @@ public class EnemyMelee : MonoBehaviour
                 isMeleeAttacking = false;
                 meleeCooldownTimer = 0;
 
+                na.enabled = true;
                 na.isStopped = false;
+
             }
         }
     }
