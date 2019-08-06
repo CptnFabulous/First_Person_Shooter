@@ -15,15 +15,16 @@ public class EnemyMelee : MonoBehaviour
 
     public float movementSpeed = 5;
 
+    [Header("Melee Attack")]
     public int meleeDamage = 10;
     public float meleeExecuteRange = 2;
     public float meleeAttackRange = 3;
     public float meleeAttackDelay = 0.5f;
-    float meleeDelayTimer;
     public float meleeCooldown = 1;
+    public DamageType meleeDamageType;
+    float meleeDelayTimer;
     float meleeCooldownTimer = 9999999;
     bool isMeleeAttacking;
-
     Vector3 enemyAttackDirection;
     RaycastHit meleeHitDetection;
 
@@ -96,14 +97,15 @@ public class EnemyMelee : MonoBehaviour
             if (meleeDelayTimer >= meleeAttackDelay)
             {
                 print("Raycast launched");
+
                 if (Physics.Raycast(transform.position, enemyAttackDirection, out meleeHitDetection, meleeAttackRange))
                 {
                     print("Raycast hit");
                     DamageHitbox enemyHitbox = meleeHitDetection.collider.GetComponent<DamageHitbox>();
-                    print("Enemy struck");
                     if (enemyHitbox != null)
                     {
-                        enemyHitbox.Damage(meleeDamage, DamageType.KnockedOut);
+                        print("Enemy struck");
+                        enemyHitbox.Damage(meleeDamage, meleeDamageType);
                     }
                 }
 

@@ -15,13 +15,13 @@ public class KineticProjectileWeapon : ProjectileWeapon
     public float projectileVelocity = 100;
 
     [Header("Cosmetic")]
+    public ParticleSystem shellEjection;
     public GameObject muzzleFlash;
     [Range(0, 1)] public float muzzleFlashDuration;
     float muzzleFlashTimer;
-    // public ParticleSystem shellEjection;
     // public GameObject shellPrefab;
 
-    /*
+    
     public override void Update()
     {
         base.Update(); // DOES ALL THE IMPORTANT STUFF IN UPDATE, STUFF EXCLUSIVE TO THIS SCRIPT IS PLACED BEFORE OR AFTER THIS.
@@ -37,19 +37,20 @@ public class KineticProjectileWeapon : ProjectileWeapon
         }
         
     }
+    
 
     public override void Shoot()
     {
         base.Shoot();
 
         // Play appropriate firing animations
-
+        shellEjection.Play();
         
         muzzleFlash.SetActive(true);
         muzzleFlashTimer = 0;
         
     }
-    */
+    
     public override void LaunchProjectile()
     {
         base.LaunchProjectile();

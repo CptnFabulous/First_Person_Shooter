@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11751,7 +11751,7 @@ MonoBehaviour:
   switchSpeed: 0.75
   icon: {fileID: 0}
   type: 0
-  projectileSpread: 1
+  projectileSpread: 0.25
   recoil: 10
   recoilRecovery: 10
   range: 1000
@@ -11774,7 +11774,8 @@ MonoBehaviour:
   weaponMuzzle: {fileID: 337938846}
   projectileDiameter: 0.1
   gravityMultiplier: 0.1
-  projectileVelocity: 200
+  projectileVelocity: 500
+  shellEjection: {fileID: 1487410467}
   muzzleFlash: {fileID: 337938845}
   muzzleFlashDuration: 0.2
 --- !u!1 &1035758506
@@ -12893,7 +12894,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487410464}
   m_LocalRotation: {x: 0.0000000018626451, y: -0, z: 0.078459114, w: 0.99691737}
-  m_LocalPosition: {x: 0.020000003, y: 0.015, z: 0.01}
+  m_LocalPosition: {x: 0.06, y: 0.05, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1796772670}
@@ -15057,11 +15058,11 @@ ParticleSystem:
     inWorldSpace: 0
   InheritVelocityModule:
     enabled: 0
-    m_Mode: 0
+    m_Mode: 1
     m_Curve:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -15275,7 +15276,7 @@ ParticleSystem:
     inWorldSpace: 0
     randomizePerFrame: 0
   ExternalForcesModule:
-    enabled: 0
+    enabled: 1
     multiplier: 1
     influenceFilter: 0
     influenceMask:
@@ -16504,7 +16505,7 @@ ParticleSystem:
     m_Dampen:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.2
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -16557,7 +16558,7 @@ ParticleSystem:
     m_Bounce:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -17681,7 +17682,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 958523c384344fc498b4772dbf0847c7, type: 3}
     m_FontSize: 78
     m_FontStyle: 0
     m_BestFit: 0
@@ -18259,6 +18260,7 @@ MonoBehaviour:
   meleeAttackRange: 6
   meleeAttackDelay: 0.5
   meleeCooldown: 1
+  meleeDamageType: 3
 --- !u!1 &1741791157
 GameObject:
   m_ObjectHideFlags: 0
@@ -18500,7 +18502,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1796772670}
   - component: {fileID: 1796772671}
-  - component: {fileID: 1796772672}
   m_Layer: 0
   m_Name: weaponVisual
   m_TagString: Untagged
@@ -18573,19 +18574,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!65 &1796772672
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1796772669}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 5.48, y: 0.4375, z: 0.01}
-  m_Center: {x: -2.01, y: 0, z: 0}
 --- !u!1 &2054648739 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1145060822532798, guid: a8acbf7208c4836429aafbd0070ae503,

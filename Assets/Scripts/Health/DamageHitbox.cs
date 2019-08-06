@@ -15,6 +15,7 @@ public class DamageHitbox : MonoBehaviour
     {
         GameObject objectWithHealthScript = gameObject;
 
+
         if (degreesFromHealth > 0)
         {
             for (int i = 0; i < degreesFromHealth; i++)
