@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
 public class RaycastBullet : MonoBehaviour
 {
     // Bullet physics stats
@@ -20,7 +19,6 @@ public class RaycastBullet : MonoBehaviour
 
     // Visual effect variables
     [HideInInspector] public GameObject impactPrefab;
-    LineRenderer bulletEffect;
 
     // Raycast variables
     Ray bulletRay; // Raycast launched to determine shot direction
