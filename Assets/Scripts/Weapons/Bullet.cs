@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastBullet : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
     // Bullet physics stats
     [HideInInspector] public float gravityMultiplier;
@@ -71,27 +71,8 @@ public class RaycastBullet : MonoBehaviour
         //Instantiate(impactPrefab, bulletHit.point, Quaternion.LookRotation(bulletHit.normal));
 
         // do stuff like deal damage, spawn impact prefab
-        //print("Hit something");
-
-        Health killable = bulletHit.collider.GetComponent<Health>();
-        if (killable != null)
-        {
-            killable.TakeDamage(damage, DamageType.Shot);
-        }
-
-        /* For critical hit damage
-        if (killable != null && [if hitbox has critical hit tag])
-        {
-            killable.TakeDamage(Mathf.RoundToInt(damage * criticalModifier), DamageType.CriticalShot);
-        }
-        else if (killable != null)
-        {
-            killable.TakeDamage(damage, DamageType.Shot);
-        }
-        */
-
-
-        DamageHitbox hitbox = bulletHit.collider.GetComponent<DamageHitbox>();
+        
+        DamageHitbox hitbox = bulletHit.collider.GetComponent<DamageHitbox>(); // Bullet will only detect colliders that have a hitbox script.
         if (hitbox != null)
         {
             if (hitbox.critical == true)

@@ -8,7 +8,7 @@ public class KineticProjectileWeapon : ProjectileWeapon
     public float criticalModifier = 2;
 
     [Header("Projectile")]
-    public RaycastBullet projectile;
+    public Bullet projectile;
     public Transform weaponMuzzle;
     public float projectileDiameter = 0.1f;
     public float gravityMultiplier = 0.1f; // Determines gravity effect on projectile for bullet drop, set to zero to disable bullet drop
@@ -55,6 +55,7 @@ public class KineticProjectileWeapon : ProjectileWeapon
     {
         base.LaunchProjectile();
 
+        // Instantiate object with RaycastBullet for conventional kinetic projectiles e.g. bullets.
         GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation(target - weaponMuzzle.transform.position, Vector3.up));
         projectile.diameter = projectileDiameter;
         projectile.gravityMultiplier = gravityMultiplier;

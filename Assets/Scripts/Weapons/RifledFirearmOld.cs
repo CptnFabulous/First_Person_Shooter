@@ -30,7 +30,7 @@ public class RifledFirearmOld : Weapon
     float shotsInBurst;
 
     [Header("Projectile")]
-    public RaycastBullet projectile;
+    public Bullet projectile;
     public Transform weaponMuzzle;
     public float projectileDiameter = 0.1f;
     public float gravityMultiplier; // Determines gravity effect on projectile for bullet drop, set to zero to disable bullet drop

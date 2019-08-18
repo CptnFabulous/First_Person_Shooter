@@ -84,7 +84,7 @@ public class HeadsUpDisplay : MonoBehaviour
         healthPrev = prs.healthCurrent;
         */
 
-        
+        HealthHUD();
 
         WeaponType equippedType = equippedWeapon.type; // Finds type of equipped weapon
         switch(equippedType) // Checks type
@@ -105,7 +105,7 @@ public class HeadsUpDisplay : MonoBehaviour
     void HealthHUD()
     {
         healthCounter.text = health.currentHealth + "/" + health.maxHealth;
-        if (health.currentHealth < health.maxHealth / 100 * health.criticalPercentage)
+        if (health.currentHealth <= health.maxHealth / 100 * health.criticalPercentage)
         {
             healthCounter.color = criticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings

@@ -72,7 +72,7 @@ public class RigidbodyProjectileWeapon : Weapon
 
         #region Raycast-based projectiles
         GameObject projectile = Instantiate(projectilePrefab, weaponMuzzle.transform.position, Quaternion.LookRotation(target, Vector3.up));
-        RaycastBullet projectileData = GetComponent<RaycastBullet>();
+        Bullet projectileData = GetComponent<Bullet>();
 
         projectileData.diameter = projectileDiameter;
         projectileData.velocity = projectileVelocity;

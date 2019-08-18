@@ -26,7 +26,8 @@ public enum AmmunitionType
     DragonsBreath,
     Rifle,
     Grenade,
-    Petrol
+    Petrol,
+    Infinite
 }
 
 

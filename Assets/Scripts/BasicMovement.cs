@@ -18,10 +18,10 @@ public class BasicMovement : MonoBehaviour
     [Header("Camera control")]
     [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it.")]
     [Range(-100, 100)]
-    public float sensitivityX;
+    public float sensitivityX = 50;
     [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it.")]
     [Range(-100, 100)]
-    public float sensitivityY;
+    public float sensitivityY = 50;
     Vector2 Camera;
 
     [Header("Standard Movement")]
@@ -38,8 +38,8 @@ public class BasicMovement : MonoBehaviour
     [Header("Crouching")]
     public float standHeight = 2;
     public float crouchHeight = 1;
-    public float relativeHeadHeight = 0.75f;
-    public float crouchTime = 0.5f;
+    public float relativeHeadHeight = 0.375f;
+    public float crouchTime = 0.25f;
     float crouchTimer;
     bool isCrouching;
 
@@ -93,16 +93,18 @@ public class BasicMovement : MonoBehaviour
         }
         //print(cc.height + ", " + head.transform.localPosition.y + ", " + speed);
         //print(crouchTimer + ", " + cc.height + ", " + head.transform.localPosition.y + ", " + speed);
-        print("Crouch timer = " + crouchTimer + ", height = " + cc.height + ", head height = " + head.transform.localPosition.y + ", speed = " + speed);
+        //print("Crouch timer = " + crouchTimer + ", height = " + cc.height + ", head height = " + head.transform.localPosition.y + ", speed = " + speed);
         #endregion
 
         #region Movement
         moveInput.x = Input.GetAxis("Horizontal"); // Set to AD keys or analog stick.
         moveInput.y = Input.GetAxis("Vertical"); // Set to WS keys or analog stick.
-        moveInput.Normalize(); // Subtract X and Y values so they add up to 1 but retain the same ratio. Ensures player moves at same speed regardless of direction.
+        if (moveInput.magnitude > 1)
+        {
+            moveInput.Normalize();
+        }
         movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
-        // Player will continue moving at top speed for a short time after key is released. Maybe have a script to lerp movement inputs back to zero rather than snap?
         #endregion
 
         #region Jumping
