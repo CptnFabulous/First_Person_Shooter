@@ -84,7 +84,7 @@ public abstract class ProjectileWeapon : Weapon
         }
         #endregion
 
-        #region Reloading
+        #region Reload controls
         // If reload button is pressed and weapon's magazine is not full OR if magazine is empty and gun is finished firing
         if (((Input.GetButtonDown("Reload") && roundsInMagazine < magazineCapacity) || (roundsInMagazine <= 0 && fireTimer >= 60 / roundsPerMinute && isReloading == false)) && ammoSupply.GetStock(caliber) > 0)
         {
@@ -97,6 +97,7 @@ public abstract class ProjectileWeapon : Weapon
         #endregion
     }
 
+    #region Reload functions
     /*
     public virtual void Reload()
     {
@@ -157,6 +158,7 @@ public abstract class ProjectileWeapon : Weapon
             isReloading = false;
         }
     }
+    #endregion
 
     public virtual void Shoot()
     {
