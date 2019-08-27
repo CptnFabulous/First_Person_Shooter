@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
+[RequireComponent(typeof(PlayerHealth))]
+[RequireComponent(typeof (WeaponHandler))]
 public class HeadsUpDisplay : MonoBehaviour
 {
     [Header("References")]
-    public Camera camera;
+    
     public CanvasScaler hud;
-    public Weapon equippedWeapon;
-    Ammunition ammoSource;
+    WeaponHandler weapons;
     PlayerHealth health;
     
     
@@ -35,6 +34,10 @@ public class HeadsUpDisplay : MonoBehaviour
 
     public GameObject ammoDisplay;
     public Text ammoCounter;
+
+    [Header("Camera")]
+    public Camera camera;
+    public float fieldOfView = 60;
 
 
 
@@ -61,8 +64,9 @@ public class HeadsUpDisplay : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        ammoSource = GetComponent<Ammunition>();
+        
         health = GetComponent<PlayerHealth>();
+        weapons = GetComponent<WeaponHandler>();
 
         /*
         prs = GetComponent<PlayerResources>();
@@ -84,9 +88,11 @@ public class HeadsUpDisplay : MonoBehaviour
         healthPrev = prs.healthCurrent;
         */
 
+        
+
         HealthHUD();
 
-        WeaponType equippedType = equippedWeapon.type; // Finds type of equipped weapon
+        WeaponType equippedType = weapons.equippedWeapon.type; // Finds type of equipped weapon
         switch(equippedType) // Checks type
         {
             case WeaponType.projectile:// If projectile weapon
@@ -115,11 +121,14 @@ public class HeadsUpDisplay : MonoBehaviour
             healthCounter.color = normalColour;
         }
     }
+
     #region Weapon HUDs
     void ProjectileHUD()
     {
-        ProjectileWeapon epw = equippedWeapon.GetComponent<ProjectileWeapon>();
-        
+        ProjectileWeapon epw = weapons.equippedWeapon.GetComponent<ProjectileWeapon>();
+
+        //camera.fieldOfView = fieldOfView / epw.zoomVariable;
+
         reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
         reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
         reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
@@ -137,11 +146,11 @@ public class HeadsUpDisplay : MonoBehaviour
         }
         else if (epw.magazineCapacity <= 0) // If consumes ammunition but does not require reloading
         {
-            ammoCounter.text = ammoSource.GetStock(epw.caliber).ToString();
+            ammoCounter.text = weapons.ammoSupply.GetStock(epw.caliber).ToString();
         }
         else // if normal weapon, i.e. consumes ammunition and must be reloaded
         {
-            ammoCounter.text = epw.roundsInMagazine + "/" + (ammoSource.GetStock(epw.caliber) - epw.roundsInMagazine);
+            ammoCounter.text = epw.roundsInMagazine + "/" + (weapons.ammoSupply.GetStock(epw.caliber) - epw.roundsInMagazine);
         }
 
 

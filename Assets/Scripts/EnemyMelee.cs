@@ -13,7 +13,7 @@ public class EnemyMelee : MonoBehaviour
 
     public GameObject targetedCharacter;
 
-    public float movementSpeed = 5;
+    //public float movementSpeed = 5;
 
     [Header("Melee Attack")]
     public int meleeDamage = 10;
@@ -36,7 +36,7 @@ public class EnemyMelee : MonoBehaviour
     void Start()
     {
         na = GetComponent<NavMeshAgent>();
-        na.speed = movementSpeed;
+        //na.speed = movementSpeed;
     }
 
     // Update is called once per frame
@@ -93,7 +93,7 @@ public class EnemyMelee : MonoBehaviour
         if (isMeleeAttacking == true)
         {
             meleeDelayTimer += Time.deltaTime;
-            print(meleeDelayTimer);
+            //print(meleeDelayTimer);
             if (meleeDelayTimer >= meleeAttackDelay)
             {
                 print("Raycast launched");

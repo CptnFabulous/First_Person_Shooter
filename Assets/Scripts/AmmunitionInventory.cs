@@ -2,9 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AmmunitionType
+{
+
+    /*Rimfire,
+    PistolLight,
+    PistolHeavy,
+    Magnum,
+    PDW,
+    RifleLight,
+    RifleHeavy,
+    SniperLight,
+    SniperHeavy,
+    Buckshot,
+    Slugs,
+    Grenade,
+    Napalm,
+    */
+    Pistol,
+    Buckshot,
+    Slugs,
+    DragonsBreath,
+    Rifle,
+    Grenade,
+    Petrol,
+    Infinite
+}
 
 //public class AmmoInventory : MonoBehaviour
-public class Ammunition : MonoBehaviour
+public class AmmunitionInventory : MonoBehaviour
 {
 
     [System.Serializable]

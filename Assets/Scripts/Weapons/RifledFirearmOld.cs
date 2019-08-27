@@ -38,7 +38,7 @@ public class RifledFirearmOld : Weapon
     //public bool gravityAffected;
 
     [Header("Ammunition")]
-    public Ammunition ammoSource; // The 'ammunition supply' e.g. the player shooting the gun
+    public AmmunitionInventory ammoSource; // The 'ammunition supply' e.g. the player shooting the gun
     public AmmunitionType caliber;
     [Min(1)] public int magazineCapacity;
     public int roundsInMagazine = 30;

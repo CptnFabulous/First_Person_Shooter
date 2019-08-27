@@ -12,7 +12,15 @@ public class Health : MonoBehaviour
 
     DamageType lastDamageSource;
 
-    
+#if UNITY_EDITOR
+    void Reset() { OnValidate(); }
+    void OnValidate()
+    {
+        //magazineCapacity = Mathf.Clamp(magazineCapacity, 0, Mathf.Infinity);
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    }
+#endif
+
     // Start is called before the first frame update
     void Start()
     {

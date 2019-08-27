@@ -5,28 +5,33 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class BasicMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 
     [Header("References")]
-    public GameObject head;
     Rigidbody rb;
     CapsuleCollider cc;
     Ray isGrounded;
     RaycastHit floor;
 
     [Header("Camera control")]
+    public Camera playerCamera;
+    [Range(0, 180)]
+    public float fieldOfView = 60;
+    public GameObject head;
     [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it.")]
     [Range(-100, 100)]
     public float sensitivityX = 50;
     [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it.")]
     [Range(-100, 100)]
     public float sensitivityY = 50;
-    Vector2 Camera;
+    Vector2 lookVector;
 
     [Header("Standard Movement")]
-    public float speedRun = 10;
-    public float speedCrouch = 5;
+    [Tooltip("The player's standard movement speed.")]
+    public float movementSpeed = 10;
+    [Range(0, 1)]
+    public float crouchSpeedMultiplier = 0.5f;
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
     float speed;
@@ -38,8 +43,10 @@ public class BasicMovement : MonoBehaviour
     [Header("Crouching")]
     public float standHeight = 2;
     public float crouchHeight = 1;
-    public float relativeHeadHeight = 0.375f;
     public float crouchTime = 0.25f;
+    [Range(-1, 1)]
+    public float relativeHeadHeight = 0.375f;
+    public bool toggleCrouch;
     float crouchTimer;
     bool isCrouching;
 
@@ -65,22 +72,29 @@ public class BasicMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        jumpTimer += Time.deltaTime;
-
         #region Camera
-        Camera.x = Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime; // Camera X input is set to player's mouse X axis, multiplied by float 'sensitivityX'.
-        Camera.y -= Input.GetAxis("MouseY") * sensitivityY * Time.deltaTime; // Camera Y input is set to player's mouse Y axis, multiplied by float 'sensitivityY'.
-        Camera.y = Mathf.Clamp(Camera.y, -90f, 90f); // Camera.y is then clamped to ensure it does not move past 90* or 90*, ensuring that the player does not flip the camera over completely.
-        transform.Rotate(0, Camera.x, 0); // Player is rotated on y axis based on Camera.x, for turning left and right
-        head.transform.localRotation = Quaternion.Euler(Camera.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
+        LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityY * Time.deltaTime));
         #endregion
 
         #region Crouching
-        if (Input.GetButtonDown("Crouch"))
+        if (toggleCrouch == true)
         {
-            isCrouching = !isCrouching;
+            if (Input.GetButtonDown("Crouch"))
+            {
+                isCrouching = !isCrouching;
+            }
         }
-
+        else
+        {
+            if (Input.GetButton("Crouch"))
+            {
+                isCrouching = true;
+            }
+            else
+            {
+                isCrouching = false;
+            }
+        }
         if (isCrouching && crouchTimer <= 1)
         {
             crouchTimer += Time.deltaTime / crouchTime;
@@ -91,6 +105,7 @@ public class BasicMovement : MonoBehaviour
             crouchTimer -= Time.deltaTime / crouchTime;
             AlterHeight(crouchTimer);
         }
+        // LERP CODE IS SCREWY AND DOESN'T ROUND PROPERLY
         //print(cc.height + ", " + head.transform.localPosition.y + ", " + speed);
         //print(crouchTimer + ", " + cc.height + ", " + head.transform.localPosition.y + ", " + speed);
         //print("Crouch timer = " + crouchTimer + ", height = " + cc.height + ", head height = " + head.transform.localPosition.y + ", speed = " + speed);
@@ -108,6 +123,7 @@ public class BasicMovement : MonoBehaviour
         #endregion
 
         #region Jumping
+        jumpTimer += Time.deltaTime;
         if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && IsGrounded() == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
         {
             if (isCrouching == true)
@@ -125,10 +141,19 @@ public class BasicMovement : MonoBehaviour
         #endregion
     }
 
+    public void LookAngle(Vector2 cameraInput) // This variable is public so it can be altered by other sources such as gun recoil
+    {
+        lookVector.x = cameraInput.x;
+        lookVector.y -= cameraInput.y;
+        lookVector.y = Mathf.Clamp(lookVector.y, -90f, 90f); // Camera.y is then clamped to ensure it does not move past 90* or 90*, ensuring that the player does not flip the camera over completely.
+        transform.Rotate(0, lookVector.x, 0); // Player is rotated on y axis based on Camera.x, for turning left and right
+        head.transform.localRotation = Quaternion.Euler(lookVector.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
+    }
+
     void AlterHeight(float t)
     {
         cc.height = Mathf.Lerp(standHeight, crouchHeight, t);
-        speed = Mathf.Lerp(speedRun, speedCrouch, t);
+        speed = Mathf.Lerp(movementSpeed, movementSpeed * crouchSpeedMultiplier, t);
         head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, t), 0);
     }
 

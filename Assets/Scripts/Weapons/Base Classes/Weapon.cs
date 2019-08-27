@@ -16,7 +16,10 @@ public abstract class Weapon : MonoBehaviour
     public int damage = 10;
     [Tooltip("The time taken to draw or put away the weapon.")]
     public float switchSpeed = 0.75f;
-    public Sprite icon;
+    public GameObject weaponModel;
+    //public Sprite icon;
     [HideInInspector]
     public WeaponType type;
+    
+    public WeaponHandler playerHolding;
 }

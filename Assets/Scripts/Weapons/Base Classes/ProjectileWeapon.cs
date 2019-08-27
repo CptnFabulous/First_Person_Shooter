@@ -4,21 +4,42 @@ using UnityEngine;
 
 public abstract class ProjectileWeapon : Weapon
 {
+
+
+
+
+    #region Accuracy variables
     [Header("Accuracy")]
     [Tooltip("Level of deviation in weapon accuracy from centre of reticle, in degrees.")]
     [Range(0, 180)] public float projectileSpread = 5;
-    [Tooltip("Amount of recoil applied per shot.")]
-    public float recoil = 10;
-    [Tooltip("Speed at which camera returns to starting position.")]
-    public float recoilRecovery = 10;
     [Tooltip("Maximum range for the gun's raycast check to determine where to launch projectiles. Decrease this value if the weapon is not meant to hit accurately past a certain point.")]
     public float range = 500;
     [Tooltip("What layers will the raycast check and launched projectiles register?")]
     public LayerMask rayDetection;
+    [Tooltip("Amount of recoil applied per shot.")]
+    public float recoil = 10;
+    [Tooltip("Speed at which camera returns to starting position.")]
+    public float recoilRecovery = 10;
     Ray targetRay;
     RaycastHit targetFound;
     [HideInInspector] public Vector3 target;
+    PlayerController pc;
+    #endregion
 
+    #region ADS variables
+    [Header("Optics")]
+    public float magnification = 4;
+    public float zoomTime = 0.25f;
+    public bool toggleAim;
+    public bool isAiming;
+    public Transform hipPosition;
+    public Transform aimPosition;
+    [HideInInspector]
+    public float zoomVariable;
+    float zoomTimer;
+    #endregion
+
+    #region Fire rate variables
     [Header("Fire Rate")]
     [Tooltip("Amount of projectiles launched per shot. Set to 1 for regular bullet-shooting weapons, increase for weapons such as shotguns.")]
     [Min(1)] public int projectileCount = 1;
@@ -28,25 +49,25 @@ public abstract class ProjectileWeapon : Weapon
     public int burstCount;
     float fireTimer = 9999999999;
     float shotsInBurst;
+    #endregion
 
+    #region Ammunition variables
     [Header("Ammunition")]
-    [Tooltip("The player's ammunition supply.")]
-    public Ammunition ammoSupply; // The ammunition supply belonging to the player shooting the gun
     [Tooltip("The type of ammunition used by the weapon.")]
     public AmmunitionType caliber;
     [Tooltip("How many units of ammunition are consumed per shot.")]
     public int ammoPerShot = 1;
-    [Tooltip("Sets weapon's magazine capacity. Set to zero to ignore magazine code, allowing the player to fire continuously without reloading.")]
+    [Tooltip("Sets weapon's magazine capacity. Set to zero to ignore magazine code and fire continuously without reloading.")]
     [Min(0)] public int magazineCapacity = 30;
     [Tooltip("Amount of ammunition currently in the weapon's magazine.")]
     public int roundsInMagazine = 30;
     [Tooltip("Time taken to reload the weapon, in seconds.")]
     public float reloadTime = 2;
-    [Tooltip("Amount of rounds reloaded at a time. Set to the weapon's magazine capacity for weapons that reload from a single magazine, set to one or more for weapons that load small amounts of ammunition at a time such as fixed-magazine shotguns.")]
+    [Tooltip("Amount of rounds reloaded at a time.")]
     public int roundsReloaded = 30;
     bool isReloading;
     float reloadTimer;
-
+    #endregion
 
 #if UNITY_EDITOR
     void Reset() { OnValidate(); }
@@ -55,6 +76,16 @@ public abstract class ProjectileWeapon : Weapon
         //magazineCapacity = Mathf.Clamp(magazineCapacity, 0, Mathf.Infinity);
         roundsInMagazine = Mathf.Clamp(roundsInMagazine, 0, magazineCapacity);
         roundsReloaded = Mathf.Clamp(roundsReloaded, 1, magazineCapacity);
+
+        if (isAiming == true)
+        {
+            weaponModel.transform.SetPositionAndRotation(aimPosition.position, aimPosition.rotation);
+        }
+        else
+        {
+            weaponModel.transform.SetPositionAndRotation(hipPosition.position, hipPosition.rotation);
+        }
+
     }
 #endif
 
@@ -67,14 +98,40 @@ public abstract class ProjectileWeapon : Weapon
     // Update is called once per frame
     public virtual void Update()
     {
-        if (fireTimer < 60 / roundsPerMinute)
+        #region ADS controls
+        if(toggleAim == true)
         {
-            fireTimer += Time.deltaTime; // Counts up timer for next shot. This doesn't really need to be inside an if statement but whatever. It may benefit to have this be outside an if statement if for whatever reason you want to calculate how long it's been since the weapon was last fired.
+            if (Input.GetButtonDown("MouseRight"))
+            {
+                isAiming = !isAiming;
+            }
         }
+        else
+        {
+            if (Input.GetButton("MouseRight"))
+            {
+                isAiming = true;
+            }
+            else
+            {
+                isAiming = false;
+            }
+        }
+        if (isAiming)
+        {
+            LerpSights(zoomTime);
+        }
+        else
+        {
+            LerpSights(-zoomTime);
+        }
+        // LERP CODE IS SCREWY AND DOESN'T ROUND PROPERLY
+        #endregion
 
         #region Fire Controls
+        fireTimer += Time.deltaTime; // Counts up timer for next shot.
         // If fire button is pressed, previous shot has finished firing, maximum burst count has not been exceeded (or no burst function is present), ammunition is present and ammo remains in magazine (or if gun does not need reloading)
-        if (Input.GetButton("MouseLeft") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && ammoSupply.GetStock(caliber) > 0 && ((roundsInMagazine > 0 && isReloading == false) || magazineCapacity <= 0))
+        if (Input.GetButton("MouseLeft") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ammoSupply.GetStock(caliber) > 0 && ((roundsInMagazine > 0 && isReloading == false) || magazineCapacity <= 0))
         {
             Shoot();
         }
@@ -86,7 +143,7 @@ public abstract class ProjectileWeapon : Weapon
 
         #region Reload controls
         // If reload button is pressed and weapon's magazine is not full OR if magazine is empty and gun is finished firing
-        if (((Input.GetButtonDown("Reload") && roundsInMagazine < magazineCapacity) || (roundsInMagazine <= 0 && fireTimer >= 60 / roundsPerMinute && isReloading == false)) && ammoSupply.GetStock(caliber) > 0)
+        if (((Input.GetButtonDown("Reload") && roundsInMagazine < magazineCapacity) || (roundsInMagazine <= 0 && fireTimer >= 60 / roundsPerMinute && isReloading == false)) && playerHolding.ammoSupply.GetStock(caliber) > 0)
         {
             ExecuteReload();
         }
@@ -97,6 +154,55 @@ public abstract class ProjectileWeapon : Weapon
         #endregion
     }
 
+    #region ADS functions
+    void LerpSights(float t)
+    {
+        zoomTimer += Time.deltaTime / t;
+        zoomTimer = Mathf.Clamp01(zoomTimer);
+
+        zoomVariable = Mathf.Lerp(1, magnification, zoomTimer);
+        playerHolding.pc.playerCamera.fieldOfView = playerHolding.pc.fieldOfView / zoomVariable;
+        //playerHolding.pc.
+
+        Vector3 currentWeaponPosition = Vector3.Lerp(hipPosition.position, aimPosition.position, zoomTimer);
+        Quaternion currentWeaponRotation = Quaternion.Lerp(hipPosition.rotation, aimPosition.rotation, zoomTimer);
+        weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
+
+
+        /*
+        Additional things ADS should do
+        * Reduce sensitivity proportionally to camera
+        * Reduce movement speed
+        * Move gun position
+        */
+    }
+
+    /*
+    void HoldOrToggleInput(bool aimBool, bool toggle, string input)
+    {
+        print(isAiming);
+        if (Input.GetButtonDown(input))
+        {
+            if (toggle == false)
+            {
+                aimBool = true;
+            }
+            else
+            {
+                aimBool = !aimBool;
+            }
+        }
+        else if (Input.GetButtonUp(input))
+        {
+            if (toggle == false)
+            {
+                aimBool = false;
+            }
+        }
+    }
+    */
+    #endregion
+
     #region Reload functions
     /*
     public virtual void Reload()
@@ -104,9 +210,9 @@ public abstract class ProjectileWeapon : Weapon
         reloadTimer += Time.deltaTime;
         if (reloadTimer >= reloadTime)
         {
-            if (ammoSupply.GetStock(caliber) < magazineCapacity)
+            if (playerHolding.ammoSupply.GetStock(caliber) < magazineCapacity)
             {
-                roundsInMagazine = ammoSupply.GetStock(caliber);
+                roundsInMagazine = playerHolding.ammoSupply.GetStock(caliber);
             }
             else
             {
@@ -136,7 +242,7 @@ public abstract class ProjectileWeapon : Weapon
         if (reloadTimer >= reloadTime) // If reload time has passed, reload gun
         {
             print("Gun reloaded");
-            int remainingAmmo = ammoSupply.GetStock(caliber) - roundsInMagazine; // Checks how much spare ammunition the player has
+            int remainingAmmo = playerHolding.ammoSupply.GetStock(caliber) - roundsInMagazine; // Checks how much spare ammunition the player has
             if (remainingAmmo < roundsReloaded) // If there is not enough ammunition to reload the usual amount
             {
                 roundsInMagazine += remainingAmmo; // Reload all remaining ammunition
@@ -151,7 +257,7 @@ public abstract class ProjectileWeapon : Weapon
         }
 
         // If magazine is full, there is no more ammunition, or reload is interrupted by another action
-        if (roundsInMagazine >= magazineCapacity || ammoSupply.GetStock(caliber) - roundsInMagazine <= 0 || (Input.GetButtonDown("MouseLeft") && roundsInMagazine > 0)) // Also include button options for melee attacking and any other functions that would cancel out the reload function
+        if (roundsInMagazine >= magazineCapacity || playerHolding.ammoSupply.GetStock(caliber) - roundsInMagazine <= 0 || (Input.GetButtonDown("MouseLeft") && roundsInMagazine > 0)) // Also include button options for melee attacking and any other functions that would cancel out the reload function
         {
             // Cancel reload
             reloadTimer = 0;
@@ -160,6 +266,7 @@ public abstract class ProjectileWeapon : Weapon
     }
     #endregion
 
+    #region Firing functions
     public virtual void Shoot()
     {
         for (int i = 0; i < projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
@@ -174,9 +281,13 @@ public abstract class ProjectileWeapon : Weapon
         {
             roundsInMagazine -= ammoPerShot; // Subtract ammunition from weapon magazine
         }
-        ammoSupply.Spend(caliber, ammoPerShot); // Spends appropriate ammunition type
+        playerHolding.ammoSupply.Spend(caliber, ammoPerShot); // Spends appropriate ammunition type
         fireTimer = 0; // Reset fire timer to count up to next shot
         // Cosmetic effects are done in another derived class, for different cosmetic effects.
+
+        playerHolding.pc.LookAngle(new Vector2(Random.Range(-recoil, recoil), recoil)); // Add recoil
+
+
     }
 
     public virtual void LaunchProjectile()
@@ -193,4 +304,5 @@ public abstract class ProjectileWeapon : Weapon
         }
         // Instantiating of projectile is done in another derived class, so different kinds of projectiles can be instantiated
     }
+    #endregion
 }
