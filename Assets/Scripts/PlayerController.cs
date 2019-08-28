@@ -25,6 +25,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it.")]
     [Range(-100, 100)]
     public float sensitivityY = 50;
+
+    //[HideInInspector] public float cameraSensitivityModifier;
+
+    [Range(-90, 90)]
+    public float minLookAngle = -90;
+    [Range(-90, 90)]
+    public float maxLookAngle = 90;
+
     Vector2 lookVector;
 
     [Header("Standard Movement")]
@@ -50,6 +58,27 @@ public class PlayerController : MonoBehaviour
     float crouchTimer;
     bool isCrouching;
 
+    #region Validate variables
+    #if UNITY_EDITOR
+    void Reset() { OnValidate(); }
+    void OnValidate()
+    {
+
+        minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
+        maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
+
+        if (isCrouching == true)
+        {
+            head.transform.localPosition = new Vector3(0, relativeHeadHeight * crouchHeight, 0);
+        }
+        else
+        {
+            head.transform.localPosition = new Vector3(0, relativeHeadHeight * standHeight, 0);
+        }
+    }
+    #endif
+    #endregion
+
     bool IsGrounded()
     {
         isGrounded.origin = transform.position; // Sets the origin of isGrounded ray to the player's body
@@ -66,45 +95,28 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CapsuleCollider>();
-        AlterHeight(crouchTimer);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //cameraSensitivityModifier = 1;
+
         #region Camera
         LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityY * Time.deltaTime));
         #endregion
 
         #region Crouching
-        if (toggleCrouch == true)
+        HoldOrToggleCrouch();
+        if (isCrouching)
         {
-            if (Input.GetButtonDown("Crouch"))
-            {
-                isCrouching = !isCrouching;
-            }
+            LerpCrouch(crouchTime);
         }
         else
         {
-            if (Input.GetButton("Crouch"))
-            {
-                isCrouching = true;
-            }
-            else
-            {
-                isCrouching = false;
-            }
+            LerpCrouch(-crouchTime);
         }
-        if (isCrouching && crouchTimer <= 1)
-        {
-            crouchTimer += Time.deltaTime / crouchTime;
-            AlterHeight(crouchTimer);
-        }
-        else if (!isCrouching && crouchTimer >= 0)
-        {
-            crouchTimer -= Time.deltaTime / crouchTime;
-            AlterHeight(crouchTimer);
-        }
+        //print(cc.height + "/" + movementSpeed + "/" + head.transform.localPosition.y);
         // LERP CODE IS SCREWY AND DOESN'T ROUND PROPERLY
         //print(cc.height + ", " + head.transform.localPosition.y + ", " + speed);
         //print(crouchTimer + ", " + cc.height + ", " + head.transform.localPosition.y + ", " + speed);
@@ -145,17 +157,43 @@ public class PlayerController : MonoBehaviour
     {
         lookVector.x = cameraInput.x;
         lookVector.y -= cameraInput.y;
-        lookVector.y = Mathf.Clamp(lookVector.y, -90f, 90f); // Camera.y is then clamped to ensure it does not move past 90* or 90*, ensuring that the player does not flip the camera over completely.
+        lookVector.y = Mathf.Clamp(lookVector.y, minLookAngle, maxLookAngle); // Camera.y is then clamped to ensure it does not move past 90* or 90*, ensuring that the player does not flip the camera over completely.
         transform.Rotate(0, lookVector.x, 0); // Player is rotated on y axis based on Camera.x, for turning left and right
         head.transform.localRotation = Quaternion.Euler(lookVector.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
     }
 
-    void AlterHeight(float t)
+    #region Crouch functions
+    void HoldOrToggleCrouch()
     {
-        cc.height = Mathf.Lerp(standHeight, crouchHeight, t);
-        speed = Mathf.Lerp(movementSpeed, movementSpeed * crouchSpeedMultiplier, t);
-        head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, t), 0);
+        if (toggleCrouch == true)
+        {
+            if (Input.GetButtonDown("Crouch"))
+            {
+                isCrouching = !isCrouching;
+            }
+        }
+        else
+        {
+            if (Input.GetButton("Crouch"))
+            {
+                isCrouching = true;
+            }
+            else
+            {
+                isCrouching = false;
+            }
+        }
     }
+
+    void LerpCrouch(float t)
+    {
+        crouchTimer += Time.deltaTime / t;
+        crouchTimer = Mathf.Clamp01(crouchTimer);
+        cc.height = Mathf.Lerp(standHeight, crouchHeight, crouchTimer);
+        speed = Mathf.Lerp(movementSpeed, movementSpeed * crouchSpeedMultiplier, crouchTimer);
+        head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, crouchTimer), 0);
+    }
+    #endregion
 
     void FixedUpdate()
     {

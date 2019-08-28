@@ -13,12 +13,12 @@ public class WeaponHandler : MonoBehaviour
 
     [Header("Stats")]
     [Range(0, 180)]
-    public float standingAccuracy = 1;
-    [Range(0, 180)]
-    public float runningAccuracy = 5;
-    [Range(0, 180)]
-    public float crouchingAccuracy = 0;
-    float accuracy;
+    public float standingAccuracy;
+    public float runMultiplier = 3;
+    public float crouchMultiplier = -1;
+    float accuracyModifier;
+    float modifiedAccuracy;
+    
 
     [Header("Inventory")]
     public Weapon equippedWeapon;
