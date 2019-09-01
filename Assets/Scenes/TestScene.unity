@@ -10754,6 +10754,7 @@ GameObject:
   - component: {fileID: 607835263}
   - component: {fileID: 607835264}
   - component: {fileID: 607835265}
+  - component: {fileID: 607835267}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -10781,7 +10782,8 @@ MonoBehaviour:
   minLookAngle: -90
   maxLookAngle: 90
   movementSpeed: 10
-  crouchSpeedMultiplier: 0.5
+  crouchSpeedMultiplier: -0.5
+  speedModifier: {fileID: 607835267}
   forceJump: 7
   jumpDelay: 0.1
   standHeight: 2
@@ -10995,6 +10997,18 @@ MonoBehaviour:
   slots:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &607835267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607835255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e115651b63a20439654695913fadea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &622503049
 GameObject:
   m_ObjectHideFlags: 0
@@ -16698,14 +16712,14 @@ MonoBehaviour:
   weaponModel: {fileID: 1796772669}
   type: 0
   playerHolding: {fileID: 607835266}
-  projectileSpread: 0.5
+  projectileSpread: 0.25
   range: 500
   rayDetection:
     serializedVersion: 2
     m_Bits: 55
   target: {x: 0, y: 0, z: 0}
   recoil: 3
-  recoilApplyRate: 15
+  recoilApplyRate: 12
   recoilRecovery: 10
   magnification: 4
   zoomTime: 0.25

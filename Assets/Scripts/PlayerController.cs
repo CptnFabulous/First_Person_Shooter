@@ -38,11 +38,18 @@ public class PlayerController : MonoBehaviour
     [Header("Standard Movement")]
     [Tooltip("The player's standard movement speed.")]
     public float movementSpeed = 10;
-    [Range(0, 1)]
-    public float crouchSpeedMultiplier = 0.5f;
+    [Range(-1, 0)]
+    public float crouchSpeedMultiplier = -0.5f;
+
+
+    public StatModifier speedModifier = new StatModifier(); // StatModifier for movement speed, this does not work
+
+
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
+
     float speed;
+
     Vector2 moveInput;
     Vector3 movementValue;
     bool willJump;
@@ -100,8 +107,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //cameraSensitivityModifier = 1;
-
         #region Camera
         LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityX * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityY * Time.deltaTime));
         #endregion
@@ -130,7 +135,15 @@ public class PlayerController : MonoBehaviour
         {
             moveInput.Normalize();
         }
-        movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
+        //movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
+
+
+
+        // This line uses the statModifier code that doesn't work properly
+        movementValue = new Vector3(moveInput.x * speedModifier.ModifiedFloat(movementSpeed), 0, moveInput.y * speedModifier.ModifiedFloat(movementSpeed));
+
+
+
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
         #endregion
 
@@ -190,7 +203,15 @@ public class PlayerController : MonoBehaviour
         crouchTimer += Time.deltaTime / t;
         crouchTimer = Mathf.Clamp01(crouchTimer);
         cc.height = Mathf.Lerp(standHeight, crouchHeight, crouchTimer);
-        speed = Mathf.Lerp(movementSpeed, movementSpeed * crouchSpeedMultiplier, crouchTimer);
+
+        //speed = Mathf.Lerp(movementSpeed, movementSpeed * -crouchSpeedMultiplier, crouchTimer);
+
+
+
+        float sm = Mathf.Lerp(0, crouchSpeedMultiplier, crouchTimer); // Lerps crouch speed multiplier between none and the normal amount
+        speedModifier.ApplyEffect("Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
+        
+
         head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, crouchTimer), 0);
     }
     #endregion
