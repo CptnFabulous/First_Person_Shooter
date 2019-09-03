@@ -124,8 +124,6 @@ public abstract class ProjectileWeapon : Weapon
                 aimOrigin = new Vector2(playerHolding.pc.transform.rotation.y, playerHolding.pc.head.transform.localRotation.x);
                 print(aimOrigin);
             }
-
-
             Shoot();
         }
         else if (Input.GetButtonUp("MouseLeft") && burstCount > 0)
@@ -193,30 +191,62 @@ public abstract class ProjectileWeapon : Weapon
     }
     #endregion
 
-    #region Reload functions
-    /*
-    public virtual void Reload()
+    #region Firing functions
+    public virtual void Shoot()
     {
-        reloadTimer += Time.deltaTime;
-        if (reloadTimer >= reloadTime)
+        // Modifies player's aim based on accuracy stat. This Vector3 is currently unused.
+        //Vector3 aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * transform.forward;
+        for (int i = 0; i < projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
         {
-            if (playerHolding.ammoSupply.GetStock(caliber) < magazineCapacity)
-            {
-                roundsInMagazine = playerHolding.ammoSupply.GetStock(caliber);
-            }
-            else
-            {
-                roundsInMagazine = magazineCapacity;
-            }
+            LaunchProjectile();
         }
-
-        if (roundsInMagazine >= magazineCapacity || (Input.GetButtonDown("MouseLeft") && roundsInMagazine > 0)) // Also include button options for melee attacking and any other functions that would cancel out the reload function
+        if (burstCount > 0) // If the weapon fires in bursts
         {
-            reloadTimer = 0;
-            isReloading = false;
+            shotsInBurst += 1; // Adds number to burst count
+        }
+        if (magazineCapacity > 0) // If weapon has reloadable magazine
+        {
+            roundsInMagazine -= ammoPerShot; // Subtract ammunition from weapon magazine
+        }
+        playerHolding.ammoSupply.Spend(caliber, ammoPerShot); // Spends appropriate ammunition type
+        fireTimer = 0; // Reset fire timer to count up to next shot
+        recoilToApply += recoil; // Adds recoil to total amount needed to be applied to player
+        // Cosmetic effects are done in another derived class, for different cosmetic effects.
+    }
+
+    public virtual void LaunchProjectile()
+    {
+        targetRay.origin = transform.position;
+        //targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
+        targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
+        if (Physics.Raycast(targetRay, out targetFound, range, rayDetection))
+        {
+            target = targetFound.point;
+        }
+        else
+        {
+            target = targetRay.direction * range;
+        }
+        // Instantiating of projectile is done in another derived class, so different kinds of projectiles can be instantiated
+    }
+
+    public void Recoil()
+    {
+        if (recoilToApply > 0)
+        {
+            // CODE MAY BE SCREWY, I DON'T KNOW THE FORMULA YET, FIX SOMEHOW
+            float r = recoilToApply * recoilApplyRate * Time.deltaTime;
+            playerHolding.pc.LookAngle(new Vector2(Random.Range(-r, r), r)); // Add recoil
+            recoilToApply -= r;
+        }
+        else if (Input.GetButton("MouseLeft") == false) // Return recoil using recoil recovery float
+        {
+            //print("Recovering from recoil");
         }
     }
-    */
+    #endregion
+
+    #region Reload functions
     public virtual void ExecuteReload()
     {
         reloadTimer = 0;
@@ -256,63 +286,4 @@ public abstract class ProjectileWeapon : Weapon
     }
     #endregion
 
-    #region Firing functions
-    public virtual void Shoot()
-    {
-        // Modifies player's aim based on accuracy stat. This Vector3 is currently unused.
-        //Vector3 aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * transform.forward;
-        for (int i = 0; i < projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
-        {
-            LaunchProjectile();
-        }
-        if (burstCount > 0) // If the weapon fires in bursts
-        {
-            shotsInBurst += 1; // Adds number to burst count
-        }
-        if (magazineCapacity > 0) // If weapon has reloadable magazine
-        {
-            roundsInMagazine -= ammoPerShot; // Subtract ammunition from weapon magazine
-        }
-        playerHolding.ammoSupply.Spend(caliber, ammoPerShot); // Spends appropriate ammunition type
-        fireTimer = 0; // Reset fire timer to count up to next shot
-        // Cosmetic effects are done in another derived class, for different cosmetic effects.
-
-        //playerHolding.pc.LookAngle(new Vector2(Random.Range(-recoil, recoil), recoil)); // Add recoil
-
-        recoilToApply += recoil; // Adds recoil to total amount needed to be applied to player
-
-
-    }
-
-    public virtual void LaunchProjectile()
-    {
-        targetRay.origin = transform.position;
-        //targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
-        targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
-        if (Physics.Raycast(targetRay, out targetFound, range, rayDetection))
-        {
-            target = targetFound.point;
-        }
-        else
-        {
-            target = targetRay.direction * range;
-        }
-        // Instantiating of projectile is done in another derived class, so different kinds of projectiles can be instantiated
-    }
-
-    public void Recoil()
-    {
-        if (recoilToApply > 0)
-        {
-            // CODE MAY BE SCREWY, I DON'T KNOW THE FORMULA YET, FIX SOMEHOW
-            float r = recoilToApply * recoilApplyRate * Time.deltaTime;
-            playerHolding.pc.LookAngle(new Vector2(Random.Range(-r, r), r)); // Add recoil
-            recoilToApply -= r;
-        }
-        else if (Input.GetButton("MouseLeft") == false) // Return recoil using recoil recovery float
-        {
-            //print("Recovering from recoil");
-        }
-    }
-    #endregion
 }

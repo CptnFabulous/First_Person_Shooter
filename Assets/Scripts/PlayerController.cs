@@ -42,7 +42,8 @@ public class PlayerController : MonoBehaviour
     public float crouchSpeedMultiplier = -0.5f;
 
 
-    public StatModifier speedModifier = new StatModifier(); // StatModifier for movement speed, this does not work
+    //public StatModifier speedModifier = new StatModifier(); // StatModifier for movement speed, this does not work
+    //public StatModifier speedModifier;
 
 
     public float forceJump = 5;
@@ -135,13 +136,19 @@ public class PlayerController : MonoBehaviour
         {
             moveInput.Normalize();
         }
-        //movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
+        movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed); // X and Y values of Vector2 moveInput are set as X and Z values of Vector3 movementValue, turning horizontal and vertical values into horizontal and lateral ones.
 
 
 
         // This line uses the statModifier code that doesn't work properly
-        movementValue = new Vector3(moveInput.x * speedModifier.ModifiedFloat(movementSpeed), 0, moveInput.y * speedModifier.ModifiedFloat(movementSpeed));
 
+        //movementValue = new Vector3(moveInput.x * speedModifier.ModifiedFloat(movementSpeed), 0, moveInput.y * speedModifier.ModifiedFloat(movementSpeed));
+
+        //movementValue = new Vector3(moveInput.x * movementSpeed * ModifyStat.CompileEffects(speedModifier), 0, moveInput.y * movementSpeed * ModifyStat.CompileEffects(speedModifier));
+
+        //movementValue = new Vector3(moveInput.x * ModifyStat.ModifiedFloat(movementSpeed, speedModifier), 0, moveInput.y * ModifyStat.ModifiedFloat(movementSpeed, speedModifier));
+
+        //movementValue = new Vector3(moveInput.x * ModifyStat.ModifiedFloat(movementSpeed, speedModifier), 0, moveInput.y * ModifyStat.ModifiedFloat(movementSpeed, speedModifier));
 
 
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
@@ -204,12 +211,12 @@ public class PlayerController : MonoBehaviour
         crouchTimer = Mathf.Clamp01(crouchTimer);
         cc.height = Mathf.Lerp(standHeight, crouchHeight, crouchTimer);
 
-        //speed = Mathf.Lerp(movementSpeed, movementSpeed * -crouchSpeedMultiplier, crouchTimer);
+        speed = Mathf.Lerp(movementSpeed, movementSpeed * -crouchSpeedMultiplier, crouchTimer);
 
 
 
-        float sm = Mathf.Lerp(0, crouchSpeedMultiplier, crouchTimer); // Lerps crouch speed multiplier between none and the normal amount
-        speedModifier.ApplyEffect("Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
+        //float sm = Mathf.Lerp(0, crouchSpeedMultiplier, crouchTimer); // Lerps crouch speed multiplier between none and the normal amount
+        //speedModifier.ApplyEffect("Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
         
 
         head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, crouchTimer), 0);

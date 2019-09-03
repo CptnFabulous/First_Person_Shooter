@@ -10783,7 +10783,6 @@ MonoBehaviour:
   maxLookAngle: 90
   movementSpeed: 10
   crouchSpeedMultiplier: -0.5
-  speedModifier: {fileID: 607835267}
   forceJump: 7
   jumpDelay: 0.1
   standHeight: 2
