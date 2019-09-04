@@ -127,8 +127,9 @@ public class HeadsUpDisplay : MonoBehaviour
     {
         ProjectileWeapon epw = weapons.equippedWeapon.GetComponent<ProjectileWeapon>();
 
-        reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
-        //reticlePositions = new Vector2((weapons.accuracy + epw.projectileSpread) * Screen.width / camera.fieldOfView, (weapons.accuracy + epw.projectileSpread) * Screen.height / camera.fieldOfView);
+        //reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
+        float a = ModifyStat.NewFloat(weapons.standingAccuracy, weapons.accuracyModifier);
+        reticlePositions = new Vector2((a + epw.projectileSpread) * Screen.height / camera.fieldOfView, (a + epw.projectileSpread) * Screen.height / camera.fieldOfView);
         reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
         reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
         reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);

@@ -14,9 +14,9 @@ public class WeaponHandler : MonoBehaviour
     [Header("Stats")]
     [Range(0, 180)]
     public float standingAccuracy;
-    public float runMultiplier = 3;
-    public float crouchMultiplier = -1;
-    float accuracyModifier;
+    public List<StatModifier> accuracyModifier = new List<StatModifier>();
+    public float runMultiplier;
+    public float crouchMultiplier;
     float modifiedAccuracy;
     
 
@@ -34,7 +34,16 @@ public class WeaponHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButton("SelectWeapon")) // If weapon wheel button is held
+        if(pc.isCrouching)
+        {
+            print("Player is crouching am");
+            ModifyStat.ApplyEffect(accuracyModifier, "Crouching", crouchMultiplier, Time.deltaTime);
+        }
+
+
+
+
+        if (Input.GetButton("SelectWeapon")) // If weapon wheel button is held
         {
 
         }
@@ -42,5 +51,10 @@ public class WeaponHandler : MonoBehaviour
         {
 
         }
+    }
+
+    private void LateUpdate()
+    {
+        ModifyStat.CheckStatDuration(accuracyModifier);
     }
 }

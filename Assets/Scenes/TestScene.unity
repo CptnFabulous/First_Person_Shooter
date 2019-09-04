@@ -10754,7 +10754,6 @@ GameObject:
   - component: {fileID: 607835263}
   - component: {fileID: 607835264}
   - component: {fileID: 607835265}
-  - component: {fileID: 607835267}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -10790,6 +10789,7 @@ MonoBehaviour:
   crouchTime: 0.25
   relativeHeadHeight: 0.375
   toggleCrouch: 1
+  isCrouching: 0
 --- !u!23 &607835257
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10989,25 +10989,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pc: {fileID: 0}
   ammoSupply: {fileID: 0}
-  standingAccuracy: 0
-  runMultiplier: 5
-  crouchMultiplier: 1
+  standingAccuracy: 1
+  runMultiplier: 1
+  crouchMultiplier: -0.5
   equippedWeapon: {fileID: 1001392278}
   slots:
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &607835267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 607835255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9e115651b63a20439654695913fadea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &622503049
 GameObject:
   m_ObjectHideFlags: 0
@@ -16722,6 +16710,7 @@ MonoBehaviour:
   recoilRecovery: 10
   magnification: 4
   zoomTime: 0.25
+  moveSpeedReduction: -0.4
   toggleAim: 0
   isAiming: 0
   hipPosition: {fileID: 873087890}
@@ -17742,8 +17731,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.016604887, y: -0.35089383, z: 0.018140607, w: 0.9360923}
+  m_LocalPosition: {x: 2.5786462, y: -49.269276, z: 2.2687225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}
@@ -17768,9 +17757,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 5
   switchSpeed: 0.75
-  weaponModel: {fileID: 0}
+  weaponModel: {fileID: 1409070503}
   type: 0
-  playerHolding: {fileID: 0}
+  playerHolding: {fileID: 607835266}
   projectileSpread: 5
   range: 500
   rayDetection:
@@ -17782,10 +17771,11 @@ MonoBehaviour:
   recoilRecovery: 10
   magnification: 0
   zoomTime: 0
+  moveSpeedReduction: -0.5
   toggleAim: 0
   isAiming: 0
-  hipPosition: {fileID: 0}
-  aimPosition: {fileID: 0}
+  hipPosition: {fileID: 758054863}
+  aimPosition: {fileID: 1778665303}
   zoomVariable: 0
   projectileCount: 9
   roundsPerMinute: 100

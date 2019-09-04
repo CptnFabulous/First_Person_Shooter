@@ -14,6 +14,8 @@ public abstract class ProjectileWeapon : Weapon
     public LayerMask rayDetection;
     Ray targetRay;
     RaycastHit targetFound;
+
+    Vector3 aimDirection;
     [HideInInspector] public Vector3 target;
     #endregion
 
@@ -33,6 +35,7 @@ public abstract class ProjectileWeapon : Weapon
     [Header("Optics")]
     public float magnification = 4;
     public float zoomTime = 0.25f;
+    [Range(-1, 0)] public float moveSpeedReduction = -0.5f;
     public bool toggleAim;
     public bool isAiming;
     public Transform hipPosition;
@@ -79,6 +82,7 @@ public abstract class ProjectileWeapon : Weapon
         //magazineCapacity = Mathf.Clamp(magazineCapacity, 0, Mathf.Infinity);
         roundsInMagazine = Mathf.Clamp(roundsInMagazine, 0, magazineCapacity);
         roundsReloaded = Mathf.Clamp(roundsReloaded, 1, magazineCapacity);
+        moveSpeedReduction = Mathf.Clamp(moveSpeedReduction, -1, 0);
 
         if (isAiming == true)
         {
@@ -119,11 +123,13 @@ public abstract class ProjectileWeapon : Weapon
         // If fire button is pressed, previous shot has finished firing, maximum burst count has not been exceeded (or no burst function is present), ammunition is present and ammo remains in magazine (or if gun does not need reloading)
         if (Input.GetButton("MouseLeft") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ammoSupply.GetStock(caliber) > 0 && ((roundsInMagazine > 0 && isReloading == false) || magazineCapacity <= 0))
         {
+            /*
             if (Input.GetButtonDown("MouseLeft"))
             {
                 aimOrigin = new Vector2(playerHolding.pc.transform.rotation.y, playerHolding.pc.head.transform.localRotation.x);
                 print(aimOrigin);
             }
+            */
             Shoot();
         }
         else if (Input.GetButtonUp("MouseLeft") && burstCount > 0)
@@ -177,16 +183,24 @@ public abstract class ProjectileWeapon : Weapon
         zoomTimer = Mathf.Clamp01(zoomTimer);
 
         // Reduces FOV to zoom in camera
-        zoomVariable = Mathf.Lerp(1, magnification, zoomTimer);
-        playerHolding.pc.playerCamera.fieldOfView = playerHolding.pc.fieldOfView / zoomVariable;
+        zoomVariable = Mathf.Lerp(1, 1 / magnification, zoomTimer);
+        playerHolding.pc.playerCamera.fieldOfView = playerHolding.pc.fieldOfView * zoomVariable;
+        //zoomVariable = Mathf.Lerp(1, magnification, zoomTimer);
+        //playerHolding.pc.playerCamera.fieldOfView = playerHolding.pc.fieldOfView / zoomVariable;
 
         // Moves weapon position via lerping. Should I change this to an animation?
         Vector3 currentWeaponPosition = Vector3.Lerp(hipPosition.position, aimPosition.position, zoomTimer);
         Quaternion currentWeaponRotation = Quaternion.Lerp(hipPosition.rotation, aimPosition.rotation, zoomTimer);
         weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
+        
+        // Reduce sensitivity
+        float newSensitivity = Mathf.Lerp(0, -1 + (1 / magnification), zoomTimer);
+        ModifyStat.ApplyEffect(playerHolding.pc.sensitivityModifier, "Aiming down sights", newSensitivity, Time.deltaTime);
 
-        // Reduce sensitivity proportionally to camera
         // Reduce movement speed
+        float newSpeed = Mathf.Lerp(0, moveSpeedReduction, zoomTimer);
+        ModifyStat.ApplyEffect(playerHolding.pc.speedModifier, "Aiming down sights", newSpeed, Time.deltaTime);
+
         // Alter accuracy if specified
     }
     #endregion
@@ -195,7 +209,8 @@ public abstract class ProjectileWeapon : Weapon
     public virtual void Shoot()
     {
         // Modifies player's aim based on accuracy stat. This Vector3 is currently unused.
-        //Vector3 aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * transform.forward;
+        Quaternion ar = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy));
+        aimDirection = ar * transform.forward;
         for (int i = 0; i < projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
         {
             LaunchProjectile();
@@ -211,14 +226,17 @@ public abstract class ProjectileWeapon : Weapon
         playerHolding.ammoSupply.Spend(caliber, ammoPerShot); // Spends appropriate ammunition type
         fireTimer = 0; // Reset fire timer to count up to next shot
         recoilToApply += recoil; // Adds recoil to total amount needed to be applied to player
+
         // Cosmetic effects are done in another derived class, for different cosmetic effects.
     }
 
     public virtual void LaunchProjectile()
     {
         targetRay.origin = transform.position;
+        targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * aimDirection;
+
         //targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
-        targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
+
         if (Physics.Raycast(targetRay, out targetFound, range, rayDetection))
         {
             target = targetFound.point;
@@ -234,12 +252,16 @@ public abstract class ProjectileWeapon : Weapon
     {
         if (recoilToApply > 0)
         {
-            // CODE MAY BE SCREWY, I DON'T KNOW THE FORMULA YET, FIX SOMEHOW
             float r = recoilToApply * recoilApplyRate * Time.deltaTime;
-            playerHolding.pc.LookAngle(new Vector2(Random.Range(-r, r), r)); // Add recoil
+            Vector2 rd = new Vector2(Random.Range(-1f, 1f), 1);
+            if (rd.magnitude > 1)
+            {
+                rd.Normalize();
+            }
+            playerHolding.pc.LookAngle(r * rd); // Add recoil
             recoilToApply -= r;
         }
-        else if (Input.GetButton("MouseLeft") == false) // Return recoil using recoil recovery float
+        else if (!Input.GetButton("MouseLeft")) // Return recoil using recoil recovery float
         {
             //print("Recovering from recoil");
         }
