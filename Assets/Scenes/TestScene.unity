@@ -10905,7 +10905,7 @@ MonoBehaviour:
   reticleRight: {fileID: 993773958}
   ammoDisplay: {fileID: 0}
   ammoCounter: {fileID: 1187673363}
-  camera: {fileID: 286389104}
+  playerCamera: {fileID: 286389104}
   fieldOfView: 60
 --- !u!114 &607835263
 MonoBehaviour:
@@ -17731,8 +17731,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: 0.016604887, y: -0.35089383, z: 0.018140607, w: 0.9360923}
-  m_LocalPosition: {x: 2.5786462, y: -49.269276, z: 2.2687225}
+  m_LocalRotation: {x: -0.044538576, y: 0.9411862, z: -0.04865773, w: -0.33138704}
+  m_LocalPosition: {x: 3.9550257, y: -62.4617, z: 3.2593746}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}

@@ -4,6 +4,15 @@ using UnityEngine;
 
 public abstract class ProjectileWeapon : Weapon
 {
+    #region Public properties
+
+    #endregion
+
+    #region Private properties
+
+    #endregion
+
+
     #region Accuracy variables
     [Header("Accuracy")]
     [Tooltip("Level of deviation in weapon accuracy from centre of reticle, in degrees.")]
@@ -83,6 +92,7 @@ public abstract class ProjectileWeapon : Weapon
         roundsInMagazine = Mathf.Clamp(roundsInMagazine, 0, magazineCapacity);
         roundsReloaded = Mathf.Clamp(roundsReloaded, 1, magazineCapacity);
         moveSpeedReduction = Mathf.Clamp(moveSpeedReduction, -1, 0);
+        ammoPerShot = Mathf.Clamp(ammoPerShot, 1, magazineCapacity);
 
         if (isAiming == true)
         {

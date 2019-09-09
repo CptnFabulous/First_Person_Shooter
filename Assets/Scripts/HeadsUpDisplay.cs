@@ -30,13 +30,12 @@ public class HeadsUpDisplay : MonoBehaviour
     public Image reticleDown;
     public Image reticleLeft;
     public Image reticleRight;
-    Vector2 reticlePositions;
 
     public GameObject ammoDisplay;
     public Text ammoCounter;
 
     [Header("Camera")]
-    public Camera camera;
+    public Camera playerCamera;
     public float fieldOfView = 60;
 
 
@@ -126,14 +125,28 @@ public class HeadsUpDisplay : MonoBehaviour
     void ProjectileHUD()
     {
         ProjectileWeapon epw = weapons.equippedWeapon.GetComponent<ProjectileWeapon>();
-
+        
         //reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
         float a = ModifyStat.NewFloat(weapons.standingAccuracy, weapons.accuracyModifier);
-        reticlePositions = new Vector2((a + epw.projectileSpread) * Screen.height / camera.fieldOfView, (a + epw.projectileSpread) * Screen.height / camera.fieldOfView);
+        /*
+        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
+        reticleUp.rectTransform.anchoredPosition = transform.up * rp;
+        reticleDown.rectTransform.anchoredPosition = -transform.up * rp;
+        reticleLeft.rectTransform.anchoredPosition = -transform.right * rp;
+        reticleRight.rectTransform.anchoredPosition = transform.right * rp;
+        
+        Vector2 reticlePositions = new Vector2((a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView, (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView);
         reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
         reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
         reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);
         reticleRight.rectTransform.anchoredPosition = new Vector3(reticlePositions.x, 0, 0);
+        */
+
+        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
+        reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
+        reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
+        reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
+        reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
 
 
         if (epw.ammoPerShot <= 0 && epw.magazineCapacity <= 0) // If infinite ammunition and does not require reloading

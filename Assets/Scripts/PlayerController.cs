@@ -7,60 +7,58 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-
-    [Header("References")]
-    Rigidbody rb;
-    CapsuleCollider cc;
-    Ray isGrounded;
-    RaycastHit floor;
-
+    #region Public variables
     [Header("Camera control")]
+    public GameObject head;
     public Camera playerCamera;
     [Range(0, 180)]
     public float fieldOfView = 60;
-    public GameObject head;
-    [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it.")]
-    [Range(-100, 100)]
+    [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it."), Range(-100, 100)]
     public float sensitivityX = 50;
-    [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it.")]
-    [Range(-100, 100)]
+    [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it."), Range(-100, 100)]
     public float sensitivityY = 50;
-    [Tooltip("Minimum angle the player can look down.")]
-    [Range(-90, 90)]
+    [Tooltip("Minimum angle the player can look down."), Range(-90, 90)]
     public float minLookAngle = -90;
-    [Tooltip("Maximum angle the player can look up.")]
-    [Range(-90, 90)]
+    [Tooltip("Maximum angle the player can look up."), Range(-90, 90)]
     public float maxLookAngle = 90;
-    public List<StatModifier> sensitivityModifier = new List<StatModifier>();
-    Vector2 lookVector;
 
     [Header("Standard Movement")]
     [Tooltip("The player's standard movement speed.")]
     public float movementSpeed = 10;
-    public List<StatModifier> speedModifier = new List<StatModifier>();
     [Range(-1, 0)]
     public float crouchSpeedMultiplier = -0.5f;
-
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
-
-    Vector2 moveInput;
-    Vector3 movementValue;
-    bool willJump;
-    float jumpTimer = 9999999;
 
     [Header("Crouching")]
     public float standHeight = 2;
     public float crouchHeight = 1;
     public float crouchTime = 0.25f;
-    [Range(-1, 1)]
+    [Range(-0.5f, 0.5f)]
     public float relativeHeadHeight = 0.375f;
     public bool toggleCrouch;
     public bool isCrouching;
+    #endregion
+
+    #region Private variables
+    Rigidbody rb;
+    CapsuleCollider cc;
+    Ray isGrounded;
+    RaycastHit floor;
+
+    public List<StatModifier> sensitivityModifier = new List<StatModifier>();
+    Vector2 lookVector;
+
+    public List<StatModifier> speedModifier = new List<StatModifier>();
+    Vector2 moveInput;
+    Vector3 movementValue;
+    bool willJump;
+    float jumpTimer = 9999999;
     float crouchTimer;
+    #endregion
 
     #region Validate variables
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     void Reset() { OnValidate(); }
     void OnValidate()
     {
