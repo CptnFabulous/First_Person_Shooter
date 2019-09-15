@@ -9791,7 +9791,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -10604,7 +10604,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -10748,6 +10748,8 @@ GameObject:
   - component: {fileID: 607835258}
   - component: {fileID: 607835257}
   - component: {fileID: 607835261}
+  - component: {fileID: 607835268}
+  - component: {fileID: 607835267}
   - component: {fileID: 607835256}
   - component: {fileID: 607835262}
   - component: {fileID: 607835266}
@@ -10773,9 +10775,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52afc32d01784c149a9adc71849819b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  head: {fileID: 804254422}
   playerCamera: {fileID: 286389104}
   fieldOfView: 60
-  head: {fileID: 804254422}
   sensitivityX: 60
   sensitivityY: 60
   minLookAngle: -90
@@ -10784,12 +10786,12 @@ MonoBehaviour:
   crouchSpeedMultiplier: -0.5
   forceJump: 7
   jumpDelay: 0.1
+  groundedRayLength: 0
   standHeight: 2
   crouchHeight: 1
   crouchTime: 0.25
   relativeHeadHeight: 0.375
   toggleCrouch: 1
-  isCrouching: 0
 --- !u!23 &607835257
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -10893,12 +10895,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hud: {fileID: 1642465027}
+  ph: {fileID: 0}
   weaponGraphic: {fileID: 0}
   healthDisplay: {fileID: 1655004858}
   healthCounter: {fileID: 513628737}
   normalColour: {r: 1, g: 1, b: 1, a: 1}
   criticalColour: {r: 1, g: 0, b: 0, a: 1}
-  reticle: {fileID: 0}
+  reticle: {fileID: 1971849076}
   reticleUp: {fileID: 22425462}
   reticleDown: {fileID: 1185717598}
   reticleLeft: {fileID: 2122205433}
@@ -10919,7 +10922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a47989a16b33f4c80ae7e0183faafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventory:
+  inventory:
   - refName: Pistol
     stockMax: 90
     stockCurrent: 90
@@ -10939,11 +10942,8 @@ MonoBehaviour:
     stockMax: 10
     stockCurrent: 10
   - refName: Petrol
-    stockMax: 200
-    stockCurrent: 200
-  - refName: Infinite
-    stockMax: 0
-    stockCurrent: 0
+    stockMax: 500
+    stockCurrent: 500
 --- !u!114 &607835264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10959,6 +10959,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   criticalPercentage: 20
+  ph: {fileID: 0}
 --- !u!114 &607835265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10987,15 +10988,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b94ef1e71d93d44383bdb04c882ca8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pc: {fileID: 0}
-  ammoSupply: {fileID: 0}
+  ph: {fileID: 0}
   standingAccuracy: 1
   runMultiplier: 1
   crouchMultiplier: -0.5
   equippedWeapon: {fileID: 1001392278}
+  equippedWeapons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   slots:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &607835267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607835255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060157b567ee8964dabe61a459536a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  h: {fileID: 0}
+  pc: {fileID: 0}
+  wh: {fileID: 0}
+  a: {fileID: 0}
+  hud: {fileID: 0}
+  pm: {fileID: 0}
+--- !u!114 &607835268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607835255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db0356ec63f7bc144911aec9e1157b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenu: {fileID: 1642552595}
+  headsUpDisplay: {fileID: 1642465028}
+  isPaused: 1
+  ph: {fileID: 0}
 --- !u!1 &622503049
 GameObject:
   m_ObjectHideFlags: 0
@@ -11244,7 +11285,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -11693,7 +11734,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -11757,6 +11798,144 @@ PrefabInstance:
       objectReference: {fileID: 607835255}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b641351761705904c90cba50ba53e1ca, type: 3}
+--- !u!1 &979968723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979968729}
+  - component: {fileID: 979968728}
+  - component: {fileID: 979968727}
+  - component: {fileID: 979968726}
+  - component: {fileID: 979968725}
+  - component: {fileID: 979968724}
+  - component: {fileID: 979968730}
+  m_Layer: 0
+  m_Name: AmmoPickup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!54 &979968724
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &979968725
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.25
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &979968726
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &979968727
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: d08fc3a69ce1db64d9e8e1c8bb5ec86e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &979968728
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &979968729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.75, y: 12.27, z: 18.7}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &979968730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979968723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5bdd622c1e89f74b91473d2c45727d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 30
+  consumeAll: 1
+  ammoType: 4
 --- !u!1 &986639042
 GameObject:
   m_ObjectHideFlags: 0
@@ -16610,7 +16789,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 997892571}
-  - component: {fileID: 997892572}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -16632,21 +16810,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &997892572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997892570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db0356ec63f7bc144911aec9e1157b14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1642552595}
-  headsUpDisplay: {fileID: 1642465028}
-  startPaused: 0
 --- !u!1 &1001392272
 GameObject:
   m_ObjectHideFlags: 0
@@ -16704,7 +16867,6 @@ MonoBehaviour:
   rayDetection:
     serializedVersion: 2
     m_Bits: 55
-  target: {x: 0, y: 0, z: 0}
   recoil: 3
   recoilApplyRate: 12
   recoilRecovery: 10
@@ -16713,9 +16875,6 @@ MonoBehaviour:
   moveSpeedReduction: -0.4
   toggleAim: 0
   isAiming: 0
-  hipPosition: {fileID: 873087890}
-  aimPosition: {fileID: 1590925709}
-  zoomVariable: 0
   projectileCount: 1
   roundsPerMinute: 700
   burstCount: 0
@@ -16725,7 +16884,11 @@ MonoBehaviour:
   roundsInMagazine: 30
   reloadTime: 2
   roundsReloaded: 30
-  criticalModifier: 4
+  target: {x: 0, y: 0, z: 0}
+  hipPosition: {fileID: 873087890}
+  aimPosition: {fileID: 1590925709}
+  zoomVariable: 0
+  criticalModifier: 3
   projectile: {fileID: 5228406964168825120, guid: c3731547c5ee6374e8e4338e963eaeec,
     type: 3}
   weaponMuzzle: {fileID: 337938846}
@@ -16750,7 +16913,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -17113,7 +17276,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -17192,7 +17355,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -17731,8 +17894,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: -0.044538576, y: 0.9411862, z: -0.04865773, w: -0.33138704}
-  m_LocalPosition: {x: 3.9550257, y: -62.4617, z: 3.2593746}
+  m_LocalRotation: {x: -0.030364435, y: 0.6416586, z: -0.033172637, w: -0.7656709}
+  m_LocalPosition: {x: 5.7846, y: -109.64677, z: 5.339306}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}
@@ -17765,7 +17928,6 @@ MonoBehaviour:
   rayDetection:
     serializedVersion: 2
     m_Bits: 55
-  target: {x: 0, y: 0, z: 0}
   recoil: 10
   recoilApplyRate: 10
   recoilRecovery: 10
@@ -17774,9 +17936,6 @@ MonoBehaviour:
   moveSpeedReduction: -0.5
   toggleAim: 0
   isAiming: 0
-  hipPosition: {fileID: 758054863}
-  aimPosition: {fileID: 1778665303}
-  zoomVariable: 0
   projectileCount: 9
   roundsPerMinute: 100
   burstCount: 0
@@ -17786,6 +17945,10 @@ MonoBehaviour:
   roundsInMagazine: 6
   reloadTime: 1.5
   roundsReloaded: 6
+  target: {x: 0, y: 0, z: 0}
+  hipPosition: {fileID: 758054863}
+  aimPosition: {fileID: 1778665303}
+  zoomVariable: 0
   criticalModifier: 2
   projectile: {fileID: 5228406964168825120, guid: c3731547c5ee6374e8e4338e963eaeec,
     type: 3}
@@ -22884,7 +23047,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
@@ -28199,6 +28362,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1971849076 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3308832630461053585, guid: 8047e6a2aaf2129428dfe589038be385,
+    type: 3}
+  m_PrefabInstance: {fileID: 3308832631992261538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1973675540
 GameObject:
   m_ObjectHideFlags: 0
@@ -33318,7 +33487,7 @@ PrefabInstance:
     - target: {fileID: 2449708058564114971, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2449708058564114968, guid: b641351761705904c90cba50ba53e1ca,
         type: 3}

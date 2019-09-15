@@ -10,10 +10,8 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("References")]
     
     public CanvasScaler hud;
-    WeaponHandler weapons;
-    PlayerHealth health;
-    
-    
+
+    [HideInInspector] public PlayerHandler ph;
 
 
     public Image weaponGraphic;
@@ -59,13 +57,16 @@ public class HeadsUpDisplay : MonoBehaviour
     int heartRowNumber;
     */
 
+    private void Awake()
+    {
+        ph = GetComponent<PlayerHandler>();
+    }
 
     // Use this for initialization
     void Start()
     {
         
-        health = GetComponent<PlayerHealth>();
-        weapons = GetComponent<WeaponHandler>();
+        
 
         /*
         prs = GetComponent<PlayerResources>();
@@ -91,7 +92,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
         HealthHUD();
 
-        WeaponType equippedType = weapons.equippedWeapon.type; // Finds type of equipped weapon
+        WeaponType equippedType = ph.wh.equippedWeapon.type; // Finds type of equipped weapon
         switch(equippedType) // Checks type
         {
             case WeaponType.projectile:// If projectile weapon
@@ -109,8 +110,8 @@ public class HeadsUpDisplay : MonoBehaviour
 
     void HealthHUD()
     {
-        healthCounter.text = health.currentHealth + "/" + health.maxHealth;
-        if (health.currentHealth <= health.maxHealth / 100 * health.criticalPercentage)
+        healthCounter.text = ph.h.currentHealth + "/" + ph.h.maxHealth;
+        if (ph.h.currentHealth <= ph.h.maxHealth / 100 * ph.h.criticalPercentage)
         {
             healthCounter.color = criticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
@@ -124,31 +125,51 @@ public class HeadsUpDisplay : MonoBehaviour
     #region Weapon HUDs
     void ProjectileHUD()
     {
-        ProjectileWeapon epw = weapons.equippedWeapon.GetComponent<ProjectileWeapon>();
+        ProjectileWeapon epw = ph.wh.equippedWeapon.GetComponent<ProjectileWeapon>();
         
         //reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
-        float a = ModifyStat.NewFloat(weapons.standingAccuracy, weapons.accuracyModifier);
-        /*
-        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
-        reticleUp.rectTransform.anchoredPosition = transform.up * rp;
-        reticleDown.rectTransform.anchoredPosition = -transform.up * rp;
-        reticleLeft.rectTransform.anchoredPosition = -transform.right * rp;
-        reticleRight.rectTransform.anchoredPosition = transform.right * rp;
+        float a = ModifyStat.NewFloat(ph.wh.standingAccuracy, ph.wh.accuracyModifier);
         
-        Vector2 reticlePositions = new Vector2((a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView, (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView);
-        reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticlePositions.y, 0);
-        reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticlePositions.y, 0);
-        reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticlePositions.x, 0, 0);
-        reticleRight.rectTransform.anchoredPosition = new Vector3(reticlePositions.x, 0, 0);
-        */
-
         float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
         reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
         reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
         reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
         reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
 
+        /*
+        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
+        reticleUp.rectTransform.anchoredPosition = reticle.transform.up * rp;
+        reticleDown.rectTransform.anchoredPosition = -reticle.transform.up * rp;
+        reticleLeft.rectTransform.anchoredPosition = -reticle.transform.right * rp;
+        reticleRight.rectTransform.anchoredPosition = reticle.transform.right * rp;
+        */
 
+        if (epw.caliber == AmmunitionType.None)
+        {
+            if (epw.magazineCapacity <= 0)
+            {
+                ammoCounter.text = "INFINITE";
+            }
+            else
+            {
+                ammoCounter.text = epw.roundsInMagazine + "/INF";
+            }
+        }
+        else
+        {
+            if (epw.magazineCapacity <= 0)
+            {
+                ammoCounter.text = ph.a.GetStock(epw.caliber).ToString();
+            }
+            else
+            {
+                ammoCounter.text = epw.roundsInMagazine + "/" + (ph.a.GetStock(epw.caliber) - epw.roundsInMagazine);
+            }
+        }
+
+        
+
+        /*
         if (epw.ammoPerShot <= 0 && epw.magazineCapacity <= 0) // If infinite ammunition and does not require reloading
         {
             ammoCounter.text = "INFINITE";
@@ -163,9 +184,9 @@ public class HeadsUpDisplay : MonoBehaviour
         }
         else // if normal weapon, i.e. consumes ammunition and must be reloaded
         {
-            ammoCounter.text = epw.roundsInMagazine + "/" + (weapons.ammoSupply.GetStock(epw.caliber) - epw.roundsInMagazine);
+            
         }
-
+        */
 
         
     }

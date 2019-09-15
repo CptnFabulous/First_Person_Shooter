@@ -22,13 +22,16 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Maximum angle the player can look up."), Range(-90, 90)]
     public float maxLookAngle = 90;
 
-    [Header("Standard Movement")]
+    [Header("Movement")]
     [Tooltip("The player's standard movement speed.")]
     public float movementSpeed = 10;
     [Range(-1, 0)]
     public float crouchSpeedMultiplier = -0.5f;
+
+    [Header("Jumping")]
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
+    public float groundedRayLength = 0.01f;
 
     [Header("Crouching")]
     public float standHeight = 2;
@@ -37,12 +40,12 @@ public class PlayerController : MonoBehaviour
     [Range(-0.5f, 0.5f)]
     public float relativeHeadHeight = 0.375f;
     public bool toggleCrouch;
-    public bool isCrouching;
     #endregion
 
     #region Private variables
     Rigidbody rb;
     CapsuleCollider cc;
+
     Ray isGrounded;
     RaycastHit floor;
 
@@ -52,9 +55,12 @@ public class PlayerController : MonoBehaviour
     public List<StatModifier> speedModifier = new List<StatModifier>();
     Vector2 moveInput;
     Vector3 movementValue;
+
     bool willJump;
     float jumpTimer = 9999999;
+
     float crouchTimer;
+    bool isCrouching;
     #endregion
 
     #region Validate variables
@@ -88,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded.origin = transform.position; // Sets the origin of isGrounded ray to the player's body
         isGrounded.direction = Vector3.down; // Sets isGrounded direction to cast directly down under the player's 'feet'
-        if (Physics.SphereCast(isGrounded, cc.radius, cc.height / 2 + 0.01f)) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
+        if (Physics.SphereCast(isGrounded, cc.radius, cc.height / 2 + groundedRayLength)) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
         {
             return true;
         }

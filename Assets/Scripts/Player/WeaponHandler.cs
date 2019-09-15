@@ -6,10 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof (AmmunitionInventory))]
 public class WeaponHandler : MonoBehaviour
 {
-    [HideInInspector]
-    public PlayerController pc;
-    [HideInInspector]
-    public AmmunitionInventory ammoSupply;
+    
+    [HideInInspector] public PlayerHandler ph;
 
     [Header("Stats")]
     [Range(0, 180)]
@@ -22,24 +20,29 @@ public class WeaponHandler : MonoBehaviour
 
     [Header("Inventory")]
     public Weapon equippedWeapon;
+    public WeaponData[] equippedWeapons;
     public Weapon[] slots;
-    
+
+    private void Awake()
+    {
+        ph = GetComponent<PlayerHandler>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        pc = GetComponent<PlayerController>();
-        ammoSupply = GetComponent<AmmunitionInventory>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(pc.isCrouching)
+        /*
+        if (pc.isCrouching)
         {
-            print("Player is crouching am");
             ModifyStat.ApplyEffect(accuracyModifier, "Crouching", crouchMultiplier, Time.deltaTime);
         }
-
+        */
 
 
 
@@ -51,6 +54,11 @@ public class WeaponHandler : MonoBehaviour
         {
 
         }
+    }
+
+    void SwitchWeapon( WeaponData wd)
+    {
+
     }
 
     private void LateUpdate()

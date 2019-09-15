@@ -4,25 +4,30 @@ using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-
     public Canvas pauseMenu;
     public Canvas headsUpDisplay;
 
-    public bool startPaused;
+    public bool isPaused;
 
-    bool isPaused;
+
+
+    [HideInInspector] public PlayerHandler ph;
+
+    private void Awake()
+    {
+        ph = GetComponent<PlayerHandler>();
+    }
 
     // Use this for initialization
     void Start()
     {
-
-        if (startPaused)
+        if (isPaused)
         {
-            PauseGame();
+            UnpauseGame();
         }
         else
         {
-            UnpauseGame();
+            PauseGame();
         }
 
     }
@@ -40,7 +45,6 @@ public class PauseMenu : MonoBehaviour
             {
                 PauseGame();
             }
-
         }
     }
 
@@ -51,6 +55,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.enabled = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        ph.isActive = false;
         isPaused = true;
     }
 
@@ -61,6 +66,7 @@ public class PauseMenu : MonoBehaviour
         headsUpDisplay.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        ph.isActive = true;
         isPaused = false;
     }
 }
