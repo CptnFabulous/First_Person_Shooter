@@ -167,28 +167,8 @@ public class HeadsUpDisplay : MonoBehaviour
             }
         }
 
-        
 
-        /*
-        if (epw.ammoPerShot <= 0 && epw.magazineCapacity <= 0) // If infinite ammunition and does not require reloading
-        {
-            ammoCounter.text = "INFINITE";
-        }
-        else if (epw.ammoPerShot <= 0) // If empties magazine but can be reloaded infinitely
-        {
-            ammoCounter.text = epw.roundsInMagazine + "/INF";
-        }
-        else if (epw.magazineCapacity <= 0) // If consumes ammunition but does not require reloading
-        {
-            ammoCounter.text = weapons.ammoSupply.GetStock(epw.caliber).ToString();
-        }
-        else // if normal weapon, i.e. consumes ammunition and must be reloaded
-        {
-            
-        }
-        */
 
-        
     }
     void MeleeHUD()
     {
