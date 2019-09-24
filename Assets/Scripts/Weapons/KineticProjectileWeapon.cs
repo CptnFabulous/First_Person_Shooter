@@ -55,6 +55,8 @@ public class KineticProjectileWeapon : ProjectileWeapon
     {
         base.LaunchProjectile();
 
+
+        
         // Instantiate object with RaycastBullet for conventional kinetic projectiles e.g. bullets.
         GameObject bullet = Instantiate(projectile.gameObject, weaponMuzzle.transform.position, Quaternion.LookRotation(target - weaponMuzzle.transform.position, Vector3.up));
         projectile.diameter = projectileDiameter;
@@ -63,5 +65,6 @@ public class KineticProjectileWeapon : ProjectileWeapon
         projectile.damage = damage;
         projectile.criticalModifier = criticalModifier;
         projectile.rayDetection = rayDetection;
+        
     }
 }

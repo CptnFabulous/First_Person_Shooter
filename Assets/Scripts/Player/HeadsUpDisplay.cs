@@ -110,8 +110,8 @@ public class HeadsUpDisplay : MonoBehaviour
 
     void HealthHUD()
     {
-        healthCounter.text = ph.h.currentHealth + "/" + ph.h.maxHealth;
-        if (ph.h.currentHealth <= ph.h.maxHealth / 100 * ph.h.criticalPercentage)
+        healthCounter.text = ph.h.health.current + "/" + ph.h.health.max;
+        if (ph.h.health.IsCritical())
         {
             healthCounter.color = criticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
@@ -128,7 +128,7 @@ public class HeadsUpDisplay : MonoBehaviour
         ProjectileWeapon epw = ph.wh.equippedWeapon.GetComponent<ProjectileWeapon>();
         
         //reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
-        float a = ModifyStat.NewFloat(ph.wh.standingAccuracy, ph.wh.accuracyModifier);
+        float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
         
         float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
         reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;

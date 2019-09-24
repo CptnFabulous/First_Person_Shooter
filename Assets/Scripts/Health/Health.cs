@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public int maxHealth = 100;
-    public int currentHealth = 100;
-    [Tooltip("The point where the player's health is considered critical. Percentage or HP value?")]
-    public int criticalPercentage = 20;
+    public Resource health = new Resource { max = 100, current = 100, critical = 20 };
     int prevHealth;
 
     DamageType lastDamageSource;
@@ -17,14 +14,14 @@ public class Health : MonoBehaviour
     void OnValidate()
     {
         //magazineCapacity = Mathf.Clamp(magazineCapacity, 0, Mathf.Infinity);
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        health.current = Mathf.Clamp(health.current, 0, health.max);
     }
 #endif
 
     // Start is called before the first frame update
     void Start()
     {
-        prevHealth = currentHealth;
+        prevHealth = health.current;
     }
 
     // Update is called once per frame
@@ -32,16 +29,16 @@ public class Health : MonoBehaviour
     {
 
 
-        if (prevHealth != currentHealth) // if health has changed
+        if (prevHealth != health.current) // if health has changed
         {
             HealthChanged();
         }
-        prevHealth = currentHealth;
+        prevHealth = health.current;
     }
 
     public virtual void HealthChanged() // Do stuff here when health changes
     {
-        if (currentHealth <= 0)
+        if (health.current <= 0)
         {
             Die(lastDamageSource);
         }
@@ -51,7 +48,7 @@ public class Health : MonoBehaviour
 
     public virtual void TakeDamage(int damageAmount, DamageType damageSource)
     {
-        currentHealth -= damageAmount;
+        health.current -= damageAmount;
         lastDamageSource = damageSource;
     }
 

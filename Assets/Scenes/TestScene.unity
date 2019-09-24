@@ -10321,7 +10321,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549373982}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 802e55925eadf96478d50f17d9cf6c85, type: 3}
   m_Name: 
@@ -10415,9 +10415,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8bc1f2cb47aa174ba5d14ffb42763c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 100
-  criticalPercentage: 20
+  health:
+    refName: 
+    max: 100
+    current: 100
+    critical: 20
 --- !u!1 &561821046
 GameObject:
   m_ObjectHideFlags: 0
@@ -10924,26 +10926,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory:
   - refName: Pistol
-    stockMax: 90
-    stockCurrent: 90
+    max: 90
+    current: 90
+    critical: 0
   - refName: Buckshot
-    stockMax: 18
-    stockCurrent: 18
+    max: 18
+    current: 18
+    critical: 0
   - refName: Slugs
-    stockMax: 12
-    stockCurrent: 12
+    max: 12
+    current: 12
+    critical: 0
   - refName: DragonsBreath
-    stockMax: 6
-    stockCurrent: 6
+    max: 6
+    current: 6
+    critical: 0
   - refName: Rifle
-    stockMax: 120
-    stockCurrent: 120
+    max: 120
+    current: 120
+    critical: 0
   - refName: Grenade
-    stockMax: 10
-    stockCurrent: 10
+    max: 10
+    current: 10
+    critical: 0
   - refName: Petrol
-    stockMax: 500
-    stockCurrent: 500
+    max: 500
+    current: 500
+    critical: 0
 --- !u!114 &607835264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10956,9 +10965,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f883defa86230488f4fa951ddc4d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 100
-  criticalPercentage: 20
+  health:
+    refName: 
+    max: 100
+    current: 100
+    critical: 20
   ph: {fileID: 0}
 --- !u!114 &607835265
 MonoBehaviour:
@@ -17894,8 +17905,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: -0.030364435, y: 0.6416586, z: -0.033172637, w: -0.7656709}
-  m_LocalPosition: {x: 5.7846, y: -109.64677, z: 5.339306}
+  m_LocalRotation: {x: 0.03644872, y: -0.77023154, z: 0.039819583, w: -0.6354756}
+  m_LocalPosition: {x: 5.8538456, y: -115.164566, z: 6.666235}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}

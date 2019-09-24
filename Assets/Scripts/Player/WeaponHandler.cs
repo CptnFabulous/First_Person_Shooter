@@ -12,7 +12,7 @@ public class WeaponHandler : MonoBehaviour
     [Header("Stats")]
     [Range(0, 180)]
     public float standingAccuracy;
-    public List<StatModifier> accuracyModifier = new List<StatModifier>();
+    public StatModifier accuracyModifier = new StatModifier();
     public float runMultiplier;
     public float crouchMultiplier;
     float modifiedAccuracy;
@@ -40,7 +40,7 @@ public class WeaponHandler : MonoBehaviour
         /*
         if (pc.isCrouching)
         {
-            ModifyStat.ApplyEffect(accuracyModifier, "Crouching", crouchMultiplier, Time.deltaTime);
+            accuracyModifier.ApplyEffect("Crouching", crouchMultiplier, Time.deltaTime);
         }
         */
 
@@ -63,6 +63,6 @@ public class WeaponHandler : MonoBehaviour
 
     private void LateUpdate()
     {
-        ModifyStat.CheckStatDuration(accuracyModifier);
+        accuracyModifier.CheckStatDuration();
     }
 }

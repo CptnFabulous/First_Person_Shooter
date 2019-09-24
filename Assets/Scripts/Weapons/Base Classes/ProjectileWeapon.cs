@@ -200,11 +200,12 @@ public abstract class ProjectileWeapon : Weapon
         
         // Reduce sensitivity
         float newSensitivity = Mathf.Lerp(0, -1 + (1 / magnification), zoomTimer);
-        ModifyStat.ApplyEffect(playerHolding.ph.pc.sensitivityModifier, "Aiming down sights", newSensitivity, Time.deltaTime);
+        //ModifyStat.ApplyEffect(playerHolding.ph.pc.sensitivityModifier, "Aiming down sights", newSensitivity, Time.deltaTime);
+        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
 
         // Reduce movement speed
         float newSpeed = Mathf.Lerp(0, moveSpeedReduction, zoomTimer);
-        ModifyStat.ApplyEffect(playerHolding.ph.pc.speedModifier, "Aiming down sights", newSpeed, Time.deltaTime);
+        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
 
         // Alter accuracy if specified
     }
@@ -312,5 +313,4 @@ public abstract class ProjectileWeapon : Weapon
         }
     }
     #endregion
-
 }

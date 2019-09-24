@@ -49,10 +49,10 @@ public class PlayerController : MonoBehaviour
     Ray isGrounded;
     RaycastHit floor;
 
-    public List<StatModifier> sensitivityModifier = new List<StatModifier>();
+    public StatModifier sensitivityModifier = new StatModifier();
     Vector2 lookVector;
 
-    public List<StatModifier> speedModifier = new List<StatModifier>();
+    public StatModifier speedModifier = new StatModifier();
     Vector2 moveInput;
     Vector3 movementValue;
 
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         #region Camera
-        LookAngle(new Vector2(Input.GetAxis("MouseX") * ModifyStat.NewFloat(sensitivityX, sensitivityModifier) * Time.deltaTime, Input.GetAxis("MouseY") * ModifyStat.NewFloat(sensitivityY, sensitivityModifier) * Time.deltaTime));
+        LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityModifier.NewFloat(sensitivityX) * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityModifier.NewFloat(sensitivityY) * Time.deltaTime));
         #endregion
 
         #region Crouching
@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
         {
             moveInput.Normalize(); // Prevent movement input from going past 1. This ensures that players cannot go faster than the normal movement speed.
         }
-        float speed = Mathf.Clamp(ModifyStat.NewFloat(movementSpeed, speedModifier), 0, Mathf.Infinity);
+        float speed = Mathf.Clamp(speedModifier.NewFloat(movementSpeed), 0, Mathf.Infinity);
         movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed);
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
         #endregion
@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
         cc.height = Mathf.Lerp(standHeight, crouchHeight, crouchTimer);
 
         float sm = Mathf.Lerp(0, crouchSpeedMultiplier, crouchTimer); // Lerps crouch speed multiplier between none and the normal amount
-        ModifyStat.ApplyEffect(speedModifier, "Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
+        speedModifier.ApplyEffect("Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
 
         head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, crouchTimer), 0);
     }
@@ -224,7 +224,7 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        ModifyStat.CheckStatDuration(speedModifier);
-        ModifyStat.CheckStatDuration(sensitivityModifier);
+        speedModifier.CheckStatDuration();
+        sensitivityModifier.CheckStatDuration();
     }
 }
