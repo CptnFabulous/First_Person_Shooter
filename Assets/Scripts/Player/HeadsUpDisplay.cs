@@ -92,6 +92,41 @@ public class HeadsUpDisplay : MonoBehaviour
 
         HealthHUD();
 
+        RangedWeapon rw = ph.wh.equippedGun;
+
+        float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
+        float rp = (a + rw.accuracy.projectileSpread) * Screen.height / playerCamera.fieldOfView;
+        reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
+        reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
+        reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
+        reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
+
+        if (rw.ammunition == null)
+        {
+            if (rw.magazine == null)
+            {
+                ammoCounter.text = "INFINITE";
+            }
+            else
+            {
+                ammoCounter.text = rw.magazine.magazine.current + "/INF";
+            }
+        }
+        else
+        {
+            if (rw.magazine == null)
+            {
+                ammoCounter.text = ph.a.GetStock(rw.ammunition.ammoType).ToString();
+            }
+            else
+            {
+                ammoCounter.text = rw.magazine.magazine.current + "/" + (ph.a.GetStock(rw.ammunition.ammoType) - rw.magazine.magazine.current);
+            }
+        }
+
+
+
+        /*
         WeaponType equippedType = ph.wh.equippedWeapon.type; // Finds type of equipped weapon
         switch(equippedType) // Checks type
         {
@@ -105,6 +140,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 ThrowableHUD(); // Display appropriate HUD
                 break;
         }
+        */
 
     }
 

@@ -10,6 +10,7 @@ public class WeaponHandler : MonoBehaviour
     [HideInInspector] public PlayerHandler ph;
 
     [Header("Stats")]
+    public bool toggleAim;
     [Range(0, 180)]
     public float standingAccuracy;
     public StatModifier accuracyModifier = new StatModifier();
@@ -20,8 +21,9 @@ public class WeaponHandler : MonoBehaviour
 
     [Header("Inventory")]
     public Weapon equippedWeapon;
-    public WeaponData[] equippedWeapons;
-    public Weapon[] slots;
+
+
+    public RangedWeapon equippedGun;
 
     private void Awake()
     {

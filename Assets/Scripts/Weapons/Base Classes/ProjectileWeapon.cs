@@ -25,8 +25,8 @@ public abstract class ProjectileWeapon : Weapon
     public float magnification = 4;
     public float zoomTime = 0.25f;
     [Range(-1, 0)] public float moveSpeedReduction = -0.5f;
-    public bool toggleAim;
-    public bool isAiming;
+    public Transform hipPosition;
+    public Transform aimPosition;
 
     [Header("Fire Rate")]
     [Tooltip("Amount of projectiles launched per shot. Set to 1 for regular bullet-shooting weapons, increase for weapons such as shotguns.")]
@@ -53,7 +53,6 @@ public abstract class ProjectileWeapon : Weapon
 
     #region Private variables
     // Firing weapon
-    Ray targetRay;
     RaycastHit targetFound;
     Vector3 aimDirection;
     [HideInInspector] public Vector3 target;
@@ -63,15 +62,16 @@ public abstract class ProjectileWeapon : Weapon
     Vector2 aimOrigin;
     Vector2 aimCurrent;
 
+
     // Aiming down sights
-    public Transform hipPosition;
-    public Transform aimPosition;
+    public bool toggleAim;
+    public bool isAiming;
     [HideInInspector]
     public float zoomVariable;
     float zoomTimer;
 
     // Fire rate
-    float fireTimer = 9999999999;
+    float fireTimer = float.MaxValue;
     float shotsInBurst;
 
     // Reloading weapon
@@ -126,10 +126,14 @@ public abstract class ProjectileWeapon : Weapon
         #region Fire Controls
         fireTimer += Time.deltaTime; // Counts up timer for next shot.
         // If fire button is pressed, previous shot has finished firing, maximum burst count has not been exceeded (or no burst function is present), ammunition is present and ammo remains in magazine (or if gun does not need reloading)
-        if (playerHolding.ph.isActive == true && Input.GetButton("MouseLeft") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ph.a.GetStock(caliber) >= ammoPerShot && ((roundsInMagazine >= ammoPerShot && isReloading == false) || magazineCapacity <= 0))
+
+
+        
+
+        if (playerHolding.ph.isActive == true && Input.GetButton("Fire") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ph.a.GetStock(caliber) >= ammoPerShot && ((roundsInMagazine >= ammoPerShot && isReloading == false) || magazineCapacity <= 0))
         {
             /*
-            if (Input.GetButtonDown("MouseLeft"))
+            if (Input.GetButtonDown("Fire"))
             {
                 aimOrigin = new Vector2(playerHolding.pc.transform.rotation.y, playerHolding.pc.head.transform.localRotation.x);
                 print(aimOrigin);
@@ -137,7 +141,7 @@ public abstract class ProjectileWeapon : Weapon
             */
             Shoot();
         }
-        else if (Input.GetButtonUp("MouseLeft") && burstCount > 0)
+        else if (Input.GetButtonUp("Fire") && burstCount > 0)
         {
             shotsInBurst = 0;
         }
@@ -238,8 +242,8 @@ public abstract class ProjectileWeapon : Weapon
 
     public virtual void LaunchProjectile()
     {
-        targetRay.origin = transform.position;
-        targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * aimDirection;
+        target = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * aimDirection;
+        Ray targetRay = new Ray(transform.position, target);
 
         //targetRay.direction = Quaternion.Euler(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread)) * transform.forward;
 
@@ -267,7 +271,7 @@ public abstract class ProjectileWeapon : Weapon
             playerHolding.ph.pc.LookAngle(r * rd); // Add recoil
             recoilToApply -= r;
         }
-        else if (!Input.GetButton("MouseLeft")) // Return recoil using recoil recovery float
+        else if (!Input.GetButton("Fire")) // Return recoil using recoil recovery float
         {
             //print("Recovering from recoil");
         }
@@ -305,7 +309,7 @@ public abstract class ProjectileWeapon : Weapon
         }
 
         // If magazine is full, there is no more ammunition, or reload is interrupted by another action
-        if (roundsInMagazine >= magazineCapacity || playerHolding.ph.a.GetStock(caliber) - roundsInMagazine <= 0 || (Input.GetButtonDown("MouseLeft") && roundsInMagazine > 0)) // Also include button options for melee attacking and any other functions that would cancel out the reload function
+        if (roundsInMagazine >= magazineCapacity || playerHolding.ph.a.GetStock(caliber) - roundsInMagazine <= 0 || (Input.GetButtonDown("Fire") && roundsInMagazine > 0)) // Also include button options for melee attacking and any other functions that would cancel out the reload function
         {
             // Cancel reload
             reloadTimer = 0;

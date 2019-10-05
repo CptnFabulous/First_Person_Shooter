@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 3308832630379158689}
   - component: {fileID: 3308832630379158688}
   m_Layer: 5
-  m_Name: PlayerUI
+  m_Name: HeadsUpDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

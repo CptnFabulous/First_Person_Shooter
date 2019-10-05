@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class StatEffect
 {
     public string name; // A name used to easily reference certain effects

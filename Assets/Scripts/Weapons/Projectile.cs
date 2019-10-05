@@ -2,54 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
     // Bullet physics stats
-    [HideInInspector] public float gravityMultiplier;
-    [HideInInspector] public float diameter;
-    [HideInInspector] public float velocity;
-    Vector3 desiredVelocity;
-    Vector3 ballisticDirection;
-    Vector3 gravityModifier;
-
-    // Damage stats
-    [HideInInspector] public int damage;
-    [HideInInspector] public float criticalModifier;
-
-    // Visual effect variables
-    [HideInInspector] public GameObject impactPrefab;
-
-    // Raycast variables
-    Ray bulletRay; // Raycast launched to determine shot direction
-    RaycastHit bulletHit; // Point where raycast hits target
-    [HideInInspector] public LayerMask rayDetection; // LayerMask ensuring raycast does not hit player's own body
-
+    public float velocity;
+    public float gravityMultiplier;
+    public float diameter;
     public float projectileLifetime;
+    public LayerMask rayDetection; // LayerMask ensuring raycast does not hit player's own body
+
+    Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
+    Vector3 ballisticDirection; // The direction the projectile will actualy go in
+    Vector3 gravityModifier; // An increasing Vector3 value to slowly drag the projectile down with gravity
+    public RaycastHit projectileHit; // Point where raycast hits target
     float timerLifetime;
-
-    
-
-    
-    
 
     // Use this for initialization
     void Start()
     {
-        bulletRay.origin = transform.position;
-        bulletRay.direction = transform.forward;
-
         desiredVelocity = transform.forward * velocity; // Creates intended direction and velocity for projectile to travel when it first spawns
         ballisticDirection = transform.position + (desiredVelocity * Time.deltaTime);
-        //ballisticDirection = transform.position + desiredVelocity * Time.deltaTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        bulletRay.origin = transform.position;
-        bulletRay.direction = transform.forward;
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
-        if (Physics.SphereCast(bulletRay, diameter / 2, out bulletHit, raycastLength, rayDetection))
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, rayDetection))
         {
             OnHit();
         }
@@ -65,25 +44,9 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    void OnHit()
+    public virtual void OnHit()
     {
-        //Instantiate(impactPrefab, bulletHit.point, Quaternion.LookRotation(bulletHit.normal));
-
-        // do stuff like deal damage, spawn impact prefab
-        
-        DamageHitbox hitbox = bulletHit.collider.GetComponent<DamageHitbox>(); // Bullet will only detect colliders that have a hitbox script.
-        if (hitbox != null)
-        {
-            if (hitbox.critical == true)
-            {
-                hitbox.Damage(Mathf.RoundToInt(damage * criticalModifier), DamageType.CriticalShot);
-            }
-            else
-            {
-                hitbox.Damage(damage, DamageType.Shot);
-            }
-        }
-
+        print("Object has hit a target");
         Destroy(gameObject);
     }
 

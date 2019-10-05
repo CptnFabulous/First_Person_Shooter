@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class PlayerHandler : MonoBehaviour
 {
-
-    public bool isActive;
+    [HideInInspector] public bool isActive;
 
     [HideInInspector] public PlayerHealth h;
     [HideInInspector] public PlayerController pc;
     [HideInInspector] public WeaponHandler wh;
     [HideInInspector] public AmmunitionInventory a;
     [HideInInspector] public HeadsUpDisplay hud;
-    [HideInInspector] public PauseMenu pm;
+    [HideInInspector] public GameStateHandler gsh;
 
 
     private void Awake()
@@ -22,7 +21,7 @@ public class PlayerHandler : MonoBehaviour
         wh = GetComponent<WeaponHandler>();
         a = GetComponent<AmmunitionInventory>();
         hud = GetComponent<HeadsUpDisplay>();
-        pm = GetComponent<PauseMenu>();
+        gsh = GetComponent<GameStateHandler>();
     }
 
     // Start is called before the first frame update

@@ -13,6 +13,7 @@ public enum DamageType
     CriticalShot,
     Burned,
     KnockedOut,
+    BlownUp,
     Gibbed
 }
 

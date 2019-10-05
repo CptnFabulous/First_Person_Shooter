@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Weapons", menuName = "ScriptableObjects/Weapons", order = 1)]
+[CreateAssetMenu(fileName = "New Weapon", menuName = "ScriptableObjects/Weapon", order = 1)]
 public class WeaponData : ScriptableObject
 {
     string properName;
