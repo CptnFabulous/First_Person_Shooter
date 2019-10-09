@@ -4,24 +4,13 @@ using UnityEngine;
 
 public class KineticProjectile : Projectile
 {
+    [Header("Damage")]
     public int damage;
-    public float criticalModifier;
+    public float criticalMultiplier;
 
     public override void OnHit()
     {
-        DamageHitbox hitbox = projectileHit.collider.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
-        if (hitbox != null)
-        {
-            if (hitbox.critical == true)
-            {
-                hitbox.Damage(Mathf.RoundToInt(damage * criticalModifier), DamageType.CriticalShot);
-            }
-            else
-            {
-                hitbox.Damage(damage, DamageType.Shot);
-            }
-        }
-
+        Damage.PointDamage(projectileHit.collider.gameObject, damage, criticalMultiplier, DamageType.Shot, DamageType.CriticalShot);
         base.OnHit();
     }
 }

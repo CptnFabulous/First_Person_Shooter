@@ -47,7 +47,7 @@ public class WeaponHandler : MonoBehaviour
         */
 
 
-
+        /*
         if (Input.GetButton("SelectWeapon")) // If weapon wheel button is held
         {
 
@@ -56,6 +56,57 @@ public class WeaponHandler : MonoBehaviour
         {
 
         }
+        */
+
+        /*
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            equippedGun.firingModeIndex += 1;
+            if (equippedGun.firingModeIndex > equippedGun.firingModes.Length - 1)
+            {
+                equippedGun.firingModeIndex = 0;
+            }
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            equippedGun.firingModeIndex -= 1;
+            if (equippedGun.firingModeIndex < 0)
+            {
+                equippedGun.firingModeIndex = equippedGun.firingModes.Length - 1;
+            }
+        }
+        */
+
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            int i = 0;
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            {
+                i = 1;
+            }
+            else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            {
+                i = -1;
+            }
+
+            i += equippedGun.firingModeIndex;
+
+            if (i > equippedGun.firingModes.Length - 1)
+            {
+                i = 0;
+            }
+            else if (i < 0)
+            {
+                i = equippedGun.firingModes.Length - 1;
+            }
+
+            equippedGun.SwitchWeaponMode(i);
+        }
+
+        
+
+
+
     }
 
     void SwitchWeapon( WeaponData wd)

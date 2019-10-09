@@ -31,6 +31,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
     public GameObject ammoDisplay;
     public Text ammoCounter;
+    public Text firingMode;
 
     [Header("Camera")]
     public Camera playerCamera;
@@ -100,6 +101,8 @@ public class HeadsUpDisplay : MonoBehaviour
         reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
         reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
         reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
+
+        firingMode.text = rw.firingModes[rw.firingModeIndex].name;
 
         if (rw.ammunition == null)
         {

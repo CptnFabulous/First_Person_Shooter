@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    // Bullet physics stats
+    public float projectileLifetime = 20;
+
+    [Header("Physics")]
     public float velocity;
     public float gravityMultiplier;
     public float diameter;
-    public float projectileLifetime;
-    public LayerMask rayDetection; // LayerMask ensuring raycast does not hit player's own body
+    public LayerMask targetDetection; // LayerMask ensuring raycast does not hit player's own body
 
     Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
     Vector3 ballisticDirection; // The direction the projectile will actualy go in
@@ -28,7 +29,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, rayDetection))
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, targetDetection))
         {
             OnHit();
         }
