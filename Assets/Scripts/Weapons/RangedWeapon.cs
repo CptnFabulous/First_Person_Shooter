@@ -445,7 +445,7 @@ public class RangedWeapon : MonoBehaviour
     {
         Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
         //Ray targetRay = new Ray(transform.position, destination);
-        if (Physics.Raycast(transform.position, destination, out targetFound, range, rayDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+        if (Physics.Raycast(transform.position, destination, out target, range, rayDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
         {
             destination = target.point;
         }
