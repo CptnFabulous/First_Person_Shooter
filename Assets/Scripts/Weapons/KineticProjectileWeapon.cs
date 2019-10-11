@@ -63,8 +63,8 @@ public class KineticProjectileWeapon : ProjectileWeapon
         projectile.gravityMultiplier = gravityMultiplier;
         projectile.velocity = projectileVelocity;
         projectile.damage = damage;
-        projectile.criticalModifier = criticalModifier;
-        projectile.rayDetection = rayDetection;
+        //projectile.criticalModifier = criticalModifier;
+        //projectile.rayDetection = rayDetection;
         
     }
 }

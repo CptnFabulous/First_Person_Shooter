@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2449708058564114975}
   m_Layer: 0
   m_Name: Enemy_Melee
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 2449708059111708843}
   m_Layer: 0
   m_Name: BodyHitbox
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,9 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   degreesFromHealth: 2
-  damageModifier: 1
+  damageMultiplier: 1
   critical: 0
-  ricochetsBullets: 0
 --- !u!1 &2449708059390812411
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +167,7 @@ GameObject:
   - component: {fileID: 2449708059390812410}
   m_Layer: 0
   m_Name: Hitboxes
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -203,7 +202,7 @@ GameObject:
   - component: {fileID: 2449708059454982364}
   m_Layer: 0
   m_Name: Weapon
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -293,7 +292,7 @@ GameObject:
   - component: {fileID: 2449708059479958420}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -368,7 +367,7 @@ GameObject:
   - component: {fileID: 2449708059656813414}
   m_Layer: 0
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -402,7 +401,7 @@ GameObject:
   - component: {fileID: 2449708059750306863}
   m_Layer: 0
   m_Name: HeadHitbox
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -448,9 +447,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   degreesFromHealth: 2
-  damageModifier: 1
+  damageMultiplier: 1
   critical: 1
-  ricochetsBullets: 0
 --- !u!1 &2449708060027210923
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,7 +462,7 @@ GameObject:
   - component: {fileID: 2449708060027210921}
   m_Layer: 0
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

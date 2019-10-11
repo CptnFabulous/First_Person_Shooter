@@ -18,6 +18,8 @@ public class Projectile : MonoBehaviour
     public RaycastHit projectileHit; // Point where raycast hits target
     float timerLifetime;
 
+    [HideInInspector] public GameObject originCharacter;
+
     // Use this for initialization
     void Start()
     {

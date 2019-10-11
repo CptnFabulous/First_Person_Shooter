@@ -16,22 +16,37 @@ public class HeadsUpDisplay : MonoBehaviour
 
     public Image weaponGraphic;
 
+    [Header("General elements")]
+    public Color resourceNormalColour;
+    public Color resourceCriticalColour;
+
+    public LayerMask lookDetection;
+    public float lookRange;
+    public float interactRange;
+
     [Header("Health elements")]
     public GameObject healthDisplay;
     public Text healthCounter;
-    public Color normalColour;
-    public Color criticalColour;
 
-    [Header("Ranged Weapon elements")]
-    public GameObject reticle;
+    [Header("Reticle")]
+    public Image reticleCentre;
     public Image reticleUp;
     public Image reticleDown;
     public Image reticleLeft;
     public Image reticleRight;
+    public Color reticleDefaultColour = Color.white;
+    public Color allyColour = Color.green;
+    public Color enemyColour = Color.red;
 
+    [Header("Weapon stats")]
     public GameObject ammoDisplay;
     public Text ammoCounter;
     public Text firingMode;
+
+    [Header("Weapon feedback")]
+    public AudioClip damageFeedback;
+    public AudioClip criticalFeedback;
+    public AudioClip killFeedback;
 
     [Header("Camera")]
     public Camera playerCamera;
@@ -102,6 +117,35 @@ public class HeadsUpDisplay : MonoBehaviour
         reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
         reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
 
+        RaycastHit lookingAt;
+        if(Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
+        {
+            switch(lookingAt.collider.tag)
+            {
+                case "Enemy":
+                    reticleCentre.color = enemyColour;
+                    reticleUp.color = enemyColour;
+                    reticleDown.color = enemyColour;
+                    reticleLeft.color = enemyColour;
+                    reticleRight.color = enemyColour;
+                    break;
+                case null:
+                    reticleCentre.color = reticleDefaultColour;
+                    reticleUp.color = reticleDefaultColour;
+                    reticleDown.color = reticleDefaultColour;
+                    reticleLeft.color = reticleDefaultColour;
+                    reticleRight.color = reticleDefaultColour;
+                    break;
+                default:
+                    reticleCentre.color = reticleDefaultColour;
+                    reticleUp.color = reticleDefaultColour;
+                    reticleDown.color = reticleDefaultColour;
+                    reticleLeft.color = reticleDefaultColour;
+                    reticleRight.color = reticleDefaultColour;
+                    break;
+            }
+        }
+
         firingMode.text = rw.firingModes[rw.firingModeIndex].name;
 
         if (rw.ammunition == null)
@@ -147,78 +191,34 @@ public class HeadsUpDisplay : MonoBehaviour
 
     }
 
+    public void DamagePing(bool isCritical)
+    {
+        /*
+        if (isCritical)
+        {
+            AudioSource.PlayClipAtPoint(criticalFeedback, transform.position);
+        }
+        else
+        {
+            AudioSource.PlayClipAtPoint(damageFeedback, transform.position);
+        }
+        */
+    }
+
     void HealthHUD()
     {
         healthCounter.text = ph.h.health.current + "/" + ph.h.health.max;
         if (ph.h.health.IsCritical())
         {
-            healthCounter.color = criticalColour;
+            healthCounter.color = resourceCriticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
         }
         else
         {
-            healthCounter.color = normalColour;
+            healthCounter.color = resourceNormalColour;
         }
     }
-
-    #region Weapon HUDs
-    void ProjectileHUD()
-    {
-        ProjectileWeapon epw = ph.wh.equippedWeapon.GetComponent<ProjectileWeapon>();
-        
-        //reticlePositions = new Vector2(epw.projectileSpread * Screen.height / camera.fieldOfView, epw.projectileSpread * Screen.height / camera.fieldOfView);
-        float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
-        
-        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
-        reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
-        reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
-        reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
-        reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
-
-        /*
-        float rp = (a + epw.projectileSpread) * Screen.height / playerCamera.fieldOfView;
-        reticleUp.rectTransform.anchoredPosition = reticle.transform.up * rp;
-        reticleDown.rectTransform.anchoredPosition = -reticle.transform.up * rp;
-        reticleLeft.rectTransform.anchoredPosition = -reticle.transform.right * rp;
-        reticleRight.rectTransform.anchoredPosition = reticle.transform.right * rp;
-        */
-
-        if (epw.caliber == AmmunitionType.None)
-        {
-            if (epw.magazineCapacity <= 0)
-            {
-                ammoCounter.text = "INFINITE";
-            }
-            else
-            {
-                ammoCounter.text = epw.roundsInMagazine + "/INF";
-            }
-        }
-        else
-        {
-            if (epw.magazineCapacity <= 0)
-            {
-                ammoCounter.text = ph.a.GetStock(epw.caliber).ToString();
-            }
-            else
-            {
-                ammoCounter.text = epw.roundsInMagazine + "/" + (ph.a.GetStock(epw.caliber) - epw.roundsInMagazine);
-            }
-        }
-
-
-
-    }
-    void MeleeHUD()
-    {
-
-    }
-    void ThrowableHUD()
-    {
-
-    }
-    #endregion
-
+    
 
 
 

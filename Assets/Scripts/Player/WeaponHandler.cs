@@ -23,6 +23,7 @@ public class WeaponHandler : MonoBehaviour
     public Weapon equippedWeapon;
 
 
+
     public RangedWeapon equippedGun;
 
     private void Awake()

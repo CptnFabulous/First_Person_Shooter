@@ -454,11 +454,14 @@ public class RangedWeapon : MonoBehaviour
             destination *= range;
         }
 
+        
+
         Instantiate(projectile.gameObject, muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
         projectile.velocity = velocity;
         projectile.gravityMultiplier = gravityMultiplier;
         projectile.diameter = diameter;
         projectile.targetDetection = rayDetection;
+        projectile.originCharacter = playerHolding.gameObject;
         // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
     }
 

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2483134584432345369}
   - component: {fileID: 8466749447774014708}
-  - component: {fileID: 2477036015384432996}
+  - component: {fileID: 4662434428516752633}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -136,7 +136,7 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &2477036015384432996
+--- !u!114 &4662434428516752633
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2477036015384432997}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73cebaa790f35ba41bbcb365b531c310, type: 3}
+  m_Script: {fileID: 11500000, guid: 77fea858896cbcc428f126ac776d08d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   projectileLifetime: 20
@@ -155,5 +155,8 @@ MonoBehaviour:
   targetDetection:
     serializedVersion: 2
     m_Bits: 0
+  originCharacter: {fileID: 0}
   damage: 5
-  criticalMultiplier: 3
+  criticalMultiplier: 1
+  impactEffect: {fileID: 312891277439626232, guid: 37c6f698bb2e0134398d938f43f5a14b,
+    type: 3}
