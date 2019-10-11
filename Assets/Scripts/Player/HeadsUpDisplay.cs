@@ -48,11 +48,6 @@ public class HeadsUpDisplay : MonoBehaviour
     public AudioClip criticalFeedback;
     public AudioClip killFeedback;
 
-    [Header("Camera")]
-    public Camera playerCamera;
-    public float fieldOfView = 60;
-
-
 
 
     //[Header("Health Meter")]
@@ -112,7 +107,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
         float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
         //float rp = (a + rw.accuracy.projectileSpread) * Screen.height / playerCamera.fieldOfView;
-        float rp = (a + rw.accuracy.projectileSpread) * Screen.height / fieldOfView;
+        float rp = (a + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
 
         reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
         reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
