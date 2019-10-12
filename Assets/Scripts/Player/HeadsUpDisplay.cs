@@ -47,6 +47,10 @@ public class HeadsUpDisplay : MonoBehaviour
     public AudioClip damageFeedback;
     public AudioClip criticalFeedback;
     public AudioClip killFeedback;
+    public DisappearingEffect damagePing;
+    public float damagePingDuration;
+    public DisappearingEffect criticalPing;
+    public float criticalPingDuration;
 
 
 
@@ -168,38 +172,24 @@ public class HeadsUpDisplay : MonoBehaviour
             }
         }
 
-
-
-        /*
-        WeaponType equippedType = ph.wh.equippedWeapon.type; // Finds type of equipped weapon
-        switch(equippedType) // Checks type
-        {
-            case WeaponType.projectile:// If projectile weapon
-                ProjectileHUD(); // Display appropriate HUD
-                break;
-            case WeaponType.melee: // If melee weapon
-                MeleeHUD(); // Display appropriate HUD
-                break;
-            case WeaponType.throwable: // If throwable weapon
-                ThrowableHUD(); // Display appropriate HUD
-                break;
-        }
-        */
-
     }
 
-    public void DamagePing(bool isCritical)
+    public void PlayHitMarker(bool isCritical)
     {
-        /*
+        
         if (isCritical)
         {
             AudioSource.PlayClipAtPoint(criticalFeedback, transform.position);
+            criticalPing.Restart(criticalPingDuration);
+            damagePing.Stop();
         }
         else
         {
             AudioSource.PlayClipAtPoint(damageFeedback, transform.position);
+            damagePing.Restart(damagePingDuration);
+            criticalPing.Stop();
         }
-        */
+        
     }
 
     void HealthHUD()

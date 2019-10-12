@@ -16,7 +16,7 @@ public static class Damage
 {
     
 
-    public static void PointDamage(GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
+    public static void PointDamage(GameObject origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
@@ -25,38 +25,32 @@ public static class Damage
 
             if (hitbox.critical == true)
             {
-                hitbox.Damage(Mathf.RoundToInt(damage * criticalMultiplier), criticalCause);
+                hitbox.Damage(Mathf.RoundToInt(damage * criticalMultiplier), origin, criticalCause);
             }
             else
             {
-                hitbox.Damage(damage, normalCause);
+                hitbox.Damage(damage, origin, normalCause);
+            }
+
+            WeaponHandler wh = origin.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
+            if (wh != null)
+            {
+                wh.ph.hud.PlayHitMarker(hitbox.critical);
             }
         }
     }
 
-    public static void PointDamage(GameObject originCharacter, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
+    public static void PointDamage(GameObject origin, GameObject attackedObject, int damage, DamageType cause, bool isCritical)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
-            
+            hitbox.Damage(damage, origin, cause);
 
-            if (hitbox.critical == true)
+            WeaponHandler wh = origin.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
+            if (wh != null)
             {
-                hitbox.Damage(Mathf.RoundToInt(damage * criticalMultiplier), criticalCause);
-            }
-            else
-            {
-                hitbox.Damage(damage, normalCause);
-            }
-
-            if (originCharacter != null)
-            {
-                WeaponHandler wh = originCharacter.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
-                if (wh != null)
-                {
-                    wh.ph.hud.DamagePing(hitbox.critical);
-                }
+                wh.ph.hud.PlayHitMarker(isCritical);
             }
         }
     }

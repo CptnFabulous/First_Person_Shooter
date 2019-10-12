@@ -105,7 +105,7 @@ public class EnemyMelee : MonoBehaviour
                     if (enemyHitbox != null)
                     {
                         print("Enemy struck");
-                        enemyHitbox.Damage(meleeDamage, meleeDamageType);
+                        enemyHitbox.Damage(meleeDamage, gameObject, meleeDamageType);
                     }
                 }
 

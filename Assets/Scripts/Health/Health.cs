@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
     int prevHealth;
 
     DamageType lastDamageSource;
+    GameObject lastAttacker;
 
 #if UNITY_EDITOR
     void Reset() { OnValidate(); }
@@ -46,9 +47,10 @@ public class Health : MonoBehaviour
         // DO ADDITIONAL STUFF HERE IN DERIVED CLASSES, e.g. pain/death animations
     }
 
-    public virtual void TakeDamage(int damageAmount, DamageType damageSource)
+    public virtual void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
     {
         health.current -= damageAmount;
+        lastAttacker = origin;
         lastDamageSource = damageSource;
     }
 

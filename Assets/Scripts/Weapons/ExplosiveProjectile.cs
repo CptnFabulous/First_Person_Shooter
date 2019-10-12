@@ -17,12 +17,16 @@ public class ExplosiveProjectile : Projectile
 
     public override void OnHit()
     {
+        /*
         DamageHitbox hitbox = projectileHit.collider.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
-            hitbox.Damage(Mathf.RoundToInt(damage * directHitMultiplier), DamageType.Gibbed);
+            hitbox.Damage(Mathf.RoundToInt(damage * directHitMultiplier), origin, DamageType.Gibbed);
         }
+        */
 
+
+        Damage.PointDamage(origin, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier), DamageType.Gibbed, true);
         Damage.SimpleExplosion(transform, targetDetection, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff);
         base.OnHit();
     }

@@ -321,7 +321,8 @@ public class RangedWeapon : MonoBehaviour
             MuzzleFlashEffect m = firingModes[firingModeIndex].muzzleFlash;
             if (m != null)
             {
-                m.Play(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
+                //m.Play(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
+                m.Restart(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
             }
 
             AudioClip a = firingModes[firingModeIndex].firingNoise;
@@ -461,7 +462,7 @@ public class RangedWeapon : MonoBehaviour
         projectile.gravityMultiplier = gravityMultiplier;
         projectile.diameter = diameter;
         projectile.targetDetection = rayDetection;
-        projectile.originCharacter = playerHolding.gameObject;
+        projectile.origin = playerHolding.gameObject;
         // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
     }
 

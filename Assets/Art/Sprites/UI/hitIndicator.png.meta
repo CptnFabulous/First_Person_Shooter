@@ -139,7 +139,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 13
+        y: 1
         width: 11
         height: 11
       alignment: 0
@@ -149,7 +149,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fbd8600b557f93945bc58b82b3b00311
+      spriteID: 0d2f408b8130b3c4a8e2edeef16ad240
       vertices: []
       indices: 
       edges: []
@@ -159,66 +159,6 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 12
-        y: 13
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 85ec2ffe6693c37428d1489edc5d0c57
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: hitIndicator_2
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 13
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 56e4d3a734f4ab848a7bee7796ce8c02
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: hitIndicator_3
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 13
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 200f1e5d42719cc42a869ad7437734ec
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: hitIndicator_4
-      rect:
-        serializedVersion: 2
-        x: 0
         y: 1
         width: 11
         height: 11
@@ -229,47 +169,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d5843f2a112475340acd69a048061b86
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: hitIndicator_5
-      rect:
-        serializedVersion: 2
-        x: 12
-        y: 1
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d605507a52a39cf46b6f5c125248d579
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: hitIndicator_6
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 1
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e5e159b8f354aaa47aa2dc65d39a4a34
+      spriteID: c75195ed198098a4d910afa0cc293dbc
       vertices: []
       indices: 
       edges: []

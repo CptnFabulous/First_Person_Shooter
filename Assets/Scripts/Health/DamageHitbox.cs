@@ -12,7 +12,7 @@ public class DamageHitbox : MonoBehaviour
     public bool critical;
     // public bool ricochetsBullets; This currently does not do anything
 
-    public void Damage(int damage, DamageType damageSource)
+    public void Damage(int damage, GameObject origin, DamageType damageSource)
     {
         GameObject objectWithHealthScript = gameObject;
         if (degreesFromHealth > 0)
@@ -23,11 +23,15 @@ public class DamageHitbox : MonoBehaviour
             }
         }
 
-        Health healthScript = objectWithHealthScript.GetComponent<Health>();
-        healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), damageSource);
+        if (degreesFromHealth >= 0)
+        {
+            Health healthScript = objectWithHealthScript.GetComponent<Health>();
+            healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
+        }
     }
 
-    public void Damage(int damage, float criticalModifier, DamageType damageSource)
+    /*
+    public void Damage(int damage, float criticalModifier, GameObject origin, DamageType damageSource)
     {
         // Checks hitbox's tree to look for the appropriate health script
         GameObject objectWithHealthScript = gameObject;
@@ -48,6 +52,13 @@ public class DamageHitbox : MonoBehaviour
 
         // Finds health script and deals damage
         Health healthScript = objectWithHealthScript.GetComponent<Health>();
-        healthScript.TakeDamage(d, damageSource);
+        healthScript.TakeDamage(d, origin, damageSource);
+
+        WeaponHandler wh = origin.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
+        if (wh != null)
+        {
+            wh.ph.hud.PlayHitMarker(critical);
+        }
     }
+    */
 }
