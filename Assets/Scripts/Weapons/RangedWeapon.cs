@@ -483,6 +483,10 @@ public class RangedWeapon : MonoBehaviour
         {
             //print("Recovering from recoil");
         }
+
+        // Figure out how to have visual gun recoil
+        // 1: Use lerping and an animation curve to move gun between standard and fully recoiled position
+        // 2: Just give it a spring joint and use Physics.AddForce or AddForceAtPosition to make it jump back
     }
     #endregion
 

@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerState
+{
+    Alive,
+    Dead,
+    InMenus,
+    InCutscene
+}
+
 public class PlayerHandler : MonoBehaviour
 {
     [HideInInspector] public bool isActive;
@@ -13,6 +21,7 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler gsh;
 
+    PlayerState currentState;
 
     private void Awake()
     {
