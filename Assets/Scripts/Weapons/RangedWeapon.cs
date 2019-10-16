@@ -77,9 +77,7 @@ public class ProjectileStats
 #if UNITY_EDITOR
     public string name;
 #endif
-
     public Transform muzzle;
-
     public Projectile projectile;
     public int projectileCount;
     public int damage;
@@ -455,14 +453,26 @@ public class RangedWeapon : MonoBehaviour
             destination *= range;
         }
 
-        
+        GameObject launchedProjectile = Instantiate(projectile.gameObject, muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
+        Projectile p = launchedProjectile.GetComponent<Projectile>();
+        p.velocity = velocity;
+        p.gravityMultiplier = gravityMultiplier;
+        p.diameter = diameter;
+        p.targetDetection = rayDetection;
+        p.origin = playerHolding.gameObject;
 
-        Instantiate(projectile.gameObject, muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
-        projectile.velocity = velocity;
-        projectile.gravityMultiplier = gravityMultiplier;
-        projectile.diameter = diameter;
-        projectile.targetDetection = rayDetection;
-        projectile.origin = playerHolding.gameObject;
+        KineticProjectile kp = p.GetComponent<KineticProjectile>();
+        if (kp != null)
+        {
+
+        }
+
+        ExplosiveProjectile ep = p.GetComponent<ExplosiveProjectile>();
+        if (ep != null)
+        {
+
+        }
+
         // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
     }
 
