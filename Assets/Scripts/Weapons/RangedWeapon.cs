@@ -80,7 +80,6 @@ public class ProjectileStats
     public Transform muzzle;
     public Projectile projectile;
     public int projectileCount;
-    public int damage;
     public float velocity;
     public float diameter;
     public float gravityMultiplier;

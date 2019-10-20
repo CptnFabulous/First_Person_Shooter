@@ -35,7 +35,12 @@ public class ProjectileAttack
     Vector3 aimMarker;
     [HideInInspector] public bool isAttacking;
 
-    
+    [Header("Cosmetics")]
+    public LineRenderer laserSight;
+    public MuzzleFlashEffect muzzleFlash;
+    public float flashRelativeDuration = 2;
+    public AudioClip delayNoise;
+    public AudioClip firingNoise;
 
     public void TargetEnemy(GameObject target, GameObject characterAttacking, GameObject head, Transform a, float targetThreshold, float aimSpeed, RaycastHit lookingAt)
     {
@@ -48,44 +53,44 @@ public class ProjectileAttack
                 {
                     // Initiate attack sequence
                     #region Initiate attack
-                    Vector3 characterAimDirection = new Vector3(aimMarker.x, characterAttacking.transform.position.y, aimMarker.z);
-                    characterAttacking.transform.LookAt(characterAimDirection);
-
-                    //aimMarker = target.transform.position;
-
                     isAttacking = true;
                     delayTimer = 0;
                     fireTimer = 60 / roundsPerMinute;
                     burstCounter = 0;
                     Debug.Log("Attack sequence initiated");
                     #endregion
+
+
+                    //laserSight.SetPosition(1, (target.transform.position - head.transform.position) * Vector3.Distance(head.transform.position, target.transform.position));
                 }
                 else
                 {
                     // This line of code should not be running after the aimMarker has reached the target, and before the attack has finished.
                     aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, aimSpeed * Time.deltaTime); // If enemy has not acquired target, move aimMarker towards target
                 }
+
+                head.transform.LookAt(aimMarker);
             }
             else
             {
                 aimMarker = characterAttacking.transform.position; // If line of sight has not been acquired, NPC cannot aim at enemy, aim is at ease
+                head.transform.localRotation = Quaternion.Euler(0, 0, 0);
             }
         }
         else // If attack sequence is initiated (isAttacking == true), execute telegraph and attack
         {
-            #region Attack sequence
             delayTimer += Time.deltaTime;
             if (delayTimer >= delay) // If delay is finished
             {
-                #region Execute burst
                 if (burstCounter < burstAmount)
                 {
                     fireTimer += Time.deltaTime;
                     if (fireTimer >= 60 / roundsPerMinute)
                     {
-                        #region Fire weapon
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
+                            muzzleFlash.Restart(60 / roundsPerMinute * flashRelativeDuration);
+                            #region Shoot projectile
                             Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * (aimMarker - head.transform.position);
                             RaycastHit rh;
                             if (Physics.Raycast(head.transform.position, destination, out rh, range, hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
@@ -104,11 +109,9 @@ public class ProjectileAttack
                             p.diameter = diameter;
                             p.targetDetection = hitDetection;
                             p.origin = characterAttacking;
+                            #endregion
                         }
-
                         fireTimer = 0;
-                        #endregion
-
                         burstCounter += 1;
                     }
                 }
@@ -116,12 +119,10 @@ public class ProjectileAttack
                 {
                     EndAttack(); // End attack
                 }
-                #endregion
             }
-            #endregion
         }
 
-        a.position = aimMarker;
+        laserSight.enabled = isAttacking;
     }
 
     public void EndAttack()
@@ -137,7 +138,8 @@ public class EnemyGun : MonoBehaviour
 {
     NavMeshAgent na;
 
-    public float movementSpeed;
+    public float standardMoveSpeed;
+    public float attackingMoveSpeed;
 
     [Header("Targeting")]
     public GameObject head;
@@ -161,21 +163,34 @@ public class EnemyGun : MonoBehaviour
 
         if (target != null)
         {
-            if (Vector3.Distance(gameObject.transform.position, target.transform.position) > attack.range)
-            {
-                na.destination = target.transform.position;
-            }
+            na.destination = target.transform.position;
 
-            if (attack.isAttacking == true)
+            attack.TargetEnemy(target, gameObject, head, a, targetThreshold, aimSpeed, lookingAt);
+
+            na.enabled = !attack.isAttacking;
+
+            if (InRange(target, attack.range))
             {
-                na.enabled = false;
+                na.speed = attackingMoveSpeed;
             }
             else
             {
-                na.enabled = true;
+                na.speed = standardMoveSpeed;
             }
+            
+            
 
-            attack.TargetEnemy(target, gameObject, head, a, targetThreshold, aimSpeed, lookingAt);
+
+            
         }
+    }
+
+    bool InRange(GameObject target, float specifiedRange)
+    {
+        if (Vector3.Distance(transform.position, target.transform.position) <= specifiedRange)
+        {
+            return true;
+        }
+        return false;
     }
 }
