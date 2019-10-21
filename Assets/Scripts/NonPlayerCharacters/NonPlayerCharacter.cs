@@ -8,16 +8,8 @@ public class NonPlayerCharacter : MonoBehaviour
 {
     NavMeshAgent na;
 
-    // Start is called before the first frame update
-    public virtual void Start()
+    private void Awake()
     {
         na = GetComponent<NavMeshAgent>();
     }
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    */
 }

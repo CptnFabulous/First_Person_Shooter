@@ -37,7 +37,7 @@ public class ProjectileAttack
 
     [Header("Cosmetics")]
     public LineRenderer laserSight;
-    public MuzzleFlashEffect muzzleFlash;
+    public TimedVisualEffect muzzleFlash;
     public float flashRelativeDuration = 2;
     public AudioClip delayNoise;
     public AudioClip firingNoise;
@@ -52,13 +52,11 @@ public class ProjectileAttack
                 if (Vector3.Distance(aimMarker, target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
                     // Initiate attack sequence
-                    #region Initiate attack
                     isAttacking = true;
                     delayTimer = 0;
                     fireTimer = 60 / roundsPerMinute;
                     burstCounter = 0;
                     Debug.Log("Attack sequence initiated");
-                    #endregion
 
 
                     //laserSight.SetPosition(1, (target.transform.position - head.transform.position) * Vector3.Distance(head.transform.position, target.transform.position));
@@ -90,6 +88,9 @@ public class ProjectileAttack
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
                             muzzleFlash.Restart(60 / roundsPerMinute * flashRelativeDuration);
+                            AudioSource.PlayClipAtPoint(firingNoise, projectileOrigin.position);
+
+
                             #region Shoot projectile
                             Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * (aimMarker - head.transform.position);
                             RaycastHit rh;
@@ -139,7 +140,7 @@ public class EnemyGun : MonoBehaviour
     NavMeshAgent na;
 
     public float standardMoveSpeed;
-    public float attackingMoveSpeed;
+    //public float attackingMoveSpeed;
 
     [Header("Targeting")]
     public GameObject head;
@@ -169,6 +170,7 @@ public class EnemyGun : MonoBehaviour
 
             na.enabled = !attack.isAttacking;
 
+            /*
             if (InRange(target, attack.range))
             {
                 na.speed = attackingMoveSpeed;
@@ -177,7 +179,7 @@ public class EnemyGun : MonoBehaviour
             {
                 na.speed = standardMoveSpeed;
             }
-            
+            */
             
 
 
@@ -185,6 +187,7 @@ public class EnemyGun : MonoBehaviour
         }
     }
 
+    /*
     bool InRange(GameObject target, float specifiedRange)
     {
         if (Vector3.Distance(transform.position, target.transform.position) <= specifiedRange)
@@ -193,4 +196,5 @@ public class EnemyGun : MonoBehaviour
         }
         return false;
     }
+    */
 }

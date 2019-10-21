@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackableCharacter : NonPlayerCharacter
+public class ProjectileBurst : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
