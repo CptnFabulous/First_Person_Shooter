@@ -5,9 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "ScriptableObjects/Weapon", order = 1)]
 public class WeaponData : ScriptableObject
 {
-    string properName;
-    string description;
-    
+    public string description;
+    public Sprite icon;
+    public RangedWeapon equipPrefab;
+    public ItemPickup dropPrefab;
+
     /*
     // Start is called before the first frame update
     void Start()

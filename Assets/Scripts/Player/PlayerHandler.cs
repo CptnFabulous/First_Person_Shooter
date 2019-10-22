@@ -21,6 +21,8 @@ public class PlayerHandler : MonoBehaviour
     [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler gsh;
 
+    NPCFaction playerFaction;
+
     PlayerState currentState;
 
     private void Awake()

@@ -15,7 +15,7 @@ public class AmmunitionPickup : ItemPickup
         }
     }
 
-    public override void OnTriggerEnter(Collider c)
+    public override void Pickup(Collider c)
     {
         AmmunitionInventory ai = c.GetComponent<AmmunitionInventory>();
         if (ai != null)
@@ -39,7 +39,7 @@ public class AmmunitionPickup : ItemPickup
                 }
             }
 
-            base.OnTriggerEnter(c);
+            base.Pickup(c);
         }
 
         

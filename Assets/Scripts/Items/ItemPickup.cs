@@ -21,6 +21,11 @@ public abstract class ItemPickup : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider c)
     {
+        Pickup(c);
+    }
+
+    public virtual void Pickup(Collider c)
+    {
         // Do item pickup stuff
 
         if (value <= 0)
@@ -28,7 +33,6 @@ public abstract class ItemPickup : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
 
 
 
