@@ -27,7 +27,7 @@ public class ExplosiveProjectile : Projectile
 
 
         Damage.PointDamage(origin, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier), DamageType.Gibbed, true);
-        Damage.SimpleExplosion(transform, targetDetection, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff);
+        Damage.SimpleExplosion(transform, hitDetection, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff);
         base.OnHit();
     }
 }

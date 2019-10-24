@@ -78,11 +78,15 @@ public class ProjectileStats
     public string name;
 #endif
     public Transform muzzle;
-    public Projectile projectile;
+
+    public ProjectileData projectile;
+
+    //public Projectile projectile;
+
     public int projectileCount;
-    public float velocity;
-    public float diameter;
-    public float gravityMultiplier;
+    //public float velocity;
+    //public float diameter;
+    //public float gravityMultiplier;
 }
 #endregion
 
@@ -337,15 +341,13 @@ public class RangedWeapon : MonoBehaviour
             }
             #endregion
 
-
-
             // Calculate direction to shoot in
             Quaternion ar = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy));
             Vector3 aimDirection = ar * transform.forward;
 
             for (int i = 0; i < projectile.projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
             {
-                LaunchProjectile(aimDirection, targetFound, accuracy.rayDetection, accuracy.projectileSpread, accuracy.range, projectile.muzzle, projectile.projectile, projectile.velocity, projectile.gravityMultiplier, projectile.diameter);
+                Damage.ShootProjectile(projectile.projectile, accuracy.projectileSpread, accuracy.range, playerHolding.gameObject, playerHolding.ph.faction, transform, projectile.muzzle, aimDirection);
             }
         }
         else if (!Input.GetButton("Fire"))
@@ -439,6 +441,7 @@ public class RangedWeapon : MonoBehaviour
     #endregion
 
     #region Firing functions
+    /*
     public void LaunchProjectile(Vector3 direction, RaycastHit target, LayerMask rayDetection, float spread, float range, Transform muzzle, Projectile projectile, float velocity, float gravityMultiplier, float diameter)
     {
         Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
@@ -457,7 +460,7 @@ public class RangedWeapon : MonoBehaviour
         p.velocity = velocity;
         p.gravityMultiplier = gravityMultiplier;
         p.diameter = diameter;
-        p.targetDetection = rayDetection;
+        p.hitDetection = rayDetection;
         p.origin = playerHolding.gameObject;
 
         KineticProjectile kp = p.GetComponent<KineticProjectile>();
@@ -474,6 +477,7 @@ public class RangedWeapon : MonoBehaviour
 
         // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
     }
+    */
 
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
     {

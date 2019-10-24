@@ -14,11 +14,11 @@ public enum DamageType
 
 public static class Damage
 {
-    public static void ShootProjectile(Projectile projectile, float velocity, float gravityMultiplier, float diameter, float spread, float range, LayerMask rayDetection, GameObject origin, Transform aimOrigin, Transform muzzle, Vector3 direction)
+    public static void ShootProjectile(ProjectileData projectile, float spread, float range, GameObject origin, NPCFaction originFaction, Transform aimOrigin, Transform muzzle, Vector3 direction)
     {
         RaycastHit targetFound;
         Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
-        if (Physics.Raycast(aimOrigin.position, destination, out targetFound, range, rayDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+        if (Physics.Raycast(aimOrigin.position, destination, out targetFound, range, projectile.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
         {
             destination = targetFound.point;
         }
@@ -27,27 +27,7 @@ public static class Damage
             destination *= range;
         }
 
-        GameObject launchedProjectile = Object.Instantiate(projectile.gameObject, muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
-        Projectile p = launchedProjectile.GetComponent<Projectile>();
-        p.velocity = velocity;
-        p.gravityMultiplier = gravityMultiplier;
-        p.diameter = diameter;
-        p.targetDetection = rayDetection;
-        p.origin = origin;
-
-        KineticProjectile kp = p.GetComponent<KineticProjectile>();
-        if (kp != null)
-        {
-
-        }
-
-        ExplosiveProjectile ep = p.GetComponent<ExplosiveProjectile>();
-        if (ep != null)
-        {
-
-        }
-
-        // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
+        Object.Instantiate(projectile.NewProjectile(origin, originFaction), muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
     }
 
 

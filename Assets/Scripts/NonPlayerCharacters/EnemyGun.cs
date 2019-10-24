@@ -50,15 +50,15 @@ using UnityEngine.AI;
 
 public class EnemyGun : NPC
 {
-    
-    public float standardMoveSpeed;
-
     [Header("Targeting")]
     public GameObject head;
     public GameObject target;
-    float pursueRange = 50;
-    public float aimSpeed;
-    public float targetThreshold = 0.1f;
+
+    public float targetRange = 25;
+    public float pursueRange = 50; // Max distance NPC will pursue target before running out of patience
+    //public float patience = 5; // Amount of time NPC will p
+    public LayerMask viewDetecion;
+
     RaycastHit lookingAt;
 
     [Header("Attacks")]
@@ -67,18 +67,39 @@ public class EnemyGun : NPC
     // Update is called once per frame
     void Update()
     {
-
         if (target != null)
         {
             Seek(target, pursueRange);
 
-            attack.TargetEnemy(target, gameObject, head, targetThreshold, aimSpeed, lookingAt);
+            attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
             na.enabled = !attack.isAttacking;
+
+            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+            {
+                target = null;
+            }
+        }
+        else
+        {
+            
         }
     }
 
-    void FindTarget()
+    Character AcquireTarget()
     {
-
+        Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, targetRange);
+        foreach(Collider c in thingsInEnvironment)
+        {
+            RaycastHit lineOfSight;
+            if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetecion) && lineOfSight.collider == c)
+            {
+                Character targetCharacter = c.GetComponent<Character>();
+                if (targetCharacter != null && ch.faction.IsHostileTo(targetCharacter.faction))
+                {
+                    return targetCharacter;
+                }
+            }
+        }
+        return null;
     }
 }

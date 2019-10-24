@@ -4,46 +4,32 @@ using UnityEngine;
 
 public enum PlayerState
 {
-    Alive,
+    Active,
     Dead,
     InMenus,
     InCutscene
 }
 
-public class PlayerHandler : MonoBehaviour
+public class PlayerHandler : Character
 {
     [HideInInspector] public bool isActive;
 
-    [HideInInspector] public PlayerHealth h;
+    [HideInInspector] public PlayerHealth ph;
     [HideInInspector] public PlayerController pc;
     [HideInInspector] public WeaponHandler wh;
     [HideInInspector] public AmmunitionInventory a;
     [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler gsh;
 
-    NPCFaction playerFaction;
-
     PlayerState currentState;
 
     private void Awake()
     {
-        h = GetComponent<PlayerHealth>();
+        ph = GetComponent<PlayerHealth>();
         pc = GetComponent<PlayerController>();
         wh = GetComponent<WeaponHandler>();
         a = GetComponent<AmmunitionInventory>();
         hud = GetComponent<HeadsUpDisplay>();
         gsh = GetComponent<GameStateHandler>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

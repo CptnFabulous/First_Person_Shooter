@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c005d3592b6454348969a9845fc7ef93, type: 3}
   m_Name: M16A3 with M203
   m_EditorClassIdentifier: 
+  description: 
+  icon: {fileID: 0}
+  equipPrefab: {fileID: 0}
+  dropPrefab: {fileID: 0}

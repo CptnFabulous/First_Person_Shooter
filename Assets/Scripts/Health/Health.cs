@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof (Character))]
 public class Health : MonoBehaviour
 {
+    [HideInInspector] public Character h;
+
     public Resource health = new Resource { max = 100, current = 100, critical = 20 };
     int prevHealth;
 
@@ -18,6 +21,11 @@ public class Health : MonoBehaviour
         health.current = Mathf.Clamp(health.current, 0, health.max);
     }
 #endif
+
+    public virtual void Awake()
+    {
+        h = GetComponent<Character>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -41,7 +49,7 @@ public class Health : MonoBehaviour
     {
         if (health.current <= 0)
         {
-            Die(lastDamageSource);
+            Die(lastDamageSource, lastAttacker);
         }
 
         // DO ADDITIONAL STUFF HERE IN DERIVED CLASSES, e.g. pain/death animations
@@ -54,7 +62,7 @@ public class Health : MonoBehaviour
         lastDamageSource = damageSource;
     }
 
-    public virtual void Die(DamageType causeOfDeath)
+    public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
         Destroy(gameObject); // Destroy gameobject upon death, when using inherited classes override this function to implement different code such as death animations etc.)
     }

@@ -9,18 +9,4 @@ public class WeaponData : ScriptableObject
     public Sprite icon;
     public RangedWeapon equipPrefab;
     public ItemPickup dropPrefab;
-
-    /*
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    */
 }

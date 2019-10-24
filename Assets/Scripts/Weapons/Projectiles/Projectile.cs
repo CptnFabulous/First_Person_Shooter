@@ -10,7 +10,7 @@ public class Projectile : MonoBehaviour
     public float velocity;
     public float gravityMultiplier;
     public float diameter;
-    public LayerMask targetDetection; // LayerMask ensuring raycast does not hit player's own body
+    public LayerMask hitDetection; // LayerMask ensuring raycast does not hit player's own body
 
     Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
     Vector3 ballisticDirection; // The direction the projectile will actualy go in
@@ -19,6 +19,7 @@ public class Projectile : MonoBehaviour
     float timerLifetime;
 
     [HideInInspector] public GameObject origin;
+    [HideInInspector] public NPCFaction originFaction;
 
     // Use this for initialization
     void Start()
@@ -31,7 +32,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, targetDetection))
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && IsAlly(projectileHit) == false)
         {
             OnHit();
         }
@@ -49,7 +50,6 @@ public class Projectile : MonoBehaviour
 
     public virtual void OnHit()
     {
-        print("Object has hit a target");
         Destroy(gameObject);
     }
 
@@ -63,5 +63,27 @@ public class Projectile : MonoBehaviour
             ballisticDirection += gravityModifier; // gravityModifier is added to ballisticDirection so that the bullet attempts to move in the original direction but is dragged down by gravity
             transform.LookAt(ballisticDirection); // Rotates projectile to point in direction it is about to move to appropriately calculate raycasts next frame
         }
+    }
+
+    bool IsAlly(RaycastHit rh)
+    {
+        DamageHitbox d = rh.collider.GetComponent<DamageHitbox>();
+        if (d != null)
+        {
+            Health h = d.healthScript;
+            if (h != null)
+            {
+                Character ch = h.h;
+                if (ch != null)
+                {
+                    NPCFaction f = ch.faction;
+                    if (f != null && originFaction.IsFriendlyTo(f))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -5,29 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof (Collider))]
 public class DamageHitbox : MonoBehaviour
 {
-
-    public int degreesFromHealth; // The hitbox with this script attached is meant to be a child of the object with the health script attached. 
-    // Needs some kind of variable to determine critical hits.
+    public Health healthScript;
     public float damageMultiplier = 1;
     public bool critical;
     // public bool ricochetsBullets; This currently does not do anything
 
     public void Damage(int damage, GameObject origin, DamageType damageSource)
     {
-        GameObject objectWithHealthScript = gameObject;
-        if (degreesFromHealth > 0)
+        if (healthScript != null)
         {
-            for (int i = 0; i < degreesFromHealth; i++)
-            {
-                objectWithHealthScript = objectWithHealthScript.transform.parent.gameObject;
-            }
-        }
-
-        if (degreesFromHealth >= 0)
-        {
-            Health healthScript = objectWithHealthScript.GetComponent<Health>();
             healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
         }
+        
     }
 
     /*

@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof (Character))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class NPC : MonoBehaviour
 {
     [Header("Standard variables")]
-    public NPCFaction faction;
 
     //Pathfinding variables
+    [HideInInspector] public Character ch;
     [HideInInspector] public NavMeshAgent na;
     int waypointIndex;
     bool retracing;
 
     private void Awake()
     {
+        ch = GetComponent<Character>();
         na = GetComponent<NavMeshAgent>();
     }
 
@@ -33,7 +35,7 @@ public class NPC : MonoBehaviour
 
     }
 
-    public void Flee(GameObject target)
+    public void Flee(GameObject target, float range)
     {
 
     }

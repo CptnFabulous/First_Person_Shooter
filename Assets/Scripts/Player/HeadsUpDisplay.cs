@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(PlayerHealth))]
-[RequireComponent(typeof (WeaponHandler))]
+[RequireComponent(typeof (PlayerHandler))]
 public class HeadsUpDisplay : MonoBehaviour
 {
     [Header("References")]
@@ -194,8 +193,8 @@ public class HeadsUpDisplay : MonoBehaviour
 
     void HealthHUD()
     {
-        healthCounter.text = ph.h.health.current + "/" + ph.h.health.max;
-        if (ph.h.health.IsCritical())
+        healthCounter.text = ph.ph.health.current + "/" + ph.ph.health.max;
+        if (ph.ph.health.IsCritical())
         {
             healthCounter.color = resourceCriticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
