@@ -120,7 +120,9 @@ public class HeadsUpDisplay : MonoBehaviour
         RaycastHit lookingAt;
         if(Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
         {
-            switch(lookingAt.collider.tag)
+            
+
+            switch (lookingAt.collider.tag)
             {
                 case "Enemy":
                     reticleCentre.color = enemyColour;
@@ -175,7 +177,6 @@ public class HeadsUpDisplay : MonoBehaviour
 
     public void PlayHitMarker(bool isCritical)
     {
-        
         if (isCritical)
         {
             AudioSource.PlayClipAtPoint(criticalFeedback, transform.position);

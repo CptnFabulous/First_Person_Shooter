@@ -14,7 +14,7 @@ public enum DamageType
 
 public static class Damage
 {
-    public static void ShootProjectile(ProjectileData projectile, float spread, float range, GameObject origin, NPCFaction originFaction, Transform aimOrigin, Transform muzzle, Vector3 direction)
+    public static void ShootProjectile(ProjectileData projectile, float spread, float range, GameObject origin, Faction originFaction, Transform aimOrigin, Transform muzzle, Vector3 direction)
     {
         RaycastHit targetFound;
         Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
@@ -30,69 +30,60 @@ public static class Damage
         Object.Instantiate(projectile.NewProjectile(origin, originFaction), muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
     }
 
-
-
-    public static void PointDamage(GameObject origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
+    public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
             Debug.Log("Hit");
 
-            if (hitbox.critical == true)
-            {
-                hitbox.Damage(Mathf.RoundToInt(damage * criticalMultiplier), origin, criticalCause);
-            }
-            else
-            {
-                hitbox.Damage(damage, origin, normalCause);
-            }
-
-            WeaponHandler wh = origin.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
-            if (wh != null)
-            {
-                wh.ph.hud.PlayHitMarker(hitbox.critical);
-            }
+            hitbox.Damage(damage, criticalMultiplier, origin, originFaction, normalCause, criticalCause);
         }
     }
 
-    public static void PointDamage(GameObject origin, GameObject attackedObject, int damage, DamageType cause, bool isCritical)
+    public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, DamageType cause, bool isSevere)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
-            hitbox.Damage(damage, origin, cause);
-
-            WeaponHandler wh = origin.GetComponent<WeaponHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
-            if (wh != null)
-            {
-                wh.ph.hud.PlayHitMarker(isCritical);
-            }
+            hitbox.Damage(damage, origin, originFaction, cause, isSevere);
         }
     }
 
-    public static void SimpleExplosion(Transform origin, LayerMask blastDetection, int damage, float knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff)
+    public static void InstantExplosion(GameObject origin, Faction originFaction, Transform explosionOrigin, int damage, float knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff, LayerMask blastDetection, DamageType cause, bool isSevere)
     {
-        Collider[] affectedObjects = Physics.OverlapSphere(origin.position, blastRadius, blastDetection);
+        List<Health> alreadyDamaged = new List<Health>();
+        Collider[] affectedObjects = Physics.OverlapSphere(explosionOrigin.position, blastRadius, blastDetection);
         foreach (Collider c in affectedObjects)
         {
-            Vector3 targetDirection = c.transform.position - origin.position;
+            Vector3 targetDirection = c.transform.position - explosionOrigin.position;
             RaycastHit isVulnerable;
-            if (Physics.Raycast(origin.position, targetDirection, out isVulnerable, blastRadius, blastDetection))
+            if (Physics.Raycast(explosionOrigin.position, targetDirection, out isVulnerable, blastRadius, blastDetection))
             {
                 if (isVulnerable.collider == c)
                 {
                     float i = isVulnerable.distance / blastRadius;
-
-                    /*
-                    // DAMAGE CODE IS COMMENTED OUT BECAUSE I DON'T KNOW HOW TO PREVENT THE EXPLOSION FROM DAMAGING THE ENEMY MULTIPLE TIMES FOR DIFFERENT HITBOXES
-                    DamageHitbox hitbox = isVulnerable.collider.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script, and deals damage
+                    
+                    DamageHitbox hitbox = c.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
                     if (hitbox != null)
                     {
-                        float d = damage * damageFalloff.Evaluate(i);
-                        hitbox.Damage(Mathf.RoundToInt(d), DamageType.BlownUp);
+                        bool undamagedCheck = false;
+                        foreach (Health h in alreadyDamaged)
+                        {
+                            if (h == hitbox.healthScript)
+                            {
+                                undamagedCheck = true;
+                            }
+                        }
+
+                        if (undamagedCheck == false)
+                        {
+                            int d = Mathf.RoundToInt(damage * damageFalloff.Evaluate(i));
+                            hitbox.Damage(d, origin, originFaction, cause, isSevere);
+                            Debug.Log("Dealt " + d + " damage to " + hitbox.name + " at " + hitbox.transform.position + ".");
+                            alreadyDamaged.Add(hitbox.healthScript);
+                        }
                     }
-                    */
 
                     Rigidbody rb = isVulnerable.collider.GetComponent<Rigidbody>(); // Checks collider gameObject for a rigidbody, and knocks rigidbody back accordingly
                     if (rb != null)
@@ -104,21 +95,4 @@ public static class Damage
             }
         }
     }
-
-    /*
-    public static IEnumerator Explosion(Transform origin, int damage, float directHitModifier, int knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff)
-    {
-        float i = 0;
-        while(i < 1)
-        {
-            i += Time.deltaTime / explosionTime;
-            float br = Mathf.Lerp(0, blastRadius, i);
-            float d = damage * falloff.Evaluate(i);
-            float f = explosionForce * falloff.Evaluate(i);
-
-        }
-        
-    }
-    */
-    
 }

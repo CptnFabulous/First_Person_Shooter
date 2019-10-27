@@ -19,8 +19,8 @@ MonoBehaviour:
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 20
-  directHitMultiplier: 1.5
+  damage: 5
+  directHitMultiplier: 1
   blastRadius: 5
   explosionTime: 0
   knockback: 50

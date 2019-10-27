@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour
     float timerLifetime;
 
     [HideInInspector] public GameObject origin;
-    [HideInInspector] public NPCFaction originFaction;
+    [HideInInspector] public Faction originFaction;
 
     // Use this for initialization
     void Start()
@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && IsAlly(projectileHit) == false)
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && IsAlly(projectileHit.collider.gameObject) == false)
         {
             OnHit();
         }
@@ -65,24 +65,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    bool IsAlly(RaycastHit rh)
+    bool IsAlly(GameObject g)
     {
-        DamageHitbox d = rh.collider.GetComponent<DamageHitbox>();
-        if (d != null)
+        Character ch = Character.FromHit(g);
+        if (ch != null && originFaction.Affiliation(ch.faction) == FactionState.Allied)
         {
-            Health h = d.healthScript;
-            if (h != null)
-            {
-                Character ch = h.h;
-                if (ch != null)
-                {
-                    NPCFaction f = ch.faction;
-                    if (f != null && originFaction.IsFriendlyTo(f))
-                    {
-                        return true;
-                    }
-                }
-            }
+            return true;
         }
         return false;
     }

@@ -19,5 +19,5 @@ MonoBehaviour:
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295
-  damage: 10
+  damage: 5
   criticalMultiplier: 1

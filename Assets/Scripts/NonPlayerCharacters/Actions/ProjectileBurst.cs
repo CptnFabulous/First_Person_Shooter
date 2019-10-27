@@ -36,7 +36,7 @@ public class ProjectileBurst
     public AudioClip delayNoise;
     public AudioClip firingNoise;
 
-    public void TargetEnemy(GameObject target, GameObject characterAttacking, NPCFaction characterFaction, Transform head, RaycastHit lookingAt)
+    public void TargetEnemy(GameObject target, GameObject characterAttacking, Faction characterFaction, Transform head, RaycastHit lookingAt)
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
@@ -85,28 +85,6 @@ public class ProjectileBurst
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
                             Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, head.forward);
-                            /*
-                            #region Shoot projectile
-                            Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * (aimMarker - head.position);
-                            RaycastHit rh;
-                            if (Physics.Raycast(head.position, destination, out rh, range, hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
-                            {
-                                destination = rh.point;
-                            }
-                            else
-                            {
-                                destination *= range;
-                            }
-
-                            GameObject launchedProjectile = Object.Instantiate(projectile.gameObject, projectileOrigin.position, Quaternion.LookRotation(destination - projectileOrigin.position, Vector3.up));
-                            Projectile p = launchedProjectile.GetComponent<Projectile>();
-                            p.velocity = velocity;
-                            p.gravityMultiplier = gravityMultiplier;
-                            p.diameter = diameter;
-                            p.hitDetection = hitDetection;
-                            p.origin = characterAttacking;
-                            #endregion
-                            */
                         }
 
                         fireTimer = 0;
@@ -121,6 +99,7 @@ public class ProjectileBurst
         }
 
         laserSight.enabled = isAttacking;
+        // laserSight.colorGradient.SetKeys(new GradientColorKey[] { new GradientColorKey(characterFaction.factionColour, 0.0f) }, laserSight.colorGradient.alphaKeys); // DOES NOT WORK FOR SOME REASON
     }
 
     public void EndAttack()

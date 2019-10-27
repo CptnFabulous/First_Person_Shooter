@@ -16,7 +16,7 @@ public class ExplosiveProjectileData : ProjectileData
     public AnimationCurve damageFalloff;
     public AnimationCurve knockbackFalloff;
 
-    public override GameObject NewProjectile(GameObject origin, NPCFaction originFaction)
+    public override GameObject NewProjectile(GameObject origin, Faction originFaction)
     {
         GameObject launchedProjectile = prefab.gameObject;
         ExplosiveProjectile p = launchedProjectile.GetComponent<ExplosiveProjectile>();

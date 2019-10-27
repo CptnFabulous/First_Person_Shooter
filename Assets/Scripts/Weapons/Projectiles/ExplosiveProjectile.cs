@@ -17,17 +17,8 @@ public class ExplosiveProjectile : Projectile
 
     public override void OnHit()
     {
-        /*
-        DamageHitbox hitbox = projectileHit.collider.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
-        if (hitbox != null)
-        {
-            hitbox.Damage(Mathf.RoundToInt(damage * directHitMultiplier), origin, DamageType.Gibbed);
-        }
-        */
-
-
-        Damage.PointDamage(origin, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier), DamageType.Gibbed, true);
-        Damage.SimpleExplosion(transform, hitDetection, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff);
+        Damage.InstantExplosion(origin, originFaction, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
+        Damage.PointDamage(origin, originFaction, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
         base.OnHit();
     }
 }

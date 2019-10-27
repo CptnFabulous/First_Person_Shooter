@@ -15,6 +15,8 @@ public class EnemyMelee : MonoBehaviour
 
     //public float movementSpeed = 5;
 
+    public Faction faction;
+
     [Header("Melee Attack")]
     public int meleeDamage = 10;
     public float meleeExecuteRange = 2;
@@ -105,7 +107,7 @@ public class EnemyMelee : MonoBehaviour
                     if (enemyHitbox != null)
                     {
                         print("Enemy struck");
-                        enemyHitbox.Damage(meleeDamage, gameObject, meleeDamageType);
+                        enemyHitbox.Damage(meleeDamage, gameObject, faction, meleeDamageType, false);
                     }
                 }
 

@@ -1,55 +1,13 @@
-﻿/*
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
-[RequireComponent(typeof (NavMeshAgent))]
-public class EnemyGun : MonoBehaviour
+public class Combatant : NPC
 {
-    NavMeshAgent na;
+    public float casualMoveSpeed;
+    public float pursueMoveSpeed;
+    public float attackMoveSpeed;
 
-    public float standardMoveSpeed;
-    //public float attackingMoveSpeed;
-
-    [Header("Targeting")]
-    public GameObject head;
-    public GameObject target;
-    public Transform a;
-    public float aimSpeed;
-    public float targetThreshold = 0.1f;
-    RaycastHit lookingAt;
-
-    [Header("Attacks")]
-    public ProjectileBurst attack;
-
-    private void Awake()
-    {
-        na = GetComponent<NavMeshAgent>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (target != null)
-        {
-            na.destination = target.transform.position;
-
-            attack.TargetEnemy(target, gameObject, head, a, targetThreshold, aimSpeed, lookingAt);
-            na.enabled = !attack.isAttacking;
-        }
-    }
-}
-*/
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
-
-public class EnemyGun : NPC
-{
     [Header("Targeting")]
     public GameObject head;
     public GameObject target;
@@ -61,23 +19,20 @@ public class EnemyGun : NPC
 
     RaycastHit lookingAt;
 
-    [Header("Attacks")]
-    public ProjectileBurst attack;
-
     // Update is called once per frame
     void Update()
     {
+        
         if (target == null)
         {
             target = AcquireTarget().gameObject;
         }
-
+        
         if (target != null)
         {
             Seek(target, pursueRange);
 
-            attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
-            na.enabled = !attack.isAttacking;
+            
 
             if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
             {
@@ -87,14 +42,13 @@ public class EnemyGun : NPC
         else
         {
             // Perform idle behaviour
-            StandStill();
         }
     }
 
     Character AcquireTarget()
     {
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, targetRange);
-        foreach(Collider c in thingsInEnvironment)
+        foreach (Collider c in thingsInEnvironment)
         {
             RaycastHit lineOfSight;
             if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetecion) && lineOfSight.collider == c)

@@ -15,7 +15,7 @@ public class ProjectileData : ScriptableObject
     public LayerMask hitDetection;
 
     
-    public virtual GameObject NewProjectile(GameObject origin, NPCFaction originFaction)
+    public virtual GameObject NewProjectile(GameObject origin, Faction originFaction)
     {
         GameObject launchedProjectile = prefab.gameObject;
         Projectile p = launchedProjectile.GetComponent<Projectile>();

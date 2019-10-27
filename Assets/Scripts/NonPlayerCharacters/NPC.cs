@@ -24,7 +24,19 @@ public class NPC : MonoBehaviour
     #region Pathfinding behaviours
     public void Seek(GameObject target, float pursueRange)
     {
+        /*
+        NavMeshHit pointFound;
+        if (NavMesh.SamplePosition(target.transform.position, out pointFound, pursueRange, 0))
+        {
+            na.destination = pointFound.position;
+        }
+        */
+
         na.destination = target.transform.position;
+        //if (na.pathStatus == NavMeshPathStatus.)
+
+
+
         /* // FIGURE OUT HOW TO USE Navmesh.SamplePosition
         NavMeshHit pointFound;
         if (NavMesh.SamplePosition(target.transform.position, out pointFound, pursueRange, 1))
@@ -40,6 +52,7 @@ public class NPC : MonoBehaviour
 
     }
 
+    #region Idle behaviours
     public void PatrolLoop(Transform[] waypoints, float threshold)
     {
         na.destination = waypoints[waypointIndex].position;
@@ -89,5 +102,12 @@ public class NPC : MonoBehaviour
             waypointIndex = Random.Range(0, waypoints.Length - 1);
         }
     }
+
+    public void StandStill()
+    {
+        na.destination = transform.position;
+    }
+    #endregion
+
     #endregion
 }
