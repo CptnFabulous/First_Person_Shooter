@@ -5,15 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof (PlayerHandler))]
 public class PlayerHealth : Health
 {
-    
     [HideInInspector] public PlayerHandler ph;
 
-    public override void Awake()
+    public void Awake()
     {
-        base.Awake();
         ph = GetComponent<PlayerHandler>();
     }
-    
 
     public override void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
@@ -30,7 +27,7 @@ public class PlayerHealth : Health
                 deathMessage += "blown up";
                 break;
             case DamageType.Gibbed:
-                deathMessage += "splattered to pieces";
+                deathMessage += "splattered to giblets";
                 break;
             case DamageType.Burned:
                 deathMessage += "burned to a crisp";

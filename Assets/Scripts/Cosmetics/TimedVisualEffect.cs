@@ -41,4 +41,9 @@ public abstract class TimedVisualEffect : MonoBehaviour
         timer = 0;
         isPaused = false;
     }
+
+    public void SetTo(float newTime)
+    {
+        timer = newTime;
+    }
 }

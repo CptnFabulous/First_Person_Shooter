@@ -70,6 +70,7 @@ public class EnemyGun : NPC
         if (target == null)
         {
             target = AcquireTarget().gameObject;
+            print(target.name);
         }
 
         if (target != null)
@@ -79,7 +80,7 @@ public class EnemyGun : NPC
             attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
             na.enabled = !attack.isAttacking;
 
-            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange && attack.isAttacking == false)
             {
                 target = null;
             }
@@ -99,7 +100,7 @@ public class EnemyGun : NPC
             RaycastHit lineOfSight;
             if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetecion) && lineOfSight.collider == c)
             {
-                Character targetCharacter = c.GetComponent<Character>();
+                Character targetCharacter = c.transform.root.GetComponent<Character>();
                 if (targetCharacter != null && ch.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
                 {
                     return targetCharacter;

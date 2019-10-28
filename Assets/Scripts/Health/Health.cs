@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof (Character))]
 public class Health : MonoBehaviour
 {
-    [HideInInspector] public Character h;
-
     public Resource health = new Resource { max = 100, current = 100, critical = 20 };
     int prevHealth;
 
@@ -17,15 +14,9 @@ public class Health : MonoBehaviour
     void Reset() { OnValidate(); }
     void OnValidate()
     {
-        //magazineCapacity = Mathf.Clamp(magazineCapacity, 0, Mathf.Infinity);
         health.current = Mathf.Clamp(health.current, 0, health.max);
     }
 #endif
-
-    public virtual void Awake()
-    {
-        h = GetComponent<Character>();
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -36,8 +27,6 @@ public class Health : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-
-
         if (prevHealth != health.current) // if health has changed
         {
             HealthChanged();

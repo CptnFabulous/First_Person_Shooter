@@ -7,6 +7,7 @@ public class KineticProjectileData : ProjectileData
 {
     [Header("Damage")]
     public int damage;
+    public float knockback;
     public float criticalMultiplier;
 
     public override GameObject NewProjectile(GameObject origin, Faction originFaction)
@@ -22,6 +23,7 @@ public class KineticProjectileData : ProjectileData
         p.originFaction = originFaction;
 
         p.damage = damage;
+        p.knockback = knockback;
         p.criticalMultiplier = criticalMultiplier;
 
         return launchedProjectile;

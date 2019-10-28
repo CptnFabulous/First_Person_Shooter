@@ -12,9 +12,26 @@ public class DamageHitbox : MonoBehaviour
 
     public void Damage(int damage, GameObject origin, Faction originFaction, DamageType damageSource, bool isSevere)
     {
+        /*
         if (healthScript != null && originFaction.Affiliation(Character.FromHitbox(this).faction) == FactionState.Hostile)
         {
             healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
+
+            PlayerHandler ph = origin.GetComponent<PlayerHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
+            if (ph != null)
+            {
+                ph.hud.PlayHitMarker(isSevere);
+            }
+        }
+        */
+
+        Character c = Character.FromHitbox(this);
+        if (c == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        {
+            if (healthScript != null)
+            {
+                healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
+            }
 
             PlayerHandler ph = origin.GetComponent<PlayerHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
             if (ph != null)
@@ -26,6 +43,7 @@ public class DamageHitbox : MonoBehaviour
     
     public void Damage(int damage, float criticalMultiplier, GameObject origin, Faction originFaction, DamageType normalType, DamageType criticalType)
     {
+        /*
         if (healthScript != null && originFaction.Affiliation(Character.FromHitbox(this).faction) == FactionState.Hostile)
         {
             // Calculates appropriate damage to deal
@@ -44,6 +62,39 @@ public class DamageHitbox : MonoBehaviour
                 ph.hud.PlayHitMarker(critical);
             }
         }
+        */
+
+        Character c = Character.FromHitbox(this);
+        if (c == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        {
+            if (healthScript != null)
+            {
+                // Calculates appropriate damage to deal
+                DamageType dt = normalType;
+                float d = damage * damageMultiplier;
+                if (critical == true)
+                {
+                    d *= criticalMultiplier;
+                    dt = criticalType;
+                }
+                healthScript.TakeDamage(Mathf.RoundToInt(d), origin, dt);
+            }
+
+            PlayerHandler ph = origin.GetComponent<PlayerHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
+            if (ph != null)
+            {
+                ph.hud.PlayHitMarker(critical);
+            }
+        }
+    }
+
+    public GameObject GetRootObject()
+    {
+        if (healthScript != null)
+        {
+            return healthScript.gameObject;
+        }
+        return transform.root.gameObject;
     }
 
     
