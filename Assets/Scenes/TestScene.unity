@@ -5400,6 +5400,8 @@ MonoBehaviour:
     transitionTime: 0.25
     moveSpeedReduction: -0.4
     aimPosition: {fileID: 1943300499}
+    scopeGraphic: {fileID: 0}
+    hudOverlay: {fileID: 0}
   ammunitionModes:
   - name: 5.56MM NATO
     consumesAmmo: 1
@@ -5420,13 +5422,13 @@ MonoBehaviour:
     reloadTime: 1.2
   projectileModes:
   - name: Standard bullets
-    muzzle: {fileID: 1129390667}
     projectile: {fileID: 11400000, guid: e7e39404950a0474b9a22a26a906daf8, type: 2}
     projectileCount: 1
+    muzzle: {fileID: 1129390667}
   - name: Grenades
-    muzzle: {fileID: 70607996}
     projectile: {fileID: 11400000, guid: cd94dd650fc06dd439275792b2371884, type: 2}
     projectileCount: 1
+    muzzle: {fileID: 70607996}
   firingModes:
   - name: Full-Auto
     fireControlMode: 0
@@ -5489,15 +5491,17 @@ MonoBehaviour:
       m_Bits: 0
   projectile:
     name: 
-    muzzle: {fileID: 0}
     projectile: {fileID: 0}
     projectileCount: 0
+    muzzle: {fileID: 0}
   optics:
     name: 
     magnification: 0
     transitionTime: 0
     moveSpeedReduction: 0
     aimPosition: {fileID: 0}
+    scopeGraphic: {fileID: 0}
+    hudOverlay: {fileID: 0}
   recoil:
     name: 
     recoil: 0
@@ -5517,6 +5521,7 @@ MonoBehaviour:
       critical: 0
     roundsReloaded: 0
     reloadTime: 0
+  isSwitching: 0
   aimDirection: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
   recoilToApply: 0
@@ -27353,6 +27358,8 @@ MonoBehaviour:
     transitionTime: 0.25
     moveSpeedReduction: -0.4
     aimPosition: {fileID: 1590925709}
+    scopeGraphic: {fileID: 0}
+    hudOverlay: {fileID: 0}
   ammunitionModes:
   - name: 5.56MM NATO
     consumesAmmo: 1
@@ -27373,14 +27380,14 @@ MonoBehaviour:
     reloadTime: 1.2
   projectileModes:
   - name: Standard bullets
-    muzzle: {fileID: 337938846}
     projectile: {fileID: 2477036015384432996, guid: fd5f71911ac46df42a45a40eda5d0a31,
       type: 3}
     projectileCount: 1
-  - name: Grenades
     muzzle: {fileID: 337938846}
+  - name: Grenades
     projectile: {fileID: 0}
     projectileCount: 1
+    muzzle: {fileID: 337938846}
   firingModes:
   - name: Full-Auto
     fireControlMode: 0
@@ -27443,15 +27450,17 @@ MonoBehaviour:
       m_Bits: 0
   projectile:
     name: 
-    muzzle: {fileID: 0}
     projectile: {fileID: 0}
     projectileCount: 0
+    muzzle: {fileID: 0}
   optics:
     name: 
     magnification: 0
     transitionTime: 0
     moveSpeedReduction: 0
     aimPosition: {fileID: 0}
+    scopeGraphic: {fileID: 0}
+    hudOverlay: {fileID: 0}
   recoil:
     name: 
     recoil: 0
@@ -27471,6 +27480,7 @@ MonoBehaviour:
       critical: 0
     roundsReloaded: 0
     reloadTime: 0
+  isSwitching: 0
   aimDirection: {x: 0, y: 0, z: 0}
   target: {x: 0, y: 0, z: 0}
   recoilToApply: 0
@@ -28989,7 +28999,7 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -29456,8 +29466,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: -0.013564117, y: 0.28663287, z: -0.014818396, w: -0.9578299}
-  m_LocalPosition: {x: 27.711502, y: -581.66724, z: 29.830353}
+  m_LocalRotation: {x: -0.035232164, y: 0.74452496, z: -0.0384905, w: 0.66555226}
+  m_LocalPosition: {x: 28.19926, y: -588.23206, z: 31.113922}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}

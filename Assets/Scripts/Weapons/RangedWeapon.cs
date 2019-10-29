@@ -47,6 +47,8 @@ public class OpticsStats
     public float transitionTime;
     [Range(-1, 0)] public float moveSpeedReduction;
     public Transform aimPosition;
+    public Sprite scopeGraphic;
+    public DisappearingEffect hudOverlay;
 }
 
 [System.Serializable]
@@ -77,16 +79,9 @@ public class ProjectileStats
 #if UNITY_EDITOR
     public string name;
 #endif
-    public Transform muzzle;
-
     public ProjectileData projectile;
-
-    //public Projectile projectile;
-
     public int projectileCount;
-    //public float velocity;
-    //public float diameter;
-    //public float gravityMultiplier;
+    public Transform muzzle;
 }
 #endregion
 
@@ -153,6 +148,9 @@ public class RangedWeapon : MonoBehaviour
 
 
     #region Universal variables (variables that can be used multiple times for different firing modes)
+    // Switching modes
+    public bool isSwitching;
+
     // Firing weapon
     [HideInInspector] public RaycastHit targetFound;
     [HideInInspector] public Vector3 aimDirection;
@@ -263,7 +261,6 @@ public class RangedWeapon : MonoBehaviour
     void Update()
     {
         #region Makes easy references to the appropriate sets of stats so I don't have to type "xModes[firingModes[firingModeIndex].xMode]" every single bloody time I need to reference a set of stats
-
         fireControls = fireControlModes[firingModes[firingModeIndex].fireControlMode];
         accuracy = accuracyModes[firingModes[firingModeIndex].accuracyMode];
         projectile = projectileModes[firingModes[firingModeIndex].projectileMode];
@@ -271,7 +268,6 @@ public class RangedWeapon : MonoBehaviour
         recoil = GetStats(recoilModes, firingModes[firingModeIndex]);
         ammunition = GetStats(ammunitionModes, firingModes[firingModeIndex]);
         magazine = GetStats(magazineModes, firingModes[firingModeIndex]);
-
         #endregion
 
         foreach (FiringMode f in firingModes)
@@ -357,9 +353,10 @@ public class RangedWeapon : MonoBehaviour
         
         if (optics != null)
         {
-            AimHandler(optics.magnification, optics.moveSpeedReduction, optics.transitionTime, firingModes[firingModeIndex].heldPosition, optics.aimPosition, playerHolding.toggleAim);
+            //AimHandler(optics.magnification, optics.moveSpeedReduction, optics.transitionTime, firingModes[firingModeIndex].heldPosition, optics.aimPosition, playerHolding.toggleAim);
+
+            AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
         }
-        
 
         if (recoil != null)
         {
@@ -368,7 +365,6 @@ public class RangedWeapon : MonoBehaviour
 
         if (magazine != null)
         {
-            
             if (ammunition != null)
             {
                 ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine, playerHolding, ammunition.ammoType);
@@ -387,6 +383,16 @@ public class RangedWeapon : MonoBehaviour
 
     public void SwitchWeaponMode(int modeIndex)
     {
+        // This section of code is supposed to check if the weapon being switched to has different optics, and cancel out if so. This does not work for some reason.
+        OpticsStats newOptics = GetStats(opticsModes, firingModes[firingModeIndex]);
+        if (newOptics == null || newOptics != optics)
+        {
+            isAiming = false;
+            zoomTimer = 0;
+            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+        }
+        
+
         firingModeIndex = modeIndex;
     }
 
@@ -441,44 +447,6 @@ public class RangedWeapon : MonoBehaviour
     #endregion
 
     #region Firing functions
-    /*
-    public void LaunchProjectile(Vector3 direction, RaycastHit target, LayerMask rayDetection, float spread, float range, Transform muzzle, Projectile projectile, float velocity, float gravityMultiplier, float diameter)
-    {
-        Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
-        //Ray targetRay = new Ray(transform.position, destination);
-        if (Physics.Raycast(transform.position, destination, out target, range, rayDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
-        {
-            destination = target.point;
-        }
-        else
-        {
-            destination *= range;
-        }
-
-        GameObject launchedProjectile = Instantiate(projectile.gameObject, muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
-        Projectile p = launchedProjectile.GetComponent<Projectile>();
-        p.velocity = velocity;
-        p.gravityMultiplier = gravityMultiplier;
-        p.diameter = diameter;
-        p.hitDetection = rayDetection;
-        p.origin = playerHolding.gameObject;
-
-        KineticProjectile kp = p.GetComponent<KineticProjectile>();
-        if (kp != null)
-        {
-
-        }
-
-        ExplosiveProjectile ep = p.GetComponent<ExplosiveProjectile>();
-        if (ep != null)
-        {
-
-        }
-
-        // HAVE MORE STUFF HERE FOR DETERMINING TYPE OF PROJECTILE AND ASSIGNING APPROPRIATE VARIABLES. HOW DO I DO THIS?
-    }
-    */
-
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
     {
         if (recoilToApply > 0)
@@ -504,6 +472,117 @@ public class RangedWeapon : MonoBehaviour
     #endregion
 
     #region ADS functions
+
+    public void AimHandler(OpticsStats os, Transform hipPosition, bool toggleAim)
+    {
+        if (toggleAim == true)
+        {
+            if (Input.GetButtonDown("MouseRight"))
+            {
+                isAiming = !isAiming;
+            }
+        }
+        else
+        {
+            if (Input.GetButton("MouseRight"))
+            {
+                isAiming = true;
+            }
+            else
+            {
+                isAiming = false;
+            }
+        }
+
+        if (isAiming) //Sets timer value to specify lerping of variables
+        {
+            zoomTimer += Time.deltaTime / os.transitionTime;
+            //LerpSights(os.magnification, os.moveSpeedReduction, os.transitionTime, zoomTimer, os.aimPosition);
+            LerpSights(os, zoomTimer, os.aimPosition);
+        }
+        else
+        {
+            zoomTimer -= Time.deltaTime / os.transitionTime;
+            //LerpSights(os.magnification, os.moveSpeedReduction, os.transitionTime, zoomTimer, hipPosition);
+            LerpSights(os, zoomTimer, hipPosition);
+        }
+        zoomTimer = Mathf.Clamp01(zoomTimer);
+    }
+    /*
+    public void AimHandler(float magnification, float moveSpeedReduction, float zoomTime, Transform hipPosition, Transform aimPosition, bool toggleAim)
+    {
+        if (toggleAim == true)
+        {
+            if (Input.GetButtonDown("MouseRight"))
+            {
+                isAiming = !isAiming;
+            }
+        }
+        else
+        {
+            if (Input.GetButton("MouseRight"))
+            {
+                isAiming = true;
+            }
+            else
+            {
+                isAiming = false;
+            }
+        }
+
+        if (isAiming) //Sets timer value to specify lerping of variables
+        {
+            zoomTimer += Time.deltaTime / zoomTime;
+            LerpSights(magnification, moveSpeedReduction, zoomTime, zoomTimer, aimPosition);
+        }
+        else
+        {
+            zoomTimer -= Time.deltaTime / zoomTime;
+            LerpSights(magnification, moveSpeedReduction, zoomTime, zoomTimer, hipPosition);
+        }
+        zoomTimer = Mathf.Clamp01(zoomTimer);
+    }
+    */
+    void LerpSights(OpticsStats os, float timer, Transform newWeaponPosition)
+    {
+        // Reduces FOV to zoom in camera
+        zoomVariable = Mathf.Lerp(1, 1 / os.magnification, timer);
+        playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
+
+        UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / os.transitionTime);
+
+        // Reduce sensitivity
+        float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
+        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, 0);
+
+        // Reduce movement speed
+        float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
+        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, 0);
+
+        // Alter accuracy if specified
+    }
+
+    /*
+    void LerpSights(float magnification, float moveSpeedReduction, float time, float timer, Transform newWeaponPosition)
+    {
+        // Reduces FOV to zoom in camera
+        zoomVariable = Mathf.Lerp(1, 1 / magnification, timer);
+        playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
+
+        UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / time);
+
+        // Reduce sensitivity
+        float newSensitivity = Mathf.Lerp(0, -1 + (1 / magnification), timer);
+        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, 0);
+
+        // Reduce movement speed
+        float newSpeed = Mathf.Lerp(0, moveSpeedReduction, timer);
+        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, 0);
+
+        // Alter accuracy if specified
+    }
+    */
+    /*
     public void AimHandler(float magnification, float moveSpeedReduction, float zoomTime, Transform hipPosition, Transform aimPosition, bool toggleAim)
     {
         if (toggleAim == true)
@@ -536,20 +615,14 @@ public class RangedWeapon : MonoBehaviour
             zoomTimer -= Time.deltaTime / zoomTime;
         }
         zoomTimer = Mathf.Clamp01(zoomTimer);
-        LerpSights(magnification, moveSpeedReduction, zoomTimer, hipPosition, aimPosition);
+        LerpSights(magnification, moveSpeedReduction, zoomTimer);
     }
 
-    void LerpSights(float magnification, float moveSpeedReduction, float timer, Transform hipPosition, Transform aimPosition)
+    void LerpSights(float magnification, float moveSpeedReduction, float timer)
     {
         // Reduces FOV to zoom in camera
         zoomVariable = Mathf.Lerp(1, 1 / magnification, timer);
         playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
-
-        /* // Moves weapon position via lerping. This is obsolete
-        Vector3 currentWeaponPosition = Vector3.Lerp(hipPosition.position, aimPosition.position, timer);
-        Quaternion currentWeaponRotation = Quaternion.Lerp(hipPosition.rotation, aimPosition.rotation, timer);
-        weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
-        */
 
         // Reduce sensitivity
         float newSensitivity = Mathf.Lerp(0, -1 + (1 / magnification), timer);
@@ -561,6 +634,7 @@ public class RangedWeapon : MonoBehaviour
 
         // Alter accuracy if specified
     }
+    */
     #endregion
 
     #region Reloading functions

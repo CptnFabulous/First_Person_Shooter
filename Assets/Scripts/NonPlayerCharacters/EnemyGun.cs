@@ -69,8 +69,11 @@ public class EnemyGun : NPC
     {
         if (target == null)
         {
-            target = AcquireTarget().gameObject;
-            print(target.name);
+            Character t = AcquireTarget();
+            if (t != null)
+            {
+                target = t.gameObject;
+            }
         }
 
         if (target != null)
