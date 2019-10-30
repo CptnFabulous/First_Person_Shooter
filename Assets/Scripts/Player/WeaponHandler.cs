@@ -20,7 +20,7 @@ public class WeaponHandler : MonoBehaviour
     
 
     [Header("Inventory")]
-    public Weapon equippedWeapon;
+    //public Weapon equippedWeapon;
 
 
 
@@ -110,7 +110,7 @@ public class WeaponHandler : MonoBehaviour
 
     }
 
-    void SwitchWeapon( WeaponData wd)
+    void SwitchWeapon(WeaponData wd)
     {
 
     }

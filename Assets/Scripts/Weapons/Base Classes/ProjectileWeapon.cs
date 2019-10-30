@@ -130,7 +130,7 @@ public abstract class ProjectileWeapon : Weapon
 
         
 
-        if (playerHolding.ph.isActive == true && Input.GetButton("Fire") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ph.a.GetStock(caliber) >= ammoPerShot && ((roundsInMagazine >= ammoPerShot && isReloading == false) || magazineCapacity <= 0))
+        if (/*playerHolding.ph.GetCurrentState() == PlayerState.Active && */Input.GetButton("Fire") && fireTimer >= 60 / roundsPerMinute && (shotsInBurst < burstCount || burstCount <= 0) && playerHolding.ph.a.GetStock(caliber) >= ammoPerShot && ((roundsInMagazine >= ammoPerShot && isReloading == false) || magazineCapacity <= 0))
         {
             /*
             if (Input.GetButtonDown("Fire"))

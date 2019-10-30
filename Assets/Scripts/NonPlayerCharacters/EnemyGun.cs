@@ -83,6 +83,11 @@ public class EnemyGun : NPC
             attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
             na.enabled = !attack.isAttacking;
 
+            if (target.GetComponent<Health>().health.current <= 0)
+            {
+                target = null;
+            }
+
             if (Vector3.Distance(transform.position, target.transform.position) > pursueRange && attack.isAttacking == false)
             {
                 target = null;

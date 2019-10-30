@@ -42,8 +42,8 @@ public class PlayerController : MonoBehaviour
     public bool toggleCrouch;
     #endregion
 
-    #region Private variables
-    Rigidbody rb;
+    #region Noneditable variables
+    [HideInInspector] public Rigidbody rb;
     CapsuleCollider cc;
 
     Ray isGrounded;

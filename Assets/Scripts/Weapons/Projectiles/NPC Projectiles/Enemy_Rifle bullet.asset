@@ -20,4 +20,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   damage: 5
+  knockback: 0.01
   criticalMultiplier: 1

@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum ObjectiveType
+{
+    Reach,
+    Eliminate
+    // Add more objective types in future
+}
+
+
 [RequireComponent(typeof (Character))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class NPC : MonoBehaviour
@@ -53,6 +61,22 @@ public class NPC : MonoBehaviour
     }
 
     #region Idle behaviours
+
+    public void ResumePatrol(Transform[] waypoints)
+    {
+        int resumeIndex = 0;
+
+        for(int i = 0; i < waypoints.Length; i++)
+        {
+            if (Vector3.Distance(transform.position, waypoints[i].position) <= Vector3.Distance(transform.position, waypoints[resumeIndex].position))
+            {
+                resumeIndex = i;
+            }
+        }
+
+        waypointIndex = resumeIndex;
+    }
+
     public void PatrolLoop(Transform[] waypoints, float threshold)
     {
         na.destination = waypoints[waypointIndex].position;

@@ -55,7 +55,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.enabled = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        ph.isActive = false;
+        //ph.isActive = false;
         isPaused = true;
     }
 
@@ -66,7 +66,7 @@ public class PauseMenu : MonoBehaviour
         headsUpDisplay.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        ph.isActive = true;
+        //ph.Se
         isPaused = false;
     }
 }

@@ -27,7 +27,7 @@ public class HeadsUpDisplay : MonoBehaviour
     public GameObject healthDisplay;
     public Text healthCounter;
 
-    [Header("Reticle")]
+    [Header("Reticle/Aiming")]
     public Image reticleCentre;
     public Image reticleUp;
     public Image reticleDown;
@@ -36,6 +36,9 @@ public class HeadsUpDisplay : MonoBehaviour
     public Color reticleDefaultColour = Color.white;
     public Color allyColour = Color.green;
     public Color enemyColour = Color.red;
+
+    public ColourTransitionEffect opticsOverlay;
+    public ColourTransitionEffect opticsTransition;
 
     [Header("Weapon stats")]
     public GameObject ammoDisplay;
@@ -46,9 +49,9 @@ public class HeadsUpDisplay : MonoBehaviour
     public AudioClip damageFeedback;
     public AudioClip criticalFeedback;
     public AudioClip killFeedback;
-    public DisappearingEffect damagePing;
+    public ColourTransitionEffect damagePing;
     public float damagePingDuration;
-    public DisappearingEffect criticalPing;
+    public ColourTransitionEffect criticalPing;
     public float criticalPingDuration;
 
 
@@ -120,8 +123,38 @@ public class HeadsUpDisplay : MonoBehaviour
         RaycastHit lookingAt;
         if(Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
         {
+            //print("Looking at " + lookingAt.collider.name);
+            Character c = null;
+
+            DamageHitbox d = lookingAt.collider.GetComponent<DamageHitbox>();
+            if (d != null)
+            {
+                c = Character.FromHitbox(d);
+            }
+
+            if (c != null)
+            {
+                switch (ph.faction.Affiliation(c.faction))
+                {
+                    case FactionState.Allied:
+                        ColourReticle(allyColour);
+                        break;
+                    case FactionState.Hostile:
+                        ColourReticle(enemyColour);
+                        break;
+                    default:
+                        ColourReticle(reticleDefaultColour);
+                        break;
+                }
+            }
+            else
+            {
+                ColourReticle(reticleDefaultColour);
+            }
+
             
 
+            /*
             switch (lookingAt.collider.tag)
             {
                 case "Enemy":
@@ -146,6 +179,7 @@ public class HeadsUpDisplay : MonoBehaviour
                     reticleRight.color = reticleDefaultColour;
                     break;
             }
+            */
         }
 
         firingMode.text = rw.firingModes[rw.firingModeIndex].name;
@@ -173,6 +207,39 @@ public class HeadsUpDisplay : MonoBehaviour
             }
         }
 
+    }
+
+    void ColourReticle(Color c)
+    {
+        reticleCentre.color = c;
+        reticleUp.color = c;
+        reticleDown.color = c;
+        reticleLeft.color = c;
+        reticleRight.color = c;
+    }
+
+    public void ADSTransition(float timer, Sprite opticsGraphic)
+    {
+        opticsOverlay.graphic.sprite = opticsGraphic;
+        opticsOverlay.SetTo(timer);
+        opticsTransition.SetTo(timer);
+
+        if (timer > 0.5)
+        {
+            reticleCentre.enabled = false;
+            reticleUp.enabled = false;
+            reticleDown.enabled = false;
+            reticleLeft.enabled = false;
+            reticleRight.enabled = false;
+        }
+        else
+        {
+            reticleCentre.enabled = true;
+            reticleUp.enabled = true;
+            reticleDown.enabled = true;
+            reticleLeft.enabled = true;
+            reticleRight.enabled = true;
+        }
     }
 
     public void PlayHitMarker(bool isCritical)

@@ -46,6 +46,4 @@ public class Faction : ScriptableObject
         }
         return FactionState.Neutral;
     }
-
-    //public static Faction Get
 }
