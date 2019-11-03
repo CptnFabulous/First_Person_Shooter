@@ -269,10 +269,14 @@ public class RangedWeapon : MonoBehaviour
         magazine = GetStats(magazineModes, firingModes[firingModeIndex]);
         #endregion
 
+        /*
         foreach (FiringMode f in firingModes)
         {
             fireControlModes[f.fireControlMode].fireTimer += Time.deltaTime;
         }
+        */
+
+        fireControls.fireTimer += Time.deltaTime;
 
         // If player is active
         // If player is pressing fire button
@@ -280,7 +284,7 @@ public class RangedWeapon : MonoBehaviour
         // If burst count has not exceeded the limit OR burst count is set to zero
         // If ammo is available OR supply is null
         // If magazine is not empty OR null
-        if (playerHolding.ph.GetCurrentState() == PlayerState.Active && /*playerHolding.ph.isActive == true && */Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
+        if (playerHolding.ph.CurrentState() == PlayerState.Active && /*playerHolding.ph.isActive == true && */Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
         {
             // Adjust fire control variables
             fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
@@ -318,7 +322,8 @@ public class RangedWeapon : MonoBehaviour
             if (m != null)
             {
                 //m.Play(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
-                m.Restart(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
+                m.Reset(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
+                m.Play();
             }
 
             AudioClip a = firingModes[firingModeIndex].firingNoise;
@@ -352,8 +357,6 @@ public class RangedWeapon : MonoBehaviour
         
         if (optics != null)
         {
-            //AimHandler(optics.magnification, optics.moveSpeedReduction, optics.transitionTime, firingModes[firingModeIndex].heldPosition, optics.aimPosition, playerHolding.toggleAim);
-
             AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
         }
 

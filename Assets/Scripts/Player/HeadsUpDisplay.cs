@@ -26,6 +26,8 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("Health elements")]
     public GameObject healthDisplay;
     public Text healthCounter;
+    public ColourTransitionEffect damageFlash;
+    public AudioClip damageNoise;
 
     [Header("Reticle/Aiming")]
     public Image reticleCentre;
@@ -247,16 +249,21 @@ public class HeadsUpDisplay : MonoBehaviour
         if (isCritical)
         {
             AudioSource.PlayClipAtPoint(criticalFeedback, transform.position);
-            criticalPing.Restart(criticalPingDuration);
+            criticalPing.Play();
             damagePing.Stop();
         }
         else
         {
             AudioSource.PlayClipAtPoint(damageFeedback, transform.position);
-            damagePing.Restart(damagePingDuration);
+            damagePing.Play();
             criticalPing.Stop();
         }
-        
+    }
+
+    public void PlayerDamageFeedback()
+    {
+        damageFlash.Play();
+
     }
 
     void HealthHUD()

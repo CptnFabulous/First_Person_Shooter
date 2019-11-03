@@ -22,39 +22,31 @@ public abstract class TimedVisualEffect : MonoBehaviour
 
     public void Play()
     {
+        timer = 0;
         isPaused = false;
-
-        directControl = false;
     }
 
-    public void Pause()
+    public void IsPaused(bool pause)
     {
-        isPaused = true;
-
-        directControl = false;
+        isPaused = pause;
     }
 
     public void Stop()
     {
         timer = 0;
         isPaused = true;
-
-        directControl = false;
     }
 
-    public void Restart(float duration)
+    public void Reset(float duration)
     {
         lifetime = duration;
-        timer = 0;
-        isPaused = false;
-
-        directControl = false;
+        //timer = 0;
     }
 
     public void SetTo(float newTime)
     {
         timer = newTime;
 
-        directControl = true;
+        //directControl = true;
     }
 }

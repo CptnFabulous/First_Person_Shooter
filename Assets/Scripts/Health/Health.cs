@@ -71,8 +71,8 @@ public class Health : MonoBehaviour
             case DamageType.Burned:
                 deathMessage += "burned to a crisp";
                 break;
-            case DamageType.KnockedOut:
-                deathMessage += "knocked unconscious";
+            case DamageType.Bludgeoned:
+                deathMessage += "bludgeoned to a pulp";
                 break;
             default:
                 deathMessage += "killed";

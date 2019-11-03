@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
     public string properName;
     public string description;
     public Faction faction;
+    public bool isUnique;
 
     public static Character FromHit(GameObject g)
     {

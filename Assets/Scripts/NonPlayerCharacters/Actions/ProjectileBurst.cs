@@ -71,6 +71,8 @@ public class ProjectileBurst
         }
         else // If attack sequence is initiated (isAttacking == true), execute telegraph and attack
         {
+            //head.LookAt(aimMarker);
+
             delayTimer += Time.deltaTime;
             if (delayTimer >= delay) // If delay is finished
             {
@@ -79,7 +81,8 @@ public class ProjectileBurst
                     fireTimer += Time.deltaTime;
                     if (fireTimer >= 60 / roundsPerMinute)
                     {
-                        muzzleFlash.Restart(60 / roundsPerMinute * flashRelativeDuration);
+                        muzzleFlash.Reset(60 / roundsPerMinute * flashRelativeDuration);
+                        muzzleFlash.Play();
                         AudioSource.PlayClipAtPoint(firingNoise, projectileOrigin.position);
 
                         for (int _p = 0; _p < projectileCount; _p++)

@@ -11763,6 +11763,7 @@ GameObject:
   - component: {fileID: 607835258}
   - component: {fileID: 607835257}
   - component: {fileID: 607835261}
+  - component: {fileID: 607835268}
   - component: {fileID: 607835269}
   - component: {fileID: 607835267}
   - component: {fileID: 607835256}
@@ -11922,6 +11923,8 @@ MonoBehaviour:
   interactRange: 2.5
   healthDisplay: {fileID: 1655004858}
   healthCounter: {fileID: 513628737}
+  damageFlash: {fileID: 3308832631992261540}
+  damageNoise: {fileID: 0}
   reticleCentre: {fileID: 1971849078}
   reticleUp: {fileID: 22425462}
   reticleDown: {fileID: 1185717598}
@@ -12049,12 +12052,109 @@ MonoBehaviour:
   properName: Player
   description: It's you!
   faction: {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}
+  isUnique: 1
   ph: {fileID: 0}
   pc: {fileID: 0}
   wh: {fileID: 0}
   a: {fileID: 0}
   hud: {fileID: 0}
   gsh: {fileID: 0}
+--- !u!82 &607835268
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607835255}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &607835269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29607,8 +29707,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: 0.04570385, y: -0.9658086, z: 0.049930513, w: 0.250264}
-  m_LocalPosition: {x: 31.036255, y: -634.31946, z: 32.910835}
+  m_LocalRotation: {x: -0.012886315, y: 0.27231503, z: -0.014078095, w: 0.9620189}
+  m_LocalPosition: {x: 30.6073, y: -647.33856, z: 33.754196}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}
@@ -50754,6 +50854,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3308832631992261540 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4818044375840067345, guid: 8047e6a2aaf2129428dfe589038be385,
+    type: 3}
+  m_PrefabInstance: {fileID: 3308832631992261538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018bd9661e1a24045a75ce04618ed967, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6231957954487490430
