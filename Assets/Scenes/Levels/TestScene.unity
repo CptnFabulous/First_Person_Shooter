@@ -5397,7 +5397,7 @@ MonoBehaviour:
   opticsModes:
   - name: 4x ACOG
     magnification: 4
-    transitionTime: 0.25
+    transitionTime: 0.5
     moveSpeedReduction: -0.4
     aimPosition: {fileID: 1943300499}
     scopeGraphic: {fileID: 21300000, guid: eaa506ef1ed6ced4eafffc2a93e905a1, type: 3}
@@ -29707,8 +29707,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409070503}
-  m_LocalRotation: {x: -0.012886315, y: 0.27231503, z: -0.014078095, w: 0.9620189}
-  m_LocalPosition: {x: 30.6073, y: -647.33856, z: 33.754196}
+  m_LocalRotation: {x: -0.017967422, y: 0.37968326, z: -0.019628977, w: -0.9247338}
+  m_LocalPosition: {x: 31.073357, y: -650.7976, z: 33.352165}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 767545910}

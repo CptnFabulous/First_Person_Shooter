@@ -1487,6 +1487,7 @@ MonoBehaviour:
   properName: 
   description: A placeholder enemy armed with an automatic rifle.
   faction: {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
+  isUnique: 0
 --- !u!114 &6231957955032080221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1522,7 +1523,7 @@ MonoBehaviour:
   target: {fileID: 0}
   targetRange: 25
   pursueRange: 50
-  viewDetecion:
+  viewDetection:
     serializedVersion: 2
     m_Bits: 4294967295
   attack:
@@ -1533,6 +1534,7 @@ MonoBehaviour:
     spread: 0
     range: 25
     aimSpeed: 50
+    telegraphAimSpeed: 5
     targetThreshold: 0.2
     roundsPerMinute: 900
     delay: 0.4

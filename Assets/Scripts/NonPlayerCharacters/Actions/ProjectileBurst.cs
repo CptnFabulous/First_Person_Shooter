@@ -15,6 +15,7 @@ public class ProjectileBurst
     public float spread;
     public float range = 500;
     public float aimSpeed = 50;
+    public float telegraphAimSpeed = 10;
     public float targetThreshold = 0.2f;
 
     [Header("Timers")]
@@ -71,7 +72,10 @@ public class ProjectileBurst
         }
         else // If attack sequence is initiated (isAttacking == true), execute telegraph and attack
         {
-            //head.LookAt(aimMarker);
+            
+            aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, telegraphAimSpeed * Time.deltaTime);
+            head.LookAt(aimMarker);
+            
 
             delayTimer += Time.deltaTime;
             if (delayTimer >= delay) // If delay is finished

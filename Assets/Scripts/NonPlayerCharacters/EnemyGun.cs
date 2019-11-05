@@ -70,6 +70,7 @@ public class EnemyGun : NPC
         if (target == null)
         {
             Character t = AcquireTarget();
+            print(t);
             if (t != null)
             {
                 target = t.gameObject;
@@ -83,7 +84,8 @@ public class EnemyGun : NPC
             attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
             na.enabled = !attack.isAttacking;
 
-            if (target.GetComponent<Health>().health.current <= 0)
+            Health h = target.GetComponent<Health>();
+            if (h != null && h.health.current <= 0)
             {
                 target = null;
             }
@@ -117,4 +119,5 @@ public class EnemyGun : NPC
         }
         return null;
     }
+
 }
