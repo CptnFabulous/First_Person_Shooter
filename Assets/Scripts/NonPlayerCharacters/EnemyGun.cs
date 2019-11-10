@@ -50,6 +50,9 @@ using UnityEngine.AI;
 
 public class EnemyGun : NPC
 {
+    [Header("General stats")]
+    public float moveSpeed;
+
     [Header("Targeting")]
     public GameObject head;
     public GameObject target;
@@ -70,7 +73,6 @@ public class EnemyGun : NPC
         if (target == null)
         {
             Character t = AcquireTarget();
-            print(t);
             if (t != null)
             {
                 target = t.gameObject;
@@ -79,10 +81,17 @@ public class EnemyGun : NPC
 
         if (target != null)
         {
-            Seek(target, pursueRange);
+            if (Vector3.Distance(transform.position, target.transform.position) > attack.range || LineOfSight(target, pursueRange) == false)
+            {
+                Seek(target, pursueRange);
+            }
+            else
+            {
+                na.destination = transform.position;
+            }
+            
 
-            attack.TargetEnemy(target, gameObject, ch.faction, head.transform, lookingAt);
-            na.enabled = !attack.isAttacking;
+            attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt);
 
             Health h = target.GetComponent<Health>();
             if (h != null && h.health.current <= 0)
@@ -107,6 +116,16 @@ public class EnemyGun : NPC
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, targetRange);
         foreach(Collider c in thingsInEnvironment)
         {
+            if (LineOfSight(c.gameObject, targetRange))
+            {
+                Character targetCharacter = c.transform.root.GetComponent<Character>();
+                if (targetCharacter != null && ch.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
+                {
+                    return targetCharacter;
+                }
+            }
+            
+            /*
             RaycastHit lineOfSight;
             if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetection) && lineOfSight.collider == c)
             {
@@ -116,8 +135,22 @@ public class EnemyGun : NPC
                     return targetCharacter;
                 }
             }
+            */
         }
         return null;
+    }
+
+    bool LineOfSight(GameObject target, float range)
+    {
+        RaycastHit lineOfSight;
+        if (Physics.Raycast(head.transform.position, target.transform.position - head.transform.position, out lineOfSight, range, viewDetection))
+        {
+            if (lineOfSight.collider.gameObject == target)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

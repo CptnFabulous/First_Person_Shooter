@@ -5,19 +5,41 @@ using UnityEngine;
 public abstract class TimedVisualEffect : MonoBehaviour
 {
     public AnimationCurve magnitudeOverLifetime;
-    public float lifetime;
-    bool directControl;
-
-    [HideInInspector] public float timer = 1;
-    bool isPaused;
+    public float lifetime = 1;
+    public bool looping;
+    public bool directControl;
     
+
+    [HideInInspector] public float timer = 0;
+    bool isPaused = true;
+
+
     // Update is called once per frame
-    public virtual void Update()
+    public void Update()
     {
         if (directControl == false && timer < 1 && isPaused == false)
         {
             timer += Time.deltaTime / lifetime;
+
+            if (timer >= 1)
+            {
+                if (looping)
+                {
+                    timer = 0;
+                }
+                else
+                {
+                    isPaused = true;
+                }
+            }
         }
+
+        Effect();
+    }
+
+    public virtual void Effect()
+    {
+        print(timer);
     }
 
     public void Play()
@@ -40,13 +62,10 @@ public abstract class TimedVisualEffect : MonoBehaviour
     public void Reset(float duration)
     {
         lifetime = duration;
-        //timer = 0;
     }
 
     public void SetTo(float newTime)
     {
         timer = newTime;
-
-        //directControl = true;
     }
 }

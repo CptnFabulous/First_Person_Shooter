@@ -128,15 +128,6 @@ public class RangedWeapon : MonoBehaviour
     [Header("Projectiles")]
     public ProjectileStats[] projectileModes;
 
-    [Header("Firing modes")]
-    public FiringMode[] firingModes;
-
-    [Header("Universal variables")]
-    public int firingModeIndex;
-    public GameObject weaponModel;
-    public AudioSource weaponSoundSource;
-    public Transform holsterPosition;
-
     [HideInInspector] public FireControlStats fireControls;
     [HideInInspector] public AccuracyStats accuracy;
     [HideInInspector] public ProjectileStats projectile;
@@ -145,10 +136,24 @@ public class RangedWeapon : MonoBehaviour
     [HideInInspector] public AmmunitionStats ammunition;
     [HideInInspector] public MagazineStats magazine;
 
+    [Header("Firing modes")]
+    public FiringMode[] firingModes;
+
+    [Header("Universal variables")]
+    public float switchSpeed;
+
+
+    public int firingModeIndex;
+    public GameObject weaponModel;
+    public AudioSource weaponSoundSource;
+    public Transform holsterPosition;
+
+    
+
 
     #region Universal variables (variables that can be used multiple times for different firing modes)
     // Switching modes
-    public bool isSwitching;
+    [HideInInspector] public bool isSwitching;
 
     // Firing weapon
     [HideInInspector] public RaycastHit targetFound;
@@ -251,12 +256,12 @@ public class RangedWeapon : MonoBehaviour
         return m[f.magazineMode];
     }
     #endregion
-
+    
     private void Start()
     {
         ResetWeaponMoveVariables();
     }
-
+    
     void Update()
     {
         #region Makes easy references to the appropriate sets of stats so I don't have to type "xModes[firingModes[firingModeIndex].xMode]" every single bloody time I need to reference a set of stats
@@ -269,12 +274,6 @@ public class RangedWeapon : MonoBehaviour
         magazine = GetStats(magazineModes, firingModes[firingModeIndex]);
         #endregion
 
-        /*
-        foreach (FiringMode f in firingModes)
-        {
-            fireControlModes[f.fireControlMode].fireTimer += Time.deltaTime;
-        }
-        */
 
         fireControls.fireTimer += Time.deltaTime;
 
@@ -318,20 +317,23 @@ public class RangedWeapon : MonoBehaviour
             #endregion
 
             #region Trigger cosmetic effects
+
+            /*
+            firingModes[firingModeIndex].muzzleFlash.Play();
+            weaponSoundSource.PlayOneShot(firingModes[firingModeIndex].firingNoise);
+            firingModes[firingModeIndex].shellEjection.Play();
+            */
+
             MuzzleFlashEffect m = firingModes[firingModeIndex].muzzleFlash;
             if (m != null)
             {
-                //m.Play(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
-                m.Reset(60 / fireControls.roundsPerMinute * firingModes[firingModeIndex].muzzleFlashRelativeDuration);
                 m.Play();
             }
 
             AudioClip a = firingModes[firingModeIndex].firingNoise;
             if (a != null)
             {
-                weaponSoundSource.clip = a;
-                weaponSoundSource.Play();
-                //AudioSource.PlayClipAtPoint(a, weaponModel.transform.position);
+                weaponSoundSource.PlayOneShot(a);
             }
 
             ParticleSystem s = firingModes[firingModeIndex].shellEjection;
@@ -359,12 +361,12 @@ public class RangedWeapon : MonoBehaviour
         {
             AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
         }
-
+        
         if (recoil != null)
         {
             RecoilHandler(recoil.recoilApplyRate, playerHolding);
         }
-
+        
         if (magazine != null)
         {
             if (ammunition != null)
@@ -377,12 +379,13 @@ public class RangedWeapon : MonoBehaviour
             }
         }
     }
-
+    
     private void LateUpdate()
     {
-        MoveWeaponHandler();
+        MoveWeaponHandler(); // BROKEN
     }
-
+    
+    #region Switching functions
     public void SwitchWeaponMode(int index)
     {
         // Check if the weapon being switched to has different optics, and cancel out if so.
@@ -404,9 +407,41 @@ public class RangedWeapon : MonoBehaviour
         firingModeIndex = index;
     }
 
+    
+    public void Draw()
+    {
+        gameObject.SetActive(true);
+        weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
+        UpdateWeaponTransformOnce(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed);
+        // Figure out method to prevent using weapon until fully deployed
+    }
+
+    public void Holster()
+    {
+        
+        if (optics != null) // DOES NOT WORK PROPERLY
+        {
+            isAiming = false;
+            zoomTimer = 0;
+            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+        }
+        
+        
+        if (magazine != null)
+        {
+            CancelReload();
+        }
+        
+        // Begin holster animation
+        gameObject.SetActive(false);
+    }
+    
+
+    #endregion
+
 
     #region Weapon functions
-
+    
     #region Move weapon model
 
     void ResetWeaponMoveVariables()
@@ -430,6 +465,7 @@ public class RangedWeapon : MonoBehaviour
         }
     }
 
+
     void UpdateWeaponTransform(Transform newTransform, float moveSpeed)
     {
         newWeaponTransform = newTransform;
@@ -443,17 +479,32 @@ public class RangedWeapon : MonoBehaviour
         }
     }
 
+    void UpdateWeaponTransformOnce(Transform newTransform, float moveSpeed)
+    {
+        newWeaponTransform = newTransform;
+
+        oldWeaponTransform = weaponModel.transform;
+        moveWeaponTime = Vector3.Distance(weaponModel.transform.position, newWeaponTransform.position) / moveSpeed; // Calculates time taken for the weapon to move the appropriate distance at the desired speed
+        moveWeaponTimer = 0;
+        previousNewWeaponTransform = newWeaponTransform;
+    }
+
+
     void MoveWeaponHandler()
     {
-        moveWeaponTimer += Time.deltaTime / moveWeaponTime;
-        moveWeaponTimer = Mathf.Clamp01(moveWeaponTimer);
-        // Moves weapon position via lerping. Should I change this to an animation?
-        Vector3 currentWeaponPosition = Vector3.Lerp(oldWeaponTransform.position, newWeaponTransform.position, moveWeaponTimer);
-        Quaternion currentWeaponRotation = Quaternion.Lerp(oldWeaponTransform.rotation, newWeaponTransform.rotation, moveWeaponTimer);
-        weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
+        if (Time.timeScale != 0) // Checks if time is moving in either direction, otherwise model will move even when not paused
+        {
+            moveWeaponTimer += Time.deltaTime / moveWeaponTime;
+            moveWeaponTimer = Mathf.Clamp01(moveWeaponTimer);
+            // Moves weapon position via lerping. Should I change this to an animation?
+            Vector3 currentWeaponPosition = Vector3.Lerp(oldWeaponTransform.position, newWeaponTransform.position, moveWeaponTimer);
+            Quaternion currentWeaponRotation = Quaternion.Lerp(oldWeaponTransform.rotation, newWeaponTransform.rotation, moveWeaponTimer);
+            weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
+        }
+        
     }
     #endregion
-
+    
     #region Firing functions
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
     {
@@ -505,13 +556,11 @@ public class RangedWeapon : MonoBehaviour
         if (isAiming) //Sets timer value to specify lerping of variables
         {
             zoomTimer += Time.deltaTime / os.transitionTime;
-            //LerpSights(os.magnification, os.moveSpeedReduction, os.transitionTime, zoomTimer, os.aimPosition);
             LerpSights(os, zoomTimer, os.aimPosition);
         }
         else
         {
             zoomTimer -= Time.deltaTime / os.transitionTime;
-            //LerpSights(os.magnification, os.moveSpeedReduction, os.transitionTime, zoomTimer, hipPosition);
             LerpSights(os, zoomTimer, hipPosition);
         }
         zoomTimer = Mathf.Clamp01(zoomTimer);
@@ -519,20 +568,22 @@ public class RangedWeapon : MonoBehaviour
 
     void LerpSights(OpticsStats os, float timer, Transform newWeaponPosition)
     {
+        
         // Reduces FOV to zoom in camera
         zoomVariable = Mathf.Lerp(1, 1 / os.magnification, timer);
         playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
-
+        
         // Reduce sensitivity
         float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
         playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, 0);
 
+        
         // Reduce movement speed
         float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
         playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, 0);
 
         // Alter accuracy if specified
-
+        
 
         // Move weapon model
         UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / os.transitionTime);
@@ -554,8 +605,6 @@ public class RangedWeapon : MonoBehaviour
             reloadTimer = 0;
             isReloading = true;
             print("Reload sequence started");
-
-            //ExecuteReload(reloadTimer, isReloading);
         }
         if (isReloading == true)
         {
@@ -564,9 +613,7 @@ public class RangedWeapon : MonoBehaviour
             // If magazine is full, there is no more ammunition, or reload is interrupted by another action
             if (isReloading == true && (magazine.current >= magazine.max || remainingAmmo <= 0 || (Input.GetButtonDown("Fire") && magazine.current > 0))) // Also include button options for melee attacking and any other functions that would cancel out the reload function
             {
-                reloadTimer = 0;
-                isReloading = false;
-                print("Reload sequence finished");
+                CancelReload();
             }
 
             if (reloadTimer >= 1) // If reload time has been reached, reload ammunition into magazine
@@ -581,16 +628,15 @@ public class RangedWeapon : MonoBehaviour
                     magazine.current += roundsReloaded; // Reload standard amount of ammunition per reload cycle
                 }
                 magazine.current = Mathf.Clamp(magazine.current, 0, magazine.max); // Ensure magazine is not overloaded
-                reloadTimer = 0; // Reset reload timer
 
                 // If magazine is full, there is no more ammunition, or reload is interrupted by another action
                 if (magazine.current >= magazine.max || remainingAmmo <= 0) // Also include button options for melee attacking and any other functions that would cancel out the reload function
                 {
-                    isReloading = false;
-                    print("Reload sequence finished");
+                    CancelReload();
                 }
                 else
                 {
+                    reloadTimer = 0; // Reset reload timer
                     print("Reload sequence continued");
                 }
             }
@@ -605,8 +651,6 @@ public class RangedWeapon : MonoBehaviour
             reloadTimer = 0;
             isReloading = true;
             print("Reload sequence started");
-
-            //ExecuteReload(reloadTimer, isReloading);
         }
         if (isReloading == true)
         {
@@ -615,9 +659,7 @@ public class RangedWeapon : MonoBehaviour
             // If magazine is full, there is no more ammunition, or reload is interrupted by another action
             if (isReloading == true && (magazine.current >= magazine.max || (Input.GetButtonDown("Fire") && magazine.current > 0))) // Also include button options for melee attacking and any other functions that would cancel out the reload function
             {
-                reloadTimer = 0;
-                isReloading = false;
-                print("Reload sequence finished");
+                CancelReload();
             }
 
             if (reloadTimer >= 1) // If reload time has been reached, reload ammunition into magazine
@@ -625,20 +667,26 @@ public class RangedWeapon : MonoBehaviour
                 print("Ammo reloaded");
                 magazine.current += roundsReloaded; // Reload standard amount of ammunition per reload cycle
                 magazine.current = Mathf.Clamp(magazine.current, 0, magazine.max); // Ensure magazine is not overloaded
-                reloadTimer = 0; // Reset reload timer
 
                 // If magazine is full, there is no more ammunition, or reload is interrupted by another action
                 if (magazine.current >= magazine.max) // Also include button options for melee attacking and any other functions that would cancel out the reload function
                 {
-                    isReloading = false;
-                    print("Reload sequence finished");
+                    CancelReload();
                 }
                 else
                 {
+                    reloadTimer = 0; // Reset reload timer
                     print("Reload sequence continued");
                 }
             }
         }
+    }
+
+    public void CancelReload()
+    {
+        reloadTimer = 0;
+        isReloading = false;
+        print("Reload sequence ended");
     }
     #endregion
 

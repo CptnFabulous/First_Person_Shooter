@@ -24,6 +24,11 @@ public static class Damage
         }
         else
         {
+            destination = (direction * range) + destination;
+            //destination.magnitude *= range;
+
+            //Vector3 d = (direction + destination) * range;
+            //destination = d;
             destination *= range;
         }
 
@@ -48,6 +53,29 @@ public static class Damage
         {
             hitbox.Damage(damage, origin, originFaction, cause, isSevere);
         }
+    }
+
+    public static void Knockback(GameObject attackedObject, float force, Vector3 direction)
+    {
+        if (force != 0) // Checks if knockback needs to be applied
+        {
+            Rigidbody rb;
+            DamageHitbox d = attackedObject.GetComponent<DamageHitbox>(); // Checks object hit for DamageHitbox script
+            if (d != null) // If script is present, the object must be a DamageHitbox, so it checks its root object for a rigidbody component.
+            {
+                rb = d.GetRootObject().GetComponent<Rigidbody>();
+            }
+            else
+            {
+                rb = attackedObject.GetComponent<Rigidbody>(); // If object is not a hitbox, look for rigidbody script in object.
+            }
+
+            if (rb != null) // If a rigidbody is found, apply knockback force.
+            {
+                rb.AddForce(direction * force, ForceMode.Impulse);
+            }
+        }
+        
     }
 
     public static void InstantExplosion(GameObject origin, Faction originFaction, Transform explosionOrigin, int damage, float knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff, LayerMask blastDetection, DamageType cause, bool isSevere)
@@ -85,12 +113,7 @@ public static class Damage
                         }
                     }
 
-                    Rigidbody rb = isVulnerable.collider.GetComponent<Rigidbody>(); // Checks collider gameObject for a rigidbody, and knocks rigidbody back accordingly
-                    if (rb != null)
-                    {
-                        float f = knockback * knockbackFalloff.Evaluate(i);
-                        rb.AddForce(targetDirection.normalized * f, ForceMode.Impulse);
-                    }
+                    Knockback(isVulnerable.collider.gameObject, knockback * knockbackFalloff.Evaluate(i), targetDirection);
                 }
             }
         }

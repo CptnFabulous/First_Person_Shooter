@@ -49,7 +49,7 @@ public class PlayerHandler : Character
 
                 pc.enabled = true;
 
-                wh.equippedGun.enabled = true;
+                wh.CurrentWeapon().enabled = true;
 
                 wh.enabled = true;
 
@@ -60,7 +60,7 @@ public class PlayerHandler : Character
 
                 pc.enabled = false;
 
-                wh.equippedGun.enabled = false;
+                wh.CurrentWeapon().enabled = false;
 
                 wh.enabled = false;
 
@@ -70,7 +70,7 @@ public class PlayerHandler : Character
             case PlayerState.InMenus:
                 pc.enabled = false;
 
-                wh.equippedGun.enabled = false;
+                wh.CurrentWeapon().enabled = false;
 
                 wh.enabled = false;
 

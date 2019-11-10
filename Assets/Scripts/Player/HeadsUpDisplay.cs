@@ -26,6 +26,7 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("Health elements")]
     public GameObject healthDisplay;
     public Text healthCounter;
+    public Image healthBar;
     public ColourTransitionEffect damageFlash;
     public AudioClip damageNoise;
 
@@ -46,6 +47,7 @@ public class HeadsUpDisplay : MonoBehaviour
     public GameObject ammoDisplay;
     public Text ammoCounter;
     public Text firingMode;
+    public Image ammoBar;
 
     [Header("Weapon feedback")]
     public AudioClip damageFeedback;
@@ -107,46 +109,49 @@ public class HeadsUpDisplay : MonoBehaviour
         healthPrev = prs.healthCurrent;
         */
 
-        
 
-        HealthHUD();
-
-        RangedWeapon rw = ph.wh.equippedGun;
-
-        float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
-        //float rp = (a + rw.accuracy.projectileSpread) * Screen.height / playerCamera.fieldOfView;
-        float rp = (a + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
-
-        reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
-        reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
-        reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
-        reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
-
-        RaycastHit lookingAt;
-        if(Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
+        #region Health HUD
+        healthCounter.text = ph.ph.health.current + "/" + ph.ph.health.max;
+        FillMeter(healthBar, ph.ph.health.current, ph.ph.health.max);
+        //healthBar.fillAmount = (float)ph.ph.health.current / (float)ph.ph.health.max;
+        if (ph.ph.health.IsCritical())
         {
-            //print("Looking at " + lookingAt.collider.name);
-            Character c = null;
+            healthCounter.color = resourceCriticalColour;
+            // Do other stuff for critical health e.g. greyscale screen, warnings
+        }
+        else
+        {
+            healthCounter.color = resourceNormalColour;
+        }
+        #endregion
 
+        #region Basic reticle and interacting
+        RaycastHit lookingAt;
+        if (Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
+        {
+            Character c = null;
             DamageHitbox d = lookingAt.collider.GetComponent<DamageHitbox>();
             if (d != null)
             {
                 c = Character.FromHitbox(d);
-            }
-
-            if (c != null)
-            {
-                switch (ph.faction.Affiliation(c.faction))
+                if (c != null)
                 {
-                    case FactionState.Allied:
-                        ColourReticle(allyColour);
-                        break;
-                    case FactionState.Hostile:
-                        ColourReticle(enemyColour);
-                        break;
-                    default:
-                        ColourReticle(reticleDefaultColour);
-                        break;
+                    switch (ph.faction.Affiliation(c.faction))
+                    {
+                        case FactionState.Allied:
+                            ColourReticle(allyColour);
+                            break;
+                        case FactionState.Hostile:
+                            ColourReticle(enemyColour);
+                            break;
+                        default:
+                            ColourReticle(reticleDefaultColour);
+                            break;
+                    }
+                }
+                else
+                {
+                    ColourReticle(reticleDefaultColour);
                 }
             }
             else
@@ -154,61 +159,69 @@ public class HeadsUpDisplay : MonoBehaviour
                 ColourReticle(reticleDefaultColour);
             }
 
-            
-
-            /*
-            switch (lookingAt.collider.tag)
-            {
-                case "Enemy":
-                    reticleCentre.color = enemyColour;
-                    reticleUp.color = enemyColour;
-                    reticleDown.color = enemyColour;
-                    reticleLeft.color = enemyColour;
-                    reticleRight.color = enemyColour;
-                    break;
-                case null:
-                    reticleCentre.color = reticleDefaultColour;
-                    reticleUp.color = reticleDefaultColour;
-                    reticleDown.color = reticleDefaultColour;
-                    reticleLeft.color = reticleDefaultColour;
-                    reticleRight.color = reticleDefaultColour;
-                    break;
-                default:
-                    reticleCentre.color = reticleDefaultColour;
-                    reticleUp.color = reticleDefaultColour;
-                    reticleDown.color = reticleDefaultColour;
-                    reticleLeft.color = reticleDefaultColour;
-                    reticleRight.color = reticleDefaultColour;
-                    break;
-            }
-            */
-        }
-
-        firingMode.text = rw.firingModes[rw.firingModeIndex].name;
-
-        if (rw.ammunition == null)
-        {
-            if (rw.magazine == null)
-            {
-                ammoCounter.text = "INFINITE";
-            }
-            else
-            {
-                ammoCounter.text = rw.magazine.magazine.current + "/INF";
-            }
+            // Do interacting stuff
         }
         else
         {
-            if (rw.magazine == null)
+            ColourReticle(reticleDefaultColour);
+        }
+        #endregion
+
+        #region Weapon HUD
+        RangedWeapon rw = ph.wh.CurrentWeapon();
+        bool activeWeapon = rw.gameObject.activeSelf;
+        reticleUp.gameObject.SetActive(activeWeapon);
+        reticleDown.gameObject.SetActive(activeWeapon);
+        reticleLeft.gameObject.SetActive(activeWeapon);
+        reticleRight.gameObject.SetActive(activeWeapon);
+        ammoDisplay.gameObject.SetActive(activeWeapon);
+        opticsOverlay.gameObject.SetActive(activeWeapon);
+        opticsTransition.gameObject.SetActive(activeWeapon);
+
+        if (activeWeapon == true)
+        {
+            if (rw.optics == null)
             {
-                ammoCounter.text = ph.a.GetStock(rw.ammunition.ammoType).ToString();
+                ADSTransition(0, null);
+            }
+
+            float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
+            float rp = (a + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
+            reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
+            reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
+            reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
+            reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
+
+            firingMode.text = rw.firingModes[rw.firingModeIndex].name;
+
+            if (rw.ammunition == null)
+            {
+                if (rw.magazine == null)
+                {
+                    ammoCounter.text = "INFINITE";
+                    ammoBar.fillAmount = 1;
+                }
+                else
+                {
+                    ammoCounter.text = rw.magazine.magazine.current + "/INF";
+                    FillMeter(ammoBar, rw.magazine.magazine.current, rw.magazine.magazine.max);
+                }
             }
             else
             {
-                ammoCounter.text = rw.magazine.magazine.current + "/" + (ph.a.GetStock(rw.ammunition.ammoType) - rw.magazine.magazine.current);
+                if (rw.magazine == null)
+                {
+                    ammoCounter.text = ph.a.GetStock(rw.ammunition.ammoType).ToString();
+                    FillMeter(ammoBar, ph.a.GetStock(rw.ammunition.ammoType), ph.a.GetMax(rw.ammunition.ammoType));
+                }
+                else
+                {
+                    ammoCounter.text = rw.magazine.magazine.current + "/" + (ph.a.GetStock(rw.ammunition.ammoType) - rw.magazine.magazine.current);
+                    FillMeter(ammoBar, rw.magazine.magazine.current, rw.magazine.magazine.max);
+                }
             }
         }
-
+        #endregion
     }
 
     void ColourReticle(Color c)
@@ -220,13 +233,21 @@ public class HeadsUpDisplay : MonoBehaviour
         reticleRight.color = c;
     }
 
+    void FillMeter(Image i, float current, float max)
+    {
+        i.fillAmount = current / max;
+    }
+
     public void ADSTransition(float timer, Sprite opticsGraphic)
     {
-        opticsOverlay.graphic.sprite = opticsGraphic;
+        if (opticsGraphic != null)
+        {
+            opticsOverlay.graphic.sprite = opticsGraphic;
+        }
         opticsOverlay.SetTo(timer);
         opticsTransition.SetTo(timer);
 
-        if (timer > 0.5)
+        if (timer > 0.5f)
         {
             reticleCentre.enabled = false;
             reticleUp.enabled = false;
@@ -266,19 +287,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
     }
 
-    void HealthHUD()
-    {
-        healthCounter.text = ph.ph.health.current + "/" + ph.ph.health.max;
-        if (ph.ph.health.IsCritical())
-        {
-            healthCounter.color = resourceCriticalColour;
-            // Do other stuff for critical health e.g. greyscale screen, warnings
-        }
-        else
-        {
-            healthCounter.color = resourceNormalColour;
-        }
-    }
+    
     
 
 

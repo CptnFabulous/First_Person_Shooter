@@ -19,7 +19,6 @@ public class PlayerHealth : Health
     public override void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
     {
         base.TakeDamage(damageAmount, origin, damageSource);
-        print("ouch");
         ph.hud.PlayerDamageFeedback();
     }
 

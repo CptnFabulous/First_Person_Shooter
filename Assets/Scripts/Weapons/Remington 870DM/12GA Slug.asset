@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd339640854f049872ae6a5d51ad34, type: 3}
+  m_Name: 12GA Slug
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31, type: 3}
+  velocity: 300
+  diameter: 0.25
+  gravityMultiplier: 0.1
+  hitDetection:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  damage: 20
+  knockback: 20
+  criticalMultiplier: 3

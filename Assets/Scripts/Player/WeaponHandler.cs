@@ -24,61 +24,44 @@ public class WeaponHandler : MonoBehaviour
 
 
 
-    public RangedWeapon equippedGun;
+    public RangedWeapon[] equippedWeapons;
+    //public GameObject[] equippedObjects;
+    public int weaponIndex;
+
+    public RangedWeapon CurrentWeapon()
+    {
+        return equippedWeapons[weaponIndex];
+    }
 
     private void Awake()
     {
         ph = GetComponent<PlayerHandler>();
     }
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        SwitchWeapon(weaponIndex);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (pc.isCrouching)
+        
+        if (Input.GetButtonDown("SelectWeapon"))
         {
-            accuracyModifier.ApplyEffect("Crouching", crouchMultiplier, Time.deltaTime);
-        }
-        */
-
-
-        /*
-        if (Input.GetButton("SelectWeapon")) // If weapon wheel button is held
-        {
-
-        }
-        else if (Input.GetButtonUp("SelectWeapon")) // When weapon wheel button is released
-        {
-
-        }
-        */
-
-        /*
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            equippedGun.firingModeIndex += 1;
-            if (equippedGun.firingModeIndex > equippedGun.firingModes.Length - 1)
+            int i = weaponIndex + 1;
+            if (i >= equippedWeapons.Length)
             {
-                equippedGun.firingModeIndex = 0;
+                i = 0;
             }
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            equippedGun.firingModeIndex -= 1;
-            if (equippedGun.firingModeIndex < 0)
-            {
-                equippedGun.firingModeIndex = equippedGun.firingModes.Length - 1;
-            }
-        }
-        */
 
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+            SwitchWeapon(i);
+        }
+        
+        if (Input.GetAxis("Mouse ScrollWheel") != 0 && CurrentWeapon().gameObject.activeSelf == true && CurrentWeapon().firingModes.Length > 1)
         {
             int i = 0;
             if (Input.GetAxis("Mouse ScrollWheel") < 0)
@@ -90,29 +73,41 @@ public class WeaponHandler : MonoBehaviour
                 i = -1;
             }
 
-            i += equippedGun.firingModeIndex;
+            i += CurrentWeapon().firingModeIndex;
 
-            if (i > equippedGun.firingModes.Length - 1)
+            if (i > CurrentWeapon().firingModes.Length - 1)
             {
                 i = 0;
             }
             else if (i < 0)
             {
-                i = equippedGun.firingModes.Length - 1;
+                i = CurrentWeapon().firingModes.Length - 1;
             }
 
-            equippedGun.SwitchWeaponMode(i);
+            CurrentWeapon().SwitchWeaponMode(i);
         }
-
-        
-
-
-
     }
 
-    void SwitchWeapon(WeaponData wd)
+    void SwitchWeapon(int index)
     {
+        index = Mathf.Clamp(index, 0, equippedWeapons.Length - 1);
 
+        for(int i = 0; i < equippedWeapons.Length; i++)
+        {
+            RangedWeapon rw = equippedWeapons[i];
+
+            if (i == index)
+            {
+                rw.Draw();
+                print(rw.name + " has been drawn.");
+            }
+            else if (equippedWeapons[i].gameObject.activeSelf == true)
+            {
+                rw.Holster();
+                print(rw.name + " has been holstered.");
+            }
+        }
+        weaponIndex = index;
     }
 
     private void LateUpdate()

@@ -15,11 +15,9 @@ public class MuzzleFlashEffect : TimedVisualEffect
         l = GetComponent<Light>();
     }
 
-    // Update is called once per frame
-    public override void Update()
+    public override void Effect()
     {
         transform.localScale = scale * magnitudeOverLifetime.Evaluate(timer);
         l.range = brightnessRange * magnitudeOverLifetime.Evaluate(timer);
-        base.Update();
     }
 }

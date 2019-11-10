@@ -923,7 +923,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  lifetime: 5
+  lifetime: 0.13
+  looping: 0
+  directControl: 0
   timer: 1
   scale: {x: 8, y: 8, z: 8}
   brightnessRange: 5
@@ -1461,7 +1463,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 8
-  m_Acceleration: 8
+  m_Acceleration: 500
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -1519,9 +1521,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ch: {fileID: 0}
   na: {fileID: 0}
+  moveSpeed: 8
   head: {fileID: 6231957954866864747}
   target: {fileID: 0}
-  targetRange: 25
+  targetRange: 40
   pursueRange: 50
   viewDetection:
     serializedVersion: 2
@@ -1531,14 +1534,15 @@ MonoBehaviour:
     projectileOrigin: {fileID: 6231957954662210017}
     projectileCount: 1
     burstAmount: 3
-    spread: 0
-    range: 25
+    spread: 2
+    range: 30
     aimSpeed: 50
     telegraphAimSpeed: 5
     targetThreshold: 0.2
     roundsPerMinute: 900
     delay: 0.4
     cooldown: 0.6
+    telegraphMoveSpeed: 0
     isAttacking: 0
     laserSight: {fileID: 6231957954662210014}
     muzzleFlash: {fileID: 6231957954230682063}

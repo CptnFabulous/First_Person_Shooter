@@ -87,7 +87,7 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.09874362
+        time: 1
         value: 0
         inSlope: 0
         outSlope: 0
@@ -152,11 +152,13 @@ MonoBehaviour:
   velocity: 0
   gravityMultiplier: 0
   diameter: 0
-  targetDetection:
+  hitDetection:
     serializedVersion: 2
     m_Bits: 0
-  originCharacter: {fileID: 0}
+  origin: {fileID: 0}
+  originFaction: {fileID: 0}
   damage: 5
+  knockback: 0
   criticalMultiplier: 1
   impactEffect: {fileID: 312891277439626232, guid: 37c6f698bb2e0134398d938f43f5a14b,
     type: 3}

@@ -14,13 +14,8 @@ public class ColourTransitionEffect : TimedVisualEffect
         graphic = GetComponent<Image>();
     }
 
-    // Update is called once per frame
-    public override void Update()
+    public override void Effect()
     {
-        //Color c = graphic.color;
-        //c *= gradient.Evaluate(magnitudeOverLifetime.Evaluate(timer));
-        //graphic.color = c;
         graphic.color = gradient.Evaluate(magnitudeOverLifetime.Evaluate(timer));
-        base.Update();
     }
 }
