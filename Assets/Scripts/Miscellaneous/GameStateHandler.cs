@@ -58,6 +58,7 @@ public class GameStateHandler : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 SwitchMenu(headsUpDisplay);
+                print(Cursor.lockState + ", " + Cursor.visible);
                 //ph.ChangePlayerState(PlayerState.Active);
                 break;
             case GameState.Paused: // Pause game
@@ -65,6 +66,7 @@ public class GameStateHandler : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 SwitchMenu(pauseMenu);
+                print(Cursor.lockState + ", " + Cursor.visible);
                 //ph.ChangePlayerState(PlayerState.InMenus);
                 break;
             case GameState.Won: // Game is won, display win menu

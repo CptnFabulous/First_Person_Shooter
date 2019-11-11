@@ -129,47 +129,50 @@ public class RangedWeapon : MonoBehaviour
     public ProjectileStats[] projectileModes;
 
     [HideInInspector] public FireControlStats fireControls;
+
     [HideInInspector] public AccuracyStats accuracy;
+
+    [HideInInspector] public RaycastHit targetFound;
+    [HideInInspector] public Vector3 aimDirection;
+    [HideInInspector] public Vector3 target;
+
     [HideInInspector] public ProjectileStats projectile;
+
     [HideInInspector] public OpticsStats optics;
+    [HideInInspector] public bool isAiming;
+    [HideInInspector] public float zoomVariable;
+    [HideInInspector] public float zoomTimer;
+
     [HideInInspector] public RecoilStats recoil;
+    [HideInInspector] public float recoilToApply;
+    [HideInInspector] public Vector2 aimOrigin;
+    [HideInInspector] public Vector2 aimCurrent;
+
     [HideInInspector] public AmmunitionStats ammunition;
+
     [HideInInspector] public MagazineStats magazine;
+    [HideInInspector] public bool isReloading;
+    [HideInInspector] public float reloadTimer;
 
     [Header("Firing modes")]
     public FiringMode[] firingModes;
 
     [Header("Universal variables")]
     public float switchSpeed;
-
-
-    public int firingModeIndex;
     public GameObject weaponModel;
     public AudioSource weaponSoundSource;
     public Transform holsterPosition;
-
-    
-
+    public int firingModeIndex;
 
     #region Universal variables (variables that can be used multiple times for different firing modes)
     // Switching modes
-    [HideInInspector] public bool isSwitching;
+    [HideInInspector] public bool isSwitchingWeapon;
+    [HideInInspector] public bool isSwitchingFireMode;
 
-    // Firing weapon
-    [HideInInspector] public RaycastHit targetFound;
-    [HideInInspector] public Vector3 aimDirection;
-    [HideInInspector] public Vector3 target;
+
     // Applying recoil
-    [HideInInspector] public float recoilToApply;
-    [HideInInspector] public Vector2 aimOrigin;
-    [HideInInspector] public Vector2 aimCurrent;
     // Aiming down sights
-    [HideInInspector] public bool isAiming;
-    [HideInInspector] public float zoomVariable;
-    [HideInInspector] public float zoomTimer;
     // Reloading weapon
-    [HideInInspector] public bool isReloading;
-    [HideInInspector] public float reloadTimer;
     // Moving weapon model
     Transform newWeaponTransform;
     Transform oldWeaponTransform;
@@ -384,7 +387,9 @@ public class RangedWeapon : MonoBehaviour
     {
         MoveWeaponHandler(); // BROKEN
     }
-    
+
+    #region Weapon functions
+
     #region Switching functions
     public void SwitchWeaponMode(int index)
     {
@@ -406,13 +411,12 @@ public class RangedWeapon : MonoBehaviour
 
         firingModeIndex = index;
     }
-
     
     public void Draw()
     {
         gameObject.SetActive(true);
         weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
-        UpdateWeaponTransformOnce(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed);
+        UpdateWeaponTransform(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
         // Figure out method to prevent using weapon until fully deployed
     }
 
@@ -436,12 +440,48 @@ public class RangedWeapon : MonoBehaviour
         gameObject.SetActive(false);
     }
     
+    /*
+    public IEnumerator Draw()
+    {
+        isSwitchingWeapon = true;
 
+        gameObject.SetActive(true);
+        weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
+        UpdateWeaponTransformOnce(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
+
+        yield return new WaitForSeconds(switchSpeed);
+        isSwitchingWeapon = false;
+    }
+
+    public IEnumerator Holster()
+    {
+        isSwitchingWeapon = true;
+
+        #region Cancel running weapon functions
+        if (optics != null) // DOES NOT WORK PROPERLY
+        {
+            isAiming = false;
+            zoomTimer = 0;
+            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+        }
+
+        if (magazine != null)
+        {
+            CancelReload();
+        }
+        #endregion
+
+        // Begin holster animation
+        gameObject.SetActive(false);
+        weaponModel.transform.SetPositionAndRotation(firingModes[firingModeIndex].heldPosition.position, firingModes[firingModeIndex].heldPosition.rotation);
+        UpdateWeaponTransformOnce(holsterPosition, Vector3.Distance(weaponModel.transform.position, holsterPosition.position) / switchSpeed, true);
+
+        yield return new WaitForSeconds(switchSpeed);
+        isSwitchingWeapon = false;
+    }
+    */
     #endregion
 
-
-    #region Weapon functions
-    
     #region Move weapon model
 
     void ResetWeaponMoveVariables()
@@ -465,12 +505,11 @@ public class RangedWeapon : MonoBehaviour
         }
     }
 
-
-    void UpdateWeaponTransform(Transform newTransform, float moveSpeed)
+    void UpdateWeaponTransform(Transform newTransform, float moveSpeed, bool oneShot)
     {
         newWeaponTransform = newTransform;
 
-        if (newWeaponTransform != previousNewWeaponTransform)
+        if (newWeaponTransform != previousNewWeaponTransform || oneShot == true)
         {
             oldWeaponTransform = weaponModel.transform;
             moveWeaponTime = Vector3.Distance(weaponModel.transform.position, newWeaponTransform.position) / moveSpeed; // Calculates time taken for the weapon to move the appropriate distance at the desired speed
@@ -478,17 +517,6 @@ public class RangedWeapon : MonoBehaviour
             previousNewWeaponTransform = newWeaponTransform;
         }
     }
-
-    void UpdateWeaponTransformOnce(Transform newTransform, float moveSpeed)
-    {
-        newWeaponTransform = newTransform;
-
-        oldWeaponTransform = weaponModel.transform;
-        moveWeaponTime = Vector3.Distance(weaponModel.transform.position, newWeaponTransform.position) / moveSpeed; // Calculates time taken for the weapon to move the appropriate distance at the desired speed
-        moveWeaponTimer = 0;
-        previousNewWeaponTransform = newWeaponTransform;
-    }
-
 
     void MoveWeaponHandler()
     {
@@ -586,7 +614,7 @@ public class RangedWeapon : MonoBehaviour
         
 
         // Move weapon model
-        UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / os.transitionTime);
+        UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / os.transitionTime, false);
 
         // Toggle overlay
         playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);

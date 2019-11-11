@@ -99,11 +99,13 @@ public class WeaponHandler : MonoBehaviour
             if (i == index)
             {
                 rw.Draw();
+                //StartCoroutine(rw.Draw());
                 print(rw.name + " has been drawn.");
             }
             else if (equippedWeapons[i].gameObject.activeSelf == true)
             {
                 rw.Holster();
+                //StartCoroutine(rw.Holster());
                 print(rw.name + " has been holstered.");
             }
         }
