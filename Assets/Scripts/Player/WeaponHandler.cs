@@ -25,7 +25,6 @@ public class WeaponHandler : MonoBehaviour
 
 
     public RangedWeapon[] equippedWeapons;
-    //public GameObject[] equippedObjects;
     public int weaponIndex;
 
     public RangedWeapon CurrentWeapon()
