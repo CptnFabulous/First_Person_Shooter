@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour
     Ray isGrounded;
     RaycastHit floor;
 
+    [HideInInspector] public bool canLook;
+
     public StatModifier sensitivityModifier = new StatModifier();
     Vector2 lookVector;
 
@@ -112,7 +114,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         #region Camera
-        LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityModifier.NewFloat(sensitivityX) * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityModifier.NewFloat(sensitivityY) * Time.deltaTime));
+        if (canLook == true)
+        {
+            LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityModifier.NewFloat(sensitivityX) * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityModifier.NewFloat(sensitivityY) * Time.deltaTime));
+        }
         #endregion
 
         #region Crouching

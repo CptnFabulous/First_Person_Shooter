@@ -101,6 +101,7 @@ public class FiringMode
     public float switchSpeed;
 
     [Header("Cosmetics")]
+    public Sprite hudIcon;
     public Transform heldPosition;
     public AudioClip firingNoise;
     public MuzzleFlashEffect muzzleFlash;
@@ -168,11 +169,7 @@ public class RangedWeapon : MonoBehaviour
     // Switching modes
     [HideInInspector] public bool isSwitchingWeapon;
     [HideInInspector] public bool isSwitchingFireMode;
-
-
-    // Applying recoil
-    // Aiming down sights
-    // Reloading weapon
+    
     // Moving weapon model
     Transform newWeaponTransform;
     Transform oldWeaponTransform;
@@ -223,40 +220,40 @@ public class RangedWeapon : MonoBehaviour
     }
 
     #region Get optional weapon stats
-    OpticsStats GetStats(OpticsStats[] o, FiringMode f)
+    public OpticsStats GetOpticsStats(int index)
     {
-        if (f.opticsMode <= -1 || o.Length <= 0)
+        if (firingModes[index].opticsMode <= -1 || opticsModes.Length <= 0)
         {
             return null;
         }
-        return o[f.opticsMode];
+        return opticsModes[firingModes[index].opticsMode];
     }
 
-    RecoilStats GetStats(RecoilStats[] r, FiringMode f)
+    public RecoilStats GetRecoilStats(int index)
     {
-        if (f.recoilMode <= -1 || r.Length <= 0)
+        if (firingModes[index].recoilMode <= -1 || recoilModes.Length <= 0)
         {
             return null;
         }
-        return r[f.recoilMode];
+        return recoilModes[firingModes[index].recoilMode];
     }
 
-    AmmunitionStats GetStats(AmmunitionStats[] a, FiringMode f)
+    public AmmunitionStats GetAmmunitionStats(int index)
     {
-        if (f.ammunitionMode <= -1 || a.Length <= 0)
+        if (firingModes[index].ammunitionMode <= -1 || ammunitionModes.Length <= 0)
         {
             return null;
         }
-        return a[f.ammunitionMode];
+        return ammunitionModes[firingModes[index].ammunitionMode];
     }
 
-    MagazineStats GetStats(MagazineStats[] m, FiringMode f)
+    public MagazineStats GetMagazineStats(int index)
     {
-        if (f.magazineMode <= -1 || m.Length <= 0)
+        if (firingModes[index].magazineMode <= -1 || magazineModes.Length <= 0)
         {
             return null;
         }
-        return m[f.magazineMode];
+        return magazineModes[firingModes[index].magazineMode];
     }
     #endregion
     
@@ -271,121 +268,158 @@ public class RangedWeapon : MonoBehaviour
         fireControls = fireControlModes[firingModes[firingModeIndex].fireControlMode];
         accuracy = accuracyModes[firingModes[firingModeIndex].accuracyMode];
         projectile = projectileModes[firingModes[firingModeIndex].projectileMode];
-        optics = GetStats(opticsModes, firingModes[firingModeIndex]);
-        recoil = GetStats(recoilModes, firingModes[firingModeIndex]);
-        ammunition = GetStats(ammunitionModes, firingModes[firingModeIndex]);
-        magazine = GetStats(magazineModes, firingModes[firingModeIndex]);
+        optics = GetOpticsStats(firingModeIndex);
+        recoil = GetRecoilStats(firingModeIndex);
+        ammunition = GetAmmunitionStats(firingModeIndex);
+        magazine = GetMagazineStats(firingModeIndex);
         #endregion
 
-
-        fireControls.fireTimer += Time.deltaTime;
-
-        // If player is active
-        // If player is pressing fire button
-        // If fireTimer has finished
-        // If burst count has not exceeded the limit OR burst count is set to zero
-        // If ammo is available OR supply is null
-        // If magazine is not empty OR null
-        if (playerHolding.ph.CurrentState() == PlayerState.Active && /*playerHolding.ph.isActive == true && */Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
+        // Checks following criteria to determine if the player should be able to control their weapon:
+        // If the player is not currently switching weapon or firing mode
+        // If the player's weapon selector is not active
+        if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
-            // Adjust fire control variables
-            fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
-            fireControls.burstCounter += 1;
-
-            #region Alter ammunition, magazine and recoil variables if present
-            // Consume ammo if supply is present
-            if (ammunition != null)
+            if (Input.GetAxis("Mouse ScrollWheel") != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
             {
-                playerHolding.ph.a.Spend(ammunition.ammoType, ammunition.ammoPerShot);
+                int i = 0;
+                if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                {
+                    i = 1;
+                }
+                else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                {
+                    i = -1;
+                }
+
+                i += firingModeIndex;
+
+                if (i > firingModes.Length - 1)
+                {
+                    i = 0;
+                }
+                else if (i < 0)
+                {
+                    i = firingModes.Length - 1;
+                }
+
+                SwitchWeaponMode(i);
             }
 
-            // Deplete magazine if present
+            fireControls.fireTimer += Time.deltaTime;
+
+            // If player is active
+            // If player is pressing fire button
+            // If fireTimer has finished
+            // If burst count has not exceeded the limit OR burst count is set to zero
+            // If ammo is available OR supply is null
+            // If magazine is not empty OR null
+            if (playerHolding.ph.CurrentState() == PlayerState.Active && /*playerHolding.ph.isActive == true && */Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
+            {
+                // Adjust fire control variables
+                fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
+                fireControls.burstCounter += 1;
+
+                #region Alter ammunition, magazine and recoil variables if present
+                // Consume ammo if supply is present
+                if (ammunition != null)
+                {
+                    playerHolding.ph.a.Spend(ammunition.ammoType, ammunition.ammoPerShot);
+                }
+
+                // Deplete magazine if present
+                if (magazine != null)
+                {
+                    if (ammunition != null) // If ammunition supply is present, consume appropriate amount of 
+                    {
+                        magazine.magazine.current -= ammunition.ammoPerShot;
+                    }
+                    else
+                    {
+                        magazine.magazine.current -= 1;
+                    }
+                }
+
+                // Apply recoil if recoil stat exists
+                if (recoil != null)
+                {
+                    recoilToApply += recoil.recoil;
+                }
+                #endregion
+
+                #region Trigger cosmetic effects
+
+                /*
+                firingModes[firingModeIndex].muzzleFlash.Play();
+                weaponSoundSource.PlayOneShot(firingModes[firingModeIndex].firingNoise);
+                firingModes[firingModeIndex].shellEjection.Play();
+                */
+
+                MuzzleFlashEffect m = firingModes[firingModeIndex].muzzleFlash;
+                if (m != null)
+                {
+                    m.Play();
+                }
+
+                AudioClip a = firingModes[firingModeIndex].firingNoise;
+                if (a != null)
+                {
+                    weaponSoundSource.PlayOneShot(a);
+                }
+
+                ParticleSystem s = firingModes[firingModeIndex].shellEjection;
+                if (s != null)
+                {
+                    s.Play();
+                }
+                #endregion
+
+                // Calculate direction to shoot in
+                //Quaternion ar = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy));
+                //Vector3 aimDirection = ar * transform.forward;
+
+                Vector3 aimDirection = transform.forward;
+                if (optics == null || isAiming == false)
+                {
+                    aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * aimDirection;
+                }
+
+                for (int i = 0; i < projectile.projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
+                {
+                    Damage.ShootProjectile(projectile.projectile, accuracy.projectileSpread, accuracy.range, playerHolding.gameObject, playerHolding.ph.faction, transform, projectile.muzzle, aimDirection);
+                }
+            }
+            else if (!Input.GetButton("Fire"))
+            {
+                fireControls.burstCounter = 0;
+            }
+
+            if (optics != null)
+            {
+                AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
+            }
+
             if (magazine != null)
             {
-                if (ammunition != null) // If ammunition supply is present, consume appropriate amount of 
+                if (ammunition != null)
                 {
-                    magazine.magazine.current -= ammunition.ammoPerShot;
+                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine, playerHolding, ammunition.ammoType);
                 }
                 else
                 {
-                    magazine.magazine.current -= 1;
+                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine);
                 }
             }
-
-            // Apply recoil if recoil stat exists
-            if (recoil != null)
-            {
-                recoilToApply += recoil.recoil;
-            }
-            #endregion
-
-            #region Trigger cosmetic effects
-
-            /*
-            firingModes[firingModeIndex].muzzleFlash.Play();
-            weaponSoundSource.PlayOneShot(firingModes[firingModeIndex].firingNoise);
-            firingModes[firingModeIndex].shellEjection.Play();
-            */
-
-            MuzzleFlashEffect m = firingModes[firingModeIndex].muzzleFlash;
-            if (m != null)
-            {
-                m.Play();
-            }
-
-            AudioClip a = firingModes[firingModeIndex].firingNoise;
-            if (a != null)
-            {
-                weaponSoundSource.PlayOneShot(a);
-            }
-
-            ParticleSystem s = firingModes[firingModeIndex].shellEjection;
-            if (s != null)
-            {
-                s.Play();
-            }
-            #endregion
-
-            // Calculate direction to shoot in
-            Quaternion ar = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy));
-            Vector3 aimDirection = ar * transform.forward;
-
-            for (int i = 0; i < projectile.projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
-            {
-                Damage.ShootProjectile(projectile.projectile, accuracy.projectileSpread, accuracy.range, playerHolding.gameObject, playerHolding.ph.faction, transform, projectile.muzzle, aimDirection);
-            }
         }
-        else if (!Input.GetButton("Fire"))
-        {
-            fireControls.burstCounter = 0;
-        }
-        
-        if (optics != null)
-        {
-            AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
-        }
-        
+
         if (recoil != null)
         {
             RecoilHandler(recoil.recoilApplyRate, playerHolding);
-        }
-        
-        if (magazine != null)
-        {
-            if (ammunition != null)
-            {
-                ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine, playerHolding, ammunition.ammoType);
-            }
-            else
-            {
-                ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine);
-            }
         }
     }
     
     private void LateUpdate()
     {
-        MoveWeaponHandler(); // BROKEN
+        MoveWeaponHandler();
     }
 
     #region Weapon functions
@@ -394,7 +428,7 @@ public class RangedWeapon : MonoBehaviour
     public void SwitchWeaponMode(int index)
     {
         // Check if the weapon being switched to has different optics, and cancel out if so.
-        OpticsStats newOptics = GetStats(opticsModes, firingModes[index]);
+        OpticsStats newOptics = GetOpticsStats(index);
         if (optics != null && (newOptics == null || newOptics != optics))
         {
             isAiming = false;
@@ -411,43 +445,15 @@ public class RangedWeapon : MonoBehaviour
 
         firingModeIndex = index;
     }
-    
-    public void Draw()
-    {
-        gameObject.SetActive(true);
-        weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
-        UpdateWeaponTransform(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
-        // Figure out method to prevent using weapon until fully deployed
-    }
 
-    public void Holster()
-    {
-        
-        if (optics != null) // DOES NOT WORK PROPERLY
-        {
-            isAiming = false;
-            zoomTimer = 0;
-            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
-        }
-        
-        
-        if (magazine != null)
-        {
-            CancelReload();
-        }
-        
-        // Begin holster animation
-        gameObject.SetActive(false);
-    }
-    
-    /*
     public IEnumerator Draw()
     {
         isSwitchingWeapon = true;
 
         gameObject.SetActive(true);
+        // Draw weapon animation
         weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
-        UpdateWeaponTransformOnce(firingModes[firingModeIndex].heldPosition, Vector3.Distance(weaponModel.transform.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
+        UpdateWeaponTransform(firingModes[firingModeIndex].heldPosition, Vector3.Distance(holsterPosition.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
 
         yield return new WaitForSeconds(switchSpeed);
         isSwitchingWeapon = false;
@@ -472,14 +478,16 @@ public class RangedWeapon : MonoBehaviour
         #endregion
 
         // Begin holster animation
-        gameObject.SetActive(false);
         weaponModel.transform.SetPositionAndRotation(firingModes[firingModeIndex].heldPosition.position, firingModes[firingModeIndex].heldPosition.rotation);
-        UpdateWeaponTransformOnce(holsterPosition, Vector3.Distance(weaponModel.transform.position, holsterPosition.position) / switchSpeed, true);
+        UpdateWeaponTransform(holsterPosition, Vector3.Distance(firingModes[firingModeIndex].heldPosition.position, holsterPosition.position) / switchSpeed, true);
 
         yield return new WaitForSeconds(switchSpeed);
+
+        gameObject.SetActive(false);
+        print("Weapon holstered");
         isSwitchingWeapon = false;
     }
-    */
+    
     #endregion
 
     #region Move weapon model
@@ -603,12 +611,12 @@ public class RangedWeapon : MonoBehaviour
         
         // Reduce sensitivity
         float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
-        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, 0);
+        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
 
         
         // Reduce movement speed
         float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
-        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, 0);
+        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
 
         // Alter accuracy if specified
         

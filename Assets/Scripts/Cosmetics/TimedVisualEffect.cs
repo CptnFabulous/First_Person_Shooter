@@ -8,6 +8,7 @@ public abstract class TimedVisualEffect : MonoBehaviour
     public float lifetime = 1;
     public bool looping;
     public bool directControl;
+    public bool playOnEnable;
     
 
     [HideInInspector] public float timer = 0;
@@ -67,5 +68,13 @@ public abstract class TimedVisualEffect : MonoBehaviour
     public void SetTo(float newTime)
     {
         timer = newTime;
+    }
+
+    private void OnEnable()
+    {
+        if (playOnEnable == true)
+        {
+            Play();
+        }
     }
 }

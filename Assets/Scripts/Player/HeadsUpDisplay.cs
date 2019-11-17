@@ -6,14 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof (PlayerHandler))]
 public class HeadsUpDisplay : MonoBehaviour
 {
-    [Header("References")]
-    
-    public CanvasScaler hud;
-
     [HideInInspector] public PlayerHandler ph;
-
-
-    public Image weaponGraphic;
 
     [Header("General elements")]
     public Color resourceNormalColour;
@@ -54,9 +47,13 @@ public class HeadsUpDisplay : MonoBehaviour
     public AudioClip criticalFeedback;
     public AudioClip killFeedback;
     public ColourTransitionEffect damagePing;
-    public float damagePingDuration;
     public ColourTransitionEffect criticalPing;
-    public float criticalPingDuration;
+
+    [Header("Weapon selector")]
+    public Text selectorWeaponName;
+    public Text selectorWeaponFiringMode;
+    public Text selectorWeaponRemainingAmmunition;
+    public Image selectorWeaponImage;
 
 
 
@@ -111,9 +108,8 @@ public class HeadsUpDisplay : MonoBehaviour
 
 
         #region Health HUD
-        healthCounter.text = ph.ph.health.current + "/" + ph.ph.health.max;
+        healthCounter.text = ph.ph.health.current.ToString();
         FillMeter(healthBar, ph.ph.health.current, ph.ph.health.max);
-        //healthBar.fillAmount = (float)ph.ph.health.current / (float)ph.ph.health.max;
         if (ph.ph.health.IsCritical())
         {
             healthCounter.color = resourceCriticalColour;
@@ -185,8 +181,8 @@ public class HeadsUpDisplay : MonoBehaviour
                 ADSTransition(0, null);
             }
 
-            float a = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
-            float rp = (a + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
+            float accuracy = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
+            float rp = (accuracy + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
             reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
             reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
             reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
@@ -194,34 +190,68 @@ public class HeadsUpDisplay : MonoBehaviour
 
             firingMode.text = rw.firingModes[rw.firingModeIndex].name;
 
-            if (rw.ammunition == null)
+            ammoCounter.text = AmmoInfo(rw, rw.firingModeIndex);
+
+            AmmunitionStats a = rw.GetAmmunitionStats(rw.firingModeIndex);
+            MagazineStats m = rw.GetMagazineStats(rw.firingModeIndex);
+
+            if (a == null)
             {
-                if (rw.magazine == null)
+                if (m == null)
                 {
-                    ammoCounter.text = "INFINITE";
-                    ammoBar.fillAmount = 1;
+                    FillMeter(ammoBar, 1, 1);
                 }
                 else
                 {
-                    ammoCounter.text = rw.magazine.magazine.current + "/INF";
-                    FillMeter(ammoBar, rw.magazine.magazine.current, rw.magazine.magazine.max);
+                    FillMeter(ammoBar, m.magazine.current, m.magazine.max);
                 }
             }
             else
             {
-                if (rw.magazine == null)
+                if (m == null)
                 {
-                    ammoCounter.text = ph.a.GetStock(rw.ammunition.ammoType).ToString();
-                    FillMeter(ammoBar, ph.a.GetStock(rw.ammunition.ammoType), ph.a.GetMax(rw.ammunition.ammoType));
+                    FillMeter(ammoBar, ph.a.GetStock(a.ammoType), ph.a.GetMax(a.ammoType));
                 }
                 else
                 {
-                    ammoCounter.text = rw.magazine.magazine.current + "/" + (ph.a.GetStock(rw.ammunition.ammoType) - rw.magazine.magazine.current);
-                    FillMeter(ammoBar, rw.magazine.magazine.current, rw.magazine.magazine.max);
+                    FillMeter(ammoBar, m.magazine.current, m.magazine.max);
                 }
             }
         }
         #endregion
+    }
+
+    string AmmoInfo(RangedWeapon rw, int firingModeIndex)
+    {
+        AmmunitionStats a = rw.GetAmmunitionStats(firingModeIndex);
+        MagazineStats m = rw.GetMagazineStats(firingModeIndex);
+
+        string s = "";
+
+        if (a == null)
+        {
+            if (m == null)
+            {
+                s = "INFINITE";
+            }
+            else
+            {
+                s = m.magazine.current + "/INF";
+            }
+        }
+        else
+        {
+            if (m == null)
+            {
+                s = ph.a.GetStock(a.ammoType).ToString();
+            }
+            else
+            {
+                s = m.magazine.current + "/" + (ph.a.GetStock(a.ammoType) - m.magazine.current);
+            }
+        }
+
+        return s;
     }
 
     void ColourReticle(Color c)
@@ -236,6 +266,14 @@ public class HeadsUpDisplay : MonoBehaviour
     void FillMeter(Image i, float current, float max)
     {
         i.fillAmount = current / max;
+    }
+
+    public void PopulateWeaponWheel(RangedWeapon rw, int firingModeIndex)
+    {
+        selectorWeaponName.text = rw.name;
+        selectorWeaponFiringMode.text = rw.firingModes[firingModeIndex].name;
+        selectorWeaponRemainingAmmunition.text = AmmoInfo(rw, firingModeIndex);
+        selectorWeaponImage.sprite = rw.weaponModel.GetComponent<SpriteRenderer>().sprite; // Substitute for finding object mesh if weapon has a 3D model
     }
 
     public void ADSTransition(float timer, Sprite opticsGraphic)
