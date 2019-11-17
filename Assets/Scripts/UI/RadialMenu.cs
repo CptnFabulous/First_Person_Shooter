@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/*
+
+ATTENTION! POSITIONS OF GUI ELEMENTS MESS UP WHEN CANVAS IS SET TO SCREEN SPACE - CAMERA! FIX IT SOMEHOW!
+
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +14,6 @@ public class RadialMenu : MonoBehaviour
     [Header("GUI")]
     public Image iconPrefab;
     public Transform cursorAxis;
-    // public Transform highlightAxis;
     public Image highlight;
     public bool lockHighlightRotation;
     public float wheelRadius;
@@ -61,22 +66,6 @@ public class RadialMenu : MonoBehaviour
         if (slots > 1)
         {
             #region Player input
-            /*
-            if (toggleInput == true && Input.GetButtonDown(buttonName))
-            {
-                isActive = !isActive;
-            }
-            else if (Input.GetButton(buttonName))
-            {
-                isActive = true;
-            }
-            else
-            {
-                isActive = false;
-            }
-            */
-
-
             if (toggleInput == true)
             {
                 if (Input.GetButtonDown(buttonName))
@@ -95,16 +84,13 @@ public class RadialMenu : MonoBehaviour
                     isActive = false;
                 }
             }
-
             #endregion
 
+            #region Functions while active
             if (isActive) // If button is pressed and there is another slot to swap to
             {
-                //Cursor.lockState = CursorLockMode.Confined;
-                print(Cursor.lockState);
                 gameObject.SetActive(true);
-
-                #region Calculate index
+                
                 relativeInputPosition += new Vector3(Input.GetAxis("MouseX"), Input.GetAxis("MouseY"));
                 Vector3 relativeControllerPosition = new Vector3(Input.GetAxis("StickAim_X"), Input.GetAxis("StickAim_Y"));
                 if (relativeControllerPosition != Vector3.zero)

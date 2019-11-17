@@ -31,5 +31,7 @@ namespace Tests
 
             Assert.IsTrue(g == null);
         }
+
+        // Come up with 3 more tests for testing assignment!
     }
 }
