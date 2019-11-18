@@ -26,7 +26,7 @@ public class DamageHitbox : MonoBehaviour
         */
 
         Character c = Character.FromHitbox(this);
-        if (c == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        if (c == null || originFaction == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
         {
             if (healthScript != null)
             {
@@ -44,7 +44,7 @@ public class DamageHitbox : MonoBehaviour
     public void Damage(int damage, float criticalMultiplier, GameObject origin, Faction originFaction, DamageType normalType, DamageType criticalType)
     {
         Character c = Character.FromHitbox(this);
-        if (c == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        if (c == null || originFaction == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
         {
             if (healthScript != null)
             {
