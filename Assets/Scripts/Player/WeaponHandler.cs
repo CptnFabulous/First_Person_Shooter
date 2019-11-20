@@ -22,7 +22,20 @@ public class WeaponHandler : MonoBehaviour
     [Header("Inventory")]
     public RangedWeapon[] equippedWeapons;
     public int currentWeaponIndex;
-    bool isSwitching;
+    bool isSwitching = false;
+
+    /*
+    public bool IsSwitchingWeapon()
+    {
+        return isSwitching;
+    }
+    */
+
+    public bool IsSwitchingWeapon
+    {
+        get { return isSwitching; }
+    }
+    
 
     [Header("Switching")]
     public RadialMenu weaponSelector;
@@ -42,28 +55,12 @@ public class WeaponHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(SwitchWeapon(currentWeaponIndex));
-
-        RefreshWeaponSelector();
-
-        //SelectWeaponAndFiringMode(3);
+        RefreshWeapons(currentWeaponIndex);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.GetButtonDown("SelectWeapon") && isSwitching == false)
-        {
-            int i = currentWeaponIndex + 1;
-            if (i >= equippedWeapons.Length)
-            {
-                i = 0;
-            }
-
-            StartCoroutine(SwitchWeapon(i));
-        }
-        */
         #region Weapon selector
         weaponSelector.WheelHandler();
 
@@ -98,48 +95,26 @@ public class WeaponHandler : MonoBehaviour
                 StartCoroutine(SwitchWeaponAndFiringMode(weaponIndex, firingModeIndex));
             }
         }
-
-        
-
-        //print(weaponSelector.SelectionMade());
-        /*
-        else if (weaponSelector.SelectionMade()) // If player has made a selection and exited the weapon wheel
-        {
-            print("Selection made");
-            StartCoroutine(SwitchWeaponAndFiringMode(weaponIndex, firingModeIndex));
-        }
-        */
-
         #endregion
+    }
 
+    private void LateUpdate()
+    {
+        accuracyModifier.CheckStatDuration();
+    }
 
-        /*
-        if (Input.GetAxis("Mouse ScrollWheel") != 0 && CurrentWeapon().gameObject.activeSelf == true && CurrentWeapon().firingModes.Length > 1)
+    void RefreshWeapons(int index)
+    {
+        equippedWeapons = GetComponentsInChildren<RangedWeapon>();
+        foreach (RangedWeapon rw in equippedWeapons)
         {
-            int i = 0;
-            if (Input.GetAxis("Mouse ScrollWheel") < 0)
-            {
-                i = 1;
-            }
-            else if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            {
-                i = -1;
-            }
-
-            i += CurrentWeapon().firingModeIndex;
-
-            if (i > CurrentWeapon().firingModes.Length - 1)
-            {
-                i = 0;
-            }
-            else if (i < 0)
-            {
-                i = CurrentWeapon().firingModes.Length - 1;
-            }
-
-            CurrentWeapon().SwitchWeaponMode(i);
+            rw.playerHolding = this;
+            rw.gameObject.SetActive(false);
         }
-        */
+
+        RefreshWeaponSelector();
+
+        StartCoroutine(SwitchWeapon(index));
     }
 
     void RefreshWeaponSelector()
@@ -167,9 +142,7 @@ public class WeaponHandler : MonoBehaviour
 
         weaponSelector.RefreshWheel(numberOfOptions, icons);
     }
-
     
-
     IEnumerator SwitchWeaponAndFiringMode(int weaponIndex, int firingModeIndex)
     {
         weaponIndex = Mathf.Clamp(weaponIndex, 0, equippedWeapons.Length - 1);
@@ -248,8 +221,4 @@ public class WeaponHandler : MonoBehaviour
         return true;
     }
 
-    private void LateUpdate()
-    {
-        accuracyModifier.CheckStatDuration();
-    }
 }

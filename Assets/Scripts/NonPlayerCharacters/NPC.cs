@@ -5,21 +5,23 @@ using UnityEngine.AI;
 
 public enum ObjectiveType
 {
-    Reach,
+    Seek,
+    Evade,
     Eliminate
     // Add more objective types in future
 }
 
-
 [RequireComponent(typeof (Character))]
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(AudioSource))]
 public class NPC : MonoBehaviour
 {
-    [Header("Standard variables")]
+    //[Header("Standard variables")]
 
     //Pathfinding variables
     [HideInInspector] public Character ch;
     [HideInInspector] public NavMeshAgent na;
+    [HideInInspector] public AudioSource audioSource;
     int waypointIndex;
     bool retracing;
 
@@ -27,6 +29,7 @@ public class NPC : MonoBehaviour
     {
         ch = GetComponent<Character>();
         na = GetComponent<NavMeshAgent>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     #region Pathfinding behaviours
@@ -40,7 +43,17 @@ public class NPC : MonoBehaviour
         }
         */
 
-        na.destination = target.transform.position;
+        NavMeshHit pointFound;
+        if (NavMesh.SamplePosition(target.transform.position, out pointFound, pursueRange, NavMesh.AllAreas))
+        {
+            na.destination = pointFound.position;
+        }
+        else
+        {
+            na.destination = target.transform.position;
+        }
+
+        
         //if (na.pathStatus == NavMeshPathStatus.)
 
 

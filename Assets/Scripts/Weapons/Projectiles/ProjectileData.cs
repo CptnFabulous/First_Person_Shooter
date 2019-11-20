@@ -12,7 +12,7 @@ public class ProjectileData : ScriptableObject
     public float velocity;
     public float diameter;
     public float gravityMultiplier;
-    public LayerMask hitDetection;
+    public LayerMask hitDetection = 1;
 
     
     public virtual GameObject NewProjectile(GameObject origin, Faction originFaction)

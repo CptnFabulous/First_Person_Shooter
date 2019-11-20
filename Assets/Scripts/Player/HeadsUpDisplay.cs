@@ -165,7 +165,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
         #region Weapon HUD
         RangedWeapon rw = ph.wh.CurrentWeapon();
-        bool activeWeapon = rw.gameObject.activeSelf;
+        bool activeWeapon = !ph.wh.IsSwitchingWeapon;
         reticleUp.gameObject.SetActive(activeWeapon);
         reticleDown.gameObject.SetActive(activeWeapon);
         reticleLeft.gameObject.SetActive(activeWeapon);

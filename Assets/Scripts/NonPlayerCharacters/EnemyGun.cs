@@ -22,6 +22,7 @@ public class EnemyGun : NPC
     [Header("Attacks")]
     public ProjectileBurst attack;
 
+
     // Update is called once per frame
     void Update()
     {
@@ -46,7 +47,7 @@ public class EnemyGun : NPC
             }
             
 
-            attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt);
+            attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt, audioSource);
 
             Health h = target.GetComponent<Health>();
             if (h != null && h.health.current <= 0)
