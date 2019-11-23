@@ -25,7 +25,7 @@ public class NPC : MonoBehaviour
     int waypointIndex;
     bool retracing;
 
-    private void Awake()
+    public virtual void Awake()
     {
         ch = GetComponent<Character>();
         na = GetComponent<NavMeshAgent>();

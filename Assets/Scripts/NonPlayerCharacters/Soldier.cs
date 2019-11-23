@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyGun : NPC
+public class Soldier : NPC
 {
     [Header("General stats")]
     public float moveSpeed;
@@ -22,6 +22,15 @@ public class EnemyGun : NPC
     [Header("Attacks")]
     public ProjectileBurst attack;
 
+    [Header("Animations")]
+    Animator a;
+
+
+    public override void Awake()
+    {
+        base.Awake();
+        a = GetComponent<Animator>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -45,9 +54,9 @@ public class EnemyGun : NPC
             {
                 StandStill();
             }
-            
 
-            attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt, audioSource);
+
+            //attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt, audioSource);
 
             Health h = target.GetComponent<Health>();
             if (h != null && h.health.current <= 0)
@@ -65,12 +74,27 @@ public class EnemyGun : NPC
             // Perform idle behaviour
             StandStill();
         }
+
+        if (attack.isAttacking)
+        {
+            a.SetBool("IsShooting", true);
+        }
+        else if (Vector3.Distance(transform.position, na.destination) > 0)
+        {
+            a.SetBool("IsShooting", false);
+            a.SetBool("IsMoving", true);
+        }
+        else
+        {
+            a.SetBool("IsShooting", false);
+            a.SetBool("IsMoving", false);
+        }
     }
 
     Character AcquireTarget()
     {
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, targetRange);
-        foreach(Collider c in thingsInEnvironment)
+        foreach (Collider c in thingsInEnvironment)
         {
             if (LineOfSight(c.gameObject, targetRange))
             {
@@ -80,7 +104,7 @@ public class EnemyGun : NPC
                     return targetCharacter;
                 }
             }
-            
+
             /*
             RaycastHit lineOfSight;
             if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetection) && lineOfSight.collider == c)

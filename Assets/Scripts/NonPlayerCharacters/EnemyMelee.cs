@@ -43,7 +43,7 @@ public class EnemyMelee : NPC
             }
             else
             {
-                na.destination = transform.position;
+                StandStill();
             }
 
 

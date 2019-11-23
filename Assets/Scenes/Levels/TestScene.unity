@@ -674,6 +674,8 @@ GameObject:
   - component: {fileID: 75738948}
   - component: {fileID: 75738950}
   - component: {fileID: 75738946}
+  - component: {fileID: 75738960}
+  - component: {fileID: 75738962}
   m_Layer: 0
   m_Name: PossessedSoldier
   m_TagString: Untagged
@@ -757,8 +759,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47af34676b829e428fb9dc99fe6e17f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properName: 
-  description: 
+  properName: Possessed Soldier
+  description: A soldier possessed by the corrupting influence of Basdgvaoishcnauchbh.
   faction: {fileID: 0}
   isUnique: 0
 --- !u!1 &75738949
@@ -824,7 +826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb061503c4774e04e8613657a2bde385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthScript: {fileID: 0}
+  healthScript: {fileID: 75738950}
   damageMultiplier: 1
   critical: 1
 --- !u!1 &75738953
@@ -1023,6 +1025,49 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &75738960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75738943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36aea794206982c4cb0434ff34d86d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ch: {fileID: 0}
+  na: {fileID: 0}
+  audioSource: {fileID: 0}
+  moveSpeed: 5
+  head: {fileID: 75738951}
+  target: {fileID: 0}
+  targetRange: 25
+  pursueRange: 50
+  viewDetection:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  attack:
+    projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
+    projectileOrigin: {fileID: 0}
+    projectileCount: 1
+    burstAmount: 1
+    spread: 0
+    range: 50
+    aimSpeed: 50
+    telegraphAimSpeed: 10
+    targetThreshold: 0.2
+    roundsPerMinute: 600
+    delay: 0.5
+    cooldown: 0.5
+    telegraphMoveSpeed: 3
+    isAttacking: 0
+    laserSight: {fileID: 0}
+    muzzleFlash: {fileID: 0}
+    flashRelativeDuration: 2
+    delayNoise: {fileID: 0}
+    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
 --- !u!1 &75738961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1039,6 +1084,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &75738962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75738943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb061503c4774e04e8613657a2bde385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthScript: {fileID: 75738950}
+  damageMultiplier: 1
+  critical: 0
 --- !u!1 &75738963
 GameObject:
   m_ObjectHideFlags: 0
