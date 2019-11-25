@@ -20,7 +20,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator BulletsDisappearAfterExpiry()
         {
-            GameObject g = Object.Instantiate(Resources.Load("Prefabs/Bullet") as GameObject, Vector3.zero, Quaternion.identity); // Finds bullet prefab in code
+            GameObject g = Object.Instantiate(Resources.Load("Prefabs/Projectiles/Bullet") as GameObject, Vector3.zero, Quaternion.identity); // Finds bullet prefab in code
 
             Projectile p = g.GetComponent<Projectile>(); // Searches for projectile monobehaviour in spawned projectile
             // Assigns appropriate variables to projectile
@@ -29,7 +29,7 @@ namespace Tests
             p.gravityMultiplier = 1;
             p.diameter = 1;
 
-            yield return new WaitForSeconds(p.projectileLifetime); // Waits for duration of projectileLifetime plus small delay to be safe
+            yield return new WaitForSeconds(p.projectileLifetime + 1); // Waits for duration of projectileLifetime plus small delay to be safe
             Debug.Log("Bullet should have despawned");
             yield return new WaitForEndOfFrame();
 
