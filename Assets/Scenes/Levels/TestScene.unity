@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5153,15 +5153,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4bd7bcdfb18f214a8314c0f8d0358aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ch: {fileID: 0}
+  na: {fileID: 0}
+  audioSource: {fileID: 0}
+  moveSpeed: 0
   head: {fileID: 0}
-  targetedCharacter: {fileID: 0}
-  faction: {fileID: 0}
-  meleeDamage: 10
-  meleeExecuteRange: 2
-  meleeAttackRange: 3
-  meleeAttackDelay: 0.5
-  meleeCooldown: 1
-  meleeDamageType: 0
+  target: {fileID: 0}
+  targetRange: 25
+  pursueRange: 50
+  viewDetection:
+    serializedVersion: 2
+    m_Bits: 0
+  attack:
+    damage: 10
+    hitDetectOrigin: {fileID: 0}
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 1
+    damageType: 0
+    range: 50
+    aimSpeed: 50
+    telegraphAimSpeed: 10
+    targetThreshold: 0.2
+    delay: 0.5
+    cooldown: 0.5
+    telegraphMoveSpeed: 0
+    isAttacking: 0
+    delayNoise: {fileID: 0}
+    swingNoise: {fileID: 0}
+    hitNoise: {fileID: 0}
 --- !u!114 &5436386156076658381
 MonoBehaviour:
   m_ObjectHideFlags: 0
