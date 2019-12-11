@@ -386,7 +386,7 @@ MonoBehaviour:
     critical: 0
   - refName: Rifle
     max: 120
-    current: 120
+    current: 30
     critical: 30
   - refName: Grenade
     max: 15
