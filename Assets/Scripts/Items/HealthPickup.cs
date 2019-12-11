@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthPickup : ItemPickup
 {
+    public int value;
     public override void Pickup(Collider c)
     {
         PlayerHealth ph = c.GetComponent<PlayerHealth>();
@@ -18,6 +19,8 @@ public class HealthPickup : ItemPickup
 
             ph.health.current += healthToReplenish;
             value -= healthToReplenish;
+
+            
 
             base.Pickup(c);
         }

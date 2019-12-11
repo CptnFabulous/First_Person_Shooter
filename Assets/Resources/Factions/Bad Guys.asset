@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e0cedee8cb59bb4e8a84f1aaf41156c, type: 3}
-  m_Name: Good Guys
+  m_Name: Bad Guys
   m_EditorClassIdentifier: 
-  factionColour: {r: 0, g: 0.5, b: 0, a: 0}
+  factionColour: {r: 1, g: 0, b: 0, a: 0}
   description: 
   alliedFactions: []
   enemyFactions:
-  - {fileID: 11400000, guid: 75392707070868341b7cfe235f712d23, type: 2}
-  - {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
-  - {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
+  - {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}

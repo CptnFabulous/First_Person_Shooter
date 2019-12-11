@@ -6,20 +6,24 @@ public enum GameState
 {
     Active,
     Paused,
+    InMenus,
     Won,
     Failed
 }
 
 public class GameStateHandler : MonoBehaviour
 {
+    PlayerHandler ph;
+
+    [Header("Menus")]
     public Canvas headsUpDisplay;
+    public Canvas inGameMenu;
     public Canvas pauseMenu;
     public Canvas winMenu;
     public Canvas failMenu;
+    public bool pauseWhileInMenus = true;
 
     GameState currentState;
-
-    PlayerHandler ph;
 
     void Awake()
     {
@@ -29,81 +33,97 @@ public class GameStateHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ChangeGameState(GameState.Active);
+        //ChangeGameState(GameState.Active);
+        ResumeGame();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("AccessMenus")) // Toggles in-game menu/inventory
         {
             if (currentState == GameState.Active)
             {
-                ChangeGameState(GameState.Paused);
+                GoIntoMenus();
             }
-            else if (currentState == GameState.Paused)
+            else if (currentState == GameState.InMenus)
             {
-                ChangeGameState(GameState.Active);
+                ResumeGame();
+            }
+        }
+
+        if (Input.GetButtonDown("Pause")) // Toggles pausing the game
+        {
+            if (currentState == GameState.Active)
+            {
+                PauseGame();
+            }
+            else if (currentState == GameState.Paused || currentState == GameState.InMenus)
+            {
+                ResumeGame();
             }
         }
     }
 
-
-    /*
-
-        IMPORTANT: Replace ChangeGameState() with different functions for each state, with appropriate variables
-
-    */
-
-
-    public void ChangeGameState(GameState gm)
+    #region Functions for changing game state
+    public void PauseGame()
     {
-        currentState = gm;
-        switch(currentState)
-        {
-            case GameState.Active: // Resume game
-                Time.timeScale = 1;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                SwitchMenu(headsUpDisplay);
-                print(Cursor.lockState + ", " + Cursor.visible);
-                //ph.ChangePlayerState(PlayerState.Active);
-                break;
-            case GameState.Paused: // Pause game
-                Time.timeScale = 0;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                SwitchMenu(pauseMenu);
-                print(Cursor.lockState + ", " + Cursor.visible);
-                //ph.ChangePlayerState(PlayerState.InMenus);
-                break;
-            case GameState.Won: // Game is won, display win menu
-                Time.timeScale = 1;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                SwitchMenu(winMenu);
-                //ph.ChangePlayerState(PlayerState.InMenus);
-                break;
-            case GameState.Failed: // Game is lost, display fail menu
-                Time.timeScale = 1;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                SwitchMenu(failMenu);
-                //ph.ChangePlayerState(PlayerState.Dead);
-                break;
-        }
+        currentState = GameState.Paused; // Set gamestate
+        Time.timeScale = 0; // Time is paused
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(pauseMenu);
     }
 
-    void SwitchMenu(Canvas menu)
+    public void GoIntoMenus()
+    {
+        currentState = GameState.InMenus; // Set gamestate
+        if (pauseWhileInMenus == true) // Time is paused, but only if pauseWhileInMenus is enabled
+        {
+            Time.timeScale = 0;
+        }
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(inGameMenu); // Switch to appropriate menu
+    }
+
+    public void ResumeGame()
+    {
+        currentState = GameState.Active; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.Locked; // Lock cursor
+        Cursor.visible = false; // Hide cursor
+        SwitchMenu(headsUpDisplay); // Switch to appropriate menu
+    }
+
+    public void WinGame()
+    {
+        currentState = GameState.Won; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(winMenu); // Switch to appropriate menu
+    }
+
+    public void FailGame()
+    {
+        currentState = GameState.Failed; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(failMenu); // Switch to appropriate menu
+    }
+    #endregion
+
+    void SwitchMenu(Canvas menu) // Enables desired menu and disables all others
     {
         headsUpDisplay.gameObject.SetActive(false);
+        inGameMenu.gameObject.SetActive(false);
         pauseMenu.gameObject.SetActive(false);
         winMenu.gameObject.SetActive(false);
         failMenu.gameObject.SetActive(false);
         menu.gameObject.SetActive(true);
     }
-
-    
 }
 
 

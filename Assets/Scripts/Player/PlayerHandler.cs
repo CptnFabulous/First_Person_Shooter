@@ -20,7 +20,7 @@ public class PlayerHandler : Character
     [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler gsh;
 
-
+    public AudioSource playerAudio;
 
     PlayerState currentState = PlayerState.Active;
 
@@ -32,6 +32,8 @@ public class PlayerHandler : Character
         a = GetComponent<AmmunitionInventory>();
         hud = GetComponent<HeadsUpDisplay>();
         gsh = GetComponent<GameStateHandler>();
+
+        playerAudio = GetComponent<AudioSource>();
     }
 
     
@@ -64,7 +66,8 @@ public class PlayerHandler : Character
 
                 wh.enabled = false;
 
-                gsh.ChangeGameState(GameState.Failed);
+                //gsh.ChangeGameState(GameState.Failed);
+                gsh.FailGame();
 
                 break;
             case PlayerState.InMenus:
@@ -74,7 +77,8 @@ public class PlayerHandler : Character
 
                 wh.enabled = false;
 
-                gsh.ChangeGameState(GameState.Paused);
+                gsh.PauseGame();
+                //gsh.ChangeGameState(GameState.Paused);
 
                 break;
             default:

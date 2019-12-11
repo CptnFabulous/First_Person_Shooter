@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 7555540720933384299}
   - component: {fileID: 5898894584109615609}
   m_Layer: 0
-  m_Name: Enemy_Melee_Left
+  m_Name: Melee_Cultist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -321,7 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   properName: Melee Enemy
   description: A placeholder enemy with a melee attack
-  faction: {fileID: 11400000, guid: 75392707070868341b7cfe235f712d23, type: 2}
+  faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
   isUnique: 0
 --- !u!114 &5898894584109615612
 MonoBehaviour:
@@ -355,7 +355,9 @@ MonoBehaviour:
   droppedItems:
   - item: {fileID: 6396267097449058730, guid: b8455c19af543ca40b0042a608c11a31, type: 3}
     quantity: 1
-  dropZone: {x: 1, y: 2, z: 1}
+  - item: {fileID: 8604143335854015636, guid: a4130bde53fac2b44a619cebe5da85cc, type: 3}
+    quantity: 1
+  dropZone: {x: 1, y: 1, z: 1}
 --- !u!114 &5898894584109615609
 MonoBehaviour:
   m_ObjectHideFlags: 0

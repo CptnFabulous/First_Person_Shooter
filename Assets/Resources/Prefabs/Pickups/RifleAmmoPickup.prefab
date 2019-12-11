@@ -135,6 +135,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5bdd622c1e89f74b91473d2c45727d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 10
-  consumeAll: 1
+  consumeImmediately: 1
   ammoType: 4
+  amount: 10

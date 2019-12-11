@@ -6,16 +6,16 @@ SketchUpImporter:
   selectedNodes: 00000000010000000200000003000000
   assetHash:
     serializedVersion: 2
-    Hash: d9e378746db8fc3c8b7d3418bdf19b18
+    Hash: 75e6e6f2f3eb9656688185c18fc88101
   longitude: -105.242139
   latitude: 40.018309
   northCorrection: -0
   fileUnit: 0
   sketchUpImportData:
     defaultCamera:
-      position: {x: -70.18598, y: 247.02187, z: 79.91076}
-      lookAt: {x: 11.273176, y: 155.15872, z: 128.47719}
-      up: {x: 0.5975992, y: 0.7182834, z: 0.3562922}
+      position: {x: 196.28564, y: 252.65685, z: -261.253}
+      lookAt: {x: 197.7681, y: 153.39536, z: -172.78905}
+      up: {x: 0.012507834, y: 0.6653879, z: 0.74639297}
       fov: 35
       aspectRatio: 0
       orthoSize: 1
@@ -29,17 +29,16 @@ SketchUpImporter:
     400002: //RootNode
     2100000: '[Color C07]'
     2100002: '[Color C08]'
-    2100004: '[Color M02]'
+    2100004: '[Color M04]'
     2100006: '[Color M06]'
     2100008: '[Color D01]'
-    2100010: '[Color M04]'
-    2100012: '[Color M07]'
-    2100014: '[Chris_Shirt]'
-    2100016: '[Chris_Shoe]'
-    2100018: '[Chris_Skin]'
-    2100020: '[Chris_Shoe_Sole]'
-    2100022: '[Chris_Hair]'
-    2100024: '[Chris_Pants]'
+    2100010: '[Color M07]'
+    2100012: '[Chris_Shirt]'
+    2100014: '[Chris_Shoe]'
+    2100016: '[Chris_Skin]'
+    2100018: '[Chris_Shoe_Sole]'
+    2100020: '[Chris_Hair]'
+    2100022: '[Chris_Pants]'
     2300000: Chris
     2300002: //RootNode
     3300000: Chris
