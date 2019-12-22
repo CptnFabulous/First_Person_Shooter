@@ -15,11 +15,8 @@ public class UniversalAmmunitionPickup : ItemPickup
             for (int i = 0; i < System.Enum.GetValues(typeof(AmmunitionType)).Length; i++)
             {
                 AmmunitionType a = (AmmunitionType)i;
-                if (a != AmmunitionType.None)
-                {
-                    int amountToRestore = Mathf.RoundToInt(ai.GetMax(a) * (percentageValue / 100));
-                    ai.Collect(a, amountToRestore);
-                }
+                int amountToRestore = Mathf.RoundToInt(ai.GetMax(a) * (percentageValue / 100));
+                ai.Collect(a, amountToRestore);
             }
         }
 

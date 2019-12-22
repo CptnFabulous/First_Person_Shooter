@@ -175,11 +175,11 @@ MonoBehaviour:
   ammunitionModes:
   - name: 5.56MM NATO
     consumesAmmo: 1
-    ammoType: 4
+    ammoType: 3
     ammoPerShot: 1
   - name: 40MM HEDP Grenades
     consumesAmmo: 1
-    ammoType: 5
+    ammoType: 4
     ammoPerShot: 1
   magazineModes:
   - name: Standard 30rnd STANAG magazine
@@ -189,6 +189,14 @@ MonoBehaviour:
       current: 30
       critical: 5
     roundsReloaded: 30
+    reloadTime: 1.2
+  - name: M203 Chamber
+    magazine:
+      refName: 
+      max: 1
+      current: 1
+      critical: 0
+    roundsReloaded: 1
     reloadTime: 1.2
   projectileModes:
   - name: Standard bullets
@@ -291,7 +299,7 @@ MonoBehaviour:
     recoilMode: 1
     opticsMode: -1
     ammunitionMode: 1
-    magazineMode: -1
+    magazineMode: 1
     switchSpeed: 0
     hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     heldPosition: {fileID: 7790646450496658551}

@@ -22,11 +22,9 @@ public enum AmmunitionType
     Pistol,
     Buckshot,
     Slugs,
-    DragonsBreath,
     Rifle,
     Grenade,
-    Petrol,
-    None
+    Petrol
 }
 
 public class AmmunitionInventory : MonoBehaviour
@@ -35,31 +33,16 @@ public class AmmunitionInventory : MonoBehaviour
 
     public int GetStock(AmmunitionType type) // Since our enum is "really" an integer, we can use it as an index to jump straight to the entry we want.
     {
-        if (type == AmmunitionType.None)
-        {
-            return int.MaxValue;
-        }
-
         return inventory[(int)type].current;
     }
 
     public int GetMax(AmmunitionType type) // Since our enum is "really" an integer, we can use it as an index to jump straight to the entry we want.
     {
-        if (type == AmmunitionType.None)
-        {
-            return int.MaxValue;
-        }
-
         return inventory[(int)type].max;
     }
 
     public int Collect(AmmunitionType type, int amount) // Returns amount collected, so you can choose to not consume pickups if you're already full (ie. return value is zero).
     {
-        if (type == AmmunitionType.None)
-        {
-            return amount;
-        }
-
         Resource held = inventory[(int)type];
         int collect = Mathf.Min(amount, held.max - held.current);
         held.current += collect;
@@ -69,11 +52,6 @@ public class AmmunitionInventory : MonoBehaviour
 
     public int Spend(AmmunitionType type, int amount) // Returns the amount actually spent, in case firing a full round would drop us below 0 ammo, you can scale down the last shot. You could also implement a TrySpend that aborts for insufficient ammo.
     {
-        if (type == AmmunitionType.None)
-        {
-            return amount;
-        }
-
         Resource held = inventory[(int)type];
         int spend = Mathf.Min(amount, held.current);
         held.current -= spend;
@@ -89,13 +67,11 @@ public class AmmunitionInventory : MonoBehaviour
         var inv = new List<Resource>(ammoNames.Length);
         for (int i = 0; i < ammoNames.Length; i++)
         {
-            if (ammoNames[i] != "None") // For each actual ammo type, generate stock variables
-            {
-                var existing = inventory.Find((entry) => { return entry.refName == ammoNames[i]; });
-                existing.refName = ammoNames[i];
-                existing.current = Mathf.Min(existing.current, existing.max);
-                inv.Add(existing);
-            }
+            // For each ammo type, generate stock variables
+            var existing = inventory.Find((entry) => { return entry.refName == ammoNames[i]; });
+            existing.refName = ammoNames[i];
+            existing.current = Mathf.Min(existing.current, existing.max);
+            inv.Add(existing);
         }
         inventory = inv;
     }
