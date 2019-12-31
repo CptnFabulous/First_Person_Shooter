@@ -8,13 +8,14 @@ public enum ObjectiveState
     Inactive,
     Active,
     Completed,
+    Disabled
 }
 
 [System.Serializable]
 public abstract class PlayerObjective
 {
     public string description;
-    ObjectiveState state;
+    public ObjectiveState state = ObjectiveState.Active;
     public UnityEvent onCompletion;
 
     public virtual void CompletedCheck()
@@ -32,14 +33,24 @@ public abstract class PlayerObjective
     {
         return description;
     }
+
+    public void Activate()
+    {
+        state = ObjectiveState.Active;
+    }
+
+    public void Deactivate()
+    {
+        state = ObjectiveState.Inactive;
+    }
 }
 
 [System.Serializable]
-public class EliminationObjective : PlayerObjective
+public class KillQuantityObjective : PlayerObjective
 {
-    public Character[] enemies;
+    public Character enemyType;
     public int quantity;
-    int amountEliminated;
+    [HideInInspector] public int amountEliminated;
 
     public override void CompletedCheck()
     {
@@ -51,7 +62,26 @@ public class EliminationObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + (": ") + amountEliminated + ("/") + quantity;
+        return description + ": " + amountEliminated + "/" + quantity;
+    }
+}
+
+[System.Serializable]
+public class KillGroupObjective : PlayerObjective
+{
+    public List<Character> enemies;
+
+    public override void CompletedCheck()
+    {
+        if (enemies.Count <= 0) // Check if no enemies are alive
+        {
+            Complete();
+        }
+    }
+
+    public override string DisplayCriteria()
+    {
+        return description + ": " + enemies.Count + " remaining";
     }
 }
 
@@ -61,14 +91,14 @@ public class PursuitObjective : PlayerObjective
     public Transform location;
     public float radius;
 
-    float Distance(Transform playerTransform)
+    float Distance()
     {
-        return Vector3.Distance(location.position, playerTransform.position);
+        return Vector3.Distance(location.position, Object.FindObjectOfType<PlayerHandler>().transform.position);
     }
 
     public override void CompletedCheck()
     {
-        if (/*Distance()*/1 <= radius)
+        if (Distance() <= radius)
         {
             Complete();
         }
@@ -76,7 +106,7 @@ public class PursuitObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + (": ") + /*Distance() + */("m");
+        return description + ": " + Mathf.RoundToInt(Distance()) + "m";
     }
 }
 
@@ -85,7 +115,7 @@ public class CollectionObjective : PlayerObjective
 {
     public ItemPickup itemType;
     public int quantity;
-    int amountObtained;
+    [HideInInspector] public int amountObtained;
 
     public override void CompletedCheck()
     {
@@ -109,7 +139,8 @@ public class InteractObjective : PlayerObjective
 
 public class ObjectiveHandler : MonoBehaviour
 {
-    public EliminationObjective[] targets;
+    public KillQuantityObjective[] enemyQuotas;
+    public KillGroupObjective[] targets;
     public PursuitObjective[] locations;
     public CollectionObjective[] items;
     public InteractObjective[] interactables;
@@ -124,21 +155,70 @@ public class ObjectiveHandler : MonoBehaviour
     void Update()
     {
         // Checks if objectives are completed
-        foreach (EliminationObjective o in targets)
+        foreach (KillQuantityObjective o in enemyQuotas)
         {
-            o.CompletedCheck();
+            if (o.state == ObjectiveState.Active)
+            {
+                o.CompletedCheck();
+            }
+            
+        }
+        foreach (KillGroupObjective o in targets)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                o.CompletedCheck();
+            }
         }
         foreach (PursuitObjective o in locations)
         {
-            o.CompletedCheck();
+            if (o.state == ObjectiveState.Active)
+            {
+                o.CompletedCheck();
+            }
         }
         foreach (CollectionObjective o in items)
         {
-            o.CompletedCheck();
+            if (o.state == ObjectiveState.Active)
+            {
+                o.CompletedCheck();
+            }
         }
         foreach (InteractObjective o in interactables)
         {
-            o.CompletedCheck();
+            if (o.state == ObjectiveState.Active)
+            {
+                o.CompletedCheck();
+            }
         }
+    }
+
+    public void CheckKillObjectives(Character attacker, Character victim, DamageType killMethod)
+    {
+        if (attacker.GetComponent<PlayerHandler>() != null)
+        {
+            print("Attacker is a player");
+            foreach (KillQuantityObjective o in enemyQuotas)
+            {
+                print("o");
+                if (o.state == ObjectiveState.Active && (victim == o.enemyType || victim.properName == o.enemyType.properName))
+                {
+                    o.amountEliminated += 1;
+                    print("Killed");
+                }
+            }
+
+            foreach (KillGroupObjective o in targets)
+            {
+                foreach(Character c in o.enemies)
+                {
+                    if (c == victim)
+                    {
+                        o.enemies.Remove(c);
+                    }
+                }
+            }
+        }
+        
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     public Resource health = new Resource { max = 100, current = 100, critical = 20 };
-    int prevHealth;
 
     DamageType lastDamageSource;
     GameObject lastAttacker;
@@ -18,30 +17,22 @@ public class Health : MonoBehaviour
     }
 #endif
 
+    /*
     // Start is called before the first frame update
     void Start()
     {
-        prevHealth = health.current;
+        
     }
+    */
 
     // Update is called once per frame
     public virtual void Update()
     {
-        if (prevHealth != health.current) // if health has changed
-        {
-            HealthChanged();
-        }
-        prevHealth = health.current;
-    }
-
-    public virtual void HealthChanged() // Do stuff here when health changes
-    {
         if (health.current <= 0)
         {
-            Die(lastDamageSource, lastAttacker);
+            print("schlep");
+            Die(lastDamageSource, lastAttacker); // Die function runs multiple times when it must only run once, this needs fixing
         }
-
-        // DO ADDITIONAL STUFF HERE IN DERIVED CLASSES, e.g. pain/death animations
     }
 
     public virtual void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
@@ -53,35 +44,8 @@ public class Health : MonoBehaviour
 
     public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
-        string deathMessage = name + " was ";
-        switch (causeOfDeath)
-        {
-            case DamageType.Shot:
-                deathMessage += "shot to death";
-                break;
-            case DamageType.CriticalShot:
-                deathMessage += "shot in the head";
-                break;
-            case DamageType.BlownUp:
-                deathMessage += "blown up";
-                break;
-            case DamageType.Gibbed:
-                deathMessage += "splattered to giblets";
-                break;
-            case DamageType.Burned:
-                deathMessage += "burned to a crisp";
-                break;
-            case DamageType.Bludgeoned:
-                deathMessage += "bludgeoned to a pulp";
-                break;
-            default:
-                deathMessage += "killed";
-                break;
-        }
-        deathMessage += " by " + lastAttacker.name + "!";
-        print(deathMessage);
-
-        Destroy(gameObject); // Destroy gameobject upon death, when using inherited classes override this function to implement different code such as death animations etc.)
+        print(name + " has died");
+        LevelManager.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
     }
 
     public virtual bool IsAlive()

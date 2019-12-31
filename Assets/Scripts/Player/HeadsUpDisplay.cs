@@ -16,6 +16,9 @@ public class HeadsUpDisplay : MonoBehaviour
     public float lookRange;
     public float interactRange;
 
+    [Header("Objectives")]
+    public Text objectiveList;
+
     [Header("Health elements")]
     public GameObject healthDisplay;
     public Text healthCounter;
@@ -55,26 +58,6 @@ public class HeadsUpDisplay : MonoBehaviour
     public Text selectorWeaponRemainingAmmunition;
     public Image selectorWeaponImage;
 
-
-
-    //[Header("Health Meter")]
-
-
-    /*
-    public RectTransform heartGridOrigin;
-    public Vector2Int heartGridSize;
-    public enum gridAxis
-    {
-        x,
-        y
-    }
-    public gridAxis heartRowOrientation;
-    public int heartNumber;
-    public int heartSpacing;
-    int heartRowLength;
-    int heartRowNumber;
-    */
-
     private void Awake()
     {
         ph = GetComponent<PlayerHandler>();
@@ -84,28 +67,14 @@ public class HeadsUpDisplay : MonoBehaviour
     void Start()
     {
         
-        
-
-        /*
-        prs = GetComponent<PlayerResources>();
-        healthPrev = prs.healthCurrent;
-
-        HealthMeterUpdate();
-        */
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        /*
-        if (prs.healthCurrent != healthPrev)
-        {
-            //HealthMeterUpdate();
-        }
-        healthPrev = prs.healthCurrent;
-        */
-
+        #region Objectives
+        objectiveList.text = ObjectiveList();
+        #endregion
 
         #region Health HUD
         healthCounter.text = ph.ph.health.current.ToString();
@@ -325,64 +294,53 @@ public class HeadsUpDisplay : MonoBehaviour
 
     }
 
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    void HealthMeterUpdate()
+    string ObjectiveList()
     {
+        string list = "Objectives:";
 
-        if (heartRowOrientation == gridAxis.x)
-        {
-            heartRowLength = heartGridSize.x;
-            heartRowNumber = heartGridSize.y;
-        }
-        else
-        {
-            heartRowLength = heartGridSize.y;
-            heartRowNumber = heartGridSize.x;
-        }
+        ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
 
-        int hn = 0;
-        for (int hrn = 0; hrn < heartRowNumber; hrn++)
+        foreach (KillQuantityObjective o in oh.enemyQuotas)
         {
-            for (int hrl = 0; hrl < heartRowLength; hrl++)
+            if (o.state == ObjectiveState.Active)
             {
-                if (hn < heartNumber)
-                {
-                    print("Row " + hrn + ", number " + hrl);
-                    hn++;
-                }
-                else
-                {
-                    hrn = heartRowNumber;
-                    hrl = heartRowLength;
-                }
+                list += "\n";
+                list += o.DisplayCriteria();
             }
         }
+        foreach (KillGroupObjective o in oh.targets)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                list += "\n";
+                list += o.DisplayCriteria();
+            }
+        }
+        foreach (PursuitObjective o in oh.locations)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                list += "\n";
+                list += o.DisplayCriteria();
+            }
+        }
+        foreach (CollectionObjective o in oh.items)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                list += "\n";
+                list += o.DisplayCriteria();
+            }
+        }
+        foreach (InteractObjective o in oh.interactables)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                list += "\n";
+                list += o.DisplayCriteria();
+            }
+        }
+
+        return list;
     }
-    */
 }
