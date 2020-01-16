@@ -20,10 +20,10 @@ public class LevelManager : MonoBehaviour
     }
     */
     
-    public void ReceiveKill(Character attacker, Character victim, DamageType killMethod)
+    public void ReceiveKill(KillMessage km)
     {
-        string deathMessage = victim.name + " was ";
-        switch (killMethod)
+        string deathMessage = km.victim.name + " was ";
+        switch (km.killMethod)
         {
             case DamageType.Shot:
                 deathMessage += "riddled with bullets";
@@ -47,36 +47,20 @@ public class LevelManager : MonoBehaviour
                 deathMessage += "killed";
                 break;
         }
-        deathMessage += " by " + attacker.name + "!";
+        deathMessage += " by " + km.attacker.name + "!";
         print(deathMessage);
 
         if (objectiveHandler != null)
         {
-            objectiveHandler.CheckKillObjectives(attacker, victim, killMethod);
+            objectiveHandler.CheckKillObjectives(km);
         }
     }
 
     public void ReceiveInteraction(PlayerHandler player, Interactable interactable)
     {
-        
-    }
-    
-
-    public static void TransmitKill(Character attacker, Character victim, DamageType killMethod)
-    {
-        LevelManager lm = FindObjectOfType<LevelManager>();
-        if (lm != null)
+        if (objectiveHandler != null)
         {
-            lm.ReceiveKill(attacker, victim, killMethod);
-        }
-    }
-
-    public static void TransmitInteraction(PlayerHandler player, Interactable interactable)
-    {
-        LevelManager lm = FindObjectOfType<LevelManager>();
-        if (lm != null)
-        {
-            lm.ReceiveInteraction(player, interactable);
+            objectiveHandler.CheckInteractObjectives(player, interactable);
         }
     }
 }

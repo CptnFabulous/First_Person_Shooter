@@ -45,7 +45,7 @@ public class Health : MonoBehaviour
     public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
         print(name + " has died");
-        LevelManager.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        GameEvent.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
     }
 
     public virtual bool IsAlive()

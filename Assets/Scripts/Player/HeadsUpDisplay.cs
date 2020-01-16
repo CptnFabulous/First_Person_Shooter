@@ -300,6 +300,15 @@ public class HeadsUpDisplay : MonoBehaviour
 
         ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
 
+        foreach(PlayerObjective o in oh.objectives)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                list += "\n";
+                list += o.DisplayCriteria();
+            }
+        }
+        /*
         foreach (KillQuantityObjective o in oh.enemyQuotas)
         {
             if (o.state == ObjectiveState.Active)
@@ -340,6 +349,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 list += o.DisplayCriteria();
             }
         }
+        */
 
         return list;
     }
