@@ -20,4 +20,9 @@ public class CollectionObjective : PlayerObjective
     {
         return description + (": ") + amountObtained + ("/") + quantity;
     }
+
+    public void UpdateObjective()
+    {
+
+    }
 }

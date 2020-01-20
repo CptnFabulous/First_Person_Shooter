@@ -300,18 +300,6 @@ public class ObjectiveHandler : MonoBehaviour
                     kgo.UpdateObjective(km);
                 }
             }
-            
-            /*
-            foreach (KillQuantityObjective o in objectives)
-            {
-                o.UpdateObjective(km);
-            }
-
-            foreach (KillGroupObjective o in objectives)
-            {
-                o.UpdateObjective(km);
-            }
-            */
         }
     }
 
