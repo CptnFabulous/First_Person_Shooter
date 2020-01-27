@@ -291,5 +291,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c125d38a2f1a642a293cf0651bbe47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consumeImmediately: 1
   value: 15
-  consumeAll: 1

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Interactable : MonoBehaviour
+[RequireComponent(typeof(Collider))]
+public abstract class Interactable : MonoBehaviour
 {
-    public UnityEvent onInteract;
+    public string instruction;
 
-    public void Interact(PlayerHandler ph)
+    public virtual void OnInteract(PlayerHandler ph)
     {
-        onInteract.Invoke();
+        GameEvent.TransmitInteraction(ph, this);
     }
 }
