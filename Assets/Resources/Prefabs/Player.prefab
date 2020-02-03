@@ -473,7 +473,7 @@ MonoBehaviour:
   playerHandler: {fileID: 7394104395992576367}
   damage: 20
   cooldown: 1
-  range: 3
+  range: 5
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295

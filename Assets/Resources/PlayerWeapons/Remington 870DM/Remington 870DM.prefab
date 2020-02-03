@@ -336,7 +336,7 @@ MonoBehaviour:
     burstCounter: 0
   accuracyModes:
   - name: Buckshot
-    projectileSpread: 2
+    projectileSpread: 3
     range: 200
     rayDetection:
       serializedVersion: 2
