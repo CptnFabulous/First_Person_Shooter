@@ -299,57 +299,21 @@ public class HeadsUpDisplay : MonoBehaviour
         string list = "Objectives:";
 
         ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
-
-        foreach(PlayerObjective o in oh.objectives)
+        if (oh != null)
         {
-            if (o.state == ObjectiveState.Active)
+            foreach (PlayerObjective o in oh.objectives)
             {
-                list += "\n";
-                list += o.DisplayCriteria();
+                if (o.state == ObjectiveState.Active)
+                {
+                    list += "\n";
+                    list += o.DisplayCriteria();
+                }
             }
         }
-        /*
-        foreach (KillQuantityObjective o in oh.enemyQuotas)
+        else
         {
-            if (o.state == ObjectiveState.Active)
-            {
-                list += "\n";
-                list += o.DisplayCriteria();
-            }
+            list = "No objectives";
         }
-        foreach (KillGroupObjective o in oh.targets)
-        {
-            if (o.state == ObjectiveState.Active)
-            {
-                list += "\n";
-                list += o.DisplayCriteria();
-            }
-        }
-        foreach (PursuitObjective o in oh.locations)
-        {
-            if (o.state == ObjectiveState.Active)
-            {
-                list += "\n";
-                list += o.DisplayCriteria();
-            }
-        }
-        foreach (CollectionObjective o in oh.items)
-        {
-            if (o.state == ObjectiveState.Active)
-            {
-                list += "\n";
-                list += o.DisplayCriteria();
-            }
-        }
-        foreach (InteractObjective o in oh.interactables)
-        {
-            if (o.state == ObjectiveState.Active)
-            {
-                list += "\n";
-                list += o.DisplayCriteria();
-            }
-        }
-        */
 
         return list;
     }
