@@ -22,6 +22,6 @@ public class PursuitObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + ": " + Mathf.RoundToInt(Distance()) + "m";
+        return name + ": " + Mathf.RoundToInt(Distance()) + "m";
     }
 }

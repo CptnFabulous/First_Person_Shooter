@@ -498,7 +498,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 26
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &176779933
 GameObject:
@@ -1236,12 +1236,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47af34676b829e428fb9dc99fe6e17f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &736040234 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4022429616585066230, guid: 685d773ab1c2aec48b5b5567a29bf603,
+    type: 3}
+  m_PrefabInstance: {fileID: 4022429616935494627}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 990ad21f093c242488d8936605b07693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &804254423 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7394104396082026299, guid: 35eecb15e9bff8a43a236341dcd99101,
     type: 3}
   m_PrefabInstance: {fileID: 7394104396599027180}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &806680790 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2831840869934209678, guid: 66318e6331b9bb74f89f273b108058b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1142108418656893013}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 316648ccb98504447b561df74e81e454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &873295033
 GameObject:
   m_ObjectHideFlags: 0
@@ -1484,111 +1508,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &884133446
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 884133450}
-  - component: {fileID: 884133449}
-  - component: {fileID: 884133448}
-  - component: {fileID: 884133447}
-  - component: {fileID: 884133451}
-  m_Layer: 0
-  m_Name: WinZone
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!65 &884133447
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 884133446}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5, y: 5, z: 5}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &884133448
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 884133446}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &884133449
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 884133446}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &884133450
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 884133446}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 59.02, y: 2.5, z: 47.91}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 25
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &884133451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 884133446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d37e2a0e44a88242a682d99cb7cb507, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextLevelName: 
 --- !u!1 &997892570
 GameObject:
   m_ObjectHideFlags: 0
@@ -3681,7 +3600,7 @@ PrefabInstance:
     - target: {fileID: 4908568099156240730, guid: 66318e6331b9bb74f89f273b108058b9,
         type: 3}
       propertyPath: m_Name
-      value: Kill Quantity Objective
+      value: Kill rifle enemies
       objectReference: {fileID: 0}
     - target: {fileID: 7209160754128651757, guid: 66318e6331b9bb74f89f273b108058b9,
         type: 3}
@@ -3731,7 +3650,7 @@ PrefabInstance:
     - target: {fileID: 4022429616585066224, guid: 685d773ab1c2aec48b5b5567a29bf603,
         type: 3}
       propertyPath: m_Name
-      value: Kill Group Objective
+      value: Kill all enemies
       objectReference: {fileID: 0}
     - target: {fileID: 4022429616585066231, guid: 685d773ab1c2aec48b5b5567a29bf603,
         type: 3}
@@ -4112,7 +4031,7 @@ PrefabInstance:
     - target: {fileID: 5383575375778918681, guid: fc9b9640e188cc441a3e35871e8b7c26,
         type: 3}
       propertyPath: m_Name
-      value: Pursuit Objective
+      value: Reach the centre platform
       objectReference: {fileID: 0}
     - target: {fileID: 614939042619739379, guid: fc9b9640e188cc441a3e35871e8b7c26,
         type: 3}
@@ -4136,6 +4055,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7024180531235310773, guid: fc9b9640e188cc441a3e35871e8b7c26,
         type: 3}
+      propertyPath: activateCriteria.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7024180531235310773, guid: fc9b9640e188cc441a3e35871e8b7c26,
+        type: 3}
       propertyPath: description
       value: Reach the centre platform
       objectReference: {fileID: 0}
@@ -4149,5 +4073,20 @@ PrefabInstance:
       propertyPath: location
       value: 
       objectReference: {fileID: 207465621}
+    - target: {fileID: 7024180531235310773, guid: fc9b9640e188cc441a3e35871e8b7c26,
+        type: 3}
+      propertyPath: activateCriteria.Array.data[0]
+      value: 
+      objectReference: {fileID: 736040234}
+    - target: {fileID: 7024180531235310773, guid: fc9b9640e188cc441a3e35871e8b7c26,
+        type: 3}
+      propertyPath: activateCriteria.Array.data[1]
+      value: 
+      objectReference: {fileID: 806680790}
+    - target: {fileID: 7024180531235310773, guid: fc9b9640e188cc441a3e35871e8b7c26,
+        type: 3}
+      propertyPath: state
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc9b9640e188cc441a3e35871e8b7c26, type: 3}

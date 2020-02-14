@@ -18,7 +18,7 @@ public class KillQuantityObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + ": " + amountEliminated + "/" + quantity;
+        return name + ": " + amountEliminated + "/" + quantity;
     }
 
     public void UpdateObjective(KillMessage km)

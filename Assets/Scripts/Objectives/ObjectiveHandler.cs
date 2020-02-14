@@ -278,7 +278,24 @@ public class ObjectiveHandler : MonoBehaviour
             {
                 o.CompletedCheck();
             }
+            if (o.state == ObjectiveState.Inactive)
+            {
+                o.ActivateCheck();
+            }
         }
+    }
+
+    public bool LevelComplete()
+    {
+        bool completed = true;
+        foreach (PlayerObjective o in objectives)
+        {
+            if (o.mandatory == true && o.state != ObjectiveState.Completed)
+            {
+                completed = false;
+            }
+        }
+        return completed;
     }
 
     public void CheckKillObjectives(KillMessage km)

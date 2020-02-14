@@ -12,15 +12,32 @@ public enum ObjectiveState
 }
 
 [System.Serializable]
-public class PlayerObjective : MonoBehaviour
+public abstract class PlayerObjective : MonoBehaviour
 {
-    public string description;
+    public bool mandatory;
     public ObjectiveState state = ObjectiveState.Active;
+    public PlayerObjective[] activateCriteria;
     public UnityEvent onCompletion;
 
     public virtual void CompletedCheck()
     {
         Complete();
+    }
+
+    public void ActivateCheck()
+    {
+        bool allComplete = true;
+        foreach (PlayerObjective p in activateCriteria)
+        {
+            if (p.state != ObjectiveState.Completed)
+            {
+                allComplete = false;
+            }
+        }
+        if (allComplete)
+        {
+            Activate();
+        }
     }
 
     public void Complete()
@@ -31,7 +48,7 @@ public class PlayerObjective : MonoBehaviour
 
     public virtual string DisplayCriteria()
     {
-        return description;
+        return name;
     }
 
     public void Activate()

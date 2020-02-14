@@ -16,7 +16,7 @@ public class KillGroupObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + ": " + enemies.Count + " remaining";
+        return name + ": " + enemies.Count + " remaining";
     }
 
     public void UpdateObjective(KillMessage km)

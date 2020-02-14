@@ -18,7 +18,7 @@ public class CollectionObjective : PlayerObjective
 
     public override string DisplayCriteria()
     {
-        return description + (": ") + amountObtained + ("/") + quantity;
+        return name + (": ") + amountObtained + ("/") + quantity;
     }
 
     public void UpdateObjective()
