@@ -16,7 +16,7 @@ public abstract class PlayerObjective : MonoBehaviour
 {
     public bool mandatory;
     public ObjectiveState state = ObjectiveState.Active;
-    public PlayerObjective[] activateCriteria;
+    public PlayerObjective[] prerequisites;
     public UnityEvent onCompletion;
 
     public virtual void CompletedCheck()
@@ -27,7 +27,7 @@ public abstract class PlayerObjective : MonoBehaviour
     public void ActivateCheck()
     {
         bool allComplete = true;
-        foreach (PlayerObjective p in activateCriteria)
+        foreach (PlayerObjective p in prerequisites)
         {
             if (p.state != ObjectiveState.Completed)
             {

@@ -11,15 +11,22 @@ public class UniversalAmmunitionPickup : ItemPickup
         AmmunitionInventory ai = c.GetComponent<AmmunitionInventory>();
         if (ai != null)
         {
-            
+            bool hasBeenConsumed = false;
             for (int i = 0; i < System.Enum.GetValues(typeof(AmmunitionType)).Length; i++)
             {
                 AmmunitionType a = (AmmunitionType)i;
-                int amountToRestore = Mathf.RoundToInt(ai.GetMax(a) * (percentageValue / 100));
-                ai.Collect(a, amountToRestore);
+                if (ai.GetStock(a) < ai.GetMax(a))
+                {
+                    int amountToRestore = Mathf.RoundToInt(ai.GetMax(a) * (percentageValue / 100));
+                    ai.Collect(a, amountToRestore);
+                    hasBeenConsumed = true;
+                }
+            }
+
+            if (hasBeenConsumed == true)
+            {
+                Destroy(gameObject);
             }
         }
-
-        base.Pickup(c);
     }
 }

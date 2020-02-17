@@ -7,6 +7,7 @@ public class PlayerMeleeAttack : MonoBehaviour
     public PlayerHandler playerHandler;
 
     public int damage = 10;
+    public float knockback = 5;
     public float cooldown = 1;
     float cooldownTimer = float.MaxValue;
 
@@ -30,6 +31,7 @@ public class PlayerMeleeAttack : MonoBehaviour
             {
                 playerHandler.playerAudio.PlayOneShot(hitSound);
                 Damage.PointDamage(playerHandler.gameObject, playerHandler.faction, meleeHit.collider.gameObject, damage, damageType, false);
+                Damage.Knockback(meleeHit.collider.gameObject, knockback, meleeHit.collider.transform.position - transform.position);
             }
             else
             {

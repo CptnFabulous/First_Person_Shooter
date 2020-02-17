@@ -177,6 +177,19 @@ public class PlayerController : MonoBehaviour
         head.transform.localRotation = Quaternion.Euler(lookVector.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
     }
 
+    public void SetTransform(Transform newTransform)
+    {
+        transform.position = newTransform.position;
+
+        Vector3 rotationValues = newTransform.rotation.eulerAngles;
+        print(rotationValues.x);
+        transform.rotation = Quaternion.Euler(0, rotationValues.y, 0);
+        //lookVector.y = -rotationValues.x;
+
+
+        //head.transform.localRotation = Quaternion.Euler(rotationValues.x, 0, 0);
+    }
+
     #region Crouch functions
     void HoldOrToggleCrouch()
     {

@@ -60,7 +60,10 @@ public class AmmunitionInventory : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void Reset() { OnValidate(); }
+    void Reset()
+    {
+        OnValidate();
+    }
     void OnValidate() // Ensure our inventory list always matches the enum in the event of code changes. You could also use a custom editor to maintain this more efficiently.
     {
         var ammoNames = System.Enum.GetNames(typeof(AmmunitionType));

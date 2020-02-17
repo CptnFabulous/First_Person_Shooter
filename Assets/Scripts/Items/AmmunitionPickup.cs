@@ -23,15 +23,21 @@ public class AmmunitionPickup : ItemPickup
     {
         AmmunitionInventory ai = c.GetComponent<AmmunitionInventory>();
         
-        if (ai != null && ai.GetStock(ammoType) <= ai.GetMax(ammoType))
+        if (ai != null)
         {
-            amount -= ai.Collect(ammoType, amount);
-            if (amount <= 0)
+            if (ai.GetStock(ammoType) < ai.GetMax(ammoType))
             {
-                Destroy(gameObject);
+                amount -= ai.Collect(ammoType, amount);
+                if (amount <= 0)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    base.Pickup(c);
+                }
             }
-
-            base.Pickup(c);
+            
         }
     }
 }

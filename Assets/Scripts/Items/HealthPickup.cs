@@ -11,20 +11,18 @@ public class HealthPickup : ItemPickup
         if (ph != null)
         {
             int healthToReplenish = ph.health.max - ph.health.current;
-
-            if (healthToReplenish >= value)
+            if (healthToReplenish > 0)
             {
-                healthToReplenish = value;
+                if (healthToReplenish >= value)
+                {
+                    healthToReplenish = value;
+                }
+
+                ph.health.current += healthToReplenish;
+                value -= healthToReplenish;
+
+                base.Pickup(c);
             }
-
-            ph.health.current += healthToReplenish;
-            value -= healthToReplenish;
-
-            
-
-            base.Pickup(c);
         }
-
-
     }
 }
