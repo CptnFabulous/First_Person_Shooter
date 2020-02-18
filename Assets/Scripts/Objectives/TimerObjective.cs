@@ -48,6 +48,6 @@ public class TimerObjective : PlayerObjective
             m += 1;
         }
         s = t;
-        return name + ": " + h + ":" + m + ":" + s + " remaining";
+        return name + ": " + h + ":" + m + ":" + Mathf.RoundToInt(s) + " remaining";
     }
 }

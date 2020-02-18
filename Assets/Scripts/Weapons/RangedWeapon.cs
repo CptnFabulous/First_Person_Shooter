@@ -446,6 +446,28 @@ public class RangedWeapon : MonoBehaviour
         firingModeIndex = index;
     }
 
+    /*
+    public IEnumerator SwitchMode(int index)
+    {
+        // Check if the weapon being switched to has different optics, and cancel out if so.
+        OpticsStats newOptics = GetOpticsStats(index);
+        if (optics != null && (newOptics == null || newOptics != optics))
+        {
+            isAiming = false;
+            zoomTimer = 0;
+            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+        }
+
+        if (magazine != null)
+        {
+            reloadTimer = 0;
+            isReloading = false;
+            print("Reload sequence cancelled");
+        }
+
+        firingModeIndex = index;
+    }
+    */
     public IEnumerator Draw()
     {
         isSwitchingWeapon = true;
