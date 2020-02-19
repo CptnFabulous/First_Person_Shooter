@@ -443,7 +443,7 @@ MonoBehaviour:
     opticsMode: -1
     ammunitionMode: 0
     magazineMode: 0
-    switchSpeed: 0
+    switchSpeed: 0.5
     hudIcon: {fileID: 21300008, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     heldPosition: {fileID: 2816232894353579547}
     firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}
@@ -458,7 +458,7 @@ MonoBehaviour:
     opticsMode: -1
     ammunitionMode: 1
     magazineMode: 0
-    switchSpeed: 0
+    switchSpeed: 0.5
     hudIcon: {fileID: 21300010, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     heldPosition: {fileID: 2816232894353579547}
     firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}

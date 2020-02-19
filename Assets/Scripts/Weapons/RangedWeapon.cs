@@ -302,7 +302,8 @@ public class RangedWeapon : MonoBehaviour
                     i = firingModes.Length - 1;
                 }
 
-                SwitchWeaponMode(i);
+                //SwitchWeaponMode(i);
+                StartCoroutine(SwitchMode(i));
             }
 
             fireControls.fireTimer += Time.deltaTime;
@@ -446,9 +447,11 @@ public class RangedWeapon : MonoBehaviour
         firingModeIndex = index;
     }
 
-    /*
+    
     public IEnumerator SwitchMode(int index)
     {
+        isSwitchingFireMode = true;
+
         // Check if the weapon being switched to has different optics, and cancel out if so.
         OpticsStats newOptics = GetOpticsStats(index);
         if (optics != null && (newOptics == null || newOptics != optics))
@@ -465,9 +468,13 @@ public class RangedWeapon : MonoBehaviour
             print("Reload sequence cancelled");
         }
 
+        yield return new WaitForSeconds(firingModes[firingModeIndex].switchSpeed);
+
         firingModeIndex = index;
+
+        isSwitchingFireMode = false;
     }
-    */
+    
     public IEnumerator Draw()
     {
         isSwitchingWeapon = true;

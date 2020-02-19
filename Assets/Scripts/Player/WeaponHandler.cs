@@ -176,7 +176,8 @@ public class WeaponHandler : MonoBehaviour
         if (equippedWeapons[weaponIndex].firingModeIndex != firingModeIndex)
         {
             print("Index is different");
-            equippedWeapons[weaponIndex].SwitchWeaponMode(firingModeIndex);
+            //equippedWeapons[weaponIndex].SwitchWeaponMode(firingModeIndex);
+            StartCoroutine(equippedWeapons[weaponIndex].SwitchMode(firingModeIndex));
         }
 
 
