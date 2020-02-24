@@ -140,14 +140,13 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-
-
-    void FieldOfVision()
+    public List<GameObject> GetFieldOfView(float viewRange, float horizontalFOV, float verticalFOV)
     {
-        Collider[] objects = Physics.OverlapSphere(head.transform.position, viewRange);
+        List<GameObject> objectsInView = new List<GameObject>();
+        Collider[] objects = Physics.OverlapSphere(head.transform.position, viewRange); // Checks for all objects in range
         foreach (Collider c in objects)
         {
-            if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out fovLineOfSight, viewRange)) // Launch a raycast to check if the thing being viewed is actually in the NPC's line of sight and not behind a wall.
+            if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out fovLineOfSight, viewRange)) // Launch a raycast to check if the object is actually in the NPC's line of sight.
             {
                 if (fovLineOfSight.collider == c) // If raycast hits object being checked for line of sight.
                 {
@@ -159,6 +158,34 @@ public class EnemyAI : MonoBehaviour
                         print("NPC " + gameObject.name + "has spotted " + c.gameObject.name + ".");
 
                         // Add c.gameObject to viewedObjects array, I need to figure out how to do this!
+                        objectsInView.Add(c.gameObject);
+                    }
+                }
+            }
+        }
+
+        return objectsInView;
+    }
+
+    void FieldOfVision()
+    {
+        List<GameObject> objectsInView = new List<GameObject>();
+        Collider[] objects = Physics.OverlapSphere(head.transform.position, viewRange); // Checks for all objects in range
+        foreach (Collider c in objects)
+        {
+            if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out fovLineOfSight, viewRange)) // Launch a raycast to check if the object is actually in the NPC's line of sight.
+            {
+                if (fovLineOfSight.collider == c) // If raycast hits object being checked for line of sight.
+                {
+                    Vector3 relativePosition_X = new Vector3(c.transform.position.x, head.transform.position.y, c.transform.position.z) - head.transform.position;
+                    Vector3 relativePosition_Y = new Vector3(head.transform.position.x, c.transform.position.y, c.transform.position.z) - head.transform.position;
+                    Vector2 visionAngle = new Vector2(Vector3.Angle(relativePosition_X, head.transform.forward), Vector3.Angle(relativePosition_Y, head.transform.forward));
+                    if (visionAngle.x < horizontalFOV && visionAngle.y < verticalFOV)
+                    {
+                        print("NPC " + gameObject.name + "has spotted " + c.gameObject.name + ".");
+
+                        // Add c.gameObject to viewedObjects array, I need to figure out how to do this!
+                        objectsInView.Add(c.gameObject);
                     }
                 }
             }

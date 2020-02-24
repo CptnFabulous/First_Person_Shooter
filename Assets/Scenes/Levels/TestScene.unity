@@ -1677,6 +1677,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectiveHandler: {fileID: 997892572}
+--- !u!1 &1061437875 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7394104396082026298, guid: 35eecb15e9bff8a43a236341dcd99101,
+    type: 3}
+  m_PrefabInstance: {fileID: 7394104396599027180}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1061437876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061437875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d4c7a03f8a27e46982bb1732faa2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1112891233
 GameObject:
   m_ObjectHideFlags: 0
