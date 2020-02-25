@@ -426,8 +426,14 @@ public class RangedWeapon : MonoBehaviour
     #region Weapon functions
 
     #region Switching functions
-    public void SwitchWeaponMode(int index)
+    /*
+    public void SwitchWeaponMode(int index) // Switches firing modes instantly
     {
+        if (index == firingModeIndex) // Prematurely ends (cancels) function if the weapon has already switched to the new firing mode
+        {
+            return;
+        }
+        
         // Check if the weapon being switched to has different optics, and cancel out if so.
         OpticsStats newOptics = GetOpticsStats(index);
         if (optics != null && (newOptics == null || newOptics != optics))
@@ -446,33 +452,36 @@ public class RangedWeapon : MonoBehaviour
 
         firingModeIndex = index;
     }
-
+    */
     
     public IEnumerator SwitchMode(int index)
     {
-        isSwitchingFireMode = true;
-
-        // Check if the weapon being switched to has different optics, and cancel out if so.
-        OpticsStats newOptics = GetOpticsStats(index);
-        if (optics != null && (newOptics == null || newOptics != optics))
+        if (index != firingModeIndex) // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run
         {
-            isAiming = false;
-            zoomTimer = 0;
-            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+            isSwitchingFireMode = true;
+
+            // Check if the weapon being switched to has different optics, and cancel out if so.
+            OpticsStats newOptics = GetOpticsStats(index);
+            if (optics != null && (newOptics == null || newOptics != optics))
+            {
+                isAiming = false;
+                zoomTimer = 0;
+                LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
+            }
+
+            if (magazine != null)
+            {
+                reloadTimer = 0;
+                isReloading = false;
+                print("Reload sequence cancelled");
+            }
+
+            yield return new WaitForSeconds(firingModes[firingModeIndex].switchSpeed);
+
+            firingModeIndex = index;
+
+            isSwitchingFireMode = false;
         }
-
-        if (magazine != null)
-        {
-            reloadTimer = 0;
-            isReloading = false;
-            print("Reload sequence cancelled");
-        }
-
-        yield return new WaitForSeconds(firingModes[firingModeIndex].switchSpeed);
-
-        firingModeIndex = index;
-
-        isSwitchingFireMode = false;
     }
     
     public IEnumerator Draw()

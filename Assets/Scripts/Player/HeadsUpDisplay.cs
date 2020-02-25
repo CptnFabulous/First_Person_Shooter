@@ -43,6 +43,7 @@ public class HeadsUpDisplay : MonoBehaviour
     public GameObject ammoDisplay;
     public Text ammoCounter;
     public Text firingMode;
+    public Image firingModeIcon;
     public Image ammoBar;
 
     [Header("Weapon feedback")]
@@ -158,6 +159,7 @@ public class HeadsUpDisplay : MonoBehaviour
             reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
 
             firingMode.text = rw.firingModes[rw.firingModeIndex].name;
+            firingModeIcon.sprite = rw.firingModes[rw.firingModeIndex].hudIcon;
 
             ammoCounter.text = AmmoInfo(rw, rw.firingModeIndex);
 
