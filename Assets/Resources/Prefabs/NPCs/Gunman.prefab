@@ -1432,7 +1432,7 @@ GameObject:
   - component: {fileID: 4133758396552421110}
   - component: {fileID: 6231957955032080225}
   m_Layer: 0
-  m_Name: Rifle_Cultist
+  m_Name: Gunman
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
