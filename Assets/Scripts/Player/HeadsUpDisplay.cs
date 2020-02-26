@@ -319,4 +319,28 @@ public class HeadsUpDisplay : MonoBehaviour
 
         return list;
     }
+
+    /*
+    public string CapitaliseText(string text)
+    {
+        string lowercase = "abcdefghijklmnopqrstuvwxyz";
+        string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (int i = 0; i < lowercase.Length; i++)
+        {
+            for (int l = 0; l < text.Length; l++)
+            {
+                if (text[l] == lowercase[i])
+                {
+                    //text[l] = uppercase[i];
+                }
+            }
+            
+        }
+
+        
+
+        return text;
+    }
+    */
 }
