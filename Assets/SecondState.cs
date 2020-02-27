@@ -31,16 +31,30 @@ public class SecondState : State<AI>
 
     public override void EnterState(AI owner)
     {
-        Debug.Log("Entering FirstState");
+        Debug.Log("Entering SecondState");
     }
 
     public override void ExitState(AI owner)
     {
-        Debug.Log("FirstState is currently active");
+        Debug.Log("Exiting SecondState");
     }
 
     public override void Update(AI owner)
     {
-        Debug.Log("Exiting FirstState");
+        Debug.Log("SecondState is currently active");
+        if (owner.switchState)
+        {
+            owner.stateMachine.ChangeState(FirstState.Instance);
+        }
+    }
+
+    public override void FixedUpdate(AI owner)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void LateUpdate(AI owner)
+    {
+        throw new System.NotImplementedException();
     }
 }

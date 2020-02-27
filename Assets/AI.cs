@@ -16,7 +16,9 @@ public class AI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        stateMachine = new StateMachine<AI>(this); 
+        stateMachine = new StateMachine<AI>(this);
+        stateMachine.ChangeState(FirstState.Instance);
+        gameTimer = Time.time;
     }
 
     // Update is called once per frame
@@ -37,5 +39,15 @@ public class AI : MonoBehaviour
 
 
         stateMachine.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        stateMachine.FixedUpdate();
+    }
+
+    private void LateUpdate()
+    {
+        stateMachine.LateUpdate();
     }
 }

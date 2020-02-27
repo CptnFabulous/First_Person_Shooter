@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// https://youtu.be/PaLD1t-kIwM?t=1095
 // Reference video, also go back to start of video to get info on why he uses namespaces, it seems to add unneeded complexity but there might be a good reason for it
+// https://youtu.be/PaLD1t-kIwM?t=1095
 
+// Other state machine videos
 // https://www.youtube.com/watch?v=YdERlPfwUb0
 // https://www.youtube.com/watch?v=dYi-i83sq5g
-// Other state machine videos
+// https://www.raywenderlich.com/6034380-state-pattern-using-unity
 
 [System.Serializable]
 public class StateMachine<T>
@@ -38,13 +39,33 @@ public class StateMachine<T>
             currentState.Update(Owner);
         }
     }
+
+    public void FixedUpdate()
+    {
+        if (currentState != null)
+        {
+            currentState.FixedUpdate(Owner);
+        }
+    }
+
+    public void LateUpdate()
+    {
+        if (currentState != null)
+        {
+            currentState.LateUpdate(Owner);
+        }
+    }
 }
 
 public abstract class State<T>
 {
     public abstract void EnterState(T owner);
 
+    public abstract void ExitState(T owner);
+
     public abstract void Update(T owner);
 
-    public abstract void ExitState(T owner);
+    public abstract void FixedUpdate(T owner);
+
+    public abstract void LateUpdate(T owner);
 }
