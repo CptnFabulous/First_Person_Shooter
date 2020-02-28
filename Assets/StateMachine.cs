@@ -69,3 +69,13 @@ public abstract class State<T>
 
     public abstract void LateUpdate(T owner);
 }
+
+/*
+public abstract class StateMachineTransition
+{
+    public State<T> fromState;
+    public State<T> toState;
+
+    // Some kind of variable that allows me to reference a specific variable in another script, in a similar manner to how UnityEvent lets me reference a function
+}
+*/

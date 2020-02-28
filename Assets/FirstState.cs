@@ -42,7 +42,7 @@ public class FirstState : State<AI>
     public override void Update(AI owner)
     {
         Debug.Log("FirstState is currently active");
-        if (!owner.switchState)
+        if (!owner.switchState) // Checks for variables inside owner script using owner.whatevervariable
         {
             owner.stateMachine.ChangeState(SecondState.Instance);
         }
