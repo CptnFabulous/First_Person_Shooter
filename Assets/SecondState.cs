@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SecondState : State<AI>
+public class SecondState : State<ArtificialIntelligence>
 {
     private static SecondState instance;
 
@@ -29,17 +29,17 @@ public class SecondState : State<AI>
         }
     }
 
-    public override void EnterState(AI owner)
+    public override void EnterState(ArtificialIntelligence owner)
     {
         Debug.Log("Entering SecondState");
     }
 
-    public override void ExitState(AI owner)
+    public override void ExitState(ArtificialIntelligence owner)
     {
         Debug.Log("Exiting SecondState");
     }
 
-    public override void Update(AI owner)
+    public override void Update(ArtificialIntelligence owner)
     {
         Debug.Log("SecondState is currently active");
         if (owner.switchState) // Checks for variables inside owner script using owner.whatevervariable
@@ -48,12 +48,12 @@ public class SecondState : State<AI>
         }
     }
 
-    public override void FixedUpdate(AI owner)
+    public override void FixedUpdate(ArtificialIntelligence owner)
     {
         throw new System.NotImplementedException();
     }
 
-    public override void LateUpdate(AI owner)
+    public override void LateUpdate(ArtificialIntelligence owner)
     {
         throw new System.NotImplementedException();
     }

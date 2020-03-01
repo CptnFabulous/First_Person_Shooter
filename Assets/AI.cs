@@ -1,53 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AI : MonoBehaviour
 {
-    public StateMachine<AI> stateMachine { get; set; }
+    public Animator movementStateMachine;
+    public Animator actionStateMachine;
 
+    NpcHealth hp;
+    NavMeshAgent na;
 
-    // Stuff for placeholder state switching
-    public bool switchState = false;
-    public float gameTimer;
-    public int seconds = 0;
+    public Character target;
 
-    
+    float t;
+    bool b;
+
+    private void Awake()
+    {
+        hp = GetComponent<NpcHealth>();
+        na = GetComponent<NavMeshAgent>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        stateMachine = new StateMachine<AI>(this);
-        stateMachine.ChangeState(FirstState.Instance);
-        gameTimer = Time.time;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time > gameTimer + 1)
+        t += Time.deltaTime;
+        if (t >= 5)
         {
-            gameTimer = Time.time;
-            seconds++;
-            Debug.Log(seconds);
+            b = !b;
+            //print("State changed");
         }
+        movementStateMachine.SetBool("targetAcquired", b);
 
-        if (seconds == 5)
+
+        //movementStateMachine.SetBool("targetAcquired", target != null);
+        if (target != null)
         {
-            seconds = 0;
-            switchState = !switchState;
+            movementStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
+            movementStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         }
+        movementStateMachine.SetInteger("health", hp.health.current);
+        
+        /*
+        Appropriate variables for state machine
+        
+        bool targetAcquired
+        float targetDistance
+        float targetNavMeshDistance
+        int health
 
-
-        stateMachine.Update();
-    }
-
-    private void FixedUpdate()
-    {
-        stateMachine.FixedUpdate();
-    }
-
-    private void LateUpdate()
-    {
-        stateMachine.LateUpdate();
+        */
     }
 }
