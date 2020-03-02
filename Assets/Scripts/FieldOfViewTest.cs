@@ -22,7 +22,7 @@ public class FieldOfViewTest : MonoBehaviour
         print(list);
     }
 
-    public List<GameObject> GetFieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)
+    public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)
     {
         List<GameObject> objectsInView = new List<GameObject>();
         Collider[] objects = Physics.OverlapSphere(viewOrigin.position, viewRange); // Checks for all objects in range
