@@ -3,15 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+/*
+
+Current AI behaviours to make:
+* Seek cover
+* Dodge attack
+* Evade target
+* Pursue target
+* Patrol along route
+* Wander randomly
+
+Current AI action behaviours to make:
+* Ranged projectile attack
+* Ranged throwable attack (calculate arcs)
+* Melee attack
+*/
+
 public class AI : MonoBehaviour
 {
+    [Header("References")]
     public Animator movementStateMachine;
     public Animator actionStateMachine;
-
-    NpcHealth hp;
-    NavMeshAgent na;
+    [HideInInspector] public NpcHealth hp;
+    [HideInInspector] public NavMeshAgent na;
 
     public Character target;
+
+
+    [Header("Detection")]
+
+
 
     float t;
     bool b;
@@ -31,21 +53,15 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        t += Time.deltaTime;
-        if (t >= 5)
-        {
-            b = !b;
-            //print("State changed");
-        }
-        movementStateMachine.SetBool("targetAcquired", b);
+        bool targetAcquired = (target != null);
+        movementStateMachine.SetBool("targetAcquired", targetAcquired);
 
-
-        //movementStateMachine.SetBool("targetAcquired", target != null);
         if (target != null)
         {
             movementStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
-            movementStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         }
+
+        movementStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         movementStateMachine.SetInteger("health", hp.health.current);
         
         /*

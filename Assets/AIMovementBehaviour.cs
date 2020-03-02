@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
+
+
+
 public class AIMovementBehaviour : StateMachineBehaviour
 {
-    AI ai;
+    [HideInInspector] public AI ai;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         ai = animator.GetComponent<AI>();
     }
 
+
+
+    /*
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
@@ -21,6 +28,8 @@ public class AIMovementBehaviour : StateMachineBehaviour
     {
 
     }
+    */
+
 
     /*
     override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
