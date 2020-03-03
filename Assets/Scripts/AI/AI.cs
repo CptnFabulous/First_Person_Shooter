@@ -129,4 +129,18 @@ public class AI : MonoBehaviour
 
         return objectsInView; // Returns list of objects the player is looking at
     }
+
+    public static float NavMeshPathLength(NavMeshPath path)
+    {
+        // Calculate path length
+        float pathLength = 0;
+        for (int i = 1; i < path.corners.Length; i++)
+        {
+            pathLength += Vector3.Distance(path.corners[i - 1], path.corners[i]);
+        }
+
+        return pathLength;
+    }
+
+    
 }

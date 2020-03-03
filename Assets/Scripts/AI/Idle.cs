@@ -9,4 +9,10 @@ public class Idle : AIMovementBehaviour
         base.OnStateEnter(animator, stateInfo, layerIndex);
         ai.na.isStopped = true;
     }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        base.OnStateExit(animator, stateInfo, layerIndex);
+        ai.na.isStopped = false;
+    }
 }

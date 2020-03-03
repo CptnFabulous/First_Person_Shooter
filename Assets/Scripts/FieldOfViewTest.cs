@@ -13,7 +13,7 @@ public class FieldOfViewTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<GameObject> o = GetFieldOfView(transform, 100, 60, 60);
+        List<GameObject> o = FieldOfView(transform, 100, 60, 60);
         string list = "FOV: ";
         foreach(GameObject obj in o)
         {

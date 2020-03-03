@@ -5,6 +5,7 @@ using UnityEngine;
 public class Dodge : AIMovementBehaviour
 {
     public float dodgeDistance;
+    public Transform attacker;
 
     Transform dodgeLocation;
 
@@ -12,7 +13,9 @@ public class Dodge : AIMovementBehaviour
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        Transform attacker; // Somehow calculate how the enemy decides to dodge an attacker
+        //Transform attacker; // Somehow calculate how the enemy decides what constitutes an attacker
+        Vector3 attackerDirection = attacker.position - ai.transform.position;
+        // Find locations perpendicular to the attacker
 
     }
 
