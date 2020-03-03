@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Dodge : AIMovementBehaviour
 {
-    public float dodgeDistance;
+    public float dodgeRadius; // The minimum distance required to dodge
+    public LayerMask terrainDetection;
+    public int checkRaycastNumber = 8;
+
     public Transform attacker;
 
     Transform dodgeLocation;
@@ -16,6 +19,21 @@ public class Dodge : AIMovementBehaviour
         //Transform attacker; // Somehow calculate how the enemy decides what constitutes an attacker
         Vector3 attackerDirection = attacker.position - ai.transform.position;
         // Find locations perpendicular to the attacker
+
+
+        Quaternion scanDirection = Quaternion.Euler(90, 0, 0);
+        for (int i = 0; i < checkRaycastNumber; i++)
+        {
+            if (Physics.Raycast(ai.transform.position, scanDirection * attackerDirection, dodgeRadius, terrainDetection))
+            {
+
+            }
+            i += 1;
+
+            scanDirection = Quaternion.Euler(90, 0, scanDirection.z + (360 / checkRaycastNumber));
+        }
+
+
 
     }
 

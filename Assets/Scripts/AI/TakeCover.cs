@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-
+// LINE OF SIGHT CHECK TO ENSURE COVER HAS NOT BEEN COMPROMISED: Since the line of sight check is not checking layers that the attacker is on, it is not detecting the attacker and is assuming that the attacker cannot attack them. This needs to be fixed!
 
 public class TakeCover : AIMovementBehaviour
 {
@@ -13,7 +13,7 @@ public class TakeCover : AIMovementBehaviour
 
     Transform attacker;
 
-    Vector3 currentCover;
+    Vector3 currentCover = Vector3.zero;
 
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -28,17 +28,20 @@ public class TakeCover : AIMovementBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //Debug.Log("Update");
-        Debug.Log(currentCover);
+        //Debug.Log(currentCover);
 
         if (currentCover != Vector3.zero)
         {
+            Debug.Log("Enemy is taking cover");
             // Launches a raycast between the cover position and the attacker
             RaycastHit lineOfSightCheck;
             if (Physics.Raycast(currentCover, attacker.transform.position - currentCover, out lineOfSightCheck, Vector3.Distance(currentCover, attacker.transform.position) + 0.01f, coverCriteria))
             {
+                Debug.Log("kalashnikov");
                 // Checks if line of sight is established between the attacker and the cover position. If so, the cover position has been compromised.
-                if (lineOfSightCheck.collider.transform == attacker)
+                if (lineOfSightCheck.collider.transform == attacker) // Since the line of sight check is not checking layers that the attacker is on, it is not detecting the attacker and is assuming that the attacker cannot attack them. This needs to be fixed!
                 {
+                    Debug.Log("hashbrown");
                     // Reset and find a new cover point
                     currentCover = Vector3.zero;
                     currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
@@ -46,7 +49,7 @@ public class TakeCover : AIMovementBehaviour
             }
         }
 
-        if (currentCover != null)
+        if (currentCover != Vector3.zero)
         {
             ai.na.SetDestination(currentCover);
         }
