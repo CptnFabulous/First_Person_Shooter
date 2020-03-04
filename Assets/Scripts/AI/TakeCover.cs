@@ -7,7 +7,8 @@ using UnityEngine.AI;
 
 public class TakeCover : AIMovementBehaviour
 {
-    public float coverCheckRadius = 10; // Make sure this number is small, otherwise it can cause lag when calculating large paths
+    [Header("How far away will the enemy look for cover points? If this distance is too large, it can cause lag when calculating paths")]
+    public float coverCheckRadius = 10;
     public int numberOfChecks = 15;
     public LayerMask coverCriteria;
 
@@ -27,9 +28,6 @@ public class TakeCover : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //Debug.Log("Update");
-        //Debug.Log(currentCover);
-
         if (currentCover != Vector3.zero)
         {
             Debug.Log("Enemy is taking cover");
@@ -37,16 +35,21 @@ public class TakeCover : AIMovementBehaviour
             RaycastHit lineOfSightCheck;
             if (Physics.Raycast(currentCover, attacker.transform.position - currentCover, out lineOfSightCheck, Vector3.Distance(currentCover, attacker.transform.position) + 0.01f, coverCriteria))
             {
-                Debug.Log("kalashnikov");
+                Debug.Log("Line of sight check");
                 // Checks if line of sight is established between the attacker and the cover position. If so, the cover position has been compromised.
-                if (lineOfSightCheck.collider.transform == attacker) // Since the line of sight check is not checking layers that the attacker is on, it is not detecting the attacker and is assuming that the attacker cannot attack them. This needs to be fixed!
+                if (lineOfSightCheck.collider.transform == attacker)
                 {
-                    Debug.Log("hashbrown");
+                    Debug.Log("Cover is compromised");
                     // Reset and find a new cover point
                     currentCover = Vector3.zero;
-                    currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
+                    //currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
                 }
             }
+        }
+
+        if (currentCover == Vector3.zero)
+        {
+            currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
         }
 
         if (currentCover != Vector3.zero)
