@@ -12,16 +12,25 @@ public class Dodge : AIMovementBehaviour
 
     public Transform attacker;
     */
+    [Header("Dodge directional attack")]
+    public float minimumDodgeDistance;
+    public int checkRaycastNumber;
+    public LayerMask terrainDetection;
+
+    [Header("Dodge area of effect")]
+    public float minimumDodgeRadius;
+
+    Transform attacker;
     SafeZone dodgeLocation;
     
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        
 
 
 
+        dodgeLocation = DodgeDirectionalAttack(attacker, minimumDodgeDistance, checkRaycastNumber, terrainDetection);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

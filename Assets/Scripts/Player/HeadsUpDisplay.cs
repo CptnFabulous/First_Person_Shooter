@@ -151,8 +151,18 @@ public class HeadsUpDisplay : MonoBehaviour
                 ADSTransition(0, null);
             }
 
-            float accuracy = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy);
-            float rp = (accuracy + rw.accuracy.projectileSpread) * Screen.height / ph.pc.fieldOfView;
+            
+
+            float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy + rw.accuracy.projectileSpread);
+
+            //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward;
+            Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward * rw.accuracy.range;
+            print(r.x); // r.x is equivalent to the maximum distance a projectile will be from the centre of the player's aim, at the weapon's specified range.
+
+            // Figure out how to accurately depict reticle width
+
+
+            float rp = spread * Screen.height / ph.pc.fieldOfView;
             reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
             reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
             reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;

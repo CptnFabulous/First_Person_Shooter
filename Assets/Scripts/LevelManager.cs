@@ -43,6 +43,9 @@ public class LevelManager : MonoBehaviour
             case DamageType.Bludgeoned:
                 deathMessage += "bludgeoned to a pulp";
                 break;
+            case DamageType.FallDamage:
+                deathMessage += "reduced to a flat red stain";
+                break;
             default:
                 deathMessage += "killed";
                 break;

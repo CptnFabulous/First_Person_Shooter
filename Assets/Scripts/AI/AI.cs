@@ -72,8 +72,6 @@ public class AI : MonoBehaviour
             }
             target = bestTarget;
         }
-        
-
 
         bool targetAcquired = (target != null);
         movementStateMachine.SetBool("targetAcquired", targetAcquired);
