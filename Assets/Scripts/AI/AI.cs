@@ -140,5 +140,19 @@ public class AI : MonoBehaviour
         return pathLength;
     }
 
-    
+    public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
+        {
+            // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
+            if (lineOfSightCheck.collider.transform == target)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

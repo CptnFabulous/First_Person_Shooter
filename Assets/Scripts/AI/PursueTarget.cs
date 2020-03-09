@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Do I need to add code to have the agent stop after a certain distance.
+
 public class PursueTarget : AIMovementBehaviour
 {
+    public float maxRange;
+
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        ai.na.SetDestination(ai.target.transform.position);
-    }
+        if (Vector3.Distance(ai.transform.position, ai.target.transform.position) > maxRange)
+        {
+            ai.na.SetDestination(ai.target.transform.position);
+        }
+    } 
 }

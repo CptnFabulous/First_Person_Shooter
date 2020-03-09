@@ -21,7 +21,7 @@ public class Dodge : AIMovementBehaviour
     public float minimumDodgeRadius;
 
     Transform attacker;
-    SafeZone dodgeLocation;
+    NullableVector3 dodgeLocation;
     
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -37,13 +37,13 @@ public class Dodge : AIMovementBehaviour
     {
         ai.na.SetDestination(dodgeLocation.position);
     }
-
-    class SafeZone
+    /*
+    class NullableVector3
     {
         public Vector3 position;
     }
-
-    SafeZone DodgeDirectionalAttack(Transform attackerLocation, float minimumDodgeDistance, int checkRaycastNumber, LayerMask terrainDetection)
+    */
+    NullableVector3 DodgeDirectionalAttack(Transform attackerLocation, float minimumDodgeDistance, int checkRaycastNumber, LayerMask terrainDetection)
     {
         #region Launch raycasts to check for occupied space
         Vector3 attackerDirection = attackerLocation.position - ai.transform.position;
@@ -101,7 +101,7 @@ public class Dodge : AIMovementBehaviour
         NavMeshHit meshLocation;
         if (NavMesh.SamplePosition(dodgeDirection, out meshLocation, 2 * ai.na.height, NavMesh.AllAreas))
         {
-            return new SafeZone { position = meshLocation.position };
+            return new NullableVector3 { position = meshLocation.position };
         }
 
         return null;

@@ -157,7 +157,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
             //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward;
             Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward * rw.accuracy.range;
-            print(r.x); // r.x is equivalent to the maximum distance a projectile will be from the centre of the player's aim, at the weapon's specified range.
+            //print(r.x); // r.x is equivalent to the maximum distance a projectile will be from the centre of the player's aim, at the weapon's specified range.
 
             // Figure out how to accurately depict reticle width
 

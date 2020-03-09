@@ -7,14 +7,14 @@ using UnityEngine.AI;
 
 public class TakeCover : AIMovementBehaviour
 {
-    [Header("How far away will the enemy look for cover points? If this distance is too large, it can cause lag when calculating paths")]
+    [Tooltip("How far away will the enemy look for cover points? If this distance is too large, it can cause lag when calculating paths")]
     public float coverCheckRadius = 10;
     public int numberOfChecks = 15;
     public LayerMask coverCriteria;
 
     Transform attacker;
 
-    Vector3 currentCover = Vector3.zero;
+    NullableVector3 currentCover = null;
 
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -28,39 +28,33 @@ public class TakeCover : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (currentCover != Vector3.zero)
+        if (currentCover != null)
         {
             Debug.Log("Enemy is taking cover");
-            // Launches a raycast between the cover position and the attacker
-            RaycastHit lineOfSightCheck;
-            if (Physics.Raycast(currentCover, attacker.transform.position - currentCover, out lineOfSightCheck, Vector3.Distance(currentCover, attacker.transform.position) + 0.01f, coverCriteria))
+            
+            if (AI.LineOfSight(currentCover.position, attacker, coverCriteria))
             {
-                Debug.Log("Line of sight check");
-                // Checks if line of sight is established between the attacker and the cover position. If so, the cover position has been compromised.
-                if (lineOfSightCheck.collider.transform == attacker)
-                {
-                    Debug.Log("Cover is compromised");
-                    // Reset and find a new cover point
-                    currentCover = Vector3.zero;
-                    //currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
-                }
+                Debug.Log("Cover is compromised");
+                // Reset and find a new cover point
+                currentCover = null;
+                //currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
             }
         }
 
-        if (currentCover == Vector3.zero)
+        if (currentCover == null)
         {
             currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
         }
 
-        if (currentCover != Vector3.zero)
+        if (currentCover != null)
         {
-            ai.na.SetDestination(currentCover);
+            ai.na.SetDestination(currentCover.position);
         }
     }
 
-    public Vector3 FindCover(Transform attacker, NavMeshAgent na, float coverCheckRadius, int numberOfChecks, LayerMask coverCriteria)
+    public NullableVector3 FindCover(Transform attacker, NavMeshAgent na, float coverCheckRadius, int numberOfChecks, LayerMask coverCriteria)
     {
-        Vector3 newCover = Vector3.zero;
+        NullableVector3 newCover = null;
         NavMeshPath newCoverPath = null;
 
         for (int i = 0; i < numberOfChecks; i++)
@@ -71,24 +65,19 @@ public class TakeCover : AIMovementBehaviour
             // Checks if there is an actual point on the navmesh close to the randomly selected position
             if (NavMesh.SamplePosition(randomPosition, out coverCheck, na.height * 2, NavMesh.AllAreas))
             {
-                // Launches a raycast between the cover position and the attacker
-                RaycastHit lineOfSightCheck;
-                if (Physics.Raycast(coverCheck.position, attacker.transform.position - coverCheck.position, out lineOfSightCheck, Vector3.Distance(coverCheck.position, attacker.transform.position) + 0.01f, coverCriteria))
+                
+                if (AI.LineOfSight(coverCheck.position, attacker, coverCriteria) == false) // If line of sight is not established
                 {
-                    // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
-                    if (lineOfSightCheck.collider.transform != attacker)
+                    // Ensures that the agent can actually move to the cover position.
+                    NavMeshPath nmp = new NavMeshPath();
+                    if (na.CalculatePath(coverCheck.position, nmp))
                     {
-                        // Ensures that the agent can actually move to the cover position.
-                        NavMeshPath nmp = new NavMeshPath();
-                        if (na.CalculatePath(coverCheck.position, nmp))
+                        // Checks if the new cover position is easier to get to than the old one.
+                        if (newCover == null || AI.NavMeshPathLength(nmp) < AI.NavMeshPathLength(newCoverPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
                         {
-                            // Checks if the new cover position is easier to get to than the old one.
-                            if (newCover == Vector3.zero || AI.NavMeshPathLength(nmp) < AI.NavMeshPathLength(newCoverPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
-                            {
-                                // If so, new cover position is established, and navmesh path is stored for next comparison
-                                newCover = coverCheck.position;
-                                newCoverPath = nmp;
-                            }
+                            // If so, new cover position is established, and navmesh path is stored for next comparison
+                            newCover = NullableVector3.New(coverCheck.position);
+                            newCoverPath = nmp;
                         }
                     }
                 }

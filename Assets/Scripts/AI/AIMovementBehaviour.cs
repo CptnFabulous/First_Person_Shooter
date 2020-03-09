@@ -5,7 +5,15 @@ using UnityEngine.AI;
 
 
 
+public class NullableVector3
+{
+    public Vector3 position;
 
+    public static NullableVector3 New(Vector3 position)
+    {
+        return new NullableVector3 { position = position };
+    }
+}
 
 public class AIMovementBehaviour : StateMachineBehaviour
 {
