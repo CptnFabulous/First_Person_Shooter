@@ -41,7 +41,7 @@ public class AI : MonoBehaviour
     public float yFOV;
     [HideInInspector] public List<GameObject> fieldOfVision;// { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
 
-
+    
     private void Awake()
     {
         hp = GetComponent<NpcHealth>();
@@ -139,13 +139,14 @@ public class AI : MonoBehaviour
 
         return pathLength;
     }
-
+    /*
     public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)
     {
         // Launches a raycast between the cover position and the attacker
         RaycastHit lineOfSightCheck;
         if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
         {
+            
             // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
             if (lineOfSightCheck.collider.transform == target)
             {
@@ -154,5 +155,129 @@ public class AI : MonoBehaviour
         }
 
         return false;
+        
     }
+    */
+
+    
+
+    #region LineOfSight variants
+    public static bool LineOfSight(Vector3 origin, GameObject target, GameObject[] exceptions, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        RaycastHit[] objectsBetween = Physics.RaycastAll(origin, target.transform.position - origin, Vector3.Distance(origin, target.transform.position) + overlap, coverCriteria);
+        foreach(RaycastHit lineOfSightCheck in objectsBetween) // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
+        {
+            Transform t = lineOfSightCheck.collider.transform; // Gets transform of object
+
+            // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            DamageHitbox dh = t.GetComponent<DamageHitbox>();
+            if (dh != null)
+            {
+                if (dh.healthScript != null)
+                {
+                    if (dh.healthScript.transform == target)
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            if (t == target) // Checks if the object hit is the target
+            {
+                return true;
+            }
+
+            // If t is not the target, it is checked against the exception objects.
+            bool isException = false;
+            foreach(GameObject g in exceptions)
+            {
+                if (t == g)
+                {
+                    isException = true;
+                }
+            }
+
+            // If isException returns false, t is not the target or any exceptions, meaning line of sight is not established.
+            if (isException == false)
+            {
+                return false;
+            }
+        }
+
+        return false; // If the raycast somehow doesn't hit anything, the enemy has disappeared, so it cannot establish line of sight with anything
+    }
+
+    public static bool LineOfSight(Vector3 origin, Transform target, GameObject exception, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
+        {
+            Transform t = lineOfSightCheck.collider.transform; // Gets transform of object
+
+            // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            DamageHitbox dh = t.GetComponent<DamageHitbox>();
+            if (dh != null)
+            {
+                if (dh.healthScript != null)
+                {
+                    if (dh.healthScript.transform == target)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
+            if (t == target)
+            {
+                return true;
+            }
+
+            if (t != exception)
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
+        {
+            //o = origin;
+
+            Debug.Log(lineOfSightCheck.collider.gameObject); // I theorise the raycast direction is messing up
+
+
+
+            Transform t = lineOfSightCheck.collider.transform; // Gets transform of object
+
+            // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            DamageHitbox dh = t.GetComponent<DamageHitbox>();
+            if (dh != null)
+            {
+                if (dh.healthScript != null)
+                {
+                    if (dh.healthScript.transform == target)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
+            if (t == target)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
 }

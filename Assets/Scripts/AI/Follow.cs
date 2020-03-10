@@ -33,16 +33,21 @@ public class Follow : AIMovementBehaviour
     {
         if (currentDestination != null)
         {
-            // For some reason the agent will constantly update its position, even if the target is not moving
-
-            bool a = AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria) == false;
+            
+            /*
+            bool a = !AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria);
             bool b = Vector3.Distance(currentDestination.position, targetLocation.position) < minimumRange;
             bool c = Vector3.Distance(currentDestination.position, targetLocation.position) > maximumRange;
 
             Debug.Log(a + ", " + b + ", " + c);
+            */
 
-            // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
-            if (AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria) == false || Vector3.Distance(currentDestination.position, targetLocation.position) < minimumRange || Vector3.Distance(currentDestination.position, targetLocation.position) > maximumRange)
+            // For some reason the agent will constantly update its position, even if the target is not moving
+            // I think the agent itself is triggering the raycast
+
+            float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
+            //if (AI.LineOfSight(currentDestination.position, targetLocation, ai.gameObject, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
+            if (AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
             {
                 //Debug.Log("Can no longer engage target from previous destination, " + currentDestination.position);
                 currentDestination = null;
