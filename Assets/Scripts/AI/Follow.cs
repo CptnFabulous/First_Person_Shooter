@@ -33,18 +33,16 @@ public class Follow : AIMovementBehaviour
     {
         if (currentDestination != null)
         {
-           // For some reason the agent will constantly update its position, even if the target is not moving
-           // I think the agent itself is triggering the raycast
+           // For some reason the agent will constantly update its position, even if the target position is still suitable
 
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
-
 
             bool a = !AI.LineOfSight(currentDestination.position, targetLocation, ai.gameObject, coverCriteria);
             bool b = distance < minimumRange;
             bool c = distance > maximumRange;
             Debug.Log(a + ", " + b + ", " + c);
 
-            if (a || b || c) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
+            if (a || b || c) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
                 //Debug.Log("Can no longer engage target from previous destination, " + currentDestination.position);
                 currentDestination = null;
@@ -70,18 +68,14 @@ public class Follow : AIMovementBehaviour
 
         for (int i = 0; i < numberOfChecks; i++)
         {
-            Vector3 randomPosition = target.position + Random.insideUnitSphere * maximumRange; // Samples a random position around the target
-            if (Vector3.Distance(target.position, randomPosition) < minimumRange) // If the position is too close to the target
-            {
-                Vector3 direction = randomPosition - target.position; // Gets direction from target to random spot
-                randomPosition = target.position + (direction.normalized * Random.Range(minimumRange, maximumRange)); // Replaces randomPosition with a new Vector that is in the same direction relative to the target, but outside the minimum range.
-            }
+            Vector3 randomPosition = target.position + Random.insideUnitSphere.normalized * Random.Range(minimumRange, maximumRange); // Samples a random position around the target, outside minimumRange and inside maximumRange.
+            // Normalising the Random.insideUnitSphere ensures the magnitude (and therefore distance value) is always 1, and the distance is calculated correctly.
 
             NavMeshHit followCheck;
             // Checks if there is an actual point on the navmesh close to the randomly selected position
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
-                if (AI.LineOfSight(ai.transform.position, target, coverCriteria)) // Checks if line of sight is established between the agent and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
+                if (AI.LineOfSight(followCheck.position, target, coverCriteria)) // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
                 {
                     // Ensures that the agent can actually move to the cover position.
                     NavMeshPath nmp = new NavMeshPath();
