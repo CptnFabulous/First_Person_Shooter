@@ -42,6 +42,7 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("Weapon stats")]
     public GameObject ammoDisplay;
     public Text ammoCounter;
+    //public Text reserveCounter;
     public Text firingMode;
     public Image firingModeIcon;
     public Image ammoBar;
@@ -156,10 +157,16 @@ public class HeadsUpDisplay : MonoBehaviour
             float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy + rw.accuracy.projectileSpread);
 
             //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward;
-            Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward * rw.accuracy.range;
+            //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward * rw.accuracy.range;
             //print(r.x); // r.x is equivalent to the maximum distance a projectile will be from the centre of the player's aim, at the weapon's specified range.
 
             // Figure out how to accurately depict reticle width
+
+            Vector3 r = Quaternion.Euler(0, spread, 0) * transform.forward * rw.accuracy.range;
+            Vector3 reticlePosition = ph.pc.playerCamera.WorldToScreenPoint(r);
+            Vector3 screenCentre = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
+
+
 
 
             float rp = spread * Screen.height / ph.pc.fieldOfView;

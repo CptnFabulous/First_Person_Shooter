@@ -33,21 +33,18 @@ public class Follow : AIMovementBehaviour
     {
         if (currentDestination != null)
         {
-            
-            /*
-            bool a = !AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria);
-            bool b = Vector3.Distance(currentDestination.position, targetLocation.position) < minimumRange;
-            bool c = Vector3.Distance(currentDestination.position, targetLocation.position) > maximumRange;
-
-            Debug.Log(a + ", " + b + ", " + c);
-            */
-
-            // For some reason the agent will constantly update its position, even if the target is not moving
-            // I think the agent itself is triggering the raycast
+           // For some reason the agent will constantly update its position, even if the target is not moving
+           // I think the agent itself is triggering the raycast
 
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
-            //if (AI.LineOfSight(currentDestination.position, targetLocation, ai.gameObject, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
-            if (AI.LineOfSight(currentDestination.position, targetLocation, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
+
+
+            bool a = !AI.LineOfSight(currentDestination.position, targetLocation, ai.gameObject, coverCriteria);
+            bool b = distance < minimumRange;
+            bool c = distance > maximumRange;
+            Debug.Log(a + ", " + b + ", " + c);
+
+            if (a || b || c) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, and if target is too far away from the position
             {
                 //Debug.Log("Can no longer engage target from previous destination, " + currentDestination.position);
                 currentDestination = null;
@@ -77,7 +74,7 @@ public class Follow : AIMovementBehaviour
             if (Vector3.Distance(target.position, randomPosition) < minimumRange) // If the position is too close to the target
             {
                 Vector3 direction = randomPosition - target.position; // Gets direction from target to random spot
-                randomPosition = target.position + (direction.normalized * minimumRange); // Replaces randomPosition with a new Vector that is in the same direction relative to the target, but outside the minimum range.
+                randomPosition = target.position + (direction.normalized * Random.Range(minimumRange, maximumRange)); // Replaces randomPosition with a new Vector that is in the same direction relative to the target, but outside the minimum range.
             }
 
             NavMeshHit followCheck;
