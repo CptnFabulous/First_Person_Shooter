@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EngageTarget : AIMovementBehaviour
+public class Follow : AIMovementBehaviour
 {
     Transform targetLocation;
     NullableVector3 currentDestination;
@@ -36,15 +36,8 @@ public class EngageTarget : AIMovementBehaviour
            // For some reason the agent will constantly update its position, even if the target position is still suitable
 
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
-
-            bool a = !AI.LineOfSight(currentDestination.position, targetLocation, ai.gameObject, coverCriteria);
-            bool b = distance < minimumRange;
-            bool c = distance > maximumRange;
-            Debug.Log(a + ", " + b + ", " + c);
-
-            if (a || b || c) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
+            if (AI.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false || distance < minimumRange || distance < minimumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
-                //Debug.Log("Can no longer engage target from previous destination, " + currentDestination.position);
                 currentDestination = null;
             }
         }
@@ -56,7 +49,6 @@ public class EngageTarget : AIMovementBehaviour
 
         if (currentDestination != null)
         {
-            //Debug.Log("Agent destination = " + currentDestination.position);
             ai.na.SetDestination(currentDestination.position);
         }
     }

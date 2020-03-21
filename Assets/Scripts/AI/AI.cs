@@ -139,30 +139,9 @@ public class AI : MonoBehaviour
 
         return pathLength;
     }
-    /*
-    public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)
-    {
-        // Launches a raycast between the cover position and the attacker
-        RaycastHit lineOfSightCheck;
-        if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
-        {
-            
-            // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
-            if (lineOfSightCheck.collider.transform == target)
-            {
-                return true;
-            }
-        }
-
-        return false;
-        
-    }
-    */
-
-    
 
     #region LineOfSight variants
-    public static bool LineOfSight(Vector3 origin, Transform target, GameObject[] exceptions, LayerMask coverCriteria, float overlap = 0.01f)
+    public static bool LineOfSight(Vector3 origin, Transform target, Transform[] exceptions, LayerMask coverCriteria, float overlap = 0.01f)
     {
         RaycastHit[] objectsBetween = Physics.RaycastAll(origin, target.position - origin, Vector3.Distance(origin, target.position) + overlap, coverCriteria);
         foreach(RaycastHit lineOfSightCheck in objectsBetween) // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
@@ -186,7 +165,7 @@ public class AI : MonoBehaviour
 
             // If t is not the target, it is checked against the exception objects.
             bool isException = false;
-            foreach(GameObject g in exceptions)
+            foreach(Transform g in exceptions)
             {
                 if (t == g)
                 {
@@ -202,7 +181,7 @@ public class AI : MonoBehaviour
         return false; // If the raycast somehow doesn't hit anything, the enemy has disappeared, so it cannot establish line of sight with anything
     }
 
-    public static bool LineOfSight(Vector3 origin, Transform target, GameObject exception, LayerMask coverCriteria, float overlap = 0.01f)
+    public static bool LineOfSight(Vector3 origin, Transform target, Transform exception, LayerMask coverCriteria, float overlap = 0.01f)
     {
         RaycastHit[] objectsBetween = Physics.RaycastAll(origin, target.position - origin, Vector3.Distance(origin, target.position) + overlap, coverCriteria);
         foreach (RaycastHit lineOfSightCheck in objectsBetween) // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
@@ -218,6 +197,8 @@ public class AI : MonoBehaviour
                     t = dh.healthScript.transform;
                 }
             }
+
+            print(t.name);
 
             if (t == target) // Checks if the object hit is the target
             {
