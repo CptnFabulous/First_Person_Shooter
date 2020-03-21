@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Follow : AIMovementBehaviour
+public class EngageTarget : AIMovementBehaviour
 {
     Transform targetLocation;
     NullableVector3 currentDestination;
