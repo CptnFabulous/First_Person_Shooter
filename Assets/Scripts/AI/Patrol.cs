@@ -8,17 +8,21 @@ public class Patrol : AIMovementBehaviour
     public bool endToEnd;
     public bool reverse;
 
-    public float maxReachDistance = 0.1f;
+    public float waypointReachedDistance = 0.1f;
 
 
     int index;
     int indexChangeValue = 1;
 
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        base.OnStateEnter(animator, stateInfo, layerIndex);
+    }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
         ai.na.SetDestination(waypoints[index].position); // Agent moves towards waypoint
-        if (Vector3.Distance(ai.transform.position, ai.na.destination) <= maxReachDistance) // If the agent has reached the waypoint
+        if (Vector3.Distance(ai.transform.position, ai.na.destination) <= waypointReachedDistance) // If the agent has reached the waypoint
         {
             if (reverse == true) // Is the agent going forwards or backwards along its path?
             {

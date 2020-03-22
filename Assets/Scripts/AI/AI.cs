@@ -39,7 +39,9 @@ public class AI : MonoBehaviour
     public float xFOV;
     [Range(0, 180)]
     public float yFOV;
-    [HideInInspector] public List<GameObject> fieldOfVision;// { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
+    [HideInInspector] public List<GameObject> fieldOfVision; // { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
+
+    public float pursueRange;
 
     
     private void Awake()
@@ -57,6 +59,7 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         fieldOfVision = FieldOfView(head, viewRange, xFOV, yFOV);
         if (target == null)
         {
@@ -72,9 +75,27 @@ public class AI : MonoBehaviour
             }
             target = bestTarget;
         }
+        */
 
-        bool targetAcquired = (target != null);
-        movementStateMachine.SetBool("targetAcquired", targetAcquired);
+        if (target == null)
+        {
+            target = AcquireTarget();
+        }
+
+        if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+        {
+            target = null;
+        }
+
+        Health h = target.GetComponent<Health>();
+        if (h != null && h.IsAlive() == false)
+        {
+            target = null;
+        }
+
+
+
+        movementStateMachine.SetBool("targetAcquired", target != null);
 
         if (target != null)
         {
@@ -126,6 +147,23 @@ public class AI : MonoBehaviour
         }
 
         return objectsInView; // Returns list of objects the player is looking at
+    }
+
+    Character AcquireTarget()
+    {
+        Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, viewRange);
+        foreach (Collider thing in thingsInEnvironment)
+        {
+            if (LineOfSight(head.position, thing.transform, 1))
+            {
+                Character targetCharacter = thing.transform.root.GetComponent<Character>();
+                if (targetCharacter != null && c.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
+                {
+                    return targetCharacter;
+                }
+            }
+        }
+        return null;
     }
 
     public static float NavMeshPathLength(NavMeshPath path)

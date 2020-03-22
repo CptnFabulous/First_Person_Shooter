@@ -3,28 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Follow : AIMovementBehaviour
+public class EngageTarget : AIMovementBehaviour
 {
     Transform targetLocation;
     NullableVector3 currentDestination;
 
-    public float minimumRange;
-    public float maximumRange;
-    public int numberOfChecks;
-    public LayerMask coverCriteria;
-
-    /*
-    Repurpose code for taking cover -
-    Randomly sample spots around the target (somehow make sure they're all outside the specified range, and use Navmesh.SamplePosition to ensure the agent can reach those positions.
-    Of these positions, find the ones that have line of sight between the agent and the target (the agent needs to stay far away from the target while also being able to attack them).
-    Of these, find the position that is closest to the agent, to ensure the shortest travel time.
-    */
+    public float minimumRange = 10;
+    public float maximumRange = 20;
+    public int numberOfChecks = 15;
+    public LayerMask coverCriteria = ~0;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        targetLocation = ai.target.transform; // Placeholder, replace with a better way to detect an attacker
+        targetLocation = ai.target.transform;
 
         currentDestination = FindFollowPosition(targetLocation, minimumRange, maximumRange, numberOfChecks);
     }
@@ -36,7 +29,7 @@ public class Follow : AIMovementBehaviour
            // For some reason the agent will constantly update its position, even if the target position is still suitable
 
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
-            if (AI.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false || distance < minimumRange || distance < minimumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
+            if (AI.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
                 currentDestination = null;
             }

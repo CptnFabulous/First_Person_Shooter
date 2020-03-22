@@ -80,18 +80,6 @@ public class EnemyGun : NPC
                     return targetCharacter;
                 }
             }
-            
-            /*
-            RaycastHit lineOfSight;
-            if (Physics.Raycast(head.transform.position, c.transform.position - head.transform.position, out lineOfSight, pursueRange, viewDetection) && lineOfSight.collider == c)
-            {
-                Character targetCharacter = c.transform.root.GetComponent<Character>();
-                if (targetCharacter != null && ch.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
-                {
-                    return targetCharacter;
-                }
-            }
-            */
         }
         return null;
     }
