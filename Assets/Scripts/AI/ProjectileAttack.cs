@@ -1,30 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class ProjectileAttack : AIAttackBehaviour
+[System.Serializable]
+public class ProjectileAttack : NPCAction
 {
-    Character target;
-
     [Header("Projectile")]
     public ProjectileData projectile;
     public Transform projectileOrigin;
     public int projectileCount = 1;
-    public int burstAmount = 3;
+    public int burstAmount = 1;
 
-    [Header("Aiming")]
+    [Header("Accuracy")]
     public float spread;
     public float range = 50;
     public float aimSpeed = 50;
     public float telegraphAimSpeed = 10;
     public float targetThreshold = 0.2f;
-    public float telegraphMoveSpeed;
 
     [Header("Timers")]
     public float roundsPerMinute = 600;
     public float delay = 0.5f;
     public float cooldown = 0.5f;
 
+    [Header("Other stats")]
+    public float telegraphMoveSpeed;
 
     float fireTimer = float.MaxValue;
     float delayTimer;
@@ -40,23 +41,15 @@ public class ProjectileAttack : AIAttackBehaviour
     public AudioClip delayNoise;
     public AudioClip firingNoise;
 
-    /*
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
-    {
-        
-    }
-    */
-
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
+    public void TargetEnemy(GameObject target, GameObject characterAttacking, NavMeshAgent na, float standardMoveSpeed, Faction characterFaction, Transform head, RaycastHit lookingAt, AudioSource audioSource)
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
-            //ai.na.speed = standardMoveSpeed;
+            na.speed = standardMoveSpeed;
 
             cooldownTimer += Time.deltaTime;
 
-            RaycastHit lookingAt;
-            if (Physics.Raycast(ai.head.position, target.transform.position - ai.head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
+            if (Physics.Raycast(head.position, target.transform.position - head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
             {
                 if (Vector3.Distance(aimMarker, target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
@@ -73,20 +66,20 @@ public class ProjectileAttack : AIAttackBehaviour
                     aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, aimSpeed * Time.deltaTime); // If enemy has not acquired target, move aimMarker towards target
                 }
 
-                ai.head.LookAt(aimMarker);
+                head.LookAt(aimMarker);
             }
             else
             {
-                aimMarker = ai.transform.position; // If line of sight has not been acquired, NPC cannot aim at enemy, aim is at ease
-                ai.head.localRotation = Quaternion.Euler(0, 0, 0);
+                aimMarker = characterAttacking.transform.position; // If line of sight has not been acquired, NPC cannot aim at enemy, aim is at ease
+                head.localRotation = Quaternion.Euler(0, 0, 0);
             }
         }
         else // If attack sequence is initiated (isAttacking == true), execute telegraph and attack
         {
-            ai.na.speed = telegraphMoveSpeed;
+            na.speed = telegraphMoveSpeed;
 
             aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, telegraphAimSpeed * Time.deltaTime);
-            ai.head.LookAt(aimMarker);
+            head.LookAt(aimMarker);
 
 
             delayTimer += Time.deltaTime;
@@ -102,7 +95,7 @@ public class ProjectileAttack : AIAttackBehaviour
 
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
-                            Damage.ShootProjectile(projectile, spread, range, ai.c.faction, characterFaction, ai.head, projectileOrigin, ai.head.forward);
+                            Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, head.forward);
                         }
 
                         fireTimer = 0;
@@ -123,13 +116,6 @@ public class ProjectileAttack : AIAttackBehaviour
 
         laserSight.enabled = isAttacking;
     }
-
-    /*
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        
-    }
-    */
 
     public void EndAttack()
     {

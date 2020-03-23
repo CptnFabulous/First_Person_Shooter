@@ -20,7 +20,7 @@ public class Soldier : NPC
     RaycastHit lookingAt;
 
     [Header("Attacks")]
-    public ProjectileBurst attack;
+    public ProjectileAttack attack;
 
     [Header("Animations")]
     Animator a;

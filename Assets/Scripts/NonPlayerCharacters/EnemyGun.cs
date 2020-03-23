@@ -20,7 +20,7 @@ public class EnemyGun : NPC
     RaycastHit lookingAt;
 
     [Header("Attacks")]
-    public ProjectileBurst attack;
+    public ProjectileAttack attack;
 
 
     // Update is called once per frame

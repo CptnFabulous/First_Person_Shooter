@@ -8,16 +8,26 @@ public class Timer
     float timer;
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         timer += Time.deltaTime / time;
         if (timer > 1)
         {
             // Perform task a number of times equal to the whole number value of the float, and minus 1 each time
+            while(timer > 1)
+            {
+                // Do action
+                timer -= 1;
+            }
         }
     }
 
-    void Reset()
+    public void Action()
+    {
+
+    }
+
+    public void Reset()
     {
         timer = 0;
     }

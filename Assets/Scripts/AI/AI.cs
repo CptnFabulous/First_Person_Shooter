@@ -27,8 +27,9 @@ public class AI : MonoBehaviour
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character c;
+    [HideInInspector] public AudioSource audioOutput;
 
-    public Character target;
+    
 
 
     [Header("Detection")]
@@ -43,12 +44,16 @@ public class AI : MonoBehaviour
 
     public float pursueRange;
 
+    public Character target;
     
+
+
     private void Awake()
     {
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
         c = GetComponent<Character>();
+        audioOutput = GetComponent<AudioSource>();
     }
 
     // Start is called before the first frame update
