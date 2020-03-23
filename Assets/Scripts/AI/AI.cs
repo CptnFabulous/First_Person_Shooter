@@ -23,8 +23,7 @@ Current AI action behaviours to make:
 public class AI : MonoBehaviour
 {
     [Header("References")]
-    public Animator movementStateMachine;
-    public Animator actionStateMachine;
+    public Animator stateMachine;
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character c;
@@ -39,6 +38,7 @@ public class AI : MonoBehaviour
     public float xFOV;
     [Range(0, 180)]
     public float yFOV;
+    public LayerMask viewDetection = ~0;
     [HideInInspector] public List<GameObject> fieldOfVision; // { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
 
     public float pursueRange;
@@ -48,6 +48,7 @@ public class AI : MonoBehaviour
     {
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
+        c = GetComponent<Character>();
     }
 
     // Start is called before the first frame update
@@ -77,43 +78,59 @@ public class AI : MonoBehaviour
         }
         */
 
-        if (target == null)
+        if (target == null) // Checks for targets
         {
             target = AcquireTarget();
         }
-
-        if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+        else
         {
-            target = null;
+            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+            {
+                print("Target out of range");
+                target = null;
+            }
+
+            Health h = target.GetComponent<Health>();
+            if (h != null && h.IsAlive() == false)
+            {
+                target = null;
+            }
         }
 
-        Health h = target.GetComponent<Health>();
-        if (h != null && h.IsAlive() == false)
-        {
-            target = null;
-        }
 
 
 
-        movementStateMachine.SetBool("targetAcquired", target != null);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        stateMachine.SetBool("targetAcquired", target != null);
 
         if (target != null)
         {
-            movementStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
+            stateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
         }
 
-        movementStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
-        movementStateMachine.SetInteger("health", hp.health.current);
-        
-        /*
-        Appropriate variables for state machine
-        
-        bool targetAcquired
-        float targetDistance
-        float targetNavMeshDistance
-        int health
-
-        */
+        stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
+        stateMachine.SetInteger("health", hp.health.current);
     }
 
     public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)
@@ -154,8 +171,9 @@ public class AI : MonoBehaviour
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, viewRange);
         foreach (Collider thing in thingsInEnvironment)
         {
-            if (LineOfSight(head.position, thing.transform, 1))
+            if (LineOfSight(head.position, thing.transform, viewDetection))
             {
+                print("Line of sight established between agent and " + thing.name);
                 Character targetCharacter = thing.transform.root.GetComponent<Character>();
                 if (targetCharacter != null && c.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
                 {
@@ -163,6 +181,7 @@ public class AI : MonoBehaviour
                 }
             }
         }
+        print("No target found");
         return null;
     }
 

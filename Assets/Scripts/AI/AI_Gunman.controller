@@ -6,7 +6,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MovementAI_Gunman
+  m_Name: AI_Gunman
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: targetAcquired
@@ -66,28 +66,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ai: {fileID: 0}
   movementSpeed: 8
-  minimumRange: 10
+  minimumRange: 15
   maximumRange: 20
-  numberOfChecks: 15
-  coverCriteria:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &114132049158701678
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02469ff699de3cb4593da221ad8e8aa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ai: {fileID: 0}
-  movementSpeed: 8
-  minimumRange: 20
-  maximumRange: 30
   numberOfChecks: 15
   coverCriteria:
     serializedVersion: 2
@@ -232,7 +212,6 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101784480615335046}
   m_StateMachineBehaviours:
-  - {fileID: 114132049158701678}
   - {fileID: 114539263460623180}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -344,13 +323,13 @@ AnimatorStateMachine:
     m_Position: {x: 432, y: -72, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102928182547346572}
-    m_Position: {x: 432, y: 156, z: 0}
+    m_Position: {x: 432, y: 72, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102672887370587872}
     m_Position: {x: 120, y: -108, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102196022089178164}
-    m_Position: {x: 216, y: 48, z: 0}
+    m_Position: {x: 204, y: 36, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 1101807773681945166}
