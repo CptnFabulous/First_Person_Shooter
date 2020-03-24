@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5879,8 +5879,8 @@ GameObject:
   - component: {fileID: 468373489189656799}
   - component: {fileID: 468373489189656798}
   - component: {fileID: 7592414578656205173}
-  - component: {fileID: 468373489189656805}
   - component: {fileID: 468373489189656804}
+  - component: {fileID: 468373489189656806}
   m_Layer: 0
   m_Name: Gunman
   m_TagString: Enemy
@@ -5907,7 +5907,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &468373489189656805
+--- !u!114 &468373489189656806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5916,7 +5916,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 468373489189656803}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09e4b7eff9f037f47bdf2ade156d3557, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cd21ff53ddc83a40b9b60aa69131aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 468373489189656804}
@@ -5934,6 +5934,28 @@ MonoBehaviour:
   fieldOfVision: []
   pursueRange: 35
   target: {fileID: 0}
+  projectileAttacks:
+  - name: Handgun burst
+    projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
+    projectileOrigin: {fileID: 468373488819297890}
+    projectileCount: 1
+    burstAmount: 3
+    spread: 2
+    range: 30
+    aimSpeed: 50
+    telegraphAimSpeed: 5
+    targetThreshold: 0.2
+    roundsPerMinute: 240
+    delay: 0.4
+    cooldown: 0.6
+    telegraphMoveSpeed: 0
+    isAttacking: 0
+    laserSight: {fileID: 468373488819297885}
+    muzzleFlash: {fileID: 468373487834121804}
+    flashRelativeDuration: 2
+    delayNoise: {fileID: 0}
+    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
+  meleeAttacks: []
 --- !u!114 &468373489215257416
 MonoBehaviour:
   m_ObjectHideFlags: 0

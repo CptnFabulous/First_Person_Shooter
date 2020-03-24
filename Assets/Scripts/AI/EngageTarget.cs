@@ -16,7 +16,7 @@ public class EngageTarget : AIMovementBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-
+        Debug.Log(ai.target.transform);
         targetLocation = ai.target.transform;
 
         currentDestination = FindFollowPosition(targetLocation, minimumRange, maximumRange, numberOfChecks);

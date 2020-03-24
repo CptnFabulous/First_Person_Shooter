@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [System.Serializable]
-public class ProjectileAttack : NPCAction
+public class ProjectileBurst : NPCAction
 {
     [Header("Projectile")]
     public ProjectileData projectile;
@@ -41,16 +41,15 @@ public class ProjectileAttack : NPCAction
     public AudioClip delayNoise;
     public AudioClip firingNoise;
 
-    public void TargetEnemy(Combatant c, Character target)
+    public void TargetEnemy(GameObject target, GameObject characterAttacking, NavMeshAgent na, float standardMoveSpeed, Faction characterFaction, Transform head, RaycastHit lookingAt, AudioSource audioSource)
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
-            //na.speed = standardMoveSpeed;
+            na.speed = standardMoveSpeed;
 
             cooldownTimer += Time.deltaTime;
 
-            RaycastHit lookingAt;
-            if (Physics.Raycast(c.head.position, target.transform.position - c.head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
+            if (Physics.Raycast(head.position, target.transform.position - head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
             {
                 if (Vector3.Distance(aimMarker, target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
@@ -67,20 +66,20 @@ public class ProjectileAttack : NPCAction
                     aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, aimSpeed * Time.deltaTime); // If enemy has not acquired target, move aimMarker towards target
                 }
 
-                c.head.LookAt(aimMarker);
+                head.LookAt(aimMarker);
             }
             else
             {
-                aimMarker = c.transform.position; // If line of sight has not been acquired, NPC cannot aim at enemy, aim is at ease
-                c.head.localRotation = Quaternion.Euler(0, 0, 0);
+                aimMarker = characterAttacking.transform.position; // If line of sight has not been acquired, NPC cannot aim at enemy, aim is at ease
+                head.localRotation = Quaternion.Euler(0, 0, 0);
             }
         }
         else // If attack sequence is initiated (isAttacking == true), execute telegraph and attack
         {
-            //na.speed = telegraphMoveSpeed;
+            na.speed = telegraphMoveSpeed;
 
             aimMarker = Vector3.MoveTowards(aimMarker, target.transform.position, telegraphAimSpeed * Time.deltaTime);
-            c.head.LookAt(aimMarker);
+            head.LookAt(aimMarker);
 
 
             delayTimer += Time.deltaTime;
@@ -92,11 +91,11 @@ public class ProjectileAttack : NPCAction
                     if (fireTimer >= 60 / roundsPerMinute)
                     {
                         muzzleFlash.Play();
-                        c.audioOutput.PlayOneShot(firingNoise);
+                        audioSource.PlayOneShot(firingNoise);
 
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
-                            Damage.ShootProjectile(projectile, spread, range, c.gameObject, c.c.faction, c.head, projectileOrigin, c.head.forward);
+                            Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, head.forward);
                         }
 
                         fireTimer = 0;
@@ -110,7 +109,7 @@ public class ProjectileAttack : NPCAction
             }
         }
 
-        if (Vector3.Distance(c.transform.position, target.transform.position) > range)
+        if (Vector3.Distance(characterAttacking.transform.position, target.transform.position) > range)
         {
             EndAttack();
         }

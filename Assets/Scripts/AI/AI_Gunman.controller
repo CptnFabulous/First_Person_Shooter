@@ -72,6 +72,21 @@ MonoBehaviour:
   coverCriteria:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114475418633432836
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755dbde20ab783a40ad739d16077e35a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  c: {fileID: 0}
+  type: 1
+  attackIndex: 0
 --- !u!114 &114539263460623180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -295,6 +310,7 @@ AnimatorState:
   - {fileID: 1101436976154309650}
   m_StateMachineBehaviours:
   - {fileID: 114008942467583302}
+  - {fileID: 114475418633432836}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1

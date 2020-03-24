@@ -11,7 +11,7 @@ public enum NPCAttackType
 
 public class NPCAttackState : StateMachineBehaviour
 {
-    public Combatant c;
+    [HideInInspector] public Combatant c;
     public NPCAttackType type;
     public int attackIndex;
 
@@ -25,13 +25,16 @@ public class NPCAttackState : StateMachineBehaviour
         switch (type)
         {
             case NPCAttackType.Melee:
-                //c.projectileAttacks[attackIndex].TargetEnemy(); Run attack from AI's attack array based on index
+                //c.projectileAttacks[attackIndex].TargetEnemy(); // Run attack from AI's attack array based on index
                 break;
             case NPCAttackType.Projectile:
-                //c.projectileAttacks[attackIndex].TargetEnemy(); Run attack from AI's attack array based on index
+                if (c.projectileAttacks.Length > 0) // If the enemy has any attacks
+                {
+                    c.projectileAttacks[attackIndex].TargetEnemy(c, c.target); // Run attack from AI's attack array based on index
+                }
                 break;
             case NPCAttackType.Throwable:
-                //c.projectileAttacks[attackIndex].TargetEnemy(); Run attack from AI's attack array based on index
+                //c.projectileAttacks[attackIndex].TargetEnemy(); // Run attack from AI's attack array based on index
                 break;
             default:
 

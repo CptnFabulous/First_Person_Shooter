@@ -1648,6 +1648,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   attack:
+    name: Rifle burst
     projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
     projectileOrigin: {fileID: 6231957954662210017}
     projectileCount: 1
