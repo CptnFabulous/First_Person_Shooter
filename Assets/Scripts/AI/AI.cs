@@ -83,6 +83,7 @@ public class AI : MonoBehaviour
         }
         */
 
+        bool targetAcquired = target != null;
         if (target == null) // Checks for targets
         {
             target = AcquireTarget();
@@ -102,6 +103,7 @@ public class AI : MonoBehaviour
             }
         }
 
+        
 
 
 
@@ -125,8 +127,7 @@ public class AI : MonoBehaviour
 
 
 
-
-
+        
         stateMachine.SetBool("targetAcquired", target != null);
 
         if (target != null)

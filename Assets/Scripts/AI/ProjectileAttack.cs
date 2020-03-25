@@ -45,13 +45,11 @@ public class ProjectileAttack : NPCAction
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
-            //na.speed = standardMoveSpeed;
-
             cooldownTimer += Time.deltaTime;
 
-            RaycastHit lookingAt;
-            if (Physics.Raycast(c.head.position, target.transform.position - c.head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
+            if (AI.LineOfSight(c.head.position, target.transform, projectile.hitDetection))
             {
+                Debug.Log("NPC has line of sight");
                 if (Vector3.Distance(aimMarker, target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
                     // Initiate attack sequence

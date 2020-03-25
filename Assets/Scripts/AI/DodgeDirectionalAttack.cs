@@ -3,50 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Dodge : AIMovementBehaviour
+public class DodgeDirectionalAttack : AIMovementBehaviour
 {
-    /*
-    public float dodgeRadius; // The minimum distance required to dodge. This needs to update based on the attack being dodged.
-    public LayerMask terrainDetection;
-    public int checkRaycastNumber = 8;
-
-    public Transform attacker;
-    */
-    [Header("Dodge directional attack")]
     public float minimumDodgeDistance;
     public int checkRaycastNumber;
     public LayerMask terrainDetection;
 
-    [Header("Dodge area of effect")]
-    public float minimumDodgeRadius;
-
     Transform attacker;
     NullableVector3 dodgeLocation;
-    
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-
-
-
-        dodgeLocation = DodgeDirectionalAttack(attacker, minimumDodgeDistance, checkRaycastNumber, terrainDetection);
+        dodgeLocation = Dodge();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         ai.na.SetDestination(dodgeLocation.position);
     }
-    /*
-    class NullableVector3
-    {
-        public Vector3 position;
-    }
-    */
-    NullableVector3 DodgeDirectionalAttack(Transform attackerLocation, float minimumDodgeDistance, int checkRaycastNumber, LayerMask terrainDetection)
+
+    NullableVector3 Dodge()
     {
         #region Launch raycasts to check for occupied space
-        Vector3 attackerDirection = attackerLocation.position - ai.transform.position;
+        Vector3 attackerDirection = attacker.position - ai.transform.position;
         // Find locations perpendicular to the attacker
 
         bool[] emptySpaces = new bool[checkRaycastNumber];
@@ -64,7 +45,7 @@ public class Dodge : AIMovementBehaviour
 
         #region Check if there is any empty space to dodge to
         bool spaceFound = false;
-        foreach(bool b in emptySpaces)
+        foreach (bool b in emptySpaces)
         {
             if (b == true)
             {
