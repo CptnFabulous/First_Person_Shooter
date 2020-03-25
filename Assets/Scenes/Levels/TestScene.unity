@@ -5861,8 +5861,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47af34676b829e428fb9dc99fe6e17f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  properName: 
-  description: A placeholder enemy armed with an automatic rifle.
+  properName: Gunman
+  description: A shrewder militant armed with a stolen handgun.
   faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
   isUnique: 0
 --- !u!1 &468373489189656803
