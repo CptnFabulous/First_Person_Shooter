@@ -25,7 +25,8 @@ public class PlayerHealth : Health
     public override void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
         base.Die(causeOfDeath, lastAttacker);
-        ph.ChangePlayerState(PlayerState.Dead);
+        //ph.ChangePlayerState(PlayerState.Dead);
+        ph.Die();
 
         
     }

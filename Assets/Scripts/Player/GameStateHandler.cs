@@ -124,6 +124,11 @@ public class GameStateHandler : MonoBehaviour
         failMenu.gameObject.SetActive(false);
         menu.gameObject.SetActive(true);
     }
+
+    public GameState CurrentState()
+    {
+        return currentState;
+    }
 }
 
 

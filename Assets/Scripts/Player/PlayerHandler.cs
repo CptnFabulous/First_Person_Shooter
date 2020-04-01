@@ -3,14 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerState
-{
-    Active,
-    Dead,
-    InMenus,
-    InCutscene
-}
-
 public class PlayerHandler : Character
 {
     [HideInInspector] public PlayerHealth ph;
@@ -19,10 +11,9 @@ public class PlayerHandler : Character
     [HideInInspector] public AmmunitionInventory a;
     [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler gsh;
+    [HideInInspector] public AudioSource playerAudio;
 
-    public AudioSource playerAudio;
-
-    PlayerState currentState = PlayerState.Active;
+    
 
     private void Awake()
     {
@@ -36,60 +27,31 @@ public class PlayerHandler : Character
         playerAudio = GetComponent<AudioSource>();
     }
 
-    
-    public void ChangePlayerState(PlayerState ps)
+    public GameState PlayerState()
     {
-        currentState = ps;
-        switch (currentState)
-        {
-            case PlayerState.Active: // Resume game
-                ph.health.current = ph.health.max;
-
-                transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
-
-                pc.rb.constraints = RigidbodyConstraints.FreezeRotation;
-
-                pc.enabled = true;
-
-                wh.CurrentWeapon().enabled = true;
-
-                wh.enabled = true;
-
-                break;
-            case PlayerState.Dead: // Game is lost, display fail menu
-
-                pc.rb.constraints = RigidbodyConstraints.None;
-
-                pc.enabled = false;
-
-                wh.CurrentWeapon().enabled = false;
-
-                wh.enabled = false;
-
-                //gsh.ChangeGameState(GameState.Failed);
-                gsh.FailGame();
-
-                break;
-            case PlayerState.InMenus:
-                pc.enabled = false;
-
-                wh.CurrentWeapon().enabled = false;
-
-                wh.enabled = false;
-
-                gsh.PauseGame();
-                //gsh.ChangeGameState(GameState.Paused);
-
-                break;
-            default:
-
-                break;
-        }
+        return gsh.CurrentState();
     }
 
-    public PlayerState CurrentState()
+    public void Die()
     {
-        return currentState;
+        pc.rb.constraints = RigidbodyConstraints.None;
+        pc.enabled = false;
+        wh.CurrentWeapon().enabled = false;
+        wh.enabled = false;
+        gsh.FailGame();
+    }
+
+    public void Respawn(int health, Vector3 position)
+    {
+        ph.health.current = health;
+        transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
+        transform.position = position;
+
+        pc.rb.constraints = RigidbodyConstraints.FreezeRotation; 
+        pc.enabled = true;
+        wh.CurrentWeapon().enabled = true;
+        wh.enabled = true;
+        gsh.ResumeGame();
     }
     
 }

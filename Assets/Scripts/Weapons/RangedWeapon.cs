@@ -314,7 +314,7 @@ public class RangedWeapon : MonoBehaviour
             // If burst count has not exceeded the limit OR burst count is set to zero
             // If ammo is available OR supply is null
             // If magazine is not empty OR null
-            if (playerHolding.ph.CurrentState() == PlayerState.Active && /*playerHolding.ph.isActive == true && */Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
+            if (playerHolding.ph.PlayerState() == GameState.Active && Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
             {
                 // Adjust fire control variables
                 fireControls.fireTimer = 0; // Reset fire timer to count up to next shot

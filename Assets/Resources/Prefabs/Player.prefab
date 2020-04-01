@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 7394104395992576403}
   - component: {fileID: 7394104395992576364}
   - component: {fileID: 7394104395992576365}
-  - component: {fileID: 1110935901733447300}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -428,18 +427,6 @@ MonoBehaviour:
   healthScript: {fileID: 7394104395992576364}
   damageMultiplier: 1
   critical: 0
---- !u!114 &1110935901733447300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7394104395992576411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6049edaae72d32a4f968b106fcb94f49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7394104396082026298
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Character : Entity
 {
-    public string properName;
-    public string description;
     public Faction faction;
     public bool isUnique;
 
