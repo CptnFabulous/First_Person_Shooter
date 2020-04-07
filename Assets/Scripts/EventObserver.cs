@@ -1,12 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class EventObserver : MonoBehaviour
 {
     public EventHandler eh;
-
-    public delegate void OnAttack(Character attacker, Character victim);
 
     public void Awake()
     {
@@ -42,27 +39,26 @@ public class EventObserver : MonoBehaviour
 
     public void Attack(Character attacker, Character victim)
     {
-
+        // somehow assign functions here
     }
 
     public void Damage(Character attacker, Character victim, DamageType method, int amount)
     {
-
+        // somehow assign functions here
     }
 
     public void Kill(Character killer, Character killed, DamageType causeOfDeath)
     {
-
+        // somehow assign functions here
     }
 
     public void Interact(PlayerHandler p, Interactable i)
     {
-
+        // somehow assign functions here
     }
 
     public void Spawn(Entity e, Vector3 location)
     {
-
+        // somehow assign functions here
     }
-
 }

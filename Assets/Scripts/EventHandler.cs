@@ -13,7 +13,9 @@ public class EventHandler : MonoBehaviour
     public event System.Action<Character, Character, DamageType> OnKill;
     public event System.Action<PlayerHandler, Interactable> OnInteract;
     public event System.Action<Entity, Vector3> OnSpawn;
+    // Add more delegates, functions, etc. if I need to add new game events in the future
 
+    // This function is run whenever a player or NPC initiates an attack
     public static void TransmitAttack(Character attacker, Character victim)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for one
@@ -23,6 +25,7 @@ public class EventHandler : MonoBehaviour
         }
     }
 
+    // This function is run whenever a player or NPC is damaged
     public static void TransmitDamage(Character attacker, Character victim, DamageType method, int amount)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for one
@@ -32,6 +35,7 @@ public class EventHandler : MonoBehaviour
         }
     }
 
+    // This function is run whenever a player or NPC is killed
     public static void TransmitKill(Character killer, Character killed, DamageType causeOfDeath)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for one
@@ -41,6 +45,7 @@ public class EventHandler : MonoBehaviour
         }
     }
 
+    // This function is run whenever a player interacts with something in the game world
     public static void TransmitInteract(PlayerHandler p, Interactable i)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for one
@@ -50,6 +55,7 @@ public class EventHandler : MonoBehaviour
         }
     }
 
+    // This function is run whenever an entity spawns into the scene
     public static void TransmitSpawn(Entity e, Vector3 location)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for one

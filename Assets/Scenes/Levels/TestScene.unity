@@ -1611,7 +1611,7 @@ GameObject:
   - component: {fileID: 980428154}
   - component: {fileID: 980428153}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: EventHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1637,7 +1637,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980428152}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.557691, y: 2.042434, z: -60.891266}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5924,6 +5924,7 @@ GameObject:
   - component: {fileID: 7592414578656205173}
   - component: {fileID: 468373489189656804}
   - component: {fileID: 468373489189656806}
+  - component: {fileID: 468373489189656805}
   m_Layer: 0
   m_Name: Gunman
   m_TagString: Enemy
@@ -5950,6 +5951,35 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &468373489189656805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468373489189656803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e44b8d9bfb1ec4ba22300efacc80e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eh: {fileID: 0}
+  onAttack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 468373489189656806}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &468373489189656806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5977,8 +6007,12 @@ MonoBehaviour:
   fieldOfVision: []
   pursueRange: 35
   target: {fileID: 0}
+  attacker: {fileID: 0}
   projectileAttacks:
   - name: Handgun burst
+    c: {fileID: 0}
+    telegraphMoveSpeed: 5
+    attackMoveSpeed: 5
     projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
     projectileOrigin: {fileID: 468373488819297890}
     projectileCount: 1
@@ -5991,7 +6025,6 @@ MonoBehaviour:
     roundsPerMinute: 400
     delay: 0.4
     cooldown: 0.6
-    telegraphMoveSpeed: 0
     isAttacking: 0
     laserSight: {fileID: 468373488819297885}
     muzzleFlash: {fileID: 468373487834121804}

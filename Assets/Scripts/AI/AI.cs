@@ -45,10 +45,11 @@ public class AI : MonoBehaviour
     public float pursueRange;
 
     public Character target;
+    public Character attacker;
     
 
 
-    private void Awake()
+    public virtual void Awake()
     {
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
