@@ -320,13 +320,22 @@ public class HeadsUpDisplay : MonoBehaviour
         ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
         if (oh != null)
         {
+            bool activeObjectives = false; // Used to check if there are any active objectives to display
+
             foreach (PlayerObjective o in oh.objectives)
             {
                 if (o.state == ObjectiveState.Active)
                 {
+                    activeObjectives = true;
                     list += "\n";
                     list += o.DisplayCriteria();
                 }
+            }
+
+            if (activeObjectives == false) // If there are no active objectives, list an alternate message
+            {
+                list += "\n";
+                list += "All completed";
             }
         }
         else

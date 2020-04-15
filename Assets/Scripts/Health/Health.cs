@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
 
     DamageType lastDamageSource;
     GameObject lastAttacker;
+    bool isDead;
 
 #if UNITY_EDITOR
     void Reset() { OnValidate(); }
@@ -30,7 +31,6 @@ public class Health : MonoBehaviour
     {
         if (health.current <= 0)
         {
-            print("schlep");
             Die(lastDamageSource, lastAttacker); // Die function runs multiple times when it must only run once, this needs fixing
         }
     }
@@ -45,7 +45,9 @@ public class Health : MonoBehaviour
     public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
         print(name + " has died");
+        isDead = true;
         GameEvent.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        //EventHandler.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
     }
 
     public virtual bool IsAlive()

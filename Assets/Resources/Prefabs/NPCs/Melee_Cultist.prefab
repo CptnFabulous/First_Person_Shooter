@@ -337,8 +337,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health:
     refName: 
-    max: 40
-    current: 40
+    max: 30
+    current: 30
     critical: 10
 --- !u!114 &7555540720933384299
 MonoBehaviour:
@@ -382,6 +382,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   attack:
+    name: 
     damage: 10
     hitDetectOrigin: {fileID: 5898894583017048192}
     hitDetection:

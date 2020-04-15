@@ -10,6 +10,6 @@ public abstract class Interactable : MonoBehaviour
 
     public virtual void OnInteract(PlayerHandler ph)
     {
-        GameEvent.TransmitInteraction(ph, this);
+        //GameEvent.TransmitInteraction(ph, this);
     }
 }

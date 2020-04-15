@@ -20,10 +20,11 @@ Current AI action behaviours to make:
 * Melee attack
 */
 
-public class AI : MonoBehaviour
+public class AI : MonoBehaviour//, IEventObserver
 {
     [Header("References")]
-    public Animator stateMachine;
+    [HideInInspector] public Animator stateMachine;
+    [HideInInspector] public EventObserver eo;
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character c;
@@ -47,14 +48,24 @@ public class AI : MonoBehaviour
     public Character target;
     public Character attacker;
     
+    /*
+    public void OnKillMessageReceived(KillMessage km)
+    {
 
+    }
+    */
 
     public virtual void Awake()
     {
+        stateMachine = GetComponent<Animator>();
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
         c = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();
+
+
+        eo = GetComponent<EventObserver>();
+        //eo.OnAttackMessage.AddListener((am) => { DodgeAttack(am); });
     }
 
     // Start is called before the first frame update
@@ -138,6 +149,11 @@ public class AI : MonoBehaviour
 
         stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         stateMachine.SetInteger("health", hp.health.current);
+    }
+
+    void DodgeAttack(AttackMessage am)
+    {
+
     }
 
     public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)

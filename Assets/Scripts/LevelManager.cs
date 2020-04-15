@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
     public void ReceiveKill(KillMessage km)
     {
         string deathMessage = km.victim.name + " was ";
-        switch (km.killMethod)
+        switch (km.causeOfDeath)
         {
             case DamageType.Shot:
                 deathMessage += "riddled with bullets";
@@ -52,18 +52,21 @@ public class LevelManager : MonoBehaviour
         }
         deathMessage += " by " + km.attacker.name + "!";
         print(deathMessage);
-
+        
         if (objectiveHandler != null)
         {
             objectiveHandler.CheckKillObjectives(km);
         }
+        
     }
 
-    public void ReceiveInteraction(PlayerHandler player, Interactable interactable)
+    public void ReceiveInteraction(InteractMessage im)
     {
+        
         if (objectiveHandler != null)
         {
-            objectiveHandler.CheckInteractObjectives(player, interactable);
+            objectiveHandler.CheckInteractObjectives(im);
         }
+        
     }
 }
