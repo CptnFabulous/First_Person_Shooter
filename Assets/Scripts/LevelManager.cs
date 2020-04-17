@@ -59,7 +59,7 @@ public class LevelManager : MonoBehaviour
         }
         
     }
-
+    /*
     public void ReceiveInteraction(InteractMessage im)
     {
         
@@ -69,4 +69,5 @@ public class LevelManager : MonoBehaviour
         }
         
     }
+    */
 }

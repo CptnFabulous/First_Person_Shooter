@@ -65,7 +65,7 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
         eo = GetComponent<EventObserver>();
-        //eo.OnAttackMessage.AddListener((am) => { DodgeAttack(am); });
+        eo.OnAttack += Dodge;
     }
 
     // Start is called before the first frame update
@@ -151,9 +151,13 @@ public class AI : MonoBehaviour//, IEventObserver
         stateMachine.SetInteger("health", hp.health.current);
     }
 
-    void DodgeAttack(AttackMessage am)
+    public void Dodge(AttackMessage am)
     {
-
+        if (am.victim == c) // Checks incoming attack message to see if it is the one being attacked
+        {
+            attacker = am.attacker; // Specifies attacker to dodge from
+            //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
+        }
     }
 
     public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)

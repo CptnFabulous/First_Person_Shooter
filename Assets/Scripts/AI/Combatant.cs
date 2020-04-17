@@ -23,13 +23,4 @@ public class Combatant : AI
         }
         */
     }
-
-    public void Dodge(Character attacker, Character victim)
-    {
-        if (victim == c) // Checks incoming attack message to see if it is the one being attacked
-        {
-            this.attacker = attacker; // Specifies attacker to dodge from
-            stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
-        }
-    }
 }

@@ -46,8 +46,8 @@ public class Health : MonoBehaviour
     {
         print(name + " has died");
         isDead = true;
-        GameEvent.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
-        //EventHandler.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        //GameEvent.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
     }
 
     public virtual bool IsAlive()

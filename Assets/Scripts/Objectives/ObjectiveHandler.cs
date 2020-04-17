@@ -11,6 +11,7 @@ public class ObjectiveHandler : MonoBehaviour
     private void Awake()
     {
         eo = GetComponent<EventObserver>();
+        eo.OnKill += CheckKillObjectives;
         //eo.OnKillMessage.AddListener((km) => CheckKillObjectives(km));
         // Add important functions to eventobserver
     }
@@ -74,7 +75,7 @@ public class ObjectiveHandler : MonoBehaviour
             }
         }
     }
-
+    /*
     public void CheckInteractObjectives(InteractMessage im)
     {
         foreach (InteractObjective o in objectives)
@@ -85,7 +86,7 @@ public class ObjectiveHandler : MonoBehaviour
             }
         }
     }
-
+    */
     void CheckObjective(PlayerObjective o)
     {
         if (o is KillQuantityObjective)
