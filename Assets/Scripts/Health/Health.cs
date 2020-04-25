@@ -46,7 +46,6 @@ public class Health : MonoBehaviour
     {
         print(name + " has died");
         isDead = true;
-        //GameEvent.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
         EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
     }
 

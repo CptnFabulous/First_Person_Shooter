@@ -30,7 +30,7 @@ public class NPCAttackState : StateMachineBehaviour
             case NPCAttackType.Projectile:
                 if (c.projectileAttacks.Length > 0) // If the enemy has any attacks
                 {
-                    c.projectileAttacks[attackIndex].TargetEnemy(); // Run attack from AI's attack array based on index
+                    c.projectileAttacks[attackIndex].Update(); // Run attack from AI's attack array based on index
                 }
                 break;
             case NPCAttackType.Throwable:

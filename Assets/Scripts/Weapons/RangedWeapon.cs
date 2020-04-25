@@ -178,6 +178,15 @@ public class RangedWeapon : MonoBehaviour
     float moveWeaponTimer;
     #endregion
 
+
+
+
+    float attackMessageLimitTimer = float.MaxValue;
+    float attackMessageLimitDelay = 1;
+
+
+
+
     private void Reset()
     {
         OnValidate();
@@ -277,8 +286,10 @@ public class RangedWeapon : MonoBehaviour
         // Checks following criteria to determine if the player should be able to control their weapon:
         // If the player is not currently switching weapon or firing mode
         // If the player's weapon selector is not active
+
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
+            #region Firing mode controls
             if (Input.GetAxis("Mouse ScrollWheel") != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
             {
                 int i = 0;
@@ -305,8 +316,10 @@ public class RangedWeapon : MonoBehaviour
                 //SwitchWeaponMode(i);
                 StartCoroutine(SwitchMode(i));
             }
+            #endregion
 
             fireControls.fireTimer += Time.deltaTime;
+            attackMessageLimitTimer += Time.deltaTime;
 
             // If player is active
             // If player is pressing fire button
@@ -316,6 +329,14 @@ public class RangedWeapon : MonoBehaviour
             // If magazine is not empty OR null
             if (playerHolding.ph.PlayerState() == GameState.Active && Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
             {
+                if (attackMessageLimitTimer >= attackMessageLimitDelay)
+                {
+                    // FIGURE OUT WAY TO DETERMINE WHAT THE PLAYER IS ATTACKING
+                    //EventObserver.TransmitAttack(playerHolding.ph, new Character(), accuracy.range, projectile.projectile.velocity);
+
+                }
+                
+                
                 // Adjust fire control variables
                 fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
                 fireControls.burstCounter += 1;

@@ -44,7 +44,7 @@ public class ProjectileAttack : NPCAction
     public AudioClip delayNoise;
     public AudioClip firingNoise;
 
-    public void TargetEnemy()
+    public void Update()
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
@@ -55,6 +55,7 @@ public class ProjectileAttack : NPCAction
                 Debug.Log("NPC has line of sight");
                 if (Vector3.Distance(aimMarker, c.target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
+                    #region Initiate attack
                     // Initiate attack sequence
                     isAttacking = true;
                     delayTimer = 0;
@@ -63,8 +64,10 @@ public class ProjectileAttack : NPCAction
 
                     previousMoveSpeed = c.na.speed; // Stores the move speed of the agent prior to executing the attack
                     c.na.speed = telegraphMoveSpeed; // The agent's speed is adjusted while it telegraphs.
+                    EventObserver.TransmitAttack(c.c, c.target, range, projectile.velocity); // Transmits a message of the attack the player is about to perform
 
                     //telegraphNoise.Play();
+                    #endregion
                 }
                 else
                 {

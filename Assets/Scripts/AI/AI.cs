@@ -24,11 +24,11 @@ public class AI : MonoBehaviour//, IEventObserver
 {
     [Header("References")]
     [HideInInspector] public Animator stateMachine;
-    [HideInInspector] public EventObserver eo;
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character c;
     [HideInInspector] public AudioSource audioOutput;
+    [HideInInspector] public EventObserver eo;
 
     
 
@@ -47,13 +47,6 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public Character target;
     public Character attacker;
-    
-    /*
-    public void OnKillMessageReceived(KillMessage km)
-    {
-
-    }
-    */
 
     public virtual void Awake()
     {
@@ -62,7 +55,6 @@ public class AI : MonoBehaviour//, IEventObserver
         na = GetComponent<NavMeshAgent>();
         c = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();
-
 
         eo = GetComponent<EventObserver>();
         eo.OnAttack += Dodge;
@@ -156,6 +148,7 @@ public class AI : MonoBehaviour//, IEventObserver
         if (am.victim == c) // Checks incoming attack message to see if it is the one being attacked
         {
             attacker = am.attacker; // Specifies attacker to dodge from
+            print(c.properName + " is being attacked by " + am.attacker.name + "!");
             //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
     }

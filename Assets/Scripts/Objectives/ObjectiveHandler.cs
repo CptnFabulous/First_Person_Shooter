@@ -87,12 +87,46 @@ public class ObjectiveHandler : MonoBehaviour
         }
     }
     */
-    void CheckObjective(PlayerObjective o)
+
+    /*
+    public void ReceiveKill(KillMessage km)
     {
-        if (o is KillQuantityObjective)
+        string deathMessage = km.victim.name + " was ";
+        switch (km.causeOfDeath)
         {
-            print("Objective is a KillQuantityObjective");
-            return;
+            case DamageType.Shot:
+                deathMessage += "riddled with bullets";
+                break;
+            case DamageType.CriticalShot:
+                deathMessage += "fatally shot";
+                break;
+            case DamageType.BlownUp:
+                deathMessage += "blown up";
+                break;
+            case DamageType.Gibbed:
+                deathMessage += "splattered to giblets";
+                break;
+            case DamageType.Burned:
+                deathMessage += "burned to a crisp";
+                break;
+            case DamageType.Bludgeoned:
+                deathMessage += "bludgeoned to a pulp";
+                break;
+            case DamageType.FallDamage:
+                deathMessage += "reduced to a flat red stain";
+                break;
+            default:
+                deathMessage += "killed";
+                break;
         }
+        deathMessage += " by " + km.attacker.name + "!";
+        print(deathMessage);
+
+        if (objectiveHandler != null)
+        {
+            objectiveHandler.CheckKillObjectives(km);
+        }
+
     }
+    */
 }

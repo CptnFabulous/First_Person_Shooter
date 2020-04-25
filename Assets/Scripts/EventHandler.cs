@@ -10,18 +10,21 @@ using UnityEngine.Events;
 
 public class EventHandler : MonoBehaviour
 {
-    public List<EventObserver> eventObservers;
+    public List<EventObserver> eventObservers = new List<EventObserver>();
     // Add more delegates, functions, etc. if I need to add new game events in the future
 }
 
 public class AttackMessage
 {
-    public Character attacker;
-    public Character victim;
+    // Add important data about the attack so enemies can anticipate if they need to dodge it or not
+    public Character attacker; // The entity performing the attack
+    public Character victim; // The entity that the attacker intends to attack
+    public float range; // The maximum range of the attack
+    public float speed; // The speed at which the attack will reach the target
 
-    public static AttackMessage New(Character attacker, Character victim)
+    public static AttackMessage New(Character attacker, Character victim, float range, float speed)
     {
-        return new AttackMessage { attacker = attacker, victim = victim };
+        return new AttackMessage { attacker = attacker, victim = victim, range = range, speed = speed };
     }
 }
 

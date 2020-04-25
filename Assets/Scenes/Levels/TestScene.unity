@@ -1716,50 +1716,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47af34676b829e428fb9dc99fe6e17f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &783651929
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 783651931}
-  - component: {fileID: 783651930}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &783651930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783651929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40faf3b7618a36b4c8fb8bb3866763c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventObservers: []
---- !u!4 &783651931
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783651929}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -54.1416, y: -3.0656967, z: -50.24048}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 33
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &804254423 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7394104396082026299, guid: 35eecb15e9bff8a43a236341dcd99101,
@@ -2189,7 +2145,6 @@ GameObject:
   m_Component:
   - component: {fileID: 997892571}
   - component: {fileID: 997892572}
-  - component: {fileID: 997892573}
   - component: {fileID: 997892574}
   m_Layer: 0
   m_Name: LevelManager
@@ -2228,19 +2183,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectives: []
---- !u!114 &997892573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997892570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84a9c8eb882ffbe4989bcd487033e4aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectiveHandler: {fileID: 997892572}
 --- !u!114 &997892574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6704,11 +6646,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 468373489189656804}
-  eo: {fileID: 0}
   hp: {fileID: 0}
   na: {fileID: 0}
   c: {fileID: 0}
   audioOutput: {fileID: 0}
+  eo: {fileID: 0}
   head: {fileID: 468373488470926827}
   viewRange: 25
   xFOV: 60
