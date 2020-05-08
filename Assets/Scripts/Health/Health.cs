@@ -9,6 +9,7 @@ public class Health : MonoBehaviour
     DamageType lastDamageSource;
     GameObject lastAttacker;
     bool isDead;
+    public DamageHitbox[] hitboxes;
 
 #if UNITY_EDITOR
     void Reset() { OnValidate(); }
@@ -17,6 +18,15 @@ public class Health : MonoBehaviour
         health.current = Mathf.Clamp(health.current, 0, health.max);
     }
 #endif
+
+    public virtual void Awake()
+    {
+        hitboxes = GetComponentsInChildren<DamageHitbox>();
+        foreach(DamageHitbox dh in hitboxes)
+        {
+            dh.healthScript = this;
+        }
+    }
 
     /*
     // Start is called before the first frame update
@@ -34,6 +44,7 @@ public class Health : MonoBehaviour
             Die(lastDamageSource, lastAttacker); // Die function runs multiple times when it must only run once, this needs fixing
         }
     }
+    
 
     public virtual void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
     {
@@ -44,9 +55,16 @@ public class Health : MonoBehaviour
 
     public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
     {
-        print(name + " has died");
-        isDead = true;
-        EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        if (isDead == false)
+        {
+            print(name + " has died");
+            isDead = true;
+            EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        }
+        else
+        {
+            print(name + "is already dead");
+        }
     }
 
     public virtual bool IsAlive()

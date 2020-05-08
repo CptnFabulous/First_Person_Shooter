@@ -25,12 +25,9 @@ public static class Damage
         }
         else
         {
-            destination = (direction * range) + destination;
-            //destination.magnitude *= range;
-
-            //Vector3 d = (direction + destination) * range;
-            //destination = d;
-            destination *= range;
+            //destination = (direction * range) + destination;
+            //destination *= range;
+            destination += direction * range;
         }
 
         Object.Instantiate(projectile.NewProjectile(origin, originFaction), muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));

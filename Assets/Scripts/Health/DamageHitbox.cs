@@ -62,7 +62,4 @@ public class DamageHitbox : MonoBehaviour
         }
         return transform.root.gameObject;
     }
-
-    
-    
 }

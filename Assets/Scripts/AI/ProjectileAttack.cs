@@ -52,7 +52,6 @@ public class ProjectileAttack : NPCAction
 
             if (AI.LineOfSight(c.head.position, c.target.transform, projectile.hitDetection))
             {
-                Debug.Log("NPC has line of sight");
                 if (Vector3.Distance(aimMarker, c.target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
                     #region Initiate attack
@@ -64,8 +63,8 @@ public class ProjectileAttack : NPCAction
 
                     previousMoveSpeed = c.na.speed; // Stores the move speed of the agent prior to executing the attack
                     c.na.speed = telegraphMoveSpeed; // The agent's speed is adjusted while it telegraphs.
-                    EventObserver.TransmitAttack(c.c, c.target, range, projectile.velocity); // Transmits a message of the attack the player is about to perform
-
+                    AttackMessage m = AttackMessage.Ranged(c.c, c.head.position, c.target.transform.position - c.transform.position, range, projectile.diameter, spread, projectile.velocity, projectile.hitDetection);
+                    EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
                     //telegraphNoise.Play();
                     #endregion
                 }
@@ -105,7 +104,7 @@ public class ProjectileAttack : NPCAction
 
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
-                            Damage.ShootProjectile(projectile, spread, range, c.gameObject, c.c.faction, c.head, projectileOrigin, c.head.forward);
+                            Damage.ShootProjectile(projectile, spread, range, c.gameObject, c.c.faction, c.head, projectileOrigin, aimMarker - c.head.position/*c.head.forward*/);
                         }
 
                         fireTimer = 0;

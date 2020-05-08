@@ -95,7 +95,7 @@ public class ProjectileBurst : NPCAction
 
                         for (int _p = 0; _p < projectileCount; _p++)
                         {
-                            Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, head.forward);
+                            Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, aimMarker - head.position/*head.forward*/);
                         }
 
                         fireTimer = 0;

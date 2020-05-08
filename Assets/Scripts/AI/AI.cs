@@ -46,7 +46,8 @@ public class AI : MonoBehaviour//, IEventObserver
     public float pursueRange;
 
     public Character target;
-    public Character attacker;
+    public bool selfPreservation = true;
+    public AttackMessage attackToDodge;
 
     public virtual void Awake()
     {
@@ -128,9 +129,6 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
 
-
-
-
         
         stateMachine.SetBool("targetAcquired", target != null);
 
@@ -145,14 +143,66 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public void Dodge(AttackMessage am)
     {
-        if (am.victim == c) // Checks incoming attack message to see if it is the one being attacked
+        // If the AI is not already dodging an attack
+        // If the attack is by an enemy who will harm them
+        // If the AI is in the path of the attack
+
+        Collider[] hitboxes = new Collider[hp.hitboxes.Length];
+        for(int i = 0; i < hitboxes.Length; i++)
         {
-            attacker = am.attacker; // Specifies attacker to dodge from
+            hitboxes[i] = hp.hitboxes[i].GetComponent<Collider>();
+        }
+
+        if (selfPreservation == true && attackToDodge == null && am.attacker.faction.Affiliation(c.faction) == FactionState.Hostile && am.AtRisk(hitboxes)) // If the attack is being executed by a character that is hostile to this NPC
+        {
+            print("kablowie");
             print(c.properName + " is being attacked by " + am.attacker.name + "!");
+            //attackToDodge = am; // Specifies attack to dodge from
             //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
     }
 
+    public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
+    {
+        List<Collider> objectsInView = new List<Collider>();
+        Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
+        foreach (Collider c in objects)
+        {
+            if (Vector3.Angle(c.transform.position - origin, direction) < angle) // Eliminates all objects outside a certain viewing angle
+            {
+                if (LineOfSight(origin, c.transform, viewable))
+                {
+                    objectsInView.Add(c); // Add c.gameObject to viewedObjects array
+                }
+            }
+        }
+
+        return objectsInView;
+    }
+
+    public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
+    {
+        List<Collider> objectsInView = new List<Collider>();
+        Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
+        foreach (Collider c in objects)
+        {
+            // Obtains the horizontal and vertical relative position data for the raycast hit point relative to the line of sight's origin.
+            Vector3 relativePosition_X = new Vector3(c.transform.position.x, origin.y, c.transform.position.z) - origin;
+            Vector3 relativePosition_Y = new Vector3(origin.x, c.transform.position.y, c.transform.position.z) - origin;
+            Vector2 visionAngle = new Vector2(Vector3.Angle(relativePosition_X, direction), Vector3.Angle(relativePosition_Y, direction));
+            if (visionAngle.x < angles.x && visionAngle.y < angles.y)
+            {
+                if (LineOfSight(origin, c.transform, viewable))
+                {
+                    objectsInView.Add(c); // Add c.gameObject to viewedObjects array
+                }
+            }
+        }
+
+        return objectsInView; // Returns list of objects the player is looking at
+    }
+
+    /*
     public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)
     {
         List<GameObject> objectsInView = new List<GameObject>();
@@ -164,10 +214,10 @@ public class AI : MonoBehaviour//, IEventObserver
             {
                 if (lineOfSight.collider == c) // If raycast hits object being checked for line of sight.
                 {
-                    /*
-                    Vector3 relativePosition_X = new Vector3(c.transform.position.x, viewOrigin.position.y, c.transform.position.z) - viewOrigin.position;
-                    Vector3 relativePosition_Y = new Vector3(viewOrigin.position.x, c.transform.position.y, c.transform.position.z) - viewOrigin.position;
-                    */
+                    
+                    Vector3 relative_Position_X = new Vector3(c.transform.position.x, viewOrigin.position.y, c.transform.position.z) - viewOrigin.position;
+                    Vector3 relative_Position_Y = new Vector3(viewOrigin.position.x, c.transform.position.y, c.transform.position.z) - viewOrigin.position;
+                    
 
                     // Obtains the horizontal and vertical relative position data for the raycast hit point relative to the line of sight's origin.
                     Vector3 relativePosition_X = new Vector3(lineOfSight.point.x, viewOrigin.position.y, lineOfSight.point.z) - viewOrigin.position;
@@ -177,7 +227,6 @@ public class AI : MonoBehaviour//, IEventObserver
                     if (visionAngle.x < horizontalFOV && visionAngle.y < verticalFOV)
                     {
                         objectsInView.Add(c.gameObject); // Add c.gameObject to viewedObjects array
-
                     }
                 }
             }
@@ -185,6 +234,7 @@ public class AI : MonoBehaviour//, IEventObserver
 
         return objectsInView; // Returns list of objects the player is looking at
     }
+    */
 
     Character AcquireTarget()
     {
@@ -193,7 +243,7 @@ public class AI : MonoBehaviour//, IEventObserver
         {
             if (LineOfSight(head.position, thing.transform, viewDetection))
             {
-                print("Line of sight established between agent and " + thing.name);
+                //print("Line of sight established between agent and " + thing.name);
                 Character targetCharacter = thing.transform.root.GetComponent<Character>();
                 if (targetCharacter != null && c.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
                 {
@@ -275,7 +325,7 @@ public class AI : MonoBehaviour//, IEventObserver
                 }
             }
 
-            print(t.name);
+            //print(t.name);
 
             if (t == target) // Checks if the object hit is the target
             {
@@ -290,6 +340,83 @@ public class AI : MonoBehaviour//, IEventObserver
         }
 
         return false; // If the raycast somehow doesn't hit anything, the enemy has disappeared, so it cannot establish line of sight with anything
+    }
+
+    public static bool LineOfSight(Vector3 viewer, Vector3 viewed, LayerMask coverCriteria, GameObject[] exceptions)
+    {
+        RaycastHit[] objectsBetween = Physics.RaycastAll(viewer, viewed - viewer, Vector3.Distance(viewer, viewed), coverCriteria);
+        foreach(RaycastHit lineOfSightCheck in objectsBetween)
+        {
+            GameObject g = lineOfSightCheck.collider.gameObject; // Gets transform of object
+
+            DamageHitbox dh = g.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            if (dh != null)
+            {
+                g = dh.GetRootObject();
+            }
+
+            bool notException = true;
+            foreach (GameObject go in exceptions)
+            {
+                if (g == go)
+                {
+                    notException = false;
+                }
+            }
+
+            if (notException == true)
+            {
+                return false;
+            }
+        }
+
+        return true; // If the raycast did not hit anything, there is nothing inbetween the two objects (except for things that the raycast does not deem important)
+
+        /*
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(viewer, viewed - viewer, out lineOfSightCheck, Vector3.Distance(viewer, viewed), coverCriteria))
+        {
+            GameObject g = lineOfSightCheck.collider.gameObject; // Gets transform of object
+
+            DamageHitbox dh = g.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            if (dh != null)
+            {
+                g = dh.GetRootObject();
+            }
+
+            foreach(GameObject go in exceptions)
+            {
+                if (g == go)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true; // If the raycast did not hit anything, there is nothing inbetween the two objects (except for things that the raycast does not deem important)
+        */
+    }
+
+    public static bool LineOfSight(Vector3 viewer, Vector3 viewed, LayerMask coverCriteria, GameObject exception)
+    {
+        GameObject[] array = new GameObject[1];
+        array[0] = exception;
+        return LineOfSight(viewer, viewed, coverCriteria, array);
+    }
+
+    public static bool LineOfSight(Vector3 viewer, Vector3 viewed, LayerMask coverCriteria)
+    {
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(viewer, viewed - viewer, out lineOfSightCheck, Vector3.Distance(viewer, viewed), coverCriteria))
+        {
+            return false;
+        }
+
+        return true; // If the raycast did not hit anything, there is nothing inbetween the two objects (except for things that the raycast does not deem important)
     }
 
     public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)

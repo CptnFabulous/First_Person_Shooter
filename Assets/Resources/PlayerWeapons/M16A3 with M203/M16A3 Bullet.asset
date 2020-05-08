@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31, type: 3}
   velocity: 500
   diameter: 0.1
-  gravityMultiplier: 0.05
+  gravityMultiplier: 0.02
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295

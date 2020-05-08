@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450443050220}
   - component: {fileID: 7790646450443050223}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450444556799}
   - component: {fileID: 7790646450444556798}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: M16A3 with M203
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,6 +172,7 @@ MonoBehaviour:
     moveSpeedReduction: -0.4
     aimPosition: {fileID: 7790646452389621174}
     scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
+    disableReticle: 0
   ammunitionModes:
   - name: 5.56MM NATO
     consumesAmmo: 1
@@ -234,6 +235,7 @@ MonoBehaviour:
     moveSpeedReduction: 0
     aimPosition: {fileID: 0}
     scopeGraphic: {fileID: 0}
+    disableReticle: 0
   isAiming: 0
   zoomVariable: 0
   zoomTimer: 0
@@ -324,7 +326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450466463833}
   - component: {fileID: 7790646450466463832}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleGrenadeLauncher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -395,7 +397,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450496658551}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: gunposHipfire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +427,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450510361293}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -458,7 +460,7 @@ GameObject:
   - component: {fileID: 7790646450565241320}
   - component: {fileID: 7790646450565241323}
   - component: {fileID: 7790646450565241322}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: weaponVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -635,7 +637,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450609389936}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 8oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +668,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450673841037}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 6oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -697,7 +699,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450676694120}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 12oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -729,7 +731,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450683324844}
   - component: {fileID: 7790646450683324847}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -807,7 +809,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450872267907}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -838,7 +840,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450887116234}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 2oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -869,7 +871,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451055502379}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -900,7 +902,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451136117366}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -932,7 +934,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451140381322}
   - component: {fileID: 7790646451140381333}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1010,7 +1012,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451153192313}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1042,7 +1044,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451304768580}
   - component: {fileID: 7790646451304768583}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1122,7 +1124,7 @@ GameObject:
   - component: {fileID: 7790646451329015778}
   - component: {fileID: 7790646451329015788}
   - component: {fileID: 7790646451329015789}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ShellEjection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5877,7 +5879,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451361168067}
   - component: {fileID: 7790646451361168066}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5956,7 +5958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451440948735}
   - component: {fileID: 7790646451440948734}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6035,7 +6037,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451585735312}
   - component: {fileID: 7790646451585735315}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflash2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6115,7 +6117,7 @@ GameObject:
   - component: {fileID: 7790646451592390254}
   - component: {fileID: 7790646451592390255}
   - component: {fileID: 7790646451592390249}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6244,7 +6246,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451621669467}
   - component: {fileID: 7790646451621669466}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6322,7 +6324,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451762918493}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 10oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6353,7 +6355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451817321989}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6384,7 +6386,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646451902172728}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 4oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6416,7 +6418,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646451972727152}
   - component: {fileID: 7790646451972727155}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflash2 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6494,7 +6496,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452092944018}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: gunposHolster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6524,7 +6526,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452187036596}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6556,7 +6558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646452285836241}
   - component: {fileID: 7790646452285836240}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflash2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6634,7 +6636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452309048546}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6666,7 +6668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646452313316980}
   - component: {fileID: 7790646452313316983}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6744,7 +6746,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452389621174}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: gunposIronsights
   m_TagString: Untagged
   m_Icon: {fileID: 0}

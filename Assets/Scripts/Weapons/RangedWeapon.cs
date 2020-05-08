@@ -48,6 +48,7 @@ public class OpticsStats
     [Range(-1, 0)] public float moveSpeedReduction;
     public Transform aimPosition;
     public Sprite scopeGraphic;
+    public bool disableReticle;
 }
 
 [System.Serializable]
@@ -287,6 +288,9 @@ public class RangedWeapon : MonoBehaviour
         // If the player is not currently switching weapon or firing mode
         // If the player's weapon selector is not active
 
+
+        attackMessageLimitTimer += Time.deltaTime;
+
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
             #region Firing mode controls
@@ -319,7 +323,6 @@ public class RangedWeapon : MonoBehaviour
             #endregion
 
             fireControls.fireTimer += Time.deltaTime;
-            attackMessageLimitTimer += Time.deltaTime;
 
             // If player is active
             // If player is pressing fire button
@@ -329,14 +332,6 @@ public class RangedWeapon : MonoBehaviour
             // If magazine is not empty OR null
             if (playerHolding.ph.PlayerState() == GameState.Active && Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false)))
             {
-                if (attackMessageLimitTimer >= attackMessageLimitDelay)
-                {
-                    // FIGURE OUT WAY TO DETERMINE WHAT THE PLAYER IS ATTACKING
-                    //EventObserver.TransmitAttack(playerHolding.ph, new Character(), accuracy.range, projectile.projectile.velocity);
-
-                }
-                
-                
                 // Adjust fire control variables
                 fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
                 fireControls.burstCounter += 1;
@@ -396,14 +391,40 @@ public class RangedWeapon : MonoBehaviour
                 #endregion
 
                 // Calculate direction to shoot in
-                //Quaternion ar = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy));
-                //Vector3 aimDirection = ar * transform.forward;
-
                 Vector3 aimDirection = transform.forward;
                 if (optics == null || isAiming == false)
                 {
                     aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * aimDirection;
                 }
+
+
+                if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
+                {
+                    /*
+                    // Detect all enemies in a cone with the angle of the player's total bullet spread
+                    List<Collider> objectsInLineOfFire = AI.FieldOfView(playerHolding.ph.pc.head.transform.position, playerHolding.ph.pc.head.transform.forward, playerHolding.standingAccuracy + accuracy.projectileSpread, accuracy.range, projectile.projectile.hitDetection);
+                    List<Character> charactersInLineOfFire = new List<Character>();
+                    
+                    foreach(Collider c in objectsInLineOfFire)
+                    {
+                        Character ch = Character.FromHit(c.gameObject);
+                        if (ch != null)
+                        {
+                            charactersInLineOfFire.Add(ch);
+                        }
+                    }
+                    print("Creating attack message");
+                    EventObserver.TransmitAttack(playerHolding.ph, charactersInLineOfFire, accuracy.range, projectile.projectile.velocity);
+                    */
+                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.projectile.diameter, playerHolding.standingAccuracy + accuracy.projectileSpread, projectile.projectile.velocity, projectile.projectile.hitDetection);
+                    EventObserver.TransmitAttack(am);
+
+                    
+                    attackMessageLimitTimer = 0;
+                }
+
+
+
 
                 for (int i = 0; i < projectile.projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
                 {
@@ -444,6 +465,26 @@ public class RangedWeapon : MonoBehaviour
         MoveWeaponHandler();
     }
 
+    /*
+    public static RaycastHit[] Conecast(Vector3 origin, Vector3 direction, float angle, float range, LayerMask layerMask) // UNTESTED
+    {
+        Vector3 angleVector = (Quaternion.Euler(angle, 0, 0) * Vector3.forward) * range;
+        Vector3 rangeVector = Vector3.forward * range;
+        float maxConeWidth = rangeVector.y - angleVector.y;
+        RaycastHit[] objectsInCone = Physics.SphereCastAll(origin, maxConeWidth, direction, range, layerMask);
+        List<RaycastHit> hits = new List<RaycastHit>();
+        foreach (RaycastHit r in objectsInCone)
+        {
+            if (Vector3.Angle(origin + direction, r.transform.position) < angle)
+            {
+                hits.Add(r);
+            }
+        }
+
+        return null;
+    }
+    */
+
     #region Weapon functions
 
     #region Switching functions
@@ -474,7 +515,7 @@ public class RangedWeapon : MonoBehaviour
         firingModeIndex = index;
     }
     */
-    
+
     public IEnumerator SwitchMode(int index)
     {
         if (index != firingModeIndex) // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run

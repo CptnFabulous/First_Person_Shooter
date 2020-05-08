@@ -1642,8 +1642,8 @@ MonoBehaviour:
   moveSpeed: 8
   head: {fileID: 6231957954866864747}
   target: {fileID: 0}
-  targetRange: 40
-  pursueRange: 50
+  targetRange: 60
+  pursueRange: 80
   viewDetection:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1656,12 +1656,12 @@ MonoBehaviour:
     spread: 2
     range: 30
     aimSpeed: 50
-    telegraphAimSpeed: 5
+    telegraphAimSpeed: 3
     targetThreshold: 0.2
     roundsPerMinute: 900
-    delay: 0.4
-    cooldown: 0.6
-    telegraphMoveSpeed: 0
+    delay: 0.5
+    cooldown: 0.5
+    telegraphMoveSpeed: 3
     isAttacking: 0
     laserSight: {fileID: 6231957954662210014}
     muzzleFlash: {fileID: 6231957954230682063}

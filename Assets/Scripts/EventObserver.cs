@@ -46,19 +46,42 @@ public class EventObserver : MonoBehaviour
         eventHandler.eventObservers.Remove(this);
     }
 
+
+
+    public static void TransmitAttack(AttackMessage m)
+    {
+        EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
+        if (eh != null) // If one is found
+        {
+            foreach (EventObserver eo in eh.eventObservers)
+            {
+                if (eo.gameObject.activeSelf == true && eo.OnAttack != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
+                {
+                    eo.OnAttack(m);
+                }
+            }
+        }
+    }
+
     /*
-    private void OnEnable()
-    {
-        eventHandler.eventObservers.Add(this);
-    }
-
-    private void OnDisable()
-    {
-        eventHandler.eventObservers.Remove(this);
-    }
-    */
-
     // This function is run whenever a player or NPC initiates an attack
+    public static void TransmitAttack(Character attacker, List<Character> victims, float range, float speed)
+    {
+        EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
+        if (eh != null) // If one is found
+        {
+            Character[] array = victims.ToArray();
+            AttackMessage m = AttackMessage.New(attacker, array, range, speed); // Generate new message
+            foreach (EventObserver eo in eh.eventObservers)
+            {
+                if (eo.gameObject.activeSelf == true && eo.OnAttack != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
+                {
+                    eo.OnAttack(m);
+                }
+            }
+        }
+    }
+
     public static void TransmitAttack(Character attacker, Character victim, float range, float speed)
     {
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
@@ -73,8 +96,8 @@ public class EventObserver : MonoBehaviour
                 }
             }
         }
-
     }
+    */
 
     // This function is run whenever a player or NPC is damaged
     public static void TransmitDamage(Character attacker, Character victim, DamageType method, int amount)

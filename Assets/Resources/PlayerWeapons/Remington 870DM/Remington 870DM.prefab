@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892411427642}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892425545013}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892433495633}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 4oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232892512839026}
   - component: {fileID: 2816232892512839025}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232892601090566}
   - component: {fileID: 2816232892601090565}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892727586851}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: gunposHolster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232892801543848}
   - component: {fileID: 2816232892801543847}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Remington 870DM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -407,6 +407,7 @@ MonoBehaviour:
     moveSpeedReduction: 0
     aimPosition: {fileID: 0}
     scopeGraphic: {fileID: 0}
+    disableReticle: 0
   isAiming: 0
   zoomVariable: 0
   zoomTimer: 0
@@ -481,7 +482,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892804422543}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,7 +514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232892813196906}
   - component: {fileID: 2816232892813196905}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -593,7 +594,7 @@ GameObject:
   - component: {fileID: 2816232892958514159}
   - component: {fileID: 2816232892958514157}
   - component: {fileID: 2816232892958514158}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -721,7 +722,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232893238868347}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 2oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,7 +753,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232893247119426}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 10oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -785,7 +786,7 @@ GameObject:
   - component: {fileID: 2816232893348017717}
   - component: {fileID: 2816232893348017715}
   - component: {fileID: 2816232893348017716}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ShellEjectionSlugs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5540,7 +5541,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232893409859387}
   - component: {fileID: 2816232893409859386}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5619,7 +5620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232893428655305}
   - component: {fileID: 2816232893428655304}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5699,7 +5700,7 @@ GameObject:
   - component: {fileID: 2816232893638339649}
   - component: {fileID: 2816232893638339679}
   - component: {fileID: 2816232893638339648}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: weaponVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5877,7 +5878,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232893707764119}
   - component: {fileID: 2816232893707764118}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5957,7 +5958,7 @@ GameObject:
   - component: {fileID: 2816232893789883999}
   - component: {fileID: 2816232893789883997}
   - component: {fileID: 2816232893789883998}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ShellEjectionBuckshot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10711,7 +10712,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232893814811689}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10742,7 +10743,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232893838024947}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10774,7 +10775,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232894035253742}
   - component: {fileID: 2816232894035253741}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10852,7 +10853,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894058338733}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 6oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10883,7 +10884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894124738367}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 8oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10914,7 +10915,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894187354168}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10945,7 +10946,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894353579547}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: gunposHipfire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10975,7 +10976,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894368047074}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11007,7 +11008,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232894387967979}
   - component: {fileID: 2816232894387967978}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11085,7 +11086,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894390508327}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: muzzleflashsection (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11116,7 +11117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894452184807}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 12oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

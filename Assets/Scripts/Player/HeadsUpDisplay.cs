@@ -137,10 +137,11 @@ public class HeadsUpDisplay : MonoBehaviour
         #region Weapon HUD
         RangedWeapon rw = ph.wh.CurrentWeapon();
         bool activeWeapon = !ph.wh.IsSwitchingWeapon;
-        reticleUp.gameObject.SetActive(activeWeapon);
-        reticleDown.gameObject.SetActive(activeWeapon);
-        reticleLeft.gameObject.SetActive(activeWeapon);
-        reticleRight.gameObject.SetActive(activeWeapon);
+        reticleCentre.gameObject.SetActive(!activeWeapon || (rw.optics == null || rw.optics.disableReticle == false));
+        reticleUp.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
+        reticleDown.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
+        reticleLeft.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
+        reticleRight.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
         ammoDisplay.gameObject.SetActive(activeWeapon);
         opticsOverlay.gameObject.SetActive(activeWeapon);
         opticsTransition.gameObject.SetActive(activeWeapon);
@@ -152,28 +153,23 @@ public class HeadsUpDisplay : MonoBehaviour
                 ADSTransition(0, null);
             }
 
+            if (rw.optics == null || rw.optics.disableReticle == false)
+            {
+                float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy + rw.accuracy.projectileSpread);
+
+                // Figure out how to accurately depict reticle width
+
+                Vector3 r = Quaternion.Euler(0, spread, 0) * transform.forward * rw.accuracy.range;
+                Vector3 reticlePosition = ph.pc.playerCamera.WorldToScreenPoint(r);
+                Vector3 screenCentre = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
+
+                float rp = spread * Screen.height / ph.pc.fieldOfView;
+                reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
+                reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
+                reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
+                reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
+            }
             
-
-            float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy + rw.accuracy.projectileSpread);
-
-            //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward;
-            //Vector3 r = Quaternion.Euler(0, spread, 0) * Vector3.forward * rw.accuracy.range;
-            //print(r.x); // r.x is equivalent to the maximum distance a projectile will be from the centre of the player's aim, at the weapon's specified range.
-
-            // Figure out how to accurately depict reticle width
-
-            Vector3 r = Quaternion.Euler(0, spread, 0) * transform.forward * rw.accuracy.range;
-            Vector3 reticlePosition = ph.pc.playerCamera.WorldToScreenPoint(r);
-            Vector3 screenCentre = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
-
-
-
-
-            float rp = spread * Screen.height / ph.pc.fieldOfView;
-            reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
-            reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
-            reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
-            reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
 
             firingMode.text = rw.firingModes[rw.firingModeIndex].name;
             firingModeIcon.sprite = rw.firingModes[rw.firingModeIndex].hudIcon;
