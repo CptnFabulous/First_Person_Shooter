@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Projectile : MonoBehaviour
 {
+    [Header("General stats")]
     public float projectileLifetime = 20;
+    public UnityEvent onHit;
 
     [Header("Physics")]
     public float velocity;
@@ -18,8 +21,7 @@ public class Projectile : MonoBehaviour
     public RaycastHit projectileHit; // Point where raycast hits target
     float timerLifetime;
 
-    [HideInInspector] public GameObject origin;
-    [HideInInspector] public Faction originFaction;
+    [HideInInspector] public Character origin;
 
     // Use this for initialization
     void Start()
@@ -50,6 +52,7 @@ public class Projectile : MonoBehaviour
 
     public virtual void OnHit()
     {
+        onHit.Invoke();
         Destroy(gameObject);
     }
 
@@ -68,10 +71,24 @@ public class Projectile : MonoBehaviour
     bool IsAlly(GameObject g)
     {
         Character ch = Character.FromHit(g);
-        if (ch != null && originFaction.Affiliation(ch.faction) == FactionState.Allied)
+        if (ch != null && origin.faction.Affiliation(ch.faction) == FactionState.Allied)
         {
             return true;
         }
         return false;
     }
+    
+    public void InstantiateOnImpact(GameObject prefab, bool alignWithSurface)
+    {
+        if (alignWithSurface == true)
+        {
+            Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, projectileHit.normal);
+            Instantiate(prefab, projectileHit.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
+        }
+        else
+        {
+            Instantiate(prefab, projectileHit.point, Quaternion.identity);
+        }
+    }
+    
 }

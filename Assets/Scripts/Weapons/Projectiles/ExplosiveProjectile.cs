@@ -15,10 +15,14 @@ public class ExplosiveProjectile : Projectile
     public AnimationCurve damageFalloff;
     public AnimationCurve knockbackFalloff;
 
+    [Header("Cosmetics")]
+    public ParticleSystem impactEffect;
+
     public override void OnHit()
     {
-        Damage.InstantExplosion(origin, originFaction, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
-        Damage.PointDamage(origin, originFaction, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
+        InstantiateOnImpact(impactEffect.gameObject, false);
+        Damage.InstantExplosion(origin.gameObject, origin.faction, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
+        Damage.PointDamage(origin.gameObject, origin.faction, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
         base.OnHit();
     }
 }

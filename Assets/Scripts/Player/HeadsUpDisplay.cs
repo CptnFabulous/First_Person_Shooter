@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.TerrainAPI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,12 @@ public class HeadsUpDisplay : MonoBehaviour
 
     [Header("Objectives")]
     public Text objectiveList;
+
+    [Header("Minimap")]
+    public Camera minimapCamera;
+    public float minCameraDistance;
+    public float maxCameraDistance;
+    public LayerMask terrainDetection = ~0;
 
     [Header("Health elements")]
     public GameObject healthDisplay;
@@ -76,6 +83,19 @@ public class HeadsUpDisplay : MonoBehaviour
     {
         #region Objectives
         objectiveList.text = ObjectiveList();
+        #endregion
+
+        #region Minimap
+
+        float height = maxCameraDistance;
+        RaycastHit spaceAbovePlayerCheck;
+        if (Physics.Raycast(transform.position, transform.up, out spaceAbovePlayerCheck, maxCameraDistance, terrainDetection))
+        {
+            height = Vector3.Distance(transform.position, spaceAbovePlayerCheck.point);
+            height = Mathf.Clamp(height, minCameraDistance, maxCameraDistance);
+        }
+
+        minimapCamera.transform.localPosition = new Vector3(0, height, 0);
         #endregion
 
         #region Health HUD
@@ -324,6 +344,12 @@ public class HeadsUpDisplay : MonoBehaviour
                 {
                     activeObjectives = true;
                     list += "\n";
+
+                    if (o.mandatory == false)
+                    {
+                        list += "OPTIONAL: ";
+                    }
+
                     list += o.DisplayCriteria();
                 }
             }

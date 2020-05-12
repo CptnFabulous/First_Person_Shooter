@@ -9,9 +9,7 @@ public class Bullet : KineticProjectile
     
     public override void OnHit()
     {
-        Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, projectileHit.normal);
-        Instantiate(impactEffect.gameObject, projectileHit.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
-        //Instantiate(impactEffect.gameObject, projectileHit.point + normalDirection * Vector3.forward * 0.001f, normalDirection, projectileHit.collider.transform);
+        InstantiateOnImpact(impactEffect.gameObject, true);
         base.OnHit();
     }
 }

@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450444556799}
   - component: {fileID: 7790646450444556798}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: M16A3 with M203
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646450496658551}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: gunposHipfire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1124,7 +1124,7 @@ GameObject:
   - component: {fileID: 7790646451329015778}
   - component: {fileID: 7790646451329015788}
   - component: {fileID: 7790646451329015789}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: ShellEjection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6496,7 +6496,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452092944018}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: gunposHolster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6746,7 +6746,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7790646452389621174}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: gunposIronsights
   m_TagString: Untagged
   m_Icon: {fileID: 0}

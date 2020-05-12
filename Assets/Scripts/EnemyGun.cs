@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyGun : NPC
 {
+    
     [Header("General stats")]
     public float moveSpeed;
 
@@ -47,7 +48,7 @@ public class EnemyGun : NPC
             }
             
 
-            attack.TargetEnemy(target, gameObject, na, moveSpeed, ch.faction, head.transform, lookingAt, audioSource);
+            attack.TargetEnemy(target, ch, na, moveSpeed, ch.faction, head.transform, lookingAt, audioSource);
 
             Health h = target.GetComponent<Health>();
             if (h != null && h.health.current <= 0)

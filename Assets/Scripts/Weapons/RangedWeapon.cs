@@ -390,46 +390,28 @@ public class RangedWeapon : MonoBehaviour
                 }
                 #endregion
 
+                #region Calculate accuracy
                 // Calculate direction to shoot in
                 Vector3 aimDirection = transform.forward;
                 if (optics == null || isAiming == false)
                 {
                     aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * aimDirection;
                 }
+                #endregion
 
-
+                #region Send attack message
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
-                    /*
-                    // Detect all enemies in a cone with the angle of the player's total bullet spread
-                    List<Collider> objectsInLineOfFire = AI.FieldOfView(playerHolding.ph.pc.head.transform.position, playerHolding.ph.pc.head.transform.forward, playerHolding.standingAccuracy + accuracy.projectileSpread, accuracy.range, projectile.projectile.hitDetection);
-                    List<Character> charactersInLineOfFire = new List<Character>();
-                    
-                    foreach(Collider c in objectsInLineOfFire)
-                    {
-                        Character ch = Character.FromHit(c.gameObject);
-                        if (ch != null)
-                        {
-                            charactersInLineOfFire.Add(ch);
-                        }
-                    }
-                    print("Creating attack message");
-                    EventObserver.TransmitAttack(playerHolding.ph, charactersInLineOfFire, accuracy.range, projectile.projectile.velocity);
-                    */
                     AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.projectile.diameter, playerHolding.standingAccuracy + accuracy.projectileSpread, projectile.projectile.velocity, projectile.projectile.hitDetection);
                     EventObserver.TransmitAttack(am);
-
-                    
                     attackMessageLimitTimer = 0;
                 }
+                #endregion
 
-
-
-
-                for (int i = 0; i < projectile.projectileCount; i++) // Shoots an amount of projectiles based on the projectileCount variable.
-                {
-                    Damage.ShootProjectile(projectile.projectile, accuracy.projectileSpread, accuracy.range, playerHolding.gameObject, playerHolding.ph.faction, transform, projectile.muzzle, aimDirection);
-                }
+                #region Shoot projectiles
+                // Shoots an amount of projectiles based on the projectileCount variable.
+                Damage.ShootProjectile(projectile.projectile, projectile.projectileCount, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
+                #endregion
             }
             else if (!Input.GetButton("Fire"))
             {

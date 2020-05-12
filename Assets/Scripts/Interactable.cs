@@ -4,12 +4,19 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
-public abstract class Interactable : MonoBehaviour
+public class Interactable : MonoBehaviour
 {
     public string instruction;
+    public UnityEvent onInteract;
 
     public virtual void OnInteract(PlayerHandler ph)
     {
-        //GameEvent.TransmitInteraction(ph, this);
+        onInteract.Invoke();
+        EventObserver.TransmitInteract(ph, this);
+    }
+
+    public void PrintMessage(string s)
+    {
+        print(s);
     }
 }

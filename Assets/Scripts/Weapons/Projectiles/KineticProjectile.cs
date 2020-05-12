@@ -12,7 +12,7 @@ public class KineticProjectile : Projectile
     public override void OnHit()
     {
         GameObject o = projectileHit.collider.gameObject;
-        Damage.PointDamage(origin, originFaction, o, damage, criticalMultiplier, DamageType.Shot, DamageType.CriticalShot);
+        Damage.PointDamage(origin.gameObject, origin.faction, o, damage, criticalMultiplier, DamageType.Shot, DamageType.CriticalShot);
         Damage.Knockback(o, knockback, transform.forward);
         base.OnHit();
     }

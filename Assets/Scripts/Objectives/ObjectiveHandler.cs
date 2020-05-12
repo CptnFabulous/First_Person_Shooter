@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.Events;
 public class ObjectiveHandler : MonoBehaviour
 {
@@ -8,12 +9,17 @@ public class ObjectiveHandler : MonoBehaviour
 
     public PlayerObjective[] objectives;
 
+    public LevelCompleteScreen screen;
+    public string nextLevelName;
+
+    bool levelCompleted;
+
     private void Awake()
     {
+        // Add important functions to eventobserver
         eo = GetComponent<EventObserver>();
         eo.OnKill += CheckKillObjectives;
-        //eo.OnKillMessage.AddListener((km) => CheckKillObjectives(km));
-        // Add important functions to eventobserver
+        
     }
 
     // Start is called before the first frame update
@@ -25,8 +31,8 @@ public class ObjectiveHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Checks objective statuses
         // Checks if objectives are completed
-
         foreach (PlayerObjective o in objectives)
         {
             if (o.state == ObjectiveState.Active)
@@ -38,27 +44,33 @@ public class ObjectiveHandler : MonoBehaviour
                 o.ActivateCheck();
             }
         }
-    }
+        #endregion
 
-    public bool LevelComplete()
-    {
-        bool completed = true;
+        #region Checks level completion
+        bool allObjectivesCompleted = true;
         foreach (PlayerObjective o in objectives)
         {
             if (o.mandatory == true && o.state != ObjectiveState.Completed)
             {
-                completed = false;
+                allObjectivesCompleted = false;
             }
         }
-        return completed;
+
+        if (allObjectivesCompleted && !levelCompleted)
+        {
+            print("Level completed");
+            CompleteLevel();
+        }
+        #endregion
     }
+
+    
 
     public void CheckKillObjectives(KillMessage km)
     {
-        print("Checking kill objectives");
         if (km.attacker.GetComponent<PlayerHandler>() != null)
         {
-            
+            print("Checking kill objectives");
             foreach (PlayerObjective o in objectives)
             {
                 KillQuantityObjective kqo = o as KillQuantityObjective;
@@ -129,4 +141,22 @@ public class ObjectiveHandler : MonoBehaviour
 
     }
     */
+
+
+
+
+    void CompleteLevel()
+    {
+        levelCompleted = true;
+        Time.timeScale = 0;
+         
+
+        PlayerHandler[] players = FindObjectsOfType<PlayerHandler>();
+        foreach (PlayerHandler ph in players)
+        {
+            ph.gsh.WinGame();
+        }
+        screen.gameObject.SetActive(true);
+        screen.GenerateScreen(this);
+    }
 }

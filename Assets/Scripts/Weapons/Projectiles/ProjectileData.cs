@@ -15,7 +15,7 @@ public class ProjectileData : ScriptableObject
     public LayerMask hitDetection = 1;
 
     
-    public virtual GameObject NewProjectile(GameObject origin, Faction originFaction)
+    public virtual GameObject NewProjectile(Character origin)
     {
         GameObject launchedProjectile = prefab.gameObject;
         Projectile p = launchedProjectile.GetComponent<Projectile>();
@@ -25,7 +25,6 @@ public class ProjectileData : ScriptableObject
         p.gravityMultiplier = gravityMultiplier;
         p.hitDetection = hitDetection;
         p.origin = origin;
-        p.originFaction = originFaction;
 
         return launchedProjectile;
     }

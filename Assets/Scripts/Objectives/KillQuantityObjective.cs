@@ -23,10 +23,11 @@ public class KillQuantityObjective : PlayerObjective
 
     public void UpdateObjective(KillMessage km)
     {
+        print("Checking quantity objective");
         if (state == ObjectiveState.Active && (km.victim == enemyType || km.victim.properName == enemyType.properName))
         {
+            print("Enemy eliminated");
             amountEliminated += 1;
-            print("Killed");
         }
     }
 }

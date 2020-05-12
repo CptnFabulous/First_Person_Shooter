@@ -260,7 +260,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232892727586851}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: gunposHolster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2816232892801543848}
   - component: {fileID: 2816232892801543847}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Remington 870DM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 2816232893348017717}
   - component: {fileID: 2816232893348017715}
   - component: {fileID: 2816232893348017716}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: ShellEjectionSlugs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5958,7 +5958,7 @@ GameObject:
   - component: {fileID: 2816232893789883999}
   - component: {fileID: 2816232893789883997}
   - component: {fileID: 2816232893789883998}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: ShellEjectionBuckshot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10946,7 +10946,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2816232894353579547}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: gunposHipfire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

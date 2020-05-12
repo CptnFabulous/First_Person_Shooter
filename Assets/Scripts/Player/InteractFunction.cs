@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class InteractFunction : MonoBehaviour
 {
-    Transform head;
-    float maxDistance;
-
-    PlayerHandler ph;
+    public PlayerHandler playerHandler;
+    public float maxDistance;
     
     /*
     // Start is called before the first frame update
@@ -21,14 +19,14 @@ public class InteractFunction : MonoBehaviour
     void Update()
     {
         RaycastHit thingFound;
-        if (Physics.Raycast(head.position, head.forward, out thingFound, maxDistance))
+        if (Physics.Raycast(transform.position, transform.forward, out thingFound, maxDistance))
         {
             Interactable i = thingFound.collider.GetComponent<Interactable>();
             if (i != null)
             {
                 if (Input.GetButtonDown("Interact"))
                 {
-                    i.OnInteract(ph);
+                    i.OnInteract(playerHandler);
                 }
             }
         }

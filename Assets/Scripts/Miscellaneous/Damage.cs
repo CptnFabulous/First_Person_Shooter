@@ -15,22 +15,23 @@ public enum DamageType
 
 public static class Damage
 {
-    public static void ShootProjectile(ProjectileData projectile, float spread, float range, GameObject origin, Faction originFaction, Transform aimOrigin, Transform muzzle, Vector3 direction)
+    public static void ShootProjectile(ProjectileData projectile, int count, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
     {
-        RaycastHit targetFound;
-        Vector3 destination = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
-        if (Physics.Raycast(aimOrigin.position, destination, out targetFound, range, projectile.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+        for (int i = 0; i < count; i++)
         {
-            destination = targetFound.point;
-        }
-        else
-        {
-            //destination = (direction * range) + destination;
-            //destination *= range;
-            destination += direction * range;
-        }
+            RaycastHit targetFound;
+            Vector3 processedDirection = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
+            if (Physics.Raycast(aimOrigin.position, processedDirection, out targetFound, range, projectile.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+            {
+                processedDirection = targetFound.point;
+            }
+            else
+            {
+                processedDirection = aimOrigin.position + processedDirection.normalized * range;
+            }
 
-        Object.Instantiate(projectile.NewProjectile(origin, originFaction), muzzle.position, Quaternion.LookRotation(destination - muzzle.position, Vector3.up));
+            Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, Vector3.up));
+        }
     }
 
     public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)

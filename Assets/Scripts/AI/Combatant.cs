@@ -16,11 +16,11 @@ public class Combatant : AI
         {
             a.c = this;
         }
-        /*
+        
         foreach (MeleeAttack a in meleeAttacks)
         {
             a.c = this;
         }
-        */
+        
     }
 }

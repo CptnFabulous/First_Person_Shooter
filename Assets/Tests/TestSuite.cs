@@ -89,7 +89,7 @@ namespace Tests
         {
             GameObject g = Object.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), Vector3.zero, Quaternion.identity); // Creates a 'gun' to shoot the projectile from
             ProjectileData pd = Resources.Load("PlayerWeapons/M16A3 with M203/M16A3 Bullet") as ProjectileData; // Find ProjectileData ScriptableObject in Resources
-            Damage.ShootProjectile(pd, 3, 50, null, null, g.transform, g.transform, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
+            Damage.ShootProjectile(pd, 1, 3, 50, null, g.transform, g.transform.position, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
 
             yield return new WaitForEndOfFrame(); // Waits until all previous functions have finished
 

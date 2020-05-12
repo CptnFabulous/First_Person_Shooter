@@ -30,7 +30,6 @@ public class AvoidAttack : AIMovementBehaviour
         {
             ai.attackToDodge = null;
             ai.stateMachine.SetBool("mustDodgeAttack", false);
-
         }
     }
 
@@ -41,7 +40,7 @@ public class AvoidAttack : AIMovementBehaviour
 
         for (int i = 0; i < numberOfChecks; i++)
         {
-            Vector3 randomPosition = ai.transform.position + Random.insideUnitSphere * maximumRange; // Samples a random position around the target, outside minimumRange and inside maximumRange.
+            Vector3 randomPosition = ai.transform.position + Random.insideUnitSphere * maximumRange; // Samples a random position around the target, inside maximumRange.
             // Normalising the Random.insideUnitSphere ensures the magnitude (and therefore distance value) is always 1, and the distance is calculated correctly.
 
             NavMeshHit followCheck;

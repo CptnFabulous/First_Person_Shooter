@@ -99,7 +99,7 @@ public class GameStateHandler : MonoBehaviour
     public void WinGame()
     {
         currentState = GameState.Won; // Set gamestate
-        Time.timeScale = 1; // Time moves at normal rate
+        Time.timeScale = 0; // Time moves at normal rate
         Cursor.lockState = CursorLockMode.None; // Unlock cursor
         Cursor.visible = true; // Show cursor
         SwitchMenu(winMenu); // Switch to appropriate menu

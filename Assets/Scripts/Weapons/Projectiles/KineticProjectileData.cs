@@ -10,7 +10,7 @@ public class KineticProjectileData : ProjectileData
     public float knockback;
     public float criticalMultiplier;
 
-    public override GameObject NewProjectile(GameObject origin, Faction originFaction)
+    public override GameObject NewProjectile(Character origin)
     {
         GameObject launchedProjectile = prefab.gameObject;
         KineticProjectile p = launchedProjectile.GetComponent<KineticProjectile>();
@@ -20,7 +20,6 @@ public class KineticProjectileData : ProjectileData
         p.gravityMultiplier = gravityMultiplier;
         p.hitDetection = hitDetection;
         p.origin = origin;
-        p.originFaction = originFaction;
 
         p.damage = damage;
         p.knockback = knockback;

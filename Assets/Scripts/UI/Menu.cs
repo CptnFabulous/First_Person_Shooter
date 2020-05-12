@@ -15,9 +15,16 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void QuitToMenu()
+    {
+
+        Debug.Log("Quitting to menu");
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void QuitGame()
     {
-        print("Quitting game");
+        Debug.Log("Quitting game");
         Application.Quit();
 
         #if UNITY_EDITOR

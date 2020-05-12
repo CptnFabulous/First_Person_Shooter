@@ -43,8 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7831ad94d6bbdc4db18346ba20035a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: 
+  mandatory: 1
   state: 1
+  prerequisites: []
   onCompletion:
     m_PersistentCalls:
       m_Calls: []

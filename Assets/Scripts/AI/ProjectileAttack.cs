@@ -102,10 +102,7 @@ public class ProjectileAttack : NPCAction
                         muzzleFlash.Play();
                         c.audioOutput.PlayOneShot(firingNoise);
 
-                        for (int _p = 0; _p < projectileCount; _p++)
-                        {
-                            Damage.ShootProjectile(projectile, spread, range, c.gameObject, c.c.faction, c.head, projectileOrigin, aimMarker - c.head.position/*c.head.forward*/);
-                        }
+                        Damage.ShootProjectile(projectile, projectileCount, spread, range, c.c, c.head, projectileOrigin.position, aimMarker - c.head.position);
 
                         fireTimer = 0;
                         burstCounter += 1;

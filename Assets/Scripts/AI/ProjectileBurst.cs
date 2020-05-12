@@ -41,7 +41,7 @@ public class ProjectileBurst : NPCAction
     public AudioClip delayNoise;
     public AudioClip firingNoise;
 
-    public void TargetEnemy(GameObject target, GameObject characterAttacking, NavMeshAgent na, float standardMoveSpeed, Faction characterFaction, Transform head, RaycastHit lookingAt, AudioSource audioSource)
+    public void TargetEnemy(GameObject target, Character characterAttacking, NavMeshAgent na, float standardMoveSpeed, Faction characterFaction, Transform head, RaycastHit lookingAt, AudioSource audioSource)
     {
         if (isAttacking == false) // If attack has not been initiated, aim at target to start attacking
         {
@@ -93,10 +93,7 @@ public class ProjectileBurst : NPCAction
                         muzzleFlash.Play();
                         audioSource.PlayOneShot(firingNoise);
 
-                        for (int _p = 0; _p < projectileCount; _p++)
-                        {
-                            Damage.ShootProjectile(projectile, spread, range, characterAttacking, characterFaction, head, projectileOrigin, aimMarker - head.position/*head.forward*/);
-                        }
+                        Damage.ShootProjectile(projectile, projectileCount, spread, range, characterAttacking, head, projectileOrigin.position, aimMarker - head.position);
 
                         fireTimer = 0;
                         burstCounter += 1;
