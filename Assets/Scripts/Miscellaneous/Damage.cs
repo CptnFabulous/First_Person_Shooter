@@ -15,9 +15,11 @@ public enum DamageType
 
 public static class Damage
 {
-    public static void ShootProjectile(ProjectileData projectile, int count, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
+    
+
+    public static void ShootProjectile(ProjectileStats projectile, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
     {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < projectile.projectileCount; i++)
         {
             RaycastHit targetFound;
             Vector3 processedDirection = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.TerrainAPI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,9 @@ using UnityEngine.UI;
 public class HeadsUpDisplay : MonoBehaviour
 {
     [HideInInspector] public PlayerHandler ph;
+
+    public Canvas hudCanvas;
+    public Camera hudCamera;
 
     [Header("General elements")]
     public Color resourceNormalColour;
@@ -25,6 +27,11 @@ public class HeadsUpDisplay : MonoBehaviour
     public float minCameraDistance;
     public float maxCameraDistance;
     public LayerMask terrainDetection = ~0;
+
+    [Header("Interaction")]
+    public RectTransform interactWindow;
+    public Text interactObjectName;
+    public Text interactPrompt;
 
     [Header("Health elements")]
     public GameObject healthDisplay;
@@ -81,6 +88,9 @@ public class HeadsUpDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RectTransform rt = hudCanvas.GetComponent<RectTransform>();
+        Transform playerHead = ph.pc.head.transform;
+
         #region Objectives
         objectiveList.text = ObjectiveList();
         #endregion
@@ -96,6 +106,10 @@ public class HeadsUpDisplay : MonoBehaviour
         }
 
         minimapCamera.transform.localPosition = new Vector3(0, height, 0);
+        #endregion
+
+        #region Interaction
+
         #endregion
 
         #region Health HUD
@@ -114,7 +128,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
         #region Basic reticle and interacting
         RaycastHit lookingAt;
-        if (Physics.Raycast(ph.pc.head.transform.position, transform.forward, out lookingAt, lookRange, lookDetection))
+        if (Physics.Raycast(playerHead.position, transform.forward, out lookingAt, lookRange, lookDetection))
         {
             Character c = null;
             DamageHitbox d = lookingAt.collider.GetComponent<DamageHitbox>();
@@ -157,11 +171,12 @@ public class HeadsUpDisplay : MonoBehaviour
         #region Weapon HUD
         RangedWeapon rw = ph.wh.CurrentWeapon();
         bool activeWeapon = !ph.wh.IsSwitchingWeapon;
-        reticleCentre.gameObject.SetActive(!activeWeapon || (rw.optics == null || rw.optics.disableReticle == false));
-        reticleUp.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
-        reticleDown.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
-        reticleLeft.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
-        reticleRight.gameObject.SetActive(activeWeapon && (rw.optics == null || rw.optics.disableReticle == false));
+        bool noIronsights = rw.optics == null || rw.optics.disableReticle == false;
+        reticleCentre.gameObject.SetActive(!activeWeapon || noIronsights);
+        reticleUp.gameObject.SetActive(activeWeapon && noIronsights);
+        reticleDown.gameObject.SetActive(activeWeapon && noIronsights);
+        reticleLeft.gameObject.SetActive(activeWeapon && noIronsights);
+        reticleRight.gameObject.SetActive(activeWeapon && noIronsights);
         ammoDisplay.gameObject.SetActive(activeWeapon);
         opticsOverlay.gameObject.SetActive(activeWeapon);
         opticsTransition.gameObject.SetActive(activeWeapon);
@@ -173,21 +188,32 @@ public class HeadsUpDisplay : MonoBehaviour
                 ADSTransition(0, null);
             }
 
-            if (rw.optics == null || rw.optics.disableReticle == false)
+            if (noIronsights)
             {
-                float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy + rw.accuracy.projectileSpread);
+                float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy) + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
+                
+                Vector3 reticleOffsetPoint = playerHead.position + Quaternion.AngleAxis(spread, playerHead.up) * playerHead.forward * rw.accuracy.range; // Gets the point where a projectile would travel at its widest spread, for a distance equal to its maximum range
+                //Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.red);
+                //Debug.DrawLine(playerHead.position, r, Color.blue);
+                reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
+                Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
+                float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
 
-                // Figure out how to accurately depict reticle width
+                // Adjust reticleRadius to match the canvas size
+                reticleUp.rectTransform.anchoredPosition = rt.up * reticleRadius;
+                reticleDown.rectTransform.anchoredPosition = rt.up * -reticleRadius;
+                reticleLeft.rectTransform.anchoredPosition = rt.right * -reticleRadius;
+                reticleRight.rectTransform.anchoredPosition = rt.right * reticleRadius;
+                
 
-                Vector3 r = Quaternion.Euler(0, spread, 0) * transform.forward * rw.accuracy.range;
-                Vector3 reticlePosition = ph.pc.playerCamera.WorldToScreenPoint(r);
-                Vector3 screenCentre = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
-
+                /*
                 float rp = spread * Screen.height / ph.pc.fieldOfView;
                 reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
                 reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
                 reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
                 reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
+                */
             }
             
 
@@ -223,6 +249,17 @@ public class HeadsUpDisplay : MonoBehaviour
             }
         }
         #endregion
+    }
+
+    public void PopulateInteractionMenu(Interactable i)
+    {
+        if (interactWindow.gameObject.activeSelf == false)
+        {
+            interactWindow.gameObject.SetActive(true);
+            interactObjectName.text = i.name;
+            interactPrompt.text = i.instruction;
+        }
+        
     }
 
     string AmmoInfo(RangedWeapon rw, int firingModeIndex)

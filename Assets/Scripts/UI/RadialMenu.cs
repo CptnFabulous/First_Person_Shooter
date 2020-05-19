@@ -33,21 +33,20 @@ public class RadialMenu : MonoBehaviour
     Vector3 relativeInputPosition;
 
     #region Variables
-    public int ReturnIndex()
+    public int ReturnIndex() // Gets the radial menu's current index
     {
         return Mathf.Clamp(selectedIndex, 0, slots - 1);
     }
 
-    public bool MenuIsActive()
+    public bool MenuIsActive() // Is the menu active and functioning?
     {
         return gameObject.activeSelf;
     }
 
-    public bool SelectionMade()
+    public bool SelectionMade() // Returns true on the frame that the player exits the radial menu. Used to determine when to switch.
     {
         if (isActive == false && MenuIsActive() == true)
         {
-            //Cursor.lockState = CursorLockMode.Locked;
             print(Cursor.lockState);
             gameObject.SetActive(false);
             return true;

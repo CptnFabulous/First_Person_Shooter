@@ -6,6 +6,8 @@ public class InteractFunction : MonoBehaviour
 {
     public PlayerHandler playerHandler;
     public float maxDistance;
+
+    public HeadsUpDisplay hud;
     
     /*
     // Start is called before the first frame update
@@ -24,6 +26,8 @@ public class InteractFunction : MonoBehaviour
             Interactable i = thingFound.collider.GetComponent<Interactable>();
             if (i != null)
             {
+                hud.PopulateInteractionMenu(i);
+                
                 if (Input.GetButtonDown("Interact"))
                 {
                     i.OnInteract(playerHandler);

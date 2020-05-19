@@ -374,12 +374,64 @@ MonoBehaviour:
   projectileModes:
   - name: Buckshot
     projectile: {fileID: 11400000, guid: e0905052f100bfd41a9564fbca05e7a7, type: 2}
-    projectileCount: 9
+    prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
+      type: 3}
     muzzle: {fileID: 2816232892958514159}
+    projectileCount: 9
+    velocity: 300
+    diameter: 0.1
+    gravityMultiplier: 0.05
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    damage: 4
+    knockback: 5
+    criticalMultiplier: 1.5
+    directHitMultiplier: 0
+    blastRadius: 0
+    explosionTime: 0
+    damageFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    knockbackFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   - name: Slugs
     projectile: {fileID: 11400000, guid: 6ea0a88f89239b043b2f08f4c1233a28, type: 2}
-    projectileCount: 1
+    prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
+      type: 3}
     muzzle: {fileID: 2816232892958514159}
+    projectileCount: 1
+    velocity: 300
+    diameter: 0.25
+    gravityMultiplier: 0.1
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    damage: 20
+    knockback: 20
+    criticalMultiplier: 3
+    directHitMultiplier: 0
+    blastRadius: 0
+    explosionTime: 0
+    damageFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    knockbackFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   fireControls:
     name: 
     roundsPerMinute: 0
@@ -398,8 +450,33 @@ MonoBehaviour:
   projectile:
     name: 
     projectile: {fileID: 0}
-    projectileCount: 0
+    prefab: {fileID: 0}
     muzzle: {fileID: 0}
+    projectileCount: 0
+    velocity: 0
+    diameter: 0
+    gravityMultiplier: 0
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    damage: 0
+    knockback: 0
+    criticalMultiplier: 0
+    directHitMultiplier: 0
+    blastRadius: 0
+    explosionTime: 0
+    damageFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    knockbackFalloff:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   optics:
     name: 
     magnification: 0

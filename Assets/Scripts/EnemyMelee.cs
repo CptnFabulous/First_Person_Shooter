@@ -21,7 +21,7 @@ public class EnemyMelee : NPC
     RaycastHit lookingAt;
 
     [Header("Attacks")]
-    public MeleeAttack attack;
+    public MeleeAttackOld attack;
 
     // Update is called once per frame
     void Update()

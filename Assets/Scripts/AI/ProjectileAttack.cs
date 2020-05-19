@@ -13,9 +13,8 @@ public class ProjectileAttack : NPCAction
     float previousMoveSpeed;
 
     [Header("Projectile")]
-    public ProjectileData projectile;
+    public ProjectileStats projectileStats;
     public Transform projectileOrigin;
-    public int projectileCount = 1;
     public int burstAmount = 1;
 
     [Header("Accuracy")]
@@ -50,7 +49,7 @@ public class ProjectileAttack : NPCAction
         {
             cooldownTimer += Time.deltaTime;
 
-            if (AI.LineOfSight(c.head.position, c.target.transform, projectile.hitDetection))
+            if (AI.LineOfSight(c.head.position, c.target.transform, projectileStats.hitDetection))
             {
                 if (Vector3.Distance(aimMarker, c.target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
@@ -63,7 +62,7 @@ public class ProjectileAttack : NPCAction
 
                     previousMoveSpeed = c.na.speed; // Stores the move speed of the agent prior to executing the attack
                     c.na.speed = telegraphMoveSpeed; // The agent's speed is adjusted while it telegraphs.
-                    AttackMessage m = AttackMessage.Ranged(c.c, c.head.position, c.target.transform.position - c.transform.position, range, projectile.diameter, spread, projectile.velocity, projectile.hitDetection);
+                    AttackMessage m = AttackMessage.Ranged(c.c, c.head.position, c.target.transform.position - c.transform.position, range, projectileStats.diameter, spread, projectileStats.velocity, projectileStats.hitDetection);
                     EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
                     //telegraphNoise.Play();
                     #endregion
@@ -102,7 +101,8 @@ public class ProjectileAttack : NPCAction
                         muzzleFlash.Play();
                         c.audioOutput.PlayOneShot(firingNoise);
 
-                        Damage.ShootProjectile(projectile, projectileCount, spread, range, c.c, c.head, projectileOrigin.position, aimMarker - c.head.position);
+                        //Damage.ShootProjectile(projectile, projectileCount, spread, range, c.c, c.head, projectileOrigin.position, aimMarker - c.head.position);
+                        Damage.ShootProjectile(projectileStats, spread, range, c.c, c.head, projectileOrigin.position, aimMarker - c.head.position);
 
                         fireTimer = 0;
                         burstCounter += 1;

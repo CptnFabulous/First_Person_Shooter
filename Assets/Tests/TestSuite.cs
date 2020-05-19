@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.AI;
+using SyntaxTree.VisualStudio.Unity.Bridge;
 
 namespace Tests
 {
@@ -88,13 +89,15 @@ namespace Tests
         public IEnumerator ProjectileShoots()
         {
             GameObject g = Object.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), Vector3.zero, Quaternion.identity); // Creates a 'gun' to shoot the projectile from
-            ProjectileData pd = Resources.Load("PlayerWeapons/M16A3 with M203/M16A3 Bullet") as ProjectileData; // Find ProjectileData ScriptableObject in Resources
-            Damage.ShootProjectile(pd, 1, 3, 50, null, g.transform, g.transform.position, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
+            Projectile prefab = Resources.Load("Prefabs/Projectiles/Bullet") as Projectile;
+            ProjectileStats ps = new ProjectileStats();
+            ps.prefab = prefab;
+            ps.velocity = 5;
 
+
+            Damage.ShootProjectile(ps, 3, 50, null, g.transform, g.transform.position, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
             yield return new WaitForEndOfFrame(); // Waits until all previous functions have finished
-
             Projectile p = Object.FindObjectOfType<Projectile>(); // Searches for a projectile gameObject in the scene
-
             Assert.IsNotNull(p.gameObject); // Asserts if projectile was found
         }
     }

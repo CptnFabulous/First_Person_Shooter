@@ -752,6 +752,7 @@ MonoBehaviour:
     max: 100
     current: 100
     critical: 20
+  hitboxes: []
 --- !u!114 &9178911240911086018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,6 +795,37 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   attack:
+    name: Attack
+    projectileStats:
+      name: Bullet
+      prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
+        type: 3}
+      muzzle: {fileID: 2268550521520513005}
+      projectileCount: 1
+      velocity: 500
+      diameter: 0.1
+      gravityMultiplier: 0
+      hitDetection:
+        serializedVersion: 2
+        m_Bits: 4294967295
+      damage: 8
+      knockback: 0.01
+      criticalMultiplier: 1
+      directHitMultiplier: 0
+      blastRadius: 0
+      explosionTime: 0
+      damageFalloff:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      knockbackFalloff:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
     projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
     projectileOrigin: {fileID: 2268550521520513005}
     projectileCount: 1

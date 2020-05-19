@@ -79,9 +79,63 @@ public class ProjectileStats
 #if UNITY_EDITOR
     public string name;
 #endif
-    public ProjectileData projectile;
-    public int projectileCount;
+    [Header("Generic stats")]
+    public Projectile prefab;
     public Transform muzzle;
+    public int projectileCount;
+    public float velocity;
+    public float diameter;
+    public float gravityMultiplier;
+    public LayerMask hitDetection = ~0;
+
+    [Header("General stats")]
+    public int damage;
+    public float knockback;
+
+    [Header("Kinetic projectile")]
+    public float criticalMultiplier;
+
+    [Header("Explosion stats")]
+    public float directHitMultiplier;
+    public float blastRadius;
+    public float explosionTime;
+    public AnimationCurve damageFalloff;
+    public AnimationCurve knockbackFalloff;
+
+
+    public GameObject NewProjectile(Character origin)
+    {
+        GameObject launchedProjectile = prefab.gameObject;
+
+        Projectile p = launchedProjectile.GetComponent<Projectile>();
+        p.velocity = velocity;
+        p.diameter = diameter; 
+        p.gravityMultiplier = gravityMultiplier;
+        p.hitDetection = hitDetection;
+        p.origin = origin;
+
+        KineticProjectile kp = launchedProjectile.GetComponent<KineticProjectile>();
+        if (kp != null)
+        {
+            kp.damage = damage;
+            kp.knockback = knockback;
+            kp.criticalMultiplier = criticalMultiplier;
+        }
+
+        ExplosiveProjectile ep = launchedProjectile.GetComponent<ExplosiveProjectile>();
+        if (ep != null)
+        {
+            ep.damage = damage;
+            ep.directHitMultiplier = directHitMultiplier;
+            ep.blastRadius = blastRadius;
+            ep.explosionTime = explosionTime;
+            ep.knockback = knockback;
+            ep.damageFalloff = damageFalloff;
+            ep.knockbackFalloff = knockbackFalloff;
+        }
+
+        return launchedProjectile;
+    }
 }
 #endregion
 
@@ -184,9 +238,6 @@ public class RangedWeapon : MonoBehaviour
 
     float attackMessageLimitTimer = float.MaxValue;
     float attackMessageLimitDelay = 1;
-
-
-
 
     private void Reset()
     {
@@ -402,7 +453,7 @@ public class RangedWeapon : MonoBehaviour
                 #region Send attack message
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
-                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.projectile.diameter, playerHolding.standingAccuracy + accuracy.projectileSpread, projectile.projectile.velocity, projectile.projectile.hitDetection);
+                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.diameter, playerHolding.standingAccuracy + accuracy.projectileSpread, projectile.velocity, projectile.hitDetection);
                     EventObserver.TransmitAttack(am);
                     attackMessageLimitTimer = 0;
                 }
@@ -410,7 +461,8 @@ public class RangedWeapon : MonoBehaviour
 
                 #region Shoot projectiles
                 // Shoots an amount of projectiles based on the projectileCount variable.
-                Damage.ShootProjectile(projectile.projectile, projectile.projectileCount, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
+                //Damage.ShootProjectile(projectile.projectile, projectile.projectileCount, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
+                Damage.ShootProjectile(projectile, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
                 #endregion
             }
             else if (!Input.GetButton("Fire"))
@@ -446,26 +498,6 @@ public class RangedWeapon : MonoBehaviour
     {
         MoveWeaponHandler();
     }
-
-    /*
-    public static RaycastHit[] Conecast(Vector3 origin, Vector3 direction, float angle, float range, LayerMask layerMask) // UNTESTED
-    {
-        Vector3 angleVector = (Quaternion.Euler(angle, 0, 0) * Vector3.forward) * range;
-        Vector3 rangeVector = Vector3.forward * range;
-        float maxConeWidth = rangeVector.y - angleVector.y;
-        RaycastHit[] objectsInCone = Physics.SphereCastAll(origin, maxConeWidth, direction, range, layerMask);
-        List<RaycastHit> hits = new List<RaycastHit>();
-        foreach (RaycastHit r in objectsInCone)
-        {
-            if (Vector3.Angle(origin + direction, r.transform.position) < angle)
-            {
-                hits.Add(r);
-            }
-        }
-
-        return null;
-    }
-    */
 
     #region Weapon functions
 

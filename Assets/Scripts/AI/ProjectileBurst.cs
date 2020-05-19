@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class ProjectileBurst : NPCAction
 {
     [Header("Projectile")]
-    public ProjectileData projectile;
+    public ProjectileStats projectileStats;
     public Transform projectileOrigin;
     public int projectileCount = 1;
     public int burstAmount = 1;
@@ -49,7 +49,7 @@ public class ProjectileBurst : NPCAction
 
             cooldownTimer += Time.deltaTime;
 
-            if (Physics.Raycast(head.position, target.transform.position - head.position, out lookingAt, range, projectile.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
+            if (Physics.Raycast(head.position, target.transform.position - head.position, out lookingAt, range, projectileStats.hitDetection) && lookingAt.collider.gameObject == target) // Checks for line of sight between enemy and object
             {
                 if (Vector3.Distance(aimMarker, target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {
@@ -93,7 +93,7 @@ public class ProjectileBurst : NPCAction
                         muzzleFlash.Play();
                         audioSource.PlayOneShot(firingNoise);
 
-                        Damage.ShootProjectile(projectile, projectileCount, spread, range, characterAttacking, head, projectileOrigin.position, aimMarker - head.position);
+                        Damage.ShootProjectile(projectileStats, spread, range, characterAttacking, head, projectileOrigin.position, aimMarker - head.position);
 
                         fireTimer = 0;
                         burstCounter += 1;

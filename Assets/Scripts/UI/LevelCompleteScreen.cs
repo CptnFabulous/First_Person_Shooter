@@ -23,9 +23,6 @@ public class LevelCompleteScreen : MonoBehaviour
     */
     public void GenerateScreen(ObjectiveHandler oh)
     {
-        
-
-
         #region Update optional objective list
         string message = "Optional objectives completed:";
         int remaining = 0;
