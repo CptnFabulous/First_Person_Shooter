@@ -15,22 +15,21 @@ public class NPCAttack : NPCAction
 
     [Header("Hit detection")]
     public LayerMask hitDetection = ~0;
-    public Vector2 attackAngles;
+    //public Vector2 attackAngles;
 
     [Header("Aiming")]
-    public Transform aimOrigin;
     public float range = 50;
     public float aimSpeed = 50;
     public float telegraphAimSpeed = 10;
     public float targetThreshold = 0.2f;
-    Vector3 aimMarker;
+    [HideInInspector] public Vector3 aimMarker;
     [HideInInspector] public bool isAttacking;
 
     [Header("Timers")]
     public float attacksPerMinute = 100;
     public float delay = 0.5f;
     public float cooldown = 0.5f;
-    public float attackTimer = float.MaxValue;
+    float attackTimer = float.MaxValue;
     float delayTimer;
     float cooldownTimer = float.MaxValue;
     int attackCounter;
@@ -42,9 +41,6 @@ public class NPCAttack : NPCAction
     public UnityEvent onAttack;
     public DamageType damageType;
     public int attackCount = 1;
-
-
-
 
     public void Update()
     {
@@ -127,6 +123,8 @@ public class NPCAttack : NPCAction
     public void EndAttack()
     {
         isAttacking = false;
+        attackCounter = 0;
         cooldownTimer = 0;
+        c.na.speed = previousMoveSpeed;
     }
 }

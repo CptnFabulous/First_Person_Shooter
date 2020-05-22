@@ -36,6 +36,11 @@ public static class Damage
         }
     }
 
+    public static void MeleeAttack()
+    {
+
+    }
+
     public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
