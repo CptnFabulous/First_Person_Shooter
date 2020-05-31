@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 [RequireComponent(typeof (PlayerHandler))]
@@ -190,11 +191,16 @@ public class HeadsUpDisplay : MonoBehaviour
 
             if (noIronsights)
             {
+                #region Calculate reticle width
                 float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy) + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
-                
-                Vector3 reticleOffsetPoint = playerHead.position + Quaternion.AngleAxis(spread, playerHead.up) * playerHead.forward * rw.accuracy.range; // Gets the point where a projectile would travel at its widest spread, for a distance equal to its maximum range
-                //Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.red);
-                //Debug.DrawLine(playerHead.position, r, Color.blue);
+
+
+                Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
+                reticleOffsetPoint = playerHead.position + reticleOffsetPoint * rw.accuracy.range;
+
+                Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
+                Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * rw.accuracy.range, Color.red);
+
                 reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
                 Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
@@ -205,17 +211,9 @@ public class HeadsUpDisplay : MonoBehaviour
                 reticleDown.rectTransform.anchoredPosition = rt.up * -reticleRadius;
                 reticleLeft.rectTransform.anchoredPosition = rt.right * -reticleRadius;
                 reticleRight.rectTransform.anchoredPosition = rt.right * reticleRadius;
-                
-
-                /*
-                float rp = spread * Screen.height / ph.pc.fieldOfView;
-                reticleUp.rectTransform.anchoredPosition = Vector3.up * rp;
-                reticleDown.rectTransform.anchoredPosition = Vector3.down * rp;
-                reticleLeft.rectTransform.anchoredPosition = Vector3.left * rp;
-                reticleRight.rectTransform.anchoredPosition = Vector3.right * rp;
-                */
+                #endregion
             }
-            
+
 
             firingMode.text = rw.firingModes[rw.firingModeIndex].name;
             firingModeIcon.sprite = rw.firingModes[rw.firingModeIndex].hudIcon;

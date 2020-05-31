@@ -2025,6 +2025,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 684047748}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &704157521 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7394104396082026298, guid: 35eecb15e9bff8a43a236341dcd99101,
+    type: 3}
+  m_PrefabInstance: {fileID: 7394104396599027180}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &704157522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704157521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d4c7a03f8a27e46982bb1732faa2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angle: 5
+  range: 20
+  sphereCastDiameter: 0.1
+  hitDetection:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &713671490
 GameObject:
   m_ObjectHideFlags: 0
@@ -6875,7 +6899,6 @@ MonoBehaviour:
     reloadTime: 0
   projectileModes:
   - name: Stream
-    projectile: {fileID: 11400000, guid: e0905052f100bfd41a9564fbca05e7a7, type: 2}
     prefab: {fileID: 0}
     muzzle: {fileID: 5252758750660768318}
     projectileCount: 1
@@ -6904,7 +6927,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - name: Torch
-    projectile: {fileID: 11400000, guid: 6ea0a88f89239b043b2f08f4c1233a28, type: 2}
     prefab: {fileID: 0}
     muzzle: {fileID: 5252758750660768318}
     projectileCount: 4
@@ -6949,7 +6971,6 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   projectile:
     name: 
-    projectile: {fileID: 0}
     prefab: {fileID: 0}
     muzzle: {fileID: 0}
     projectileCount: 0

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class FieldOfViewTest : MonoBehaviour
 {
+    public float angle = 0.75f;
+    public float range = 300;
+    public float sphereCastDiameter = 0.1f;
+    public LayerMask hitDetection = ~0;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,45 +17,41 @@ public class FieldOfViewTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<GameObject> o = FieldOfView(transform, 100, 60, 60);
-        string list = "FOV: ";
-        foreach(GameObject obj in o)
-        {
-            list += obj.name + ", ";
-        }
-        print(list);
-    }
+        //RaycastHit[] hits = AI.RaycastVisionCone(transform.position, transform.forward, angle, range, sphereCastDiameter, hitDetection);
+        RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
 
-    public static List<GameObject> FieldOfView(Transform viewOrigin, float viewRange, float horizontalFOV, float verticalFOV)
+    }
+    /*
+    private void OnDrawGizmos() // Lecks' stuff
     {
-        List<GameObject> objectsInView = new List<GameObject>();
-        Collider[] objects = Physics.OverlapSphere(viewOrigin.position, viewRange); // Checks for all objects in range
-        foreach (Collider c in objects)
+        Vector3 origin = transform.position;
+        float range = 50;
+        var direction = transform.forward;
+        int amountOfRaycastRings = 20;
+        float angleIncrement = 360f / amountOfRaycastRings;
+        for (int i = 0; i < amountOfRaycastRings; i++)
         {
-            RaycastHit lineOfSight;
-            if (Physics.Raycast(viewOrigin.position, c.transform.position - viewOrigin.position, out lineOfSight, viewRange)) // Launch a raycast to check if the object is actually in the NPC's line of sight.
-            {
-                if (lineOfSight.collider == c) // If raycast hits object being checked for line of sight.
-                {
-                    /*
-                    Vector3 relativePosition_X = new Vector3(c.transform.position.x, viewOrigin.position.y, c.transform.position.z) - viewOrigin.position;
-                    Vector3 relativePosition_Y = new Vector3(viewOrigin.position.x, c.transform.position.y, c.transform.position.z) - viewOrigin.position;
-                    */
-
-                    // Obtains the horizontal and vertical relative position data for the raycast hit point relative to the line of sight's origin.
-                    Vector3 relativePosition_X = new Vector3(lineOfSight.point.x, viewOrigin.position.y, lineOfSight.point.z) - viewOrigin.position;
-                    Vector3 relativePosition_Y = new Vector3(viewOrigin.position.x, lineOfSight.point.y, lineOfSight.point.z) - viewOrigin.position;
-
-                    Vector2 visionAngle = new Vector2(Vector3.Angle(relativePosition_X, viewOrigin.forward), Vector3.Angle(relativePosition_Y, viewOrigin.forward));
-                    if (visionAngle.x < horizontalFOV && visionAngle.y < verticalFOV)
-                    {
-                        objectsInView.Add(c.gameObject); // Add c.gameObject to viewedObjects array, I need to figure out how to do this!
-
-                    }
-                }
-            }
+            Vector3 raycastDirection = Quaternion.AngleAxis(angleIncrement * i, transform.forward) * Quaternion.AngleAxis(5, transform.right) * direction;
+            Color c = Color.white;
+            float cv = (c.r / amountOfRaycastRings) * i;
+            c = new Color(cv, cv, cv);
+            Gizmos.color = c;
+            Gizmos.DrawLine(origin, origin + raycastDirection * range);
         }
 
-        return objectsInView;
+        //Vector3 rd = Quaternion.AngleAxis(0, 90, 180 or 270, tr.forward) * Quaternion.AngleAxis(spread, tr.right) * tr.forward;
+
+        
+        Transform tr = transform;
+        float spread = 10;
+        Vector3 rd = Quaternion.AngleAxis(0, tr.forward) * Quaternion.AngleAxis(spread, tr.right) * tr.forward;
+
+        Vector3 reticleOffsetPoint = rd * range;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(tr.position, tr.position + reticleOffsetPoint);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(tr.position, tr.position + tr.forward * range);
+              
     }
+    */
 }

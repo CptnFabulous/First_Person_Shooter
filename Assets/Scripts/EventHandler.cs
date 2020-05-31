@@ -41,6 +41,7 @@ public class AttackMessage
     public float effectRadius; // The maximum distance the area of effect will emanate
     // Melee
     public float delay; // Duration of telegraph before the melee attack deals damage
+    public Vector2 attackAngles;
 
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
     {
@@ -73,36 +74,82 @@ public class AttackMessage
     }
     */
 
+    
 
-    public static RaycastHit[] ConeCastAll(Vector3 origin, float maxRadius, Vector3 direction, float maxDistance, float coneAngle)
+
+    public bool AtRisk(Transform NPC)
     {
-        // UPDATE THIS TO LAUNCH TWO RAYCASTS if the angle is greater than 90*
-        
-        RaycastHit[] sphereCastHits = Physics.SphereCastAll(origin - new Vector3(0, 0, maxRadius), maxRadius, direction, maxDistance);
-        List<RaycastHit> coneCastHitList = new List<RaycastHit>();
-
-        if (sphereCastHits.Length > 0)
+        switch (type)
         {
-            for (int i = 0; i < sphereCastHits.Length; i++)
-            {
-                //sphereCastHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f);
-                Vector3 hitPoint = sphereCastHits[i].point;
-                Vector3 directionToHit = hitPoint - origin;
-                float angleToHit = Vector3.Angle(direction, directionToHit);
+            case AttackType.Ranged:
 
-                if (angleToHit < coneAngle)
+                // Checks if the position is inside the cone of fire
+
+                foreach (Transform t in NPC.GetComponentsInChildren<Transform>())
                 {
-                    coneCastHitList.Add(sphereCastHits[i]);
+                    if (Vector3.Distance(origin, t.position) <= maxRange) // Check distance
+                    {
+                        if (Vector3.Angle(t.position - origin, direction) < coneAngle) // Check angle
+                        {
+                            
+                            
+                            
+                            // Launches a raycast between the cover position and the attacker
+                            RaycastHit lineOfSightCheck;
+                            if (Physics.Raycast(origin, t.position - origin, out lineOfSightCheck, Vector3.Distance(origin, t.position) + 0.01f, hitDetection))
+                            {
+                                Transform tr = lineOfSightCheck.collider.transform; // Gets transform of object
+
+                                DamageHitbox dh = tr.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+                                if (dh != null)
+                                {
+                                    tr = dh.GetRootObject().transform;
+                                }
+
+                                if (tr == NPC)
+                                {
+                                    return true;
+                                }
+                            }
+
+
+
+
+
+
+
+
+                        }
+                    }
+                    
+                    
+                    
+                    
+                    // Check line of sight
                 }
-            }
+                
+                break;
+            case AttackType.Melee:
+
+                // Checks if the position is inside the angle and range of the melee attack
+
+                break;
+            case AttackType.AreaOfEffect:
+
+                // Checks if the position is inside the blast radius
+
+                break;
+            case AttackType.ExplosiveRanged:
+
+                // Checks simultaneously for the cone of fire and blast radius
+
+                break;
+            default:
+
+                break;
         }
-
-        RaycastHit[] coneCastHits = new RaycastHit[coneCastHitList.Count];
-        coneCastHits = coneCastHitList.ToArray();
-
-        return coneCastHits;
+        return false;
     }
-
 
     public bool AtRisk(Collider[] hitboxes)
     {
@@ -110,6 +157,11 @@ public class AttackMessage
         {
             case AttackType.Ranged:
 
+                Collider[] colliders = Physics.OverlapSphere(origin, maxRange);
+
+                // Check 
+
+                /*
                 RaycastHit[] fieldOfView = ConeCastAll(origin, maxRange, direction, maxRange, coneAngle);
                 foreach (RaycastHit rh in fieldOfView) // Checks raycast hits against specified colliders in case one of them was hit
                 {
@@ -128,7 +180,7 @@ public class AttackMessage
                         }
                     }
                 }
-
+                */
                 break;
             case AttackType.Melee:
 

@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ph: {fileID: 0}
+  playerHead: {fileID: 7394104396082026299}
   hudCanvas: {fileID: 1662903634670720288}
   hudCamera: {fileID: 5041807536050033920}
   resourceNormalColour: {r: 1, g: 1, b: 1, a: 1}

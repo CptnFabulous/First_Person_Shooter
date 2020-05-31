@@ -339,7 +339,6 @@ public class RangedWeapon : MonoBehaviour
         // If the player is not currently switching weapon or firing mode
         // If the player's weapon selector is not active
 
-
         attackMessageLimitTimer += Time.deltaTime;
 
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
@@ -460,8 +459,6 @@ public class RangedWeapon : MonoBehaviour
                 #endregion
 
                 #region Shoot projectiles
-                // Shoots an amount of projectiles based on the projectileCount variable.
-                //Damage.ShootProjectile(projectile.projectile, projectile.projectileCount, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
                 Damage.ShootProjectile(projectile, accuracy.projectileSpread, accuracy.range, playerHolding.ph, transform, projectile.muzzle.position, aimDirection);
                 #endregion
             }
