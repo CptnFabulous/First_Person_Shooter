@@ -6,4 +6,5 @@ public class Entity : MonoBehaviour
 {
     public string properName;
     public string description;
+    public bool isUnique;
 }

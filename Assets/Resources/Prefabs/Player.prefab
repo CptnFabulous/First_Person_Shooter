@@ -551,8 +551,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   properName: Player
   description: It's you!
-  faction: {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}
   isUnique: 1
+  faction: {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}
   ph: {fileID: 0}
   pc: {fileID: 0}
   wh: {fileID: 0}
@@ -575,8 +575,8 @@ MonoBehaviour:
   head: {fileID: 7394104396082026298}
   playerCamera: {fileID: 7394104396849714844}
   fieldOfView: 60
-  sensitivityX: 60
-  sensitivityY: 60
+  sensitivityX: 40
+  sensitivityY: 40
   minLookAngle: -90
   maxLookAngle: 90
   movementSpeed: 10
@@ -604,7 +604,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ph: {fileID: 0}
-  playerHead: {fileID: 7394104396082026299}
   hudCanvas: {fileID: 1662903634670720288}
   hudCamera: {fileID: 5041807536050033920}
   resourceNormalColour: {r: 1, g: 1, b: 1, a: 1}
@@ -699,9 +698,9 @@ MonoBehaviour:
     current: 6
     critical: 4
   - refName: Rifle
-    max: 60
-    current: 60
-    critical: 15
+    max: 120
+    current: 120
+    critical: 30
   - refName: Grenade
     max: 8
     current: 8

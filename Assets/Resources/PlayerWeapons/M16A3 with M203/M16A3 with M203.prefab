@@ -158,7 +158,7 @@ MonoBehaviour:
       m_Bits: 4294967295
   recoilModes:
   - name: M16A3
-    recoil: 3
+    recoil: 1
     recoilApplyRate: 12
     recoilRecovery: 10
   - name: M203
@@ -201,7 +201,6 @@ MonoBehaviour:
     reloadTime: 1.2
   projectileModes:
   - name: Standard bullets
-    projectile: {fileID: 11400000, guid: e7e39404950a0474b9a22a26a906daf8, type: 2}
     prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
       type: 3}
     muzzle: {fileID: 7790646451592390254}
@@ -212,9 +211,9 @@ MonoBehaviour:
     hitDetection:
       serializedVersion: 2
       m_Bits: 4294967295
-    damage: 10
+    damage: 8
     knockback: 5
-    criticalMultiplier: 3
+    criticalMultiplier: 2
     directHitMultiplier: 0
     blastRadius: 0
     explosionTime: 0
@@ -231,7 +230,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - name: Grenades
-    projectile: {fileID: 11400000, guid: cd94dd650fc06dd439275792b2371884, type: 2}
     prefab: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
       type: 3}
     muzzle: {fileID: 7790646450466463833}
@@ -313,7 +311,6 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   projectile:
     name: 
-    projectile: {fileID: 0}
     prefab: {fileID: 0}
     muzzle: {fileID: 0}
     projectileCount: 0

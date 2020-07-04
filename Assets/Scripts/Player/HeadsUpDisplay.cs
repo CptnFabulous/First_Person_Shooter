@@ -206,6 +206,11 @@ public class HeadsUpDisplay : MonoBehaviour
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
                 float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
 
+
+                //reticleOffsetPoint = hudCamera.WorldToViewportPoint(reticleOffsetPoint);
+                //Vector2 canvasOffset = new Vector2(reticleOffsetPoint.x * hudCanvas.pixelRect.width, reticleOffsetPoint.y * hudCanvas.pixelRect.height);
+                //float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
+
                 // Adjust reticleRadius to match the canvas size
                 reticleUp.rectTransform.anchoredPosition = rt.up * reticleRadius;
                 reticleDown.rectTransform.anchoredPosition = rt.up * -reticleRadius;

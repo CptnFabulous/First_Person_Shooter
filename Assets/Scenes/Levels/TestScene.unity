@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8157,8 +8157,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   properName: Melee Enemy
   description: A placeholder enemy with a melee attack
-  faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
   isUnique: 0
+  faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
 --- !u!114 &7617734367596558587
 MonoBehaviour:
   m_ObjectHideFlags: 0

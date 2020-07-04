@@ -5,7 +5,6 @@ using UnityEngine;
 public class Character : Entity
 {
     public Faction faction;
-    public bool isUnique;
 
     public static Character FromHit(GameObject g)
     {

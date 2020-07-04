@@ -108,28 +108,6 @@ public class AI : MonoBehaviour//, IEventObserver
                 target = null;
             }
         }
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
         stateMachine.SetBool("targetAcquired", target != null);
 
