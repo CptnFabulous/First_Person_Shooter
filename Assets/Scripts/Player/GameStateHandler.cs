@@ -34,6 +34,9 @@ public class GameStateHandler : MonoBehaviour
     void Start()
     {
         //ChangeGameState(GameState.Active);
+        
+        
+        
         ResumeGame();
     }
 

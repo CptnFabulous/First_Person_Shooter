@@ -19,7 +19,9 @@ public class ObjectiveHandler : MonoBehaviour
         // Add important functions to eventobserver
         eo = GetComponent<EventObserver>();
         eo.OnKill += CheckKillObjectives;
-        
+
+
+        //CompleteLevel();
     }
 
     // Start is called before the first frame update
@@ -50,7 +52,7 @@ public class ObjectiveHandler : MonoBehaviour
         bool allObjectivesCompleted = true;
         foreach (PlayerObjective o in objectives)
         {
-            if (o.mandatory == true && o.state != ObjectiveState.Completed)
+            if (o.mandatory == true && (o.state != ObjectiveState.Completed && o.state != ObjectiveState.Disabled))
             {
                 allObjectivesCompleted = false;
             }
@@ -148,15 +150,20 @@ public class ObjectiveHandler : MonoBehaviour
     void CompleteLevel()
     {
         levelCompleted = true;
-        Time.timeScale = 0;
          
 
         PlayerHandler[] players = FindObjectsOfType<PlayerHandler>();
         foreach (PlayerHandler ph in players)
         {
+            print("Player found");
+            print(ph.gsh.CurrentState());
             ph.gsh.WinGame();
         }
         screen.gameObject.SetActive(true);
         screen.GenerateScreen(this);
+
+        print("vatican karate gorillas");
+        Time.timeScale = 0;
+        print(Time.timeScale);
     }
 }
