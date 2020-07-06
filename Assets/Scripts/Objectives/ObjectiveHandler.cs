@@ -28,6 +28,9 @@ public class ObjectiveHandler : MonoBehaviour
     void Start()
     {
         objectives = GetComponentsInChildren<PlayerObjective>();
+
+
+
     }
 
     // Update is called once per frame
@@ -102,8 +105,8 @@ public class ObjectiveHandler : MonoBehaviour
     }
     */
 
-    /*
-    public void ReceiveKill(KillMessage km)
+    
+    public string KillFeedMessage(KillMessage km)
     {
         string deathMessage = km.victim.name + " was ";
         switch (km.causeOfDeath)
@@ -133,16 +136,17 @@ public class ObjectiveHandler : MonoBehaviour
                 deathMessage += "killed";
                 break;
         }
-        deathMessage += " by " + km.attacker.name + "!";
-        print(deathMessage);
 
-        if (objectiveHandler != null)
+        if (km.attacker != null)
         {
-            objectiveHandler.CheckKillObjectives(km);
+            deathMessage += " by " + km.attacker.name;
         }
+        deathMessage += "!";
+
+        return deathMessage;
 
     }
-    */
+    
 
 
 
@@ -150,8 +154,15 @@ public class ObjectiveHandler : MonoBehaviour
     void CompleteLevel()
     {
         levelCompleted = true;
-         
 
+        // For some reason, finding the GameStateHandler from the PlayerHandler does not work, but finding the GameStateHandler directly does.
+        GameStateHandler[] players = FindObjectsOfType<GameStateHandler>();
+        foreach (GameStateHandler gsh in players)
+        {
+            gsh.WinGame();
+        }
+
+        /*
         PlayerHandler[] players = FindObjectsOfType<PlayerHandler>();
         foreach (PlayerHandler ph in players)
         {
@@ -159,11 +170,8 @@ public class ObjectiveHandler : MonoBehaviour
             print(ph.gsh.CurrentState());
             ph.gsh.WinGame();
         }
+        */
         screen.gameObject.SetActive(true);
         screen.GenerateScreen(this);
-
-        print("vatican karate gorillas");
-        Time.timeScale = 0;
-        print(Time.timeScale);
     }
 }

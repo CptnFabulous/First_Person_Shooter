@@ -137,6 +137,20 @@ public class ProjectileStats
         return launchedProjectile;
     }
 }
+
+public class MiscGunStats
+{
+    [Header("Cosmetics")]
+    public Sprite hudIcon;
+    public Transform heldPosition;
+    public AudioClip firingNoise;
+    public MuzzleFlashEffect muzzleFlash;
+    public float muzzleFlashRelativeDuration;
+    public ParticleSystem shellEjection;
+
+    [Header("Other")]
+    public float switchSpeed;
+}
 #endregion
 
 [System.Serializable]
@@ -151,6 +165,7 @@ public class FiringMode
     public int opticsMode;
     public int ammunitionMode;
     public int magazineMode;
+    public int miscStatsMode;
 
     [Header("Other")]
     public float switchSpeed;
@@ -183,6 +198,8 @@ public class RangedWeapon : MonoBehaviour
     public MagazineStats[] magazineModes;
     [Header("Projectiles")]
     public ProjectileStats[] projectileModes;
+    [Header("Miscellaneous")]
+    public MiscGunStats[] miscGunStatModes;
 
     [HideInInspector] public FireControlStats fireControls;
 
@@ -213,14 +230,14 @@ public class RangedWeapon : MonoBehaviour
     [Header("Firing modes")]
     public FiringMode[] firingModes;
 
+    #region Universal variables (variables that can be used multiple times for different firing modes)
     [Header("Universal variables")]
     public float switchSpeed;
     public GameObject weaponModel;
     public AudioSource weaponSoundSource;
     public Transform holsterPosition;
     public int firingModeIndex;
-
-    #region Universal variables (variables that can be used multiple times for different firing modes)
+    
     // Switching modes
     [HideInInspector] public bool isSwitchingWeapon;
     [HideInInspector] public bool isSwitchingFireMode;
@@ -232,9 +249,6 @@ public class RangedWeapon : MonoBehaviour
     float moveWeaponTime;
     float moveWeaponTimer;
     #endregion
-
-
-
 
     float attackMessageLimitTimer = float.MaxValue;
     float attackMessageLimitDelay = 1;
@@ -264,6 +278,11 @@ public class RangedWeapon : MonoBehaviour
         if (firingModes.Length <= 0)
         {
             firingModes = new FiringMode[1];
+        }
+
+        if (miscGunStatModes.Length <= 0)
+        {
+            miscGunStatModes = new MiscGunStats[1];
         }
 
         foreach (FiringMode fm in firingModes)

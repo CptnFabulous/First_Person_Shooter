@@ -104,7 +104,7 @@ public class RadialMenu : MonoBehaviour
 
                 float selectAngle = -Vector3.SignedAngle(transform.up, relativeInputPosition, transform.forward);
 
-                cursorAxis.rotation = Quaternion.Euler(0, 0, -selectAngle);
+                cursorAxis.localRotation = Quaternion.Euler(0, 0, -selectAngle);
 
                 selectAngle -= rotationOffset; // Angle is changed based on rotationOffset to account for the changed positions of the icons based on rotationOffset
 
@@ -127,11 +127,11 @@ public class RadialMenu : MonoBehaviour
                     if (lockHighlightRotation == false)
                     {
                         float segmentAngle = (segmentSize * selectedIndex) + rotationOffset;
-                        highlight.rectTransform.rotation = Quaternion.Euler(0, 0, -segmentAngle);
+                        highlight.rectTransform.localRotation = Quaternion.Euler(0, 0, -segmentAngle);
                     }
                     else
                     {
-                        highlight.rectTransform.rotation = Quaternion.identity;
+                        highlight.rectTransform.localRotation = Quaternion.identity;
                     }
                 }
                 #endregion
