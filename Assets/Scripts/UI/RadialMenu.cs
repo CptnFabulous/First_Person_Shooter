@@ -1,10 +1,4 @@
-﻿/*
-
-ATTENTION! POSITIONS OF GUI ELEMENTS MESS UP WHEN CANVAS IS SET TO SCREEN SPACE - CAMERA! FIX IT SOMEHOW!
-
-*/
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,7 +96,9 @@ public class RadialMenu : MonoBehaviour
                     relativeInputPosition = new Vector3(Mathf.Clamp(relativeInputPosition.x, -mouseThreshold, mouseThreshold), Mathf.Clamp(relativeInputPosition.y, -mouseThreshold, mouseThreshold));
                 }
 
-                float selectAngle = -Vector3.SignedAngle(transform.up, relativeInputPosition, transform.forward);
+                RectTransform rt = GetComponent<RectTransform>();
+
+                float selectAngle = Vector3.SignedAngle(rt.rotation * relativeInputPosition, rt.up, rt.forward); // Produce an angle based on the player's mouse 'position' relative to the radial menu.
 
                 cursorAxis.localRotation = Quaternion.Euler(0, 0, -selectAngle);
 

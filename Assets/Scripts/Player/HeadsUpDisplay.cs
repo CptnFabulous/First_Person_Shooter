@@ -193,8 +193,7 @@ public class HeadsUpDisplay : MonoBehaviour
             {
                 #region Calculate reticle width
                 float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy) + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
-
-
+                
                 Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
                 reticleOffsetPoint = playerHead.position + reticleOffsetPoint * rw.accuracy.range;
 
@@ -206,16 +205,18 @@ public class HeadsUpDisplay : MonoBehaviour
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
                 float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
 
-
-                //reticleOffsetPoint = hudCamera.WorldToViewportPoint(reticleOffsetPoint);
-                //Vector2 canvasOffset = new Vector2(reticleOffsetPoint.x * hudCanvas.pixelRect.width, reticleOffsetPoint.y * hudCanvas.pixelRect.height);
-                //float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
-
                 // Adjust reticleRadius to match the canvas size
+                reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticleRadius);
+                reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticleRadius);
+                reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticleRadius, 0);
+                reticleRight.rectTransform.anchoredPosition = new Vector3(reticleRadius, 0);
+
+                /*
                 reticleUp.rectTransform.anchoredPosition = rt.up * reticleRadius;
                 reticleDown.rectTransform.anchoredPosition = rt.up * -reticleRadius;
                 reticleLeft.rectTransform.anchoredPosition = rt.right * -reticleRadius;
                 reticleRight.rectTransform.anchoredPosition = rt.right * reticleRadius;
+                */
                 #endregion
             }
 
