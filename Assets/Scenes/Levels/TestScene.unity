@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -878,7 +878,7 @@ PrefabInstance:
     - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -71
+      value: -43
       objectReference: {fileID: 0}
     - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
         type: 3}
@@ -888,7 +888,7 @@ PrefabInstance:
     - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -69
+      value: -52
       objectReference: {fileID: 0}
     - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
         type: 3}
@@ -3689,7 +3689,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1290869006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -60, y: 3.8817444, z: -71}
+  m_LocalPosition: {x: -38, y: 3.8817444, z: -14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4616,16 +4616,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 804254423}
     m_Modifications:
-    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
-        type: 3}
-      propertyPath: m_Name
-      value: Remington 870DM
-      objectReference: {fileID: 0}
-    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2816232892801543848, guid: 1bb2d5e57d21e1144b47c48d5b545809,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4680,6 +4670,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
+        type: 3}
+      propertyPath: m_Name
+      value: Remington 870DM
+      objectReference: {fileID: 0}
+    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bb2d5e57d21e1144b47c48d5b545809, type: 3}

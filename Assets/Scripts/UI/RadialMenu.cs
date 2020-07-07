@@ -59,27 +59,24 @@ public class RadialMenu : MonoBehaviour
         if (slots > 1)
         {
             #region Player input
-            if (toggleInput == true)
+
+            if (Input.GetButtonDown(buttonName))
             {
-                if (Input.GetButtonDown(buttonName))
+                isActive = !isActive;
+                if (isActive == true)
                 {
-                    isActive = !isActive;
+                    relativeInputPosition = Vector3.zero;
                 }
             }
-            else
+            if (!Input.GetButton(buttonName) && toggleInput == false)
             {
-                if (Input.GetButton(buttonName))
-                {
-                    isActive = true;
-                }
-                else
-                {
-                    isActive = false;
-                }
+                isActive = false;
             }
+
             #endregion
 
             #region Functions while active
+
             if (isActive) // If button is pressed and there is another slot to swap to
             {
                 gameObject.SetActive(true);
@@ -130,6 +127,7 @@ public class RadialMenu : MonoBehaviour
                         highlight.rectTransform.localRotation = Quaternion.identity;
                     }
                 }
+
                 #endregion
             }
         }

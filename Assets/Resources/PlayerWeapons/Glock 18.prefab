@@ -5894,7 +5894,7 @@ MonoBehaviour:
       current: 15
       critical: 5
     roundsReloaded: 15
-    reloadTime: 0.5
+    reloadTime: 0.75
   projectileModes:
   - name: Standard bullets
     prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,

@@ -138,18 +138,15 @@ public class ProjectileStats
     }
 }
 
-public class MiscGunStats
+public class CosmeticStats
 {
-    [Header("Cosmetics")]
+    //public UnityEvent effectsOnFire;
     public Sprite hudIcon;
     public Transform heldPosition;
     public AudioClip firingNoise;
     public MuzzleFlashEffect muzzleFlash;
     public float muzzleFlashRelativeDuration;
     public ParticleSystem shellEjection;
-
-    [Header("Other")]
-    public float switchSpeed;
 }
 #endregion
 
@@ -198,8 +195,6 @@ public class RangedWeapon : MonoBehaviour
     public MagazineStats[] magazineModes;
     [Header("Projectiles")]
     public ProjectileStats[] projectileModes;
-    [Header("Miscellaneous")]
-    public MiscGunStats[] miscGunStatModes;
 
     [HideInInspector] public FireControlStats fireControls;
 
@@ -252,12 +247,12 @@ public class RangedWeapon : MonoBehaviour
 
     float attackMessageLimitTimer = float.MaxValue;
     float attackMessageLimitDelay = 1;
-
+    /*
     private void Reset()
     {
         OnValidate();
     }
-
+    */
     private void OnValidate()
     {
         if (fireControlModes.Length <= 0)
@@ -278,11 +273,6 @@ public class RangedWeapon : MonoBehaviour
         if (firingModes.Length <= 0)
         {
             firingModes = new FiringMode[1];
-        }
-
-        if (miscGunStatModes.Length <= 0)
-        {
-            miscGunStatModes = new MiscGunStats[1];
         }
 
         foreach (FiringMode fm in firingModes)
