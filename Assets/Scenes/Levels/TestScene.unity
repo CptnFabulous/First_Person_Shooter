@@ -4616,6 +4616,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 804254423}
     m_Modifications:
+    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
+        type: 3}
+      propertyPath: m_Name
+      value: Remington 870DM
+      objectReference: {fileID: 0}
+    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2816232892801543848, guid: 1bb2d5e57d21e1144b47c48d5b545809,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4670,16 +4680,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
-        type: 3}
-      propertyPath: m_Name
-      value: Remington 870DM
-      objectReference: {fileID: 0}
-    - target: {fileID: 2816232892801543849, guid: 1bb2d5e57d21e1144b47c48d5b545809,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bb2d5e57d21e1144b47c48d5b545809, type: 3}

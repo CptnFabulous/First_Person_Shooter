@@ -148,6 +148,7 @@ public class CosmeticStats
     public float muzzleFlashRelativeDuration;
     public ParticleSystem shellEjection;
 }
+
 #endregion
 
 [System.Serializable]
