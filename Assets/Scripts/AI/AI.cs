@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -49,6 +48,17 @@ public class AI : MonoBehaviour//, IEventObserver
     public Character target;
     public bool selfPreservation = true;
     public AttackMessage attackToDodge;
+
+
+
+
+
+
+    [Header("Looking at stuff")]
+    public float lookSpeed;
+    public float lookThreshold;
+    bool inLookIENumerator;
+    Vector3 aimMarker;
 
     public virtual void Awake()
     {
@@ -119,6 +129,37 @@ public class AI : MonoBehaviour//, IEventObserver
         stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         stateMachine.SetInteger("health", hp.health.current);
     }
+
+    #region Looking at stuff
+
+    void AdjustLook(Vector3 newLookPoint)
+    {
+        if (inLookIENumerator == false)
+        {
+            aimMarker = Vector3.MoveTowards(aimMarker, newLookPoint, lookSpeed * Time.deltaTime);
+            head.transform.LookAt(aimMarker, transform.up);
+        }
+    }
+
+    public IEnumerator LookAtThing(Vector3 position, float lookTime, AnimationCurve lookCurve)
+    {
+        inLookIENumerator = true;
+
+        float timer = 0;
+
+        while (Vector3.Distance(aimMarker, position) > lookThreshold)
+        {
+            Vector3 lookLerp = Vector3.Lerp(aimMarker, position, lookCurve.Evaluate(timer));
+            head.transform.LookAt(lookLerp, transform.up);
+            timer += Time.deltaTime / lookTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        inLookIENumerator = false;
+        print("Agent is now looking at " + position + ".");
+    }
+
+    #endregion
 
     public void Dodge(AttackMessage am)
     {
