@@ -207,7 +207,7 @@ MonoBehaviour:
     projectileCount: 1
     velocity: 500
     diameter: 0.1
-    gravityMultiplier: 0.02
+    gravityMultiplier: 0.01
     hitDetection:
       serializedVersion: 2
       m_Bits: 4294967295
@@ -236,7 +236,7 @@ MonoBehaviour:
     projectileCount: 1
     velocity: 100
     diameter: 0.5
-    gravityMultiplier: 0.05
+    gravityMultiplier: 0.01
     hitDetection:
       serializedVersion: 2
       m_Bits: 4294967295
@@ -244,13 +244,13 @@ MonoBehaviour:
     knockback: 50
     criticalMultiplier: 0
     directHitMultiplier: 1.5
-    blastRadius: 0
+    blastRadius: 10
     explosionTime: 5
     damageFalloff:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.5
+        time: 0
         value: 1
         inSlope: 0
         outSlope: 0
@@ -258,6 +258,15 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0
         outWeight: 0
+      - serializedVersion: 3
+        time: 0.5
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 0
@@ -273,6 +282,15 @@ MonoBehaviour:
     knockbackFalloff:
       serializedVersion: 2
       m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.5
         value: 1
