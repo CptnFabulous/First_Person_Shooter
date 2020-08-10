@@ -8,6 +8,12 @@ public class FieldOfViewTest : MonoBehaviour
     public float range = 300;
     public float sphereCastDiameter = 0.1f;
     public LayerMask hitDetection = ~0;
+
+
+
+
+    public Collider c;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,9 +24,34 @@ public class FieldOfViewTest : MonoBehaviour
     void Update()
     {
         //RaycastHit[] hits = AI.RaycastVisionCone(transform.position, transform.forward, angle, range, sphereCastDiameter, hitDetection);
-        RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
+        //RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
+
+        Vector3 origin = transform.position;
+        Vector3 direction = transform.forward;
+        float testAngle = 0.01f;
+
+        
+
+        float distanceFromOrigin = Vector3.Distance(origin, c.bounds.center);
+        Vector3 centreOfConeAtDistanceEquivalentToCollider = origin + (direction.normalized * distanceFromOrigin);
+        Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
+        if (Vector3.Angle(direction, closestPoint - origin) < testAngle)
+        {
+            print("Object is inside the field of vision");
+        }
+        else
+        {
+            print("Object cannot be detected");
+        }
+
 
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawCube(c.bounds.center, c.bounds.size);
+    }
+
     /*
     private void OnDrawGizmos() // Lecks' stuff
     {

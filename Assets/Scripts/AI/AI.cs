@@ -337,12 +337,37 @@ public class AI : MonoBehaviour//, IEventObserver
         List<RaycastHit> hits = new List<RaycastHit>();
 
         Collider[] objects = Physics.OverlapSphere(origin, range, viewable);
+        foreach(Collider c in objects)
+        {
+            
+            // Produces a position the same distance from the origin as the collider, but straight on
+            float distanceFromOrigin = Vector3.Distance(origin, c.bounds.center);
+            Vector3 centreOfConeAtDistanceEquivalentToCollider = origin + (direction.normalized * distanceFromOrigin);
+            // Figures out the part of the collider that is the closest to the centre of the cone's diameter
+            Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
 
+            if (Vector3.Angle(direction, closestPoint - origin) < angle) // If the angle of that point is inside the cone, perform a raycast check
+            {
+                // Launch a dense cluster of raycasts at the collider. Use the bounds to specify where the raycasts need to be aimed.
 
-        // Use collider bounds and distance to determine the maximum angle before it is outside the field of view
+                // Somehow calculate the correct surface area that needs to be covered in raycasts
+                // Launch an array of raycasts like that
 
+                int raycastArrayLength = 1;
+                int raycastArrayHeight = 1;
 
-        // Launch a dense cluster of raycasts at the collider. Use the bounds to specify where the raycasts need to be aimed.
+                for (int y = 0; y < raycastArrayHeight; y++)
+                {
+                    for (int x = 0; x < raycastArrayLength; x++)
+                    {
+
+                    }
+                }
+
+                
+            }
+        }
+
 
         return hits.ToArray();
     }
