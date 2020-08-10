@@ -31,8 +31,21 @@ public static class Damage
             {
                 processedDirection = aimOrigin.position + processedDirection.normalized * range;
             }
+            
+            if (Vector3.Angle(direction, processedDirection - muzzle) < 90) // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
+            {
+                Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
+            }
+            else // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
+            {
+                // Figure out a method to spawn the projectile just before it hits the wall, so the raycast will actually detect it
 
-            Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, Vector3.up));
+                Object.Instantiate(projectile.NewProjectile(origin), processedDirection, Quaternion.LookRotation(processedDirection - aimOrigin.position, aimOrigin.up));
+
+                //Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
+            }
+
+            
         }
     }
 
