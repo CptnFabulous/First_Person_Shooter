@@ -15,8 +15,6 @@ public enum DamageType
 
 public static class Damage
 {
-    
-
     public static void ShootProjectile(ProjectileStats projectile, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
     {
         for (int i = 0; i < projectile.projectileCount; i++)
@@ -31,21 +29,19 @@ public static class Damage
             {
                 processedDirection = aimOrigin.position + processedDirection.normalized * range;
             }
-            
+
+            Projectile p = projectile.NewProjectileClass(origin);
+
             if (Vector3.Angle(direction, processedDirection - muzzle) < 90) // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
             {
-                Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
+                Object.Instantiate(p.gameObject, muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
             }
             else // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
             {
-                // Figure out a method to spawn the projectile just before it hits the wall, so the raycast will actually detect it
-
-                Object.Instantiate(projectile.NewProjectile(origin), processedDirection, Quaternion.LookRotation(processedDirection - aimOrigin.position, aimOrigin.up));
-
-                //Object.Instantiate(projectile.NewProjectile(origin), muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
+                // Spawn the projectile directly at the location where it is supposed to hit, with the correct rotation, and activate its OnHit function.
+                Object.Instantiate(p.gameObject, processedDirection, Quaternion.LookRotation(processedDirection - aimOrigin.position, aimOrigin.up));
+                p.OnHit(targetFound);
             }
-
-            
         }
     }
 

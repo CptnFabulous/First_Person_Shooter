@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
     Vector3 ballisticDirection; // The direction the projectile will actualy go in
     Vector3 gravityModifier; // An increasing Vector3 value to slowly drag the projectile down with gravity
-    public RaycastHit projectileHit; // Point where raycast hits target
+    //public RaycastHit projectileHit; // Point where raycast hits target
     float timerLifetime;
 
     [HideInInspector] public Character origin;
@@ -34,9 +34,10 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
+        RaycastHit projectileHit;
         if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && IsAlly(projectileHit.collider.gameObject) == false)
         {
-            OnHit();
+            OnHit(projectileHit);
         }
         else
         {
@@ -50,7 +51,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public virtual void OnHit()
+    public virtual void OnHit(RaycastHit rh)
     {
         onHit.Invoke();
         Destroy(gameObject);
@@ -78,16 +79,16 @@ public class Projectile : MonoBehaviour
         return false;
     }
     
-    public void InstantiateOnImpact(GameObject prefab, bool alignWithSurface)
+    public void InstantiateOnImpact(RaycastHit rh, GameObject prefab, bool alignWithSurface)
     {
         if (alignWithSurface == true)
         {
-            Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, projectileHit.normal);
-            Instantiate(prefab, projectileHit.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
+            Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, rh.normal);
+            Instantiate(prefab, rh.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
         }
         else
         {
-            Instantiate(prefab, projectileHit.point, Quaternion.identity);
+            Instantiate(prefab, rh.point, Quaternion.identity);
         }
     }
     

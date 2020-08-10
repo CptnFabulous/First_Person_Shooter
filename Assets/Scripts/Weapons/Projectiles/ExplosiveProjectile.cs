@@ -18,11 +18,11 @@ public class ExplosiveProjectile : Projectile
     [Header("Cosmetics")]
     public ParticleSystem impactEffect;
 
-    public override void OnHit()
+    public override void OnHit(RaycastHit rh)
     {
-        InstantiateOnImpact(impactEffect.gameObject, false);
+        InstantiateOnImpact(rh, impactEffect.gameObject, false);
         Damage.InstantExplosion(origin.gameObject, origin.faction, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
-        Damage.PointDamage(origin.gameObject, origin.faction, projectileHit.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
-        base.OnHit();
+        Damage.PointDamage(origin.gameObject, origin.faction, rh.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
+        base.OnHit(rh);
     }
 }

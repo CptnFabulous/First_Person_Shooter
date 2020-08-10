@@ -332,6 +332,24 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
 
+    public static RaycastHit[] BoundsConeThing(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
+    {
+        List<RaycastHit> hits = new List<RaycastHit>();
+
+        Collider[] objects = Physics.OverlapSphere(origin, range, viewable);
+
+
+        // Use collider bounds and distance to determine the maximum angle before it is outside the field of view
+
+
+        // Launch a dense cluster of raycasts at the collider. Use the bounds to specify where the raycasts need to be aimed.
+
+        return hits.ToArray();
+    }
+
+
+
+
 
     public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
     {

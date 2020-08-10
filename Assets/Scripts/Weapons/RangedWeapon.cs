@@ -137,6 +137,40 @@ public class ProjectileStats
 
         return launchedProjectile;
     }
+
+    public Projectile NewProjectileClass(Character origin)
+    {
+        
+
+        Projectile p = prefab;
+        p.velocity = velocity;
+        p.diameter = diameter;
+        p.gravityMultiplier = gravityMultiplier;
+        p.hitDetection = hitDetection;
+        p.origin = origin;
+
+        KineticProjectile kp = p.GetComponent<KineticProjectile>();
+        if (kp != null)
+        {
+            kp.damage = damage;
+            kp.knockback = knockback;
+            kp.criticalMultiplier = criticalMultiplier;
+        }
+
+        ExplosiveProjectile ep = p.GetComponent<ExplosiveProjectile>();
+        if (ep != null)
+        {
+            ep.damage = damage;
+            ep.directHitMultiplier = directHitMultiplier;
+            ep.blastRadius = blastRadius;
+            ep.explosionTime = explosionTime;
+            ep.knockback = knockback;
+            ep.damageFalloff = damageFalloff;
+            ep.knockbackFalloff = knockbackFalloff;
+        }
+
+        return p;
+    }
 }
 
 public class CosmeticStats

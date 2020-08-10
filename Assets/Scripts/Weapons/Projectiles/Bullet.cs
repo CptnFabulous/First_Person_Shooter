@@ -7,9 +7,9 @@ public class Bullet : KineticProjectile
     
     public ParticleSystem impactEffect;
     
-    public override void OnHit()
+    public override void OnHit(RaycastHit rh)
     {
-        InstantiateOnImpact(impactEffect.gameObject, true);
-        base.OnHit();
+        InstantiateOnImpact(rh, impactEffect.gameObject, true);
+        base.OnHit(rh);
     }
 }
