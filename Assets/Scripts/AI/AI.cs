@@ -332,26 +332,40 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
 
-    public static RaycastHit[] BoundsConeThing(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
+    public static RaycastHit[] BoundsConeThing(Transform origin, float angle, float range, LayerMask viewable, float raycastDiameter = 0.5f)
     {
         List<RaycastHit> hits = new List<RaycastHit>();
 
-        Collider[] objects = Physics.OverlapSphere(origin, range, viewable);
+        Collider[] objects = Physics.OverlapSphere(origin.position, range, viewable);
         foreach(Collider c in objects)
         {
             
             // Produces a position the same distance from the origin as the collider, but straight on
-            float distanceFromOrigin = Vector3.Distance(origin, c.bounds.center);
-            Vector3 centreOfConeAtDistanceEquivalentToCollider = origin + (direction.normalized * distanceFromOrigin);
+            float distanceFromOrigin = Vector3.Distance(origin.position, c.bounds.center);
+            Vector3 centreOfConeAtDistanceEquivalentToCollider = origin.position + (origin.forward.normalized * distanceFromOrigin);
             // Figures out the part of the collider that is the closest to the centre of the cone's diameter
             Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
 
-            if (Vector3.Angle(direction, closestPoint - origin) < angle) // If the angle of that point is inside the cone, perform a raycast check
+            if (Vector3.Angle(origin.forward, closestPoint - origin.position) < angle) // If the angle of that point is inside the cone, perform a raycast check
             {
-                // Launch a dense cluster of raycasts at the collider. Use the bounds to specify where the raycasts need to be aimed.
+                // Use Bounds.ClosestPoint four times, with points to the left, right, up and down of the bounding box (relative to the cone centre). Then use Vector3.Distance to calculate the distances and produce a rectangle of certain dimensions.
+                Vector3 upPoint = c.bounds.center + origin.up * 999999999999999;
+                Vector3 downPoint = c.bounds.center + -origin.up * 999999999999999;
+                Vector3 leftPoint = c.bounds.center + -origin.right * 999999999999999;
+                Vector3 rightPoint = c.bounds.center + origin.right * 999999999999999;
+                float scanAreaY = Vector3.Distance(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint));
+                float scanAreaX = Vector3.Distance(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint));
 
-                // Somehow calculate the correct surface area that needs to be covered in raycasts
-                // Launch an array of raycasts like that
+
+                Debug.DrawLine(upPoint, downPoint, Color.blue);
+                Debug.DrawLine(leftPoint, rightPoint, Color.yellow);
+                Debug.DrawLine(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint), Color.red);
+                Debug.DrawLine(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint), Color.green);
+                print("Scan area dimensions: " + scanAreaX + ", " + scanAreaY);
+
+                // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
+
+                // Cast an array of rays to 'sweep' the square for line of sight.
 
                 int raycastArrayLength = 1;
                 int raycastArrayHeight = 1;
@@ -363,9 +377,12 @@ public class AI : MonoBehaviour//, IEventObserver
 
                     }
                 }
-
-                
             }
+            else
+            {
+                print("Object not in field of view");
+            }
+
         }
 
 

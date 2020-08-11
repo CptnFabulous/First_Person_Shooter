@@ -26,22 +26,35 @@ public class FieldOfViewTest : MonoBehaviour
         //RaycastHit[] hits = AI.RaycastVisionCone(transform.position, transform.forward, angle, range, sphereCastDiameter, hitDetection);
         //RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
 
-        Vector3 origin = transform.position;
-        Vector3 direction = transform.forward;
-        float testAngle = 0.01f;
+        Transform origin = transform;
 
-        
 
-        float distanceFromOrigin = Vector3.Distance(origin, c.bounds.center);
-        Vector3 centreOfConeAtDistanceEquivalentToCollider = origin + (direction.normalized * distanceFromOrigin);
+
+        // Produces a position the same distance from the origin as the collider, but straight on
+        float distanceFromOrigin = Vector3.Distance(origin.position, c.bounds.center);
+        Vector3 centreOfConeAtDistanceEquivalentToCollider = origin.position + (origin.forward.normalized * distanceFromOrigin);
+        // Figures out the part of the collider that is the closest to the centre of the cone's diameter
         Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
-        if (Vector3.Angle(direction, closestPoint - origin) < testAngle)
+
+        if (Vector3.Angle(origin.forward, closestPoint - origin.position) < angle) // If the angle of that point is inside the cone, perform a raycast check
         {
-            print("Object is inside the field of vision");
+            Vector3 upPoint = c.bounds.center + origin.up * 999999999999999;
+            Vector3 downPoint = c.bounds.center + -origin.up * 999999999999999;
+            Vector3 leftPoint = c.bounds.center + -origin.right * 999999999999999;
+            Vector3 rightPoint = c.bounds.center + origin.right * 999999999999999;
+
+            float scanAreaY = Vector3.Distance(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint));
+            float scanAreaX = Vector3.Distance(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint));
+
+            Debug.DrawLine(upPoint, downPoint, Color.blue);
+            Debug.DrawLine(leftPoint, rightPoint, Color.yellow);
+            Debug.DrawLine(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint), Color.red);
+            Debug.DrawLine(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint), Color.green);
+            print("Scan area dimensions: " + scanAreaX + ", " + scanAreaY);
         }
         else
         {
-            print("Object cannot be detected");
+            print("Object not in field of view");
         }
 
 
@@ -49,7 +62,7 @@ public class FieldOfViewTest : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawCube(c.bounds.center, c.bounds.size);
+        //Gizmos.DrawCube(c.bounds.center, c.bounds.size);
     }
 
     /*
