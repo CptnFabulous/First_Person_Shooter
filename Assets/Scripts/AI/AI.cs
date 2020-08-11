@@ -364,16 +364,23 @@ public class AI : MonoBehaviour//, IEventObserver
                 print("Scan area dimensions: " + scanAreaX + ", " + scanAreaY);
 
                 // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
+                int raycastArrayLength = Mathf.CeilToInt(scanAreaX / raycastDiameter);
+                int raycastArrayHeight = Mathf.CeilToInt(scanAreaY / raycastDiameter);
+
 
                 // Cast an array of rays to 'sweep' the square for line of sight.
 
-                int raycastArrayLength = 1;
-                int raycastArrayHeight = 1;
+                float spacingX = scanAreaX / raycastArrayLength;
+                float spacingY = scanAreaY / raycastArrayHeight;
+
+                Vector3 raycastArrayBaseDirection = c.bounds.center - origin.position;
 
                 for (int y = 0; y < raycastArrayHeight; y++)
                 {
                     for (int x = 0; x < raycastArrayLength; x++)
                     {
+                        // soacingX * x
+                        // spacingY * y
 
                     }
                 }
