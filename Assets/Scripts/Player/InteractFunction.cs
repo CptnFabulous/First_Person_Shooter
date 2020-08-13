@@ -26,7 +26,7 @@ public class InteractFunction : MonoBehaviour
             Interactable i = thingFound.collider.GetComponent<Interactable>();
             if (i != null)
             {
-                hud.PopulateInteractionMenu(i);
+                //hud.PopulateInteractionMenu(i);
                 
                 if (Input.GetButtonDown("Interact"))
                 {

@@ -6,11 +6,11 @@ public class FieldOfViewTest : MonoBehaviour
 {
     public float angle = 0.75f;
     public float range = 300;
-    public float sphereCastDiameter = 0.1f;
+    public float boxCastDiameter = 0.2f;
     public LayerMask hitDetection = ~0;
 
 
-
+    float t;
 
     public Collider c;
 
@@ -26,6 +26,7 @@ public class FieldOfViewTest : MonoBehaviour
         //RaycastHit[] hits = AI.RaycastVisionCone(transform.position, transform.forward, angle, range, sphereCastDiameter, hitDetection);
         //RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
 
+        /*
         Transform origin = transform;
 
 
@@ -56,6 +57,11 @@ public class FieldOfViewTest : MonoBehaviour
         {
             print("Object not in field of view");
         }
+        */
+
+
+        //RaycastHit[] hits = AI.BoundsConeThing(transform, angle, range, hitDetection, 0.2f);
+
 
 
     }
@@ -63,6 +69,25 @@ public class FieldOfViewTest : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.DrawCube(c.bounds.center, c.bounds.size);
+
+
+        t += Time.deltaTime;
+        if (t > 0.5f)
+        {
+            RaycastHit[] hits = AI.BoundsConeThing(transform, angle, range, hitDetection, boxCastDiameter);
+
+            foreach (RaycastHit rh in hits)
+            {
+                Gizmos.DrawWireCube(rh.collider.bounds.center, rh.collider.bounds.size);
+                //Gizmos.DrawIcon(rh.point, rh.collider.name, true);
+                Gizmos.DrawWireCube(rh.point, new Vector3(boxCastDiameter, boxCastDiameter, boxCastDiameter));
+            }
+
+            t = 0;
+        }
+
+
+        
     }
 
     /*
