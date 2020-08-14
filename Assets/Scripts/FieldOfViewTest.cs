@@ -11,57 +11,41 @@ public class FieldOfViewTest : MonoBehaviour
 
 
     float t;
+    //bool inGame = true;
 
     public Collider c;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //inGame = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //RaycastHit[] hits = AI.RaycastVisionCone(transform.position, transform.forward, angle, range, sphereCastDiameter, hitDetection);
-        //RaycastHit[] hits = AI.RaycastVisionCone(transform, angle, range, sphereCastDiameter, hitDetection);
 
-        /*
-        Transform origin = transform;
-
-
-
-        // Produces a position the same distance from the origin as the collider, but straight on
-        float distanceFromOrigin = Vector3.Distance(origin.position, c.bounds.center);
-        Vector3 centreOfConeAtDistanceEquivalentToCollider = origin.position + (origin.forward.normalized * distanceFromOrigin);
-        // Figures out the part of the collider that is the closest to the centre of the cone's diameter
-        Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
-
-        if (Vector3.Angle(origin.forward, closestPoint - origin.position) < angle) // If the angle of that point is inside the cone, perform a raycast check
+        t += Time.deltaTime;
+        if (t > 0.5f/* && inGame == true*/)
         {
-            Vector3 upPoint = c.bounds.center + origin.up * 999999999999999;
-            Vector3 downPoint = c.bounds.center + -origin.up * 999999999999999;
-            Vector3 leftPoint = c.bounds.center + -origin.right * 999999999999999;
-            Vector3 rightPoint = c.bounds.center + origin.right * 999999999999999;
+            RaycastHit[] hits = AI.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
 
-            float scanAreaY = Vector3.Distance(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint));
-            float scanAreaX = Vector3.Distance(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint));
+            string objectsSeen = "Objects seen: ";
 
-            Debug.DrawLine(upPoint, downPoint, Color.blue);
-            Debug.DrawLine(leftPoint, rightPoint, Color.yellow);
-            Debug.DrawLine(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint), Color.red);
-            Debug.DrawLine(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint), Color.green);
-            print("Scan area dimensions: " + scanAreaX + ", " + scanAreaY);
+            foreach (RaycastHit rh in hits)
+            {
+                //Gizmos.DrawWireCube(rh.collider.bounds.center, rh.collider.bounds.size);
+                //Gizmos.DrawIcon(rh.point, rh.collider.name, true);
+                //Gizmos.DrawWireCube(rh.point, new Vector3(boxCastDiameter, boxCastDiameter, boxCastDiameter));
+
+                objectsSeen += rh.collider.name + ", ";
+            }
+
+            objectsSeen += ".";
+            print(objectsSeen);
+
+            t = 0;
         }
-        else
-        {
-            print("Object not in field of view");
-        }
-        */
-
-
-        //RaycastHit[] hits = AI.BoundsConeThing(transform, angle, range, hitDetection, 0.2f);
-
 
 
     }
@@ -69,23 +53,6 @@ public class FieldOfViewTest : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.DrawCube(c.bounds.center, c.bounds.size);
-
-
-        t += Time.deltaTime;
-        if (t > 0.5f)
-        {
-            RaycastHit[] hits = AI.BoundsConeThing(transform, angle, range, hitDetection, boxCastDiameter);
-
-            foreach (RaycastHit rh in hits)
-            {
-                Gizmos.DrawWireCube(rh.collider.bounds.center, rh.collider.bounds.size);
-                //Gizmos.DrawIcon(rh.point, rh.collider.name, true);
-                Gizmos.DrawWireCube(rh.point, new Vector3(boxCastDiameter, boxCastDiameter, boxCastDiameter));
-            }
-
-            t = 0;
-        }
-
 
         
     }

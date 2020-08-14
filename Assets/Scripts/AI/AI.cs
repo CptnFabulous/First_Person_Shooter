@@ -332,7 +332,7 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
 
-    public static RaycastHit[] BoundsConeThing(Transform origin, float angle, float range, LayerMask viewable, float raycastDiameter = 0.2f)
+    public static RaycastHit[] VisionCone(Transform origin, float angle, float range, LayerMask viewable, float raycastDiameter = 0.2f)
     {
         List<RaycastHit> hits = new List<RaycastHit>();
 
@@ -345,13 +345,19 @@ public class AI : MonoBehaviour//, IEventObserver
             // Figures out the part of the collider that is the closest to the centre of the cone's diameter
             Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
 
+            Debug.DrawLine(closestPoint, closestPoint + Vector3.up * 9999);
+
             if (Vector3.Angle(origin.forward, closestPoint - origin.position) < angle) // If the angle of that point is inside the cone, perform a raycast check
             {
+                // Finds the largest of the bounds' 3 size axes and produces a value that always exceeds that distance, regardless of the shape and angle.
+                float maxBoundsSize = Mathf.Max(c.bounds.size.x, c.bounds.size.y);
+                maxBoundsSize = Mathf.Max(maxBoundsSize, c.bounds.size.z) * 2;
+
                 // Use Bounds.ClosestPoint four times, with points to the left, right, up and down of the bounding box (relative to the cone centre). Then use Vector3.Distance to calculate the distances and produce a rectangle of certain dimensions.
-                Vector3 upPoint = c.bounds.center + origin.up * 999999999999999;
-                Vector3 downPoint = c.bounds.center + -origin.up * 999999999999999;
-                Vector3 leftPoint = c.bounds.center + -origin.right * 999999999999999;
-                Vector3 rightPoint = c.bounds.center + origin.right * 999999999999999;
+                Vector3 upPoint = c.bounds.center + origin.up * 9999999999999999999;
+                Vector3 downPoint = c.bounds.center + -origin.up * 9999999999999999999;
+                Vector3 leftPoint = c.bounds.center + -origin.right * 9999999999999999999;
+                Vector3 rightPoint = c.bounds.center + origin.right * 9999999999999999999;
                 upPoint = c.bounds.ClosestPoint(upPoint);
                 downPoint = c.bounds.ClosestPoint(downPoint);
                 leftPoint = c.bounds.ClosestPoint(leftPoint);
@@ -360,13 +366,6 @@ public class AI : MonoBehaviour//, IEventObserver
                 // Produces dimensions for a rectangular area to sweep with raycasts
                 float scanAreaY = Vector3.Distance(upPoint, downPoint);
                 float scanAreaX = Vector3.Distance(leftPoint, rightPoint);
-                
-                /*
-                // Debug info
-                Debug.DrawLine(c.bounds.ClosestPoint(upPoint), c.bounds.ClosestPoint(downPoint), Color.red);
-                Debug.DrawLine(c.bounds.ClosestPoint(leftPoint), c.bounds.ClosestPoint(rightPoint), Color.green);
-                print("Scan area dimensions: " + scanAreaX + ", " + scanAreaY);
-                */
 
                 // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
                 int raycastArrayLength = Mathf.CeilToInt(scanAreaX / raycastDiameter);
