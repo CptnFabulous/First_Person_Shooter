@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class FieldOfViewTest : MonoBehaviour
 {
-    public float angle = 0.75f;
-    public float range = 300;
-    public float boxCastDiameter = 0.2f;
-    public LayerMask hitDetection = ~0;
+    public float angle;
+    public float range;
+    public float boxCastDiameter;
+    public LayerMask hitDetection;
 
 
     float t;
-    //bool inGame = true;
 
     public Collider c;
+
+
+    RaycastHit[] hits;
 
     // Start is called before the first frame update
     void Start()
     {
-        //inGame = true;
+        
     }
 
     // Update is called once per frame
@@ -26,10 +28,10 @@ public class FieldOfViewTest : MonoBehaviour
     {
 
         t += Time.deltaTime;
-        if (t > 0.5f/* && inGame == true*/)
+        if (t > 0.5f)
         {
-            RaycastHit[] hits = AI.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
-
+            hits = AIFunction.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
+            /*
             string objectsSeen = "Objects seen: ";
 
             foreach (RaycastHit rh in hits)
@@ -43,11 +45,28 @@ public class FieldOfViewTest : MonoBehaviour
 
             objectsSeen += ".";
             print(objectsSeen);
-
+            */
             t = 0;
         }
 
 
+    }
+
+    private void OnGUI()
+    {
+        Vector2 screenUnit = new Vector2(Screen.width / 16, Screen.height / 9);
+
+        Rect boxPos = new Rect(0, 0, screenUnit.x * 3, screenUnit.y * 9);
+
+
+        string text = "Objects viewed:";
+        foreach(RaycastHit rh in hits)
+        {
+            text += "\n" + rh.collider.name + ", " + rh.point;
+        }
+
+
+        GUI.Box(boxPos, text);
     }
 
     private void OnDrawGizmos()

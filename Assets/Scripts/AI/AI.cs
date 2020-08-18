@@ -342,10 +342,9 @@ public class AI : MonoBehaviour//, IEventObserver
             // Produces a position the same distance from the origin as the collider, but straight on
             float distanceFromOrigin = Vector3.Distance(origin.position, c.bounds.center);
             Vector3 centreOfConeAtDistanceEquivalentToCollider = origin.position + (origin.forward.normalized * distanceFromOrigin);
+
             // Figures out the part of the collider that is the closest to the centre of the cone's diameter
             Vector3 closestPoint = c.bounds.ClosestPoint(centreOfConeAtDistanceEquivalentToCollider);
-
-            Debug.DrawLine(closestPoint, closestPoint + Vector3.up * 9999);
 
             if (Vector3.Angle(origin.forward, closestPoint - origin.position) < angle) // If the angle of that point is inside the cone, perform a raycast check
             {
@@ -354,10 +353,10 @@ public class AI : MonoBehaviour//, IEventObserver
                 maxBoundsSize = Mathf.Max(maxBoundsSize, c.bounds.size.z) * 2;
 
                 // Use Bounds.ClosestPoint four times, with points to the left, right, up and down of the bounding box (relative to the cone centre). Then use Vector3.Distance to calculate the distances and produce a rectangle of certain dimensions.
-                Vector3 upPoint = c.bounds.center + origin.up * 9999999999999999999;
-                Vector3 downPoint = c.bounds.center + -origin.up * 9999999999999999999;
-                Vector3 leftPoint = c.bounds.center + -origin.right * 9999999999999999999;
-                Vector3 rightPoint = c.bounds.center + origin.right * 9999999999999999999;
+                Vector3 upPoint = c.bounds.center + origin.up * maxBoundsSize;
+                Vector3 downPoint = c.bounds.center + -origin.up * maxBoundsSize;
+                Vector3 leftPoint = c.bounds.center + -origin.right * maxBoundsSize;
+                Vector3 rightPoint = c.bounds.center + origin.right * maxBoundsSize;
                 upPoint = c.bounds.ClosestPoint(upPoint);
                 downPoint = c.bounds.ClosestPoint(downPoint);
                 leftPoint = c.bounds.ClosestPoint(leftPoint);
@@ -403,13 +402,11 @@ public class AI : MonoBehaviour//, IEventObserver
                             {
                                 if (lineOfSightCheck.collider == c && (hits.Contains(lineOfSightCheck) == false))
                                 {
-                                    //Debug.DrawLine(origin.position, raycastAimPoint, Color.cyan);
-                                    //print("FOV function has seen " + c.name);
                                     hits.Add(lineOfSightCheck);
 
                                     // Ends for loops prematurely, ensuring no more unnecessary rays are cast if an object has already been found.
-                                    x = raycastArrayLength;
-                                    y = raycastArrayHeight;
+                                    x = raycastArrayLength + 1;
+                                    y = raycastArrayHeight + 1;
                                     //This is important for performance, otherwise this function will be very laggy.
                                     //Even then, do not run this every frame. I would probably advise running this every second or so on a timer.
                                 }
