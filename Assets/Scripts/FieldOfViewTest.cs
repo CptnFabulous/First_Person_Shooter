@@ -30,7 +30,7 @@ public class FieldOfViewTest : MonoBehaviour
         t += Time.deltaTime;
         if (t > 0.5f)
         {
-            hits = AIFunction.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
+            hits = AIFunction.VisionConeBetterOptimised(transform, angle, range, hitDetection, boxCastDiameter);
             /*
             string objectsSeen = "Objects seen: ";
 
