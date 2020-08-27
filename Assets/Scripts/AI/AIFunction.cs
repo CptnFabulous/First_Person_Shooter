@@ -112,11 +112,8 @@ public static class AIFunction
 
 
     
-    public static bool ComplexLineOfSightCheck(Collider c, Transform origin, float angle, out RaycastHit objectHit, float range, LayerMask viewable, float raycastSpacing = 0.2f)
+    public static bool ComplexLineOfSightCheck(Collider c, Transform origin, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
     {
-        
-        
-        
         #region Create raycast grid data
         // Finds the largest of the bounds' 3 size axes and produces a value that always exceeds that distance, regardless of the shape and angle.
         float maxBoundsSize = Mathf.Max(Mathf.Max(c.bounds.size.x, c.bounds.size.y), c.bounds.size.z) * 2;
@@ -148,10 +145,11 @@ public static class AIFunction
         Vector3 raycastGridAxisY = (upPoint - c.bounds.center).normalized;
         #endregion
 
+        #region Perform raycast command batch processing
         int totalRaycasts = raycastArrayLength * raycastArrayHeight;
         // Create RaycastCommand
-        var results = new NativeArray<RaycastHit>(totalRaycasts, Allocator.Temp);
-        var commands = new NativeArray<RaycastCommand>(totalRaycasts, Allocator.Temp);
+        var results = new NativeArray<RaycastHit>(totalRaycasts, Allocator.TempJob);
+        var commands = new NativeArray<RaycastCommand>(totalRaycasts, Allocator.TempJob);
 
         // Cast an array of rays to 'sweep' the square for line of sight.
         for (int y = 0; y < raycastArrayHeight; y++)
@@ -168,42 +166,42 @@ public static class AIFunction
                 // From that point, it creates a direction value for the raycast to aim in.
                 Vector3 raycastAimDirection = raycastAimPoint - origin.position;
 
+                // Create new RaycastCommand
                 int raycastNumber = (raycastArrayLength * y) + x;
-
                 commands[raycastNumber] = new RaycastCommand(origin.position, raycastAimDirection, range, viewable);
             }
         }
 
-        // Schedule the batch of raycasts
-        JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 1, default(JobHandle));
-        // Wait for the batch processing job to complete
+        // Schedule the batch of raycasts, and wait for the batch processing job to complete
+        //JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 1, default(JobHandle));
+        JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 1);
         handle.Complete();
+        #endregion
 
-        
-
-        for(int i = 0; i < results.Length; i++)
+        #region Evaluate results and determine true or false
+        for (int i = 0; i < results.Length; i++)
         {
             // Copy the result. If batchedHit.collider is null there was no hit
             RaycastHit batchedHit = results[i];
-
             if (batchedHit.collider == c)
             {
-                objectHit = batchedHit;
-
+                checkInfo = batchedHit;
                 // Dispose the buffers
                 results.Dispose();
                 commands.Dispose();
                 return true;
             }
-            
         }
+
+        // Tokenly assign one of the RaycastHit values to checkInfo so the function compiles properly
+        checkInfo = results[results.Length - 1];
 
         // Dispose the buffers
         results.Dispose();
         commands.Dispose();
         return false;
+        #endregion
     }
-
 
 
 
@@ -220,79 +218,9 @@ public static class AIFunction
             if (ComplexColliderAngle(c, origin.position, origin.forward) < angle) // If the angle of that point is inside the cone, perform a raycast check
             {
                 RaycastHit lineOfSightCheck;
-                if (Physics.Raycast(origin.position, c.transform.position - origin.position, out lineOfSightCheck, range, viewable)) // Launch a raycast to determine line of sight.
+                if (ComplexLineOfSightCheck(c, origin, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
                 {
-                    if (lineOfSightCheck.collider == c && (hits.Contains(lineOfSightCheck) == false))
-                    {
-                        hits.Add(lineOfSightCheck);
-                    }
-                }
-                else // If a simple check towards the centre of the transform doesn't work, perform a more thorough and intensive check. The simple check is done first to reduce performance.
-                {
-                    // Finds the largest of the bounds' 3 size axes and produces a value that always exceeds that distance, regardless of the shape and angle.
-                    float maxBoundsSize = Mathf.Max(Mathf.Max(c.bounds.size.x, c.bounds.size.y), c.bounds.size.z) * 2;
-
-                    // Use Bounds.ClosestPoint four times, with points to the left, right, up and down of the bounding box (relative to the cone centre). Then use Vector3.Distance to calculate the distances and produce a rectangle of certain dimensions.
-                    Vector3 upPoint = c.bounds.center + origin.up * maxBoundsSize;
-                    Vector3 downPoint = c.bounds.center + -origin.up * maxBoundsSize;
-                    Vector3 leftPoint = c.bounds.center + -origin.right * maxBoundsSize;
-                    Vector3 rightPoint = c.bounds.center + origin.right * maxBoundsSize;
-                    upPoint = c.bounds.ClosestPoint(upPoint);
-                    downPoint = c.bounds.ClosestPoint(downPoint);
-                    leftPoint = c.bounds.ClosestPoint(leftPoint);
-                    rightPoint = c.bounds.ClosestPoint(rightPoint);
-
-                    // Produces dimensions for a rectangular area to sweep with raycasts
-                    float scanAreaY = Vector3.Distance(upPoint, downPoint);
-                    float scanAreaX = Vector3.Distance(leftPoint, rightPoint);
-
-                    // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
-                    int raycastArrayLength = Mathf.CeilToInt(scanAreaX / raycastSpacing);
-                    int raycastArrayHeight = Mathf.CeilToInt(scanAreaY / raycastSpacing);
-
-                    // Creates variables to determine how far apart to space the raycasts on each axis
-                    float spacingX = scanAreaX / raycastArrayLength;
-                    float spacingY = scanAreaY / raycastArrayHeight;
-
-                    // Creates axes along which to align the raycasts
-                    Vector3 raycastGridAxisX = (rightPoint - c.bounds.center).normalized;
-                    Vector3 raycastGridAxisY = (upPoint - c.bounds.center).normalized;
-
-                    // Cast an array of rays to 'sweep' the square for line of sight.
-                    for (int y = 0; y < raycastArrayHeight; y++)
-                    {
-                        for (int x = 0; x < raycastArrayLength; x++)
-                        {
-                            // Creates coordinates along the sweep area for the raycast. 0,0 would be the centre, so for each axis I am taking away a value equivalent to half of that axis dimension, so I can use the bottom-left corner as 0,0
-                            float distanceX = spacingX * x - scanAreaX / 2;
-                            float distanceY = spacingY * y - scanAreaY / 2;
-
-                            // Starts with c.bounds.centre, then adds direction values multiplied by the appropriate distance value for each axis, to create the point that you want the raycast to hit.
-                            Vector3 raycastAimPoint = c.bounds.center + (raycastGridAxisX * distanceX) + (raycastGridAxisY * distanceY);
-
-                            // From that point, it creates a direction value for the raycast to aim in.
-                            Vector3 raycastAimDirection = raycastAimPoint - origin.position;
-
-                            // Launches raycast
-                            if (Vector3.Angle(raycastAimDirection, origin.forward) < angle) // If the raycast direction is still inside the cone
-                            {
-                                // It's actually a BoxCast, so the raycasts tesselate and there are no blind spots.
-                                if (Physics.Raycast(origin.position, raycastAimDirection, out lineOfSightCheck, range, viewable))
-                                {
-                                    if (lineOfSightCheck.collider == c && (hits.Contains(lineOfSightCheck) == false))
-                                    {
-                                        hits.Add(lineOfSightCheck); // Records hit
-
-                                        // Ends for loops prematurely, ensuring no more unnecessary rays are cast if an object has already been found.
-                                        x = raycastArrayLength + 1;
-                                        y = raycastArrayHeight + 1;
-                                        //This is important for performance, otherwise this function will be very laggy.
-                                        //Even then, do not run this every frame. I would probably advise running this every second or so on a timer.
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    hits.Add(lineOfSightCheck); // Records hit
                 }
             }
         }

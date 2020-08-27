@@ -10,6 +10,7 @@ public class FieldOfViewTest : MonoBehaviour
     public LayerMask hitDetection;
 
 
+
     float t;
 
     public Collider c;
@@ -23,14 +24,35 @@ public class FieldOfViewTest : MonoBehaviour
         
     }
 
+
+
+
+    public static float InverseCurveEvaluate(AnimationCurve curve, float t)
+    {
+        float curveMin = curve.keys[0].value;
+        float curveMax = curve.keys[0].value;
+        for (int i = 0; i < curve.keys.Length; i++)
+        {
+            curveMin = Mathf.Min(curveMin, curve.keys[i].value);
+            curveMax = Mathf.Max(curveMax, curve.keys[i].value);
+        }
+        float range = curveMax - curveMin;
+
+        return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
+    }
+
+
+
     // Update is called once per frame
     void Update()
     {
+        
 
         t += Time.deltaTime;
         if (t > 0.5f)
         {
             hits = AIFunction.VisionConeBetterOptimised(transform, angle, range, hitDetection, hitDetection, boxCastDiameter);
+            //hits = AIFunction.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
             /*
             string objectsSeen = "Objects seen: ";
 
@@ -54,19 +76,19 @@ public class FieldOfViewTest : MonoBehaviour
 
     private void OnGUI()
     {
-        Vector2 screenUnit = new Vector2(Screen.width / 16, Screen.height / 9);
-
-        Rect boxPos = new Rect(0, 0, screenUnit.x * 3, screenUnit.y * 9);
-
-
-        string text = "Objects viewed:";
-        foreach(RaycastHit rh in hits)
+        if (hits != null && hits.Length > 0)
         {
-            text += "\n" + rh.collider.name + ", " + rh.point;
+            Vector2 screenUnit = new Vector2(Screen.width / 16, Screen.height / 9);
+            Rect boxPos = new Rect(0, 0, screenUnit.x * 3, screenUnit.y * 9);
+
+            string text = "Objects viewed:";
+            foreach (RaycastHit rh in hits)
+            {
+                text += "\n" + rh.collider.name + ", " + rh.point;
+            }
+
+            GUI.Box(boxPos, text);
         }
-
-
-        GUI.Box(boxPos, text);
     }
 
     private void OnDrawGizmos()
