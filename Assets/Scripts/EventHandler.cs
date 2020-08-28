@@ -249,6 +249,41 @@ public class AttackMessage
         }
         return false;
     }
+
+
+
+
+
+    public bool AtRisk(Health h)
+    {
+        switch (type)
+        {
+            case AttackType.Ranged:
+
+                
+
+                break;
+            case AttackType.Melee:
+
+                // Checks if the position is inside the angle and range of the melee attack
+
+                break;
+            case AttackType.AreaOfEffect:
+
+                // Checks if the position is inside the blast radius
+
+                break;
+            case AttackType.ExplosiveRanged:
+
+                // Checks simultaneously for the cone of fire and blast radius
+
+                break;
+            default:
+
+                break;
+        }
+        return false;
+    }
 }
 
 public class DamageMessage

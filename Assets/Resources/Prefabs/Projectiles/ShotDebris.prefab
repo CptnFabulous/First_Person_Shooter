@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8093613007427399318}
   - component: {fileID: 8093613007427399319}
   - component: {fileID: 1716371641318528307}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ShotDebris
   m_TagString: Untagged
   m_Icon: {fileID: 0}

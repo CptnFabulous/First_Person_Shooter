@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7986246975571047658}
   - component: {fileID: 2602294609086113858}
   - component: {fileID: 552621429713403448}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 2403464751674303578}
   - component: {fileID: 3896271167750539681}
   - component: {fileID: 8522233913276414410}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ImpactGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +336,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   origin: {fileID: 0}
-  originFaction: {fileID: 0}
   damage: 20
   directHitMultiplier: 1.5
   blastRadius: 5

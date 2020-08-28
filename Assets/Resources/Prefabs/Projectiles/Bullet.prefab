@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2483134584432345369}
   - component: {fileID: 8466749447774014708}
   - component: {fileID: 4662434428516752633}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   origin: {fileID: 0}
-  originFaction: {fileID: 0}
   damage: 5
   knockback: 0
   criticalMultiplier: 1

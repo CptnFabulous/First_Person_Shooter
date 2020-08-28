@@ -7,7 +7,8 @@ public class FieldOfViewTest : MonoBehaviour
     public float angle;
     public float range;
     public float boxCastDiameter;
-    public LayerMask hitDetection;
+    public LayerMask stuffBeingSearchedFor = ~0;
+    public LayerMask hitDetection = ~0;
 
 
 
@@ -51,7 +52,7 @@ public class FieldOfViewTest : MonoBehaviour
         t += Time.deltaTime;
         if (t > 0.5f)
         {
-            hits = AIFunction.VisionConeBetterOptimised(transform, angle, range, hitDetection, hitDetection, boxCastDiameter);
+            hits = AIFunction.VisionCone(transform, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
             //hits = AIFunction.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
             /*
             string objectsSeen = "Objects seen: ";

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521206613092}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Head
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521273346827}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 4oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521339737096}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550521520513005}
   - component: {fileID: 2268550521520512978}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550521586005987}
   - component: {fileID: 2268550521586005984}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521687214511}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -339,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521839075483}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 8oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521843383292}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,7 +403,7 @@ GameObject:
   - component: {fileID: 2268550521892781698}
   - component: {fileID: 2268550521892781697}
   - component: {fileID: 2268550521892781696}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Gun
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -480,7 +480,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550521911566844}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 10oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,7 +513,7 @@ GameObject:
   - component: {fileID: 2268550521944281605}
   - component: {fileID: 6392478131383465486}
   - component: {fileID: 2268550521944281611}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BodyHitbox
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -577,7 +577,7 @@ GameObject:
   - component: {fileID: 2268550522159307089}
   - component: {fileID: 9178911240911086018}
   - component: {fileID: 2268550522159307117}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy_MachineGun_Right
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -733,8 +733,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   properName: 
   description: A placeholder enemy armed with an automatic rifle.
-  faction: {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
   isUnique: 0
+  faction: {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
 --- !u!114 &2268550522159307089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -826,7 +826,6 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    projectile: {fileID: 11400000, guid: bb95f64de1f006e4c818070b55e517ad, type: 2}
     projectileOrigin: {fileID: 2268550521520513005}
     projectileCount: 1
     burstAmount: 20
@@ -856,7 +855,7 @@ GameObject:
   - component: {fileID: 2268550522219510465}
   - component: {fileID: 1924520342533702387}
   - component: {fileID: 2268550522219510471}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: HeadHitbox
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -914,7 +913,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522277934370}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 12oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -945,7 +944,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522278289045}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -976,7 +975,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522391637301}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1007,7 +1006,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522443260680}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1039,7 +1038,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550522478816575}
   - component: {fileID: 2268550522478816572}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1117,7 +1116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522539909268}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hitboxes
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1150,7 +1149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550522580155602}
   - component: {fileID: 2268550522580155603}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1230,7 +1229,7 @@ GameObject:
   - component: {fileID: 2268550522609072337}
   - component: {fileID: 2268550522609072343}
   - component: {fileID: 2268550522609072342}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Head
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1306,7 +1305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550522634148956}
   - component: {fileID: 2268550522634148957}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1384,7 +1383,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550522675461993}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleflashsection (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1416,7 +1415,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550522740289541}
   - component: {fileID: 2268550522740289546}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1496,7 +1495,7 @@ GameObject:
   - component: {fileID: 2268550522822297230}
   - component: {fileID: 2268550522822297228}
   - component: {fileID: 2268550522822297231}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Torso
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -1572,7 +1571,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550522890739830}
   - component: {fileID: 2268550522890739831}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1652,7 +1651,7 @@ GameObject:
   - component: {fileID: 2268550522985859009}
   - component: {fileID: 2268550522985859008}
   - component: {fileID: 2268550522985859011}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: muzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1780,7 +1779,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550523007869541}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1811,7 +1810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550523040770156}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 6oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1843,7 +1842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550523078701314}
   - component: {fileID: 2268550523078701315}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1922,7 +1921,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2268550523228944241}
   - component: {fileID: 2268550523228944246}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: New Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2000,7 +1999,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2268550523279439046}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 2oclock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
