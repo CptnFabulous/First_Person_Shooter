@@ -23,7 +23,7 @@ public class AttackMessage
         AreaOfEffect,
         ExplosiveRanged,
     }
-    
+
     public Character attacker; // The entity performing the attack
     public AttackType type;
     public LayerMask hitDetection;
@@ -76,214 +76,44 @@ public class AttackMessage
 
     
 
-
-    public bool AtRisk(Transform NPC)
-    {
-        switch (type)
-        {
-            case AttackType.Ranged:
-
-                // Checks if the position is inside the cone of fire
-
-                foreach (Transform t in NPC.GetComponentsInChildren<Transform>())
-                {
-                    if (Vector3.Distance(origin, t.position) <= maxRange) // Check distance
-                    {
-                        if (Vector3.Angle(t.position - origin, direction) < coneAngle) // Check angle
-                        {
-                            
-                            
-                            
-                            // Launches a raycast between the cover position and the attacker
-                            RaycastHit lineOfSightCheck;
-                            if (Physics.Raycast(origin, t.position - origin, out lineOfSightCheck, Vector3.Distance(origin, t.position) + 0.01f, hitDetection))
-                            {
-                                Transform tr = lineOfSightCheck.collider.transform; // Gets transform of object
-
-                                DamageHitbox dh = tr.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
-                                if (dh != null)
-                                {
-                                    tr = dh.GetRootObject().transform;
-                                }
-
-                                if (tr == NPC)
-                                {
-                                    return true;
-                                }
-                            }
-
-
-
-
-
-
-
-
-                        }
-                    }
-                    
-                    
-                    
-                    
-                    // Check line of sight
-                }
-                
-                break;
-            case AttackType.Melee:
-
-                // Checks if the position is inside the angle and range of the melee attack
-
-                break;
-            case AttackType.AreaOfEffect:
-
-                // Checks if the position is inside the blast radius
-
-                break;
-            case AttackType.ExplosiveRanged:
-
-                // Checks simultaneously for the cone of fire and blast radius
-
-                break;
-            default:
-
-                break;
-        }
-        return false;
-    }
-
-    public bool AtRisk(Collider[] hitboxes)
+    public bool AtRisk(Vector3 positionChecked)
     {
         switch(type)
         {
             case AttackType.Ranged:
 
-                Collider[] colliders = Physics.OverlapSphere(origin, maxRange);
-
-                // Check 
-
-                /*
-                RaycastHit[] fieldOfView = ConeCastAll(origin, maxRange, direction, maxRange, coneAngle);
-                foreach (RaycastHit rh in fieldOfView) // Checks raycast hits against specified colliders in case one of them was hit
-                {
-                    foreach (Collider c in hitboxes)
-                    {
-                        if (rh.collider == c) // If one of the colliders was hit
-                        {
-                            RaycastHit lineOfSightCheck;
-                            if (Physics.Raycast(origin, rh.point - origin, out lineOfSightCheck, Vector3.Distance(origin, rh.point), hitDetection)) // Launches line of sight check from origin to the hit point
-                            {
-                                if (lineOfSightCheck.collider == c)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                */
-                break;
-            case AttackType.Melee:
-
-                // Checks if the position is inside the angle and range of the melee attack
-
-                break;
-            case AttackType.AreaOfEffect:
-
-                // Checks if the position is inside the blast radius
-
-                break;
-            case AttackType.ExplosiveRanged:
-
-                // Checks simultaneously for the cone of fire and blast radius
-
-                break;
-            default:
-
-                break;
-        }
-        return false;
-    }
-
-
-
-    public bool AtRisk(Vector3 position)
-    {
-        switch(type)
-        {
-            case AttackType.Ranged:
-
-                // Checks if the position is inside the cone of fire
-                Debug.Log(Vector3.Angle(position - origin, direction));
-                if (Vector3.Angle(position - origin, direction) <= coneAngle) // Is the enemy outside the cone of fire?
-                //if (Vector3.Angle(direction, position - origin) <= coneAngle) // Is the enemy outside the cone of fire?
-                {
-                    return true;
-                    // Have a way to check for projectile width, I do not know this yet
-                    
-                    if (AI.LineOfSight(origin, position, hitDetection, attacker.gameObject)) // Is the enemy behind cover?
-                    //if (AI.LineOfSight(position, attacker.transform, hitDetection))
-                    {
-                        return true;
-                    }
-                }
-
-                break;
-            case AttackType.Melee:
-
-                // Checks if the position is inside the angle and range of the melee attack
-
-                break;
-            case AttackType.AreaOfEffect:
-
-                // Checks if the position is inside the blast radius
-
-                break;
-            case AttackType.ExplosiveRanged:
-
-                // Checks simultaneously for the cone of fire and blast radius
-
-                break;
-            default:
-
-                break;
-        }
-        return false;
-    }
-
-
-
-
-
-    public bool AtRisk(Health h)
-    {
-        switch (type)
-        {
-            case AttackType.Ranged:
-
+                // Check range and angle of attack
                 
+                if (Vector3.Distance(origin, positionChecked) < maxRange)
+                {
+                    
+                }
+
+
 
                 break;
+
             case AttackType.Melee:
 
-                // Checks if the position is inside the angle and range of the melee attack
-
                 break;
+
             case AttackType.AreaOfEffect:
 
-                // Checks if the position is inside the blast radius
-
                 break;
+
             case AttackType.ExplosiveRanged:
 
-                // Checks simultaneously for the cone of fire and blast radius
-
                 break;
+
             default:
 
                 break;
         }
+
         return false;
     }
+
+
 }
 
 public class DamageMessage

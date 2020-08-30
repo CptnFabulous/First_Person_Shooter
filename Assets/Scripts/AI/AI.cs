@@ -159,6 +159,24 @@ public class AI : MonoBehaviour//, IEventObserver
         print("Agent is now looking at " + position + ".");
     }
 
+
+
+
+    void LookTowards(Vector3 thingToLookAt, float degreesPerSecond)
+    {
+        Quaternion correctRotation = Quaternion.LookRotation(thingToLookAt, transform.up);
+        head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
+    }
+
+    bool IsLookingAt(Vector3 thingBeingChecked, float threshold)
+    {
+        if (Vector3.Angle(thingBeingChecked - head.transform.position, head.transform.forward) < threshold)
+        {
+            return true;
+        }
+        return false;
+    }
+
     #endregion
 
     public void Dodge(AttackMessage am)
@@ -172,7 +190,7 @@ public class AI : MonoBehaviour//, IEventObserver
         {
             hitboxes[r] = hp.hitboxes[r].GetComponent<Collider>();
         }
-
+        /*
         if (selfPreservation == true && attackToDodge == null && am.attacker.faction.Affiliation(c.faction) == FactionState.Hostile && am.AtRisk(hitboxes)) // If the attack is being executed by a character that is hostile to this NPC
         {
             print("kablowie");
@@ -180,6 +198,7 @@ public class AI : MonoBehaviour//, IEventObserver
             //attackToDodge = am; // Specifies attack to dodge from
             //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
+        */
     }
 
     public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
