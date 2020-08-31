@@ -35,6 +35,8 @@ public class AvoidAttack : AIMovementBehaviour
 
     public NullableVector3 FindAvoidPosition() // Should I have separate versions for dodging vs. taking cover? I might need this based on whether the enemy is aggressive or skittish
     {
+        Collider[] characterColliders = ai.GetComponentsInChildren<Collider>();
+
         NullableVector3 newSafeLocation = null;
         NavMeshPath followPath = null;
 
@@ -47,7 +49,7 @@ public class AvoidAttack : AIMovementBehaviour
             // Checks if there is an actual point on the navmesh close to the randomly selected position
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
-                if (attackToDodge.AtRisk(followCheck.position) == false) // Checks if the location is safe from the attack
+                if (attackToDodge.AtRisk(followCheck.position, characterColliders) == false) // Checks if the location is safe from the attack
                 {
                     // Ensures that the agent can actually move to the cover position.
                     NavMeshPath nmp = new NavMeshPath();

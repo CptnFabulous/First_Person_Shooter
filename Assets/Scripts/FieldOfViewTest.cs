@@ -52,23 +52,10 @@ public class FieldOfViewTest : MonoBehaviour
         t += Time.deltaTime;
         if (t > 0.5f)
         {
-            hits = AIFunction.VisionCone(transform, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
-            //hits = AIFunction.VisionCone(transform, angle, range, hitDetection, boxCastDiameter);
-            /*
-            string objectsSeen = "Objects seen: ";
+            //hits = AIFunction.VisionCone(transform, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
 
-            foreach (RaycastHit rh in hits)
-            {
-                //Gizmos.DrawWireCube(rh.collider.bounds.center, rh.collider.bounds.size);
-                //Gizmos.DrawIcon(rh.point, rh.collider.name, true);
-                //Gizmos.DrawWireCube(rh.point, new Vector3(boxCastDiameter, boxCastDiameter, boxCastDiameter));
+            hits = AIFunction.VisionCone(transform.position, transform.forward, transform.up, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
 
-                objectsSeen += rh.collider.name + ", ";
-            }
-
-            objectsSeen += ".";
-            print(objectsSeen);
-            */
             t = 0;
         }
 

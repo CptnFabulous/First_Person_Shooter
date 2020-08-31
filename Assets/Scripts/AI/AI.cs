@@ -201,7 +201,7 @@ public class AI : MonoBehaviour//, IEventObserver
         */
     }
 
-    public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
+    public static List<Collider> VisionConeSimple(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
     {
         List<Collider> objectsInView = new List<Collider>();
         Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
@@ -219,137 +219,7 @@ public class AI : MonoBehaviour//, IEventObserver
         return objectsInView;
     }
 
-
-    public static RaycastHit[] RaycastVisionCone(Transform origin, float angle, float range, float raycastDiameter, LayerMask viewable)
-    {
-        #region Figure out amount of raycast rings required
-        float circumference = Mathf.PI * (range * 2); // Creates a circumference of an imaginary circle
-        float coneWidth = circumference / 360 * angle; // Gets the 'length' from travelling across the 'surface' of the end of the cone (and the max width of the distance that needs to be covered with raycasts)
-        float notActualAmountOfRaycastRings = coneWidth / raycastDiameter; // Produces amount of rings needed to fill the whole cone
-        int amountOfRaycastRings = Mathf.RoundToInt(coneWidth / raycastDiameter); // Produces actual amount that can fit in the cone
-        #region Adjusts size of spherecasts to form a uniform covering of the cone's edge
-        if (amountOfRaycastRings > notActualAmountOfRaycastRings) // Ensures that the actual amount is lower than the decimal amount, so there is always not enough space
-        {
-            amountOfRaycastRings -= 1;
-        }
-        float remainder = notActualAmountOfRaycastRings - amountOfRaycastRings; // Obtains the remainder
-        remainder /= amountOfRaycastRings; // Divides the remainder by amountOfRaycastRings
-        raycastDiameter *= (1 + remainder); // Multiplies the width of the raycast by one times the remainder, essentially expanding the existing raycasts to fill the extra space.
-        #endregion
-        float ringAngleOutIncrement = angle / amountOfRaycastRings;
-        #endregion
-
-        for (int r = 0; r < amountOfRaycastRings; r++) // Produce several rings of raycasts
-        {
-            float ringAngleOut = ringAngleOutIncrement * r; // Gets the angle of a hypothetical cone with a max radius of the ring
-            float ringRadiusIncrement = coneWidth / amountOfRaycastRings;
-            float ringRadius = ringRadiusIncrement * r; // Figures out the radius of the current ring
-            float ringCircumference = Mathf.PI * (ringRadius * 2); // Obtains the circumference of the current ring
-
-            // Divide ringCircumference by raycastDiameter to get the required amount of raycasts to fill the ring
-            float notActualAmountOfRingSegments = ringCircumference / raycastDiameter;
-            int amountOfRingSegments = Mathf.RoundToInt(ringCircumference / raycastDiameter);
-            if (amountOfRingSegments < notActualAmountOfRingSegments)
-            {
-                amountOfRingSegments += 1;
-            }
-
-            if (amountOfRingSegments <= 0)
-            {
-                amountOfRingSegments = 1;
-            }
-
-            float ringAngleAroundIncrement = 360 / amountOfRingSegments;
-            // Calculate the required number of spherecasts (of diameter raycastDiameter) to form a ring
-
-            for (float s = 0; s < amountOfRingSegments; s++)
-            {
-                
-                //Vector3 raycastDirection = Quaternion.AngleAxis(ringAngleAround * s, origin.forward) * Quaternion.AngleAxis(ringAngleOutwards, origin.right) * origin.forward;
-                Vector3 raycastDirection = Misc.DirectionFromTransform(origin, new Vector3(ringAngleOut, 0, ringAngleAroundIncrement * s));
-                Debug.DrawRay(origin.position, origin.position + raycastDirection * range);
-            }
-        }
-
-        return null;
-    }
-
-    public static RaycastHit[] RaycastVisionCone(Vector3 origin, Vector3 direction, float angle, float range, float raycastDiameter, LayerMask viewable)
-    {
-        float circumference = Mathf.PI * (range * 2); // Creates a circumference of an imaginary circle
-        float coneWidth = circumference / 360 * angle; // Divides by 360 then multiplies by the angle value to get the distance from travelling that angle around the circle (and the max width of the distance that needs to be covered with raycasts)
-        float notActualAmountOfRaycastRings = coneWidth / raycastDiameter; // Produces amount of rings needed to fill the whole cone
-        int amountOfRaycastRings = Mathf.RoundToInt(coneWidth / raycastDiameter); // Produces actual amount that can fit in the cone
-
-        if (amountOfRaycastRings > notActualAmountOfRaycastRings) // Ensures that the actual amount is lower than the decimal amount, so there is always not enough space
-        {
-            amountOfRaycastRings -= 1;
-        }
-        float remainder = notActualAmountOfRaycastRings - amountOfRaycastRings; // Obtains the remainder
-        remainder /= amountOfRaycastRings; // Divides the remainder by amountOfRaycastRings
-        raycastDiameter *= (1 + remainder); // Multiplies the width of the raycast by one times the remainder, essentially expanding the existing raycasts to fill the extra space.
-
-        float angleIncrement = angle / amountOfRaycastRings;
-
-        for (int r = 0; r < amountOfRaycastRings; r++)
-        {
-            float rotationAroundRing = 0;
-            //Vector3 raycastDirection = Quaternion.AngleAxis(angleIncrement * r, Quaternion.Euler(0, 90, rotationAmount) * direction) * direction; // FIGURE THIS OUT
-
-            // How to produce a Vector3 perpendicular to the direction value? I need the direction, an 'up' orientation and perhaps the origin? Vector3.Cross seems to work, but I don't know how it calculates which specific angle
-
-
-            Vector3 left = Vector3.Cross(direction, Vector3.up).normalized;
-            //left = Vector3.
-            // Multiplies a Quaternion around the cone by the angle rotationAroundRing, plus a Quaternion representing how angled out the ring is
-
-            Vector3 raycastDirection = Quaternion.AngleAxis(rotationAroundRing, direction) * Quaternion.AngleAxis(angleIncrement * r, left) * direction;
-
-            Color c = Color.white;
-            float cv = (c.r / amountOfRaycastRings) * r;
-            c = new Color(cv, cv, cv);
-
-            Debug.DrawRay(origin, raycastDirection * range, c);
-
-        }
-
-        return null;
-    }
-    
-    public static RaycastHit[] RaycastVisionField(Vector3 origin, Vector3 direction, Vector2 angles, float range, float raycastDiameter, LayerMask viewable)
-    {
-        List<RaycastHit> hits = new List<RaycastHit>();
-        
-        float angleCircumferenceX = Mathf.PI * (range * 2);
-        angleCircumferenceX /= 360;
-        angleCircumferenceX *= angles.x;
-        int raycastArrayDiameterX = Mathf.RoundToInt(angleCircumferenceX / raycastDiameter);
-        float angleIncrementX = angles.x * 2 / raycastArrayDiameterX;
-
-        float angleCircumferenceY = Mathf.PI * (range * 2);
-        angleCircumferenceY /= 360;
-        angleCircumferenceY *= angles.y;
-        int raycastArrayDiameterY = Mathf.RoundToInt(angleCircumferenceY / raycastDiameter);
-        float angleIncrementY = angles.y * 2 / raycastArrayDiameterY;
-
-        for (int x = 0; x < raycastArrayDiameterX; x++)
-        {
-            for (int y = 0; y < raycastArrayDiameterY; y++)
-            {
-                Vector3 raycastDirection = Quaternion.Euler(angleIncrementX * x, angleIncrementY * y, 0) * direction;
-
-                RaycastHit rh;
-                if (Physics.SphereCast(origin, raycastDiameter, raycastDirection, out rh, range, viewable))
-                {
-                    hits.Add(rh);
-                }
-            }
-        }
-
-        return hits.ToArray();
-    }
-
-    public static List<Collider> FieldOfView(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
+    public static List<Collider> VisionConeSimpleTwoAngles(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
     {
         List<Collider> objectsInView = new List<Collider>();
         Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
@@ -506,33 +376,6 @@ public class AI : MonoBehaviour//, IEventObserver
         }
 
         return true; // If the raycast did not hit anything, there is nothing inbetween the two objects (except for things that the raycast does not deem important)
-
-        /*
-        // Launches a raycast between the cover position and the attacker
-        RaycastHit lineOfSightCheck;
-        if (Physics.Raycast(viewer, viewed - viewer, out lineOfSightCheck, Vector3.Distance(viewer, viewed), coverCriteria))
-        {
-            GameObject g = lineOfSightCheck.collider.gameObject; // Gets transform of object
-
-            DamageHitbox dh = g.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
-            if (dh != null)
-            {
-                g = dh.GetRootObject();
-            }
-
-            foreach(GameObject go in exceptions)
-            {
-                if (g == go)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return true; // If the raycast did not hit anything, there is nothing inbetween the two objects (except for things that the raycast does not deem important)
-        */
     }
 
     public static bool LineOfSight(Vector3 viewer, Vector3 viewed, LayerMask coverCriteria, GameObject exception)

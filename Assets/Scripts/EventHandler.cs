@@ -74,9 +74,35 @@ public class AttackMessage
     }
     */
 
-    
+    public Character[] CharactersAtRisk()
+    {
+        switch (type)
+        {
+            case AttackType.Ranged:
 
-    public bool AtRisk(Vector3 positionChecked)
+                break;
+
+            case AttackType.Melee:
+
+                break;
+
+            case AttackType.AreaOfEffect:
+
+                break;
+
+            case AttackType.ExplosiveRanged:
+
+                break;
+
+            default:
+
+                break;
+        }
+
+        return new Character[0];
+    }
+
+    public bool AtRisk(Vector3 positionChecked, Collider[] characterColliders)
     {
         switch(type)
         {
@@ -84,10 +110,7 @@ public class AttackMessage
 
                 // Check range and angle of attack
                 
-                if (Vector3.Distance(origin, positionChecked) < maxRange)
-                {
-                    
-                }
+                //if (AIFunction.VisionConeColliderCheck(characterColliders, ori))
 
 
 
