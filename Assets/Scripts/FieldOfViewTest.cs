@@ -53,7 +53,6 @@ public class FieldOfViewTest : MonoBehaviour
         if (t > 0.5f)
         {
             //hits = AIFunction.VisionCone(transform, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
-
             hits = AIFunction.VisionCone(transform.position, transform.forward, transform.up, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
 
             t = 0;

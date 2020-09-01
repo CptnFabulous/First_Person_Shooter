@@ -131,26 +131,33 @@ public class AI : MonoBehaviour//, IEventObserver
     }
 
     #region Looking at stuff
-
-    void AdjustLook(Vector3 newLookPoint)
+    void LookTowards(Vector3 position, float degreesPerSecond)
     {
-        if (inLookIENumerator == false)
-        {
-            aimMarker = Vector3.MoveTowards(aimMarker, newLookPoint, lookSpeed * Time.deltaTime);
-            head.transform.LookAt(aimMarker, transform.up);
-        }
+        Quaternion correctRotation = Quaternion.LookRotation(position, transform.up);
+        head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
     }
 
-    public IEnumerator LookAtThing(Vector3 position, float lookTime, AnimationCurve lookCurve)
+    bool IsLookingAt(Vector3 position, float threshold)
+    {
+        if (Vector3.Angle(position - head.transform.position, head.transform.forward) < threshold)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public IEnumerator LookAtThing(Vector3 position, float lookTime, float threshold, AnimationCurve lookCurve)
     {
         inLookIENumerator = true;
 
         float timer = 0;
 
-        while (Vector3.Distance(aimMarker, position) > lookThreshold)
+        Quaternion originalRotation = head.transform.rotation;
+
+        while (IsLookingAt(position, threshold) == false)
         {
-            Vector3 lookLerp = Vector3.Lerp(aimMarker, position, lookCurve.Evaluate(timer));
-            head.transform.LookAt(lookLerp, transform.up);
+            Quaternion lookLerp = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
+            head.transform.rotation = lookLerp;
             timer += Time.deltaTime / lookTime;
             yield return new WaitForEndOfFrame();
         }
@@ -159,22 +166,24 @@ public class AI : MonoBehaviour//, IEventObserver
         print("Agent is now looking at " + position + ".");
     }
 
-
-
-
-    void LookTowards(Vector3 thingToLookAt, float degreesPerSecond)
+    public IEnumerator LookAtThingOld(Vector3 position, float lookTime, AnimationCurve lookCurve)
     {
-        Quaternion correctRotation = Quaternion.LookRotation(thingToLookAt, transform.up);
-        head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
-    }
+        inLookIENumerator = true;
 
-    bool IsLookingAt(Vector3 thingBeingChecked, float threshold)
-    {
-        if (Vector3.Angle(thingBeingChecked - head.transform.position, head.transform.forward) < threshold)
+        float timer = 0;
+
+        Vector3 originalMarkerPosition = aimMarker;
+
+        while (Vector3.Distance(aimMarker, position) > lookThreshold)
         {
-            return true;
+            Vector3 lookLerp = Vector3.Lerp(originalMarkerPosition, position, lookCurve.Evaluate(timer));
+            aimMarker = lookLerp;
+            timer += Time.deltaTime / lookTime;
+            yield return new WaitForEndOfFrame();
         }
-        return false;
+
+        inLookIENumerator = false;
+        print("Agent is now looking at " + position + ".");
     }
 
     #endregion

@@ -109,8 +109,7 @@ public class AttackMessage
             case AttackType.Ranged:
 
                 // Check range and angle of attack
-                
-                //if (AIFunction.VisionConeColliderCheck(characterColliders, ori))
+
 
 
 
