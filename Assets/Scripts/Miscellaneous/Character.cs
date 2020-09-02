@@ -21,4 +21,7 @@ public class Character : Entity
         GameObject g = d.GetRootObject();
         return g.GetComponent<Character>();
     }
+
+
+    
 }

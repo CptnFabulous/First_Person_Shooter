@@ -27,25 +27,42 @@ public class AttackMessage
     public Character attacker; // The entity performing the attack
     public AttackType type;
     public LayerMask hitDetection;
+    public LayerMask thingsInDanger = 9;
+
+    Character[] charactersAtRisk;
 
     // Important data about attack zone for enemy avoidance
     public Vector3 origin;
+
     // Directional ranged attacks
     public Vector3 direction; // The direction of the attack
     public float maxRange; // The maximum range of the attack
     public float projectileDiameter; // How wide the initial attack or projectile will be
     public float coneAngle; // How much the attack can deviate in terms of direction
     public float velocity; // Speed at which the attack will move through the air
+
     // Area of effect
     public Vector3 impactPosition; // The point that the area of effect emanates from
     public float effectRadius; // The maximum distance the area of effect will emanate
+
     // Melee
     public float delay; // Duration of telegraph before the melee attack deals damage
     public Vector2 attackAngles;
 
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
     {
-        return new AttackMessage { attacker = attacker, type = AttackType.Ranged, origin = origin, direction = direction, maxRange = maxRange, projectileDiameter = projectileDiameter, coneAngle = coneAngle, velocity = velocity, hitDetection = hitDetection };
+        AttackMessage m = new AttackMessage();
+        m.attacker = attacker;
+        m.type = AttackType.Ranged;
+        m.origin = origin;
+        m.direction = direction;
+        m.maxRange = maxRange;
+        m.projectileDiameter = projectileDiameter;
+        m.coneAngle = coneAngle;
+        m.velocity = velocity;
+        m.hitDetection = hitDetection;
+
+        return m;
     }
 
     public static AttackMessage Melee(Character attacker, Vector3 direction, float radius, float angle, float maxRange, float delay)
@@ -63,34 +80,59 @@ public class AttackMessage
         //return new AttackMessage { attacker = attacker, }
         return null;
     }
-    /*
-    public bool LineOfSightWholeCollider(Vector3 rayOrigin, Collider[] hitboxes, LayerMask hitDetection)
-    {
-        List<Vector3> hitboxNormals = new List<Vector3>();
-        foreach(Collider c in hitboxes)
-        {
-            hitboxNormals += c.
-        }
-    }
-    */
 
     public Character[] CharactersAtRisk()
     {
+        List<Character> list = new List<Character>();
+
         switch (type)
         {
             case AttackType.Ranged:
+
+                // Perform a line of sight check
+                RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, thingsInDanger, hitDetection);
+                foreach(RaycastHit rh in thingsInLineOfFire)
+                {
+                    Character c = Character.FromHit(rh.collider.gameObject); // Checks if there is an object in 
+
+                    if (c.faction.Affiliation(attacker.faction) == FactionState.Hostile)
+                    {
+                        if (list.Contains(c) == false)
+                        {
+                            list.Add(c);
+                        }
+                    }
+                }
+
 
                 break;
 
             case AttackType.Melee:
 
+
+
+
+
                 break;
 
             case AttackType.AreaOfEffect:
 
+
+
+
+
+
+
                 break;
 
             case AttackType.ExplosiveRanged:
+
+
+
+
+
+
+
 
                 break;
 
@@ -108,7 +150,7 @@ public class AttackMessage
         {
             case AttackType.Ranged:
 
-                // Check range and angle of attack
+                // Check if the character is inside the cone of fire
 
 
 
@@ -117,13 +159,23 @@ public class AttackMessage
 
             case AttackType.Melee:
 
+
+                // Save this until I have an actual melee attack system
+
+
                 break;
 
             case AttackType.AreaOfEffect:
 
+                // Check if the character is inside the blast radius and behind cover
+
+
                 break;
 
             case AttackType.ExplosiveRanged:
+
+
+                // ?? Somehow combine a vision cone check with a blast radius check
 
                 break;
 

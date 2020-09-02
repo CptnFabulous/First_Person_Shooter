@@ -9,6 +9,14 @@ using System;
 public static class AIFunction
 {
     #region Miscellaneous
+
+    // Checks if any part of a collider is within a certain distance of a point
+    public static float ComplexColliderDistance(Collider c, Vector3 origin)
+    {
+        return Vector3.Distance(origin, c.bounds.ClosestPoint(origin));
+    }
+
+    // Checks if any part of a collider is within a certain angle
     public static float ComplexColliderAngle(Collider c, Vector3 origin, Vector3 compareDirection)
     {
         // Produces a position the same distance from the origin as the collider, but straight on
@@ -20,6 +28,7 @@ public static class AIFunction
 
         return Vector3.Angle(compareDirection, closestPoint - origin);
     }
+
 
     public static bool TwoAxisAngleCheck(Vector3 origin, Vector3 forward, Vector3 worldUp, Vector3 positionBeingChecked, Vector2 angles)
     {
