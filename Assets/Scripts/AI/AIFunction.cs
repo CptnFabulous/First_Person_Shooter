@@ -6,6 +6,14 @@ using Unity.Collections;
 using Unity.Jobs;
 using System;
 
+public enum SelfPreservation
+{
+    Skittish,
+    Cautious,
+    Aggressive,
+    Suicidal
+}
+
 public static class AIFunction
 {
     #region Miscellaneous
@@ -211,6 +219,7 @@ public static class AIFunction
 
     #region Vision cones
 
+    // A full featured vision cone that detects and stores everything inside certain parameters
     public static RaycastHit[] VisionCone(Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, float range, LayerMask checkingFor, LayerMask viewable, float raycastSpacing = 0.2f)
     {
         List<RaycastHit> hits = new List<RaycastHit>();
@@ -231,6 +240,7 @@ public static class AIFunction
         return hits.ToArray();
     }
 
+    // Checks if a specific set of objects is inside a vision cone
     public static bool VisionConeColliderCheck(Collider[] colliderSet, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, float range, LayerMask viewable, float raycastSpacing = 0.2f)
     {
         List<RaycastHit> hits = new List<RaycastHit>();
@@ -253,6 +263,7 @@ public static class AIFunction
         return false;
     }
 
+    // Checks if a specific position is inside a vision cone
     public static bool VisionConePositionCheck(Vector3 positionChecked, Vector3 origin, Vector3 forward, float angle, float range, LayerMask viewable, Collider[] exceptions = null)
     {
         if (Vector3.Distance(origin, positionChecked) < range)
@@ -358,6 +369,30 @@ public static class AIFunction
         return hits.ToArray();
     }
     */
+
+    /*
+    public static List<Collider> VisionConeSimpleTwoAngles(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
+    {
+        List<Collider> objectsInView = new List<Collider>();
+        Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
+        foreach (Collider c in objects)
+        {
+            // Obtains the horizontal and vertical relative position data for the raycast hit point relative to the line of sight's origin.
+            Vector3 relativePosition_X = new Vector3(c.transform.position.x, origin.y, c.transform.position.z) - origin;
+            Vector3 relativePosition_Y = new Vector3(origin.x, c.transform.position.y, c.transform.position.z) - origin;
+            Vector2 visionAngle = new Vector2(Vector3.Angle(relativePosition_X, direction), Vector3.Angle(relativePosition_Y, direction));
+            if (visionAngle.x < angles.x && visionAngle.y < angles.y)
+            {
+                if (AI.LineOfSight(origin, c.transform, viewable))
+                {
+                    objectsInView.Add(c); // Add c.gameObject to viewedObjects array
+                }
+            }
+        }
+
+        return objectsInView; // Returns list of objects the player is looking at
+    }
+    */
     #endregion
 
 
@@ -370,10 +405,4 @@ public static class AIFunction
 
 
 
-
-
-
-    
-
-    
 }

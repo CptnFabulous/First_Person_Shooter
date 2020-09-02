@@ -14,13 +14,13 @@ public class ProjectileAttack : NPCAttack
     public override void TelegraphAttack()
     {
         base.TelegraphAttack();
-        AttackMessage m = AttackMessage.Ranged(c.c, c.head.position, c.target.transform.position - c.transform.position, range, projectileStats.diameter, spread, projectileStats.velocity, projectileStats.hitDetection);
+        AttackMessage m = AttackMessage.Ranged(c.characterData, c.head.position, c.target.transform.position - c.transform.position, range, projectileStats.diameter, spread, projectileStats.velocity, projectileStats.hitDetection);
         EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
     }
 
     public override void ExecuteAttack()
     {
         base.ExecuteAttack();
-        Damage.ShootProjectile(projectileStats, spread, range, c.c, c.head, projectileOrigin.position, aimMarker - c.head.position); // Shoots an amount of projectiles based on the attack's damage stats
+        Damage.ShootProjectile(projectileStats, spread, range, c.characterData, c.head, projectileOrigin.position, aimMarker - c.head.position); // Shoots an amount of projectiles based on the attack's damage stats
     }
 }

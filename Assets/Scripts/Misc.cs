@@ -25,17 +25,52 @@ public static class Misc
         return Quaternion.AngleAxis(axes.x, right) * Quaternion.AngleAxis(axes.y, up) * Quaternion.AngleAxis(axes.z, forward) * forward;
     }
     #endregion
-}
 
-public class DirectionValues
-{
-    public Vector3 position;
-    public Vector3 forward;
-    public Vector3 worldUp;
-
-    public static DirectionValues FromTransform(Transform t)
+    #region Inverse clamp
+    public static float InverseClamp(float value, float min, float max)
     {
-        return new DirectionValues {position = t.position, forward = t.forward, worldUp = t.up };
+        if (value > max)
+        {
+            return min;
+        }
+        else if (value < min)
+        {
+            return max;
+        }
+        else
+        {
+            return value;
+        }
     }
 
+    public static int InverseClamp(int value, int min, int max)
+    {
+        if (value > max)
+        {
+            return min;
+        }
+        else if (value < min)
+        {
+            return max;
+        }
+        else
+        {
+            return value;
+        }
+    }
+    #endregion
+
+    public static float InverseCurveEvaluate(AnimationCurve curve, float t)
+    {
+        float curveMin = curve.keys[0].value;
+        float curveMax = curve.keys[0].value;
+        for (int i = 0; i < curve.keys.Length; i++)
+        {
+            curveMin = Mathf.Min(curveMin, curve.keys[i].value);
+            curveMax = Mathf.Max(curveMax, curve.keys[i].value);
+        }
+        float range = curveMax - curveMin;
+
+        return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
+    }
 }

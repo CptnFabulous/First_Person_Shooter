@@ -49,6 +49,7 @@ public class AttackMessage
     public float delay; // Duration of telegraph before the melee attack deals damage
     public Vector2 attackAngles;
 
+    #region Create new message
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
     {
         AttackMessage m = new AttackMessage();
@@ -62,6 +63,7 @@ public class AttackMessage
         m.velocity = velocity;
         m.hitDetection = hitDetection;
 
+        m.charactersAtRisk = m.GetCharactersAtRisk(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
         return m;
     }
 
@@ -80,8 +82,9 @@ public class AttackMessage
         //return new AttackMessage { attacker = attacker, }
         return null;
     }
+    #endregion
 
-    public Character[] CharactersAtRisk()
+    public Character[] GetCharactersAtRisk()
     {
         List<Character> list = new List<Character>();
 
@@ -144,6 +147,21 @@ public class AttackMessage
         return new Character[0];
     }
 
+    // Checks if a character is in the line of fire
+    public bool AtRisk(Character c)
+    {
+        foreach(Character ch in charactersAtRisk)
+        {
+            if (ch == c)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Checks if a position is in the line of fire
     public bool AtRisk(Vector3 positionChecked, Collider[] characterColliders)
     {
         switch(type)
@@ -152,8 +170,19 @@ public class AttackMessage
 
                 // Check if the character is inside the cone of fire
 
-
-
+                // If inside range
+                if (Vector3.Distance(origin, positionChecked) < maxRange)
+                {
+                    // If inside angle
+                    if (Vector3.Angle(direction, positionChecked - origin) < coneAngle)
+                    {
+                        // If inside line of sight
+                        if (AIFunction.SimpleLineOfSightCheck(positionChecked, origin, hitDetection, characterColliders))
+                        {
+                            return true;
+                        }
+                    }
+                }
 
                 break;
 

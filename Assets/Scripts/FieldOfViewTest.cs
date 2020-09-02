@@ -28,19 +28,7 @@ public class FieldOfViewTest : MonoBehaviour
 
 
 
-    public static float InverseCurveEvaluate(AnimationCurve curve, float t)
-    {
-        float curveMin = curve.keys[0].value;
-        float curveMax = curve.keys[0].value;
-        for (int i = 0; i < curve.keys.Length; i++)
-        {
-            curveMin = Mathf.Min(curveMin, curve.keys[i].value);
-            curveMax = Mathf.Max(curveMax, curve.keys[i].value);
-        }
-        float range = curveMax - curveMin;
-
-        return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
-    }
+    
 
 
 
@@ -52,9 +40,7 @@ public class FieldOfViewTest : MonoBehaviour
         t += Time.deltaTime;
         if (t > 0.5f)
         {
-            //hits = AIFunction.VisionCone(transform, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
             hits = AIFunction.VisionCone(transform.position, transform.forward, transform.up, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
-
             t = 0;
         }
 

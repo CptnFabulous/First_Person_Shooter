@@ -26,7 +26,7 @@ public class AI : MonoBehaviour//, IEventObserver
     [HideInInspector] public Animator stateMachine;
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
-    [HideInInspector] public Character c;
+    [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
     [HideInInspector] public EventObserver eo;
 
@@ -42,11 +42,16 @@ public class AI : MonoBehaviour//, IEventObserver
     public float yFOV;
     public LayerMask viewDetection = ~0;
     [HideInInspector] public List<GameObject> fieldOfVision; // { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
-
     public float pursueRange;
+    
 
     public Character target;
-    public bool selfPreservation = true;
+
+    
+
+
+    [Header("Self-preservation")]
+    public SelfPreservation selfPreservationBehaviour;
     public AttackMessage attackToDodge;
 
 
@@ -65,7 +70,7 @@ public class AI : MonoBehaviour//, IEventObserver
         stateMachine = GetComponent<Animator>();
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
-        c = GetComponent<Character>();
+        characterData = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();
 
         eo = GetComponent<EventObserver>();
@@ -190,65 +195,25 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public void Dodge(AttackMessage am)
     {
-        // If the AI is not already dodging an attack
-        // If the attack is by an enemy who will harm them
-        // If the AI is in the path of the attack
+        
 
         Collider[] hitboxes = new Collider[hp.hitboxes.Length];
         for(int r = 0; r < hitboxes.Length; r++)
         {
             hitboxes[r] = hp.hitboxes[r].GetComponent<Collider>();
         }
-        /*
-        if (selfPreservation == true && attackToDodge == null && am.attacker.faction.Affiliation(c.faction) == FactionState.Hostile && am.AtRisk(hitboxes)) // If the attack is being executed by a character that is hostile to this NPC
+
+        // If the AI is willing to dodge attacks
+        // If the AI is not already dodging an attack
+        // If the AI is at risk of being damaged
+        if (selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
         {
-            print("kablowie");
-            print(c.properName + " is being attacked by " + am.attacker.name + "!");
-            //attackToDodge = am; // Specifies attack to dodge from
+            attackToDodge = am; // Specifies attack to dodge from
             //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
-        */
     }
 
-    public static List<Collider> VisionConeSimple(Vector3 origin, Vector3 direction, float angle, float range, LayerMask viewable)
-    {
-        List<Collider> objectsInView = new List<Collider>();
-        Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
-        foreach (Collider c in objects)
-        {
-            if (Vector3.Angle(c.transform.position - origin, direction) < angle) // Eliminates all objects outside a certain viewing angle
-            {
-                if (LineOfSight(origin, c.transform, viewable))
-                {
-                    objectsInView.Add(c); // Add c.gameObject to viewedObjects array
-                }
-            }
-        }
-
-        return objectsInView;
-    }
-
-    public static List<Collider> VisionConeSimpleTwoAngles(Vector3 origin, Vector3 direction, Vector2 angles, float range, LayerMask viewable)
-    {
-        List<Collider> objectsInView = new List<Collider>();
-        Collider[] objects = Physics.OverlapSphere(origin, range); // Checks for all objects in range
-        foreach (Collider c in objects)
-        {
-            // Obtains the horizontal and vertical relative position data for the raycast hit point relative to the line of sight's origin.
-            Vector3 relativePosition_X = new Vector3(c.transform.position.x, origin.y, c.transform.position.z) - origin;
-            Vector3 relativePosition_Y = new Vector3(origin.x, c.transform.position.y, c.transform.position.z) - origin;
-            Vector2 visionAngle = new Vector2(Vector3.Angle(relativePosition_X, direction), Vector3.Angle(relativePosition_Y, direction));
-            if (visionAngle.x < angles.x && visionAngle.y < angles.y)
-            {
-                if (LineOfSight(origin, c.transform, viewable))
-                {
-                    objectsInView.Add(c); // Add c.gameObject to viewedObjects array
-                }
-            }
-        }
-
-        return objectsInView; // Returns list of objects the player is looking at
-    }
+    
 
     Character AcquireTarget()
     {
@@ -259,7 +224,7 @@ public class AI : MonoBehaviour//, IEventObserver
             {
                 //print("Line of sight established between agent and " + thing.name);
                 Character targetCharacter = thing.transform.root.GetComponent<Character>();
-                if (targetCharacter != null && c.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
+                if (targetCharacter != null && characterData.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
                 {
                     return targetCharacter;
                 }
