@@ -99,7 +99,7 @@ public class Soldier : NPC
             if (LineOfSight(c.gameObject, targetRange))
             {
                 Character targetCharacter = c.transform.root.GetComponent<Character>();
-                if (targetCharacter != null && ch.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
+                if (targetCharacter != null && ch.HostileTowards(targetCharacter))
                 {
                     return targetCharacter;
                 }

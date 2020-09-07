@@ -41,7 +41,7 @@ public class RadialMenu : MonoBehaviour
     {
         if (isActive == false && MenuIsActive() == true)
         {
-            print(Cursor.lockState);
+            //print(Cursor.lockState);
             gameObject.SetActive(false);
             return true;
         }

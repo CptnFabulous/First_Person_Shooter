@@ -71,8 +71,9 @@ public class Projectile : MonoBehaviour
 
     bool IsAlly(GameObject g)
     {
-        Character ch = Character.FromHit(g);
-        if (ch != null && origin.faction.Affiliation(ch.faction) == FactionState.Allied)
+        //Character ch = Character.FromHit(g);
+        Character ch = Character.FromObject(g);
+        if (ch != null && !origin.HostileTowards(ch))
         {
             return true;
         }

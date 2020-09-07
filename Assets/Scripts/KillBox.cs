@@ -30,7 +30,7 @@ public class KillBox : MonoBehaviour
         if (dh != null)
         {
             //print("Hitbox detected");
-            dh.Damage(Mathf.RoundToInt(damagePerSecond * Time.deltaTime), gameObject, null, damageType, isSevere);
+            //dh.Damage(Mathf.RoundToInt(damagePerSecond * Time.deltaTime), gameObject, null, damageType, isSevere);
         }
     }
 }

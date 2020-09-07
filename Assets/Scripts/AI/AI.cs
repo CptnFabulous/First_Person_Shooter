@@ -193,9 +193,14 @@ public class AI : MonoBehaviour//, IEventObserver
 
     #endregion
 
+
+
+
+
+
     public void Dodge(AttackMessage am)
     {
-        
+        print("Checking attack");
 
         Collider[] hitboxes = new Collider[hp.hitboxes.Length];
         for(int r = 0; r < hitboxes.Length; r++)
@@ -208,7 +213,9 @@ public class AI : MonoBehaviour//, IEventObserver
         // If the AI is at risk of being damaged
         if (selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
         {
-            attackToDodge = am; // Specifies attack to dodge from
+            print(name + "is in danger!");
+
+            //attackToDodge = am; // Specifies attack to dodge from
             //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
     }
@@ -224,7 +231,7 @@ public class AI : MonoBehaviour//, IEventObserver
             {
                 //print("Line of sight established between agent and " + thing.name);
                 Character targetCharacter = thing.transform.root.GetComponent<Character>();
-                if (targetCharacter != null && characterData.faction.Affiliation(targetCharacter.faction) == FactionState.Hostile)
+                if (targetCharacter != null && characterData.HostileTowards(targetCharacter))
                 {
                     return targetCharacter;
                 }

@@ -7,7 +7,7 @@ public class Health : MonoBehaviour
     public Resource health = new Resource { max = 100, current = 100, critical = 20 };
 
     DamageType lastDamageSource;
-    GameObject lastAttacker;
+    Entity lastAttacker;
     bool isDead;
     public DamageHitbox[] hitboxes;
 
@@ -46,14 +46,14 @@ public class Health : MonoBehaviour
     }
     
 
-    public virtual void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
+    public virtual void TakeDamage(int damageAmount, Entity origin, DamageType damageSource)
     {
         health.current -= damageAmount;
         lastAttacker = origin;
         lastDamageSource = damageSource;
     }
 
-    public virtual void Die(DamageType causeOfDeath, GameObject lastAttacker)
+    public virtual void Die(DamageType causeOfDeath, Entity lastAttacker)
     {
         if (isDead == false)
         {

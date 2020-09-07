@@ -91,7 +91,7 @@ public class WeaponHandler : MonoBehaviour
 
             if (weaponSelector.SelectionMade()) // If player has made a selection and exited the weapon wheel
             {
-                print("Selection made");
+                //print("Selection made");
                 StartCoroutine(SwitchWeaponAndFiringMode(weaponIndex, firingModeIndex));
             }
         }
@@ -170,13 +170,11 @@ public class WeaponHandler : MonoBehaviour
             yield return new WaitUntil(() => equippedWeapons[weaponIndex].isSwitchingWeapon == false);
 
             isSwitching = false;
-            print("Weapon switch finished");
+            //print("Weapon switch finished");
         }
 
         if (equippedWeapons[weaponIndex].firingModeIndex != firingModeIndex)
         {
-            print("Index is different");
-            //equippedWeapons[weaponIndex].SwitchWeaponMode(firingModeIndex);
             StartCoroutine(equippedWeapons[weaponIndex].SwitchMode(firingModeIndex));
         }
 
@@ -202,7 +200,7 @@ public class WeaponHandler : MonoBehaviour
         yield return new WaitUntil(() => AllOtherWeaponsHolstered());
 
         StartCoroutine(equippedWeapons[index].Draw());
-        print(equippedWeapons[index].name + " has been drawn.");
+        //print(equippedWeapons[index].name + " has been drawn.");
         currentWeaponIndex = index;
 
         yield return new WaitUntil(() => equippedWeapons[index].isSwitchingWeapon == false);

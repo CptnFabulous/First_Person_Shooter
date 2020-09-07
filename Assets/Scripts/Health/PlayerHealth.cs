@@ -16,13 +16,13 @@ public class PlayerHealth : Health
         ph = GetComponent<PlayerHandler>();
     }
 
-    public override void TakeDamage(int damageAmount, GameObject origin, DamageType damageSource)
+    public override void TakeDamage(int damageAmount, Entity origin, DamageType damageSource)
     {
         base.TakeDamage(damageAmount, origin, damageSource);
         ph.hud.PlayerDamageFeedback();
     }
 
-    public override void Die(DamageType causeOfDeath, GameObject lastAttacker)
+    public override void Die(DamageType causeOfDeath, Entity lastAttacker)
     {
         base.Die(causeOfDeath, lastAttacker);
         //ph.ChangePlayerState(PlayerState.Dead);

@@ -14,8 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factionColour: {r: 0, g: 0.5, b: 0, a: 0}
   description: 
-  alliedFactions: []
-  enemyFactions:
-  - {fileID: 11400000, guid: 75392707070868341b7cfe235f712d23, type: 2}
-  - {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
-  - {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
+  allies:
+  - {fileID: 0}
+  friendlyFire: 0

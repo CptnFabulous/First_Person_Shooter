@@ -30,7 +30,7 @@ public class PlayerMeleeAttack : MonoBehaviour
             if (Physics.Raycast(transform.position, transform.forward, out meleeHit, range, hitDetection))
             {
                 playerHandler.playerAudio.PlayOneShot(hitSound);
-                Damage.PointDamage(playerHandler.gameObject, playerHandler.faction, meleeHit.collider.gameObject, damage, damageType, false);
+                Damage.PointDamage(playerHandler, meleeHit.collider.gameObject, damage, damageType, false);
                 Damage.Knockback(meleeHit.collider.gameObject, knockback, meleeHit.collider.transform.position - transform.position);
             }
             else

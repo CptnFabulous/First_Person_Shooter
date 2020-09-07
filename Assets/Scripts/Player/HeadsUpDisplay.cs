@@ -131,6 +131,24 @@ public class HeadsUpDisplay : MonoBehaviour
         RaycastHit lookingAt;
         if (Physics.Raycast(playerHead.position, transform.forward, out lookingAt, lookRange, lookDetection))
         {
+            Character c = Character.FromObject(lookingAt.collider.gameObject);
+            if (c != null)
+            {
+                if (ph.HostileTowards(c))
+                {
+                    ColourReticle(enemyColour);
+                }
+                else
+                {
+                    ColourReticle(allyColour);
+                }
+            }
+            else
+            {
+                ColourReticle(reticleDefaultColour);
+            }
+
+            /*
             Character c = null;
             DamageHitbox d = lookingAt.collider.GetComponent<DamageHitbox>();
             if (d != null)
@@ -160,6 +178,7 @@ public class HeadsUpDisplay : MonoBehaviour
             {
                 ColourReticle(reticleDefaultColour);
             }
+            */
 
             // Do interacting stuff
         }

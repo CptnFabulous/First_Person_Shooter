@@ -50,23 +50,23 @@ public static class Damage
 
     }
 
-    public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
+    public static void PointDamage(Character origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
             Debug.Log("Hit");
 
-            hitbox.Damage(damage, criticalMultiplier, origin, originFaction, normalCause, criticalCause);
+            hitbox.Damage(damage, criticalMultiplier, origin, normalCause, criticalCause);
         }
     }
 
-    public static void PointDamage(GameObject origin, Faction originFaction, GameObject attackedObject, int damage, DamageType cause, bool isSevere)
+    public static void PointDamage(Character origin, GameObject attackedObject, int damage, DamageType cause, bool isSevere)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
-            hitbox.Damage(damage, origin, originFaction, cause, isSevere);
+            hitbox.Damage(damage, origin, cause, isSevere);
         }
     }
 
@@ -93,7 +93,7 @@ public static class Damage
         
     }
 
-    public static void InstantExplosion(GameObject origin, Faction originFaction, Transform explosionOrigin, int damage, float knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff, LayerMask blastDetection, DamageType cause, bool isSevere)
+    public static void InstantExplosion(Character origin, Transform explosionOrigin, int damage, float knockback, float blastRadius, float explosionTime, AnimationCurve damageFalloff, AnimationCurve knockbackFalloff, LayerMask blastDetection, DamageType cause, bool isSevere)
     {
         List<Health> alreadyDamaged = new List<Health>();
         Collider[] affectedObjects = Physics.OverlapSphere(explosionOrigin.position, blastRadius, blastDetection);
@@ -122,7 +122,7 @@ public static class Damage
                         if (undamagedCheck == false)
                         {
                             int d = Mathf.RoundToInt(damage * damageFalloff.Evaluate(i));
-                            hitbox.Damage(d, origin, originFaction, cause, isSevere);
+                            hitbox.Damage(d, origin, cause, isSevere);
                             Debug.Log("Dealt " + d + " damage to " + hitbox.name + " at " + hitbox.transform.position + ".");
                             alreadyDamaged.Add(hitbox.healthScript);
                         }

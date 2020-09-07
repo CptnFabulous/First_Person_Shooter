@@ -570,7 +570,7 @@ MonoBehaviour:
   stateMachine: {fileID: 3607017158169954358}
   hp: {fileID: 0}
   na: {fileID: 0}
-  c: {fileID: 0}
+  characterData: {fileID: 0}
   audioOutput: {fileID: 0}
   eo: {fileID: 0}
   head: {fileID: 3607017158324565305}
@@ -583,7 +583,7 @@ MonoBehaviour:
   fieldOfVision: []
   pursueRange: 100
   target: {fileID: 0}
-  selfPreservation: 1
+  selfPreservationBehaviour: 1
   lookSpeed: 0
   lookThreshold: 0
   projectileAttacks:

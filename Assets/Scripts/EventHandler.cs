@@ -16,6 +16,7 @@ public class EventHandler : MonoBehaviour
 
 public class AttackMessage
 {
+    #region Variables
     public enum AttackType
     {
         Ranged,
@@ -48,6 +49,8 @@ public class AttackMessage
     // Melee
     public float delay; // Duration of telegraph before the melee attack deals damage
     public Vector2 attackAngles;
+    #endregion
+
 
     #region Create new message
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
@@ -84,7 +87,7 @@ public class AttackMessage
     }
     #endregion
 
-    public Character[] GetCharactersAtRisk()
+    Character[] GetCharactersAtRisk()
     {
         List<Character> list = new List<Character>();
 
@@ -92,21 +95,25 @@ public class AttackMessage
         {
             case AttackType.Ranged:
 
-                // Perform a line of sight check
+                Debug.Log("Checking ranged attack");
+                // Perform a vision cone check
                 RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, thingsInDanger, hitDetection);
                 foreach(RaycastHit rh in thingsInLineOfFire)
                 {
-                    Character c = Character.FromHit(rh.collider.gameObject); // Checks if there is an object in 
+                    // Check raycasthit collider to see if it is a character with a faction
+                    Character c = Character.FromObject(rh.collider.gameObject);
 
-                    if (c.faction.Affiliation(attacker.faction) == FactionState.Hostile)
+                    Debug.Log("sandwiches");
+
+                    // If there is a character class
+                    // If the character class is not already in the list
+                    // If the character class is considered an enemy of the attacker
+                    if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
                     {
-                        if (list.Contains(c) == false)
-                        {
-                            list.Add(c);
-                        }
+                        // If so, the character is added to the list of at risk characters
+                        list.Add(c);
                     }
                 }
-
 
                 break;
 

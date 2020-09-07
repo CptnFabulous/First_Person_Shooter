@@ -21,8 +21,8 @@ public class ExplosiveProjectile : Projectile
     public override void OnHit(RaycastHit rh)
     {
         InstantiateOnImpact(rh, impactEffect.gameObject, false);
-        Damage.InstantExplosion(origin.gameObject, origin.faction, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
-        Damage.PointDamage(origin.gameObject, origin.faction, rh.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
+        Damage.InstantExplosion(origin, transform, damage, knockback, blastRadius, explosionTime, damageFalloff, knockbackFalloff, hitDetection, DamageType.BlownUp, false);
+        Damage.PointDamage(origin, rh.collider.gameObject, Mathf.RoundToInt(damage * directHitMultiplier) - damage, DamageType.Gibbed, true); // Find way to ensure enemy is not damaged twice by direct hit and by splash damage
         base.OnHit(rh);
     }
 }

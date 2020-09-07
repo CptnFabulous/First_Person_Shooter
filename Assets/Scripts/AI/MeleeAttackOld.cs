@@ -200,7 +200,7 @@ public class MeleeAttackOld : NPCAction
 
                 if (Physics.Raycast(hitDetectOrigin.position, head.forward, out lookingAt, range, hitDetection))
                 {
-                    Damage.PointDamage(characterAttacking, characterFaction, lookingAt.collider.gameObject, damage, damageType, false);
+                    //Damage.PointDamage(characterAttacking, lookingAt.collider.gameObject, damage, damageType, false);
                 }
 
                 EndAttack(); // End attack

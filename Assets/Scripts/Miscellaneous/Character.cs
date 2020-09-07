@@ -6,22 +6,19 @@ public class Character : Entity
 {
     public Faction faction;
 
-    public static Character FromHit(GameObject g)
+    public static Character FromObject(GameObject g)
     {
         DamageHitbox d = g.GetComponent<DamageHitbox>();
         if (d != null)
         {
-            return FromHitbox(d);
+            g = d.GetRootObject();
         }
-        return null;
+
+        return g.GetComponentInParent<Character>();
     }
 
-    public static Character FromHitbox(DamageHitbox d)
+    public bool HostileTowards(Character c)
     {
-        GameObject g = d.GetRootObject();
-        return g.GetComponent<Character>();
+        return faction.HostileTowards(c.faction);
     }
-
-
-    
 }

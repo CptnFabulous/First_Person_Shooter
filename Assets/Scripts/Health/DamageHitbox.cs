@@ -10,10 +10,10 @@ public class DamageHitbox : MonoBehaviour
     public bool critical;
     // public bool ricochetsBullets; This currently does not do anything
 
-    public void Damage(int damage, GameObject origin, Faction originFaction, DamageType damageSource, bool isSevere)
+    public void Damage(int damage, Character origin, DamageType damageSource, bool isSevere)
     {
-        Character c = Character.FromHitbox(this);
-        if (c == null || originFaction == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        Character c = Character.FromObject(gameObject);
+        if (c == null || origin.faction == null || origin.HostileTowards(c))
         {
             if (healthScript != null)
             {
@@ -28,10 +28,10 @@ public class DamageHitbox : MonoBehaviour
         }
     }
     
-    public void Damage(int damage, float criticalMultiplier, GameObject origin, Faction originFaction, DamageType normalType, DamageType criticalType)
+    public void Damage(int damage, float criticalMultiplier, Character origin, DamageType normalType, DamageType criticalType)
     {
-        Character c = Character.FromHitbox(this);
-        if (c == null || originFaction == null || originFaction.Affiliation(c.faction) == FactionState.Hostile)
+        Character c = Character.FromObject(gameObject);
+        if (c == null || origin.faction == null || origin.HostileTowards(c))
         {
             if (healthScript != null)
             {

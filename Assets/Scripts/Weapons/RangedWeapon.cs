@@ -640,7 +640,7 @@ public class RangedWeapon : MonoBehaviour
         yield return new WaitForSeconds(switchSpeed);
 
         gameObject.SetActive(false);
-        print("Weapon holstered");
+        //print("Weapon holstered");
         isSwitchingWeapon = false;
     }
     
@@ -878,7 +878,7 @@ public class RangedWeapon : MonoBehaviour
     {
         reloadTimer = 0;
         isReloading = false;
-        print("Reload sequence ended");
+        //print("Reload sequence ended");
     }
     #endregion
 
