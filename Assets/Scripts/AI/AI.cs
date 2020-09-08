@@ -200,13 +200,13 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public void Dodge(AttackMessage am)
     {
-        print("Checking attack");
-
         Collider[] hitboxes = new Collider[hp.hitboxes.Length];
         for(int r = 0; r < hitboxes.Length; r++)
         {
             hitboxes[r] = hp.hitboxes[r].GetComponent<Collider>();
         }
+
+        //print(name + " is checking an incoming attack message");
 
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack

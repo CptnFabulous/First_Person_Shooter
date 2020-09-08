@@ -8,13 +8,18 @@ public class Character : Entity
 
     public static Character FromObject(GameObject g)
     {
+        /*
         DamageHitbox d = g.GetComponent<DamageHitbox>();
         if (d != null)
         {
+            print("Damage hitbox found");
             g = d.GetRootObject();
+            return g.GetComponent<Character>();
         }
+        */
+        return g.transform.root.GetComponent<Character>();
 
-        return g.GetComponentInParent<Character>();
+        //return g.GetComponentInParent<Character>();
     }
 
     public bool HostileTowards(Character c)

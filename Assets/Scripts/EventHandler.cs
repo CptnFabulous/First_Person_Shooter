@@ -96,21 +96,23 @@ public class AttackMessage
         switch (type)
         {
             case AttackType.Ranged:
-
-                Debug.Log("Checking ranged attack");
+                
                 // Perform a vision cone check
                 RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, thingsInDanger, hitDetection);
                 foreach(RaycastHit rh in thingsInLineOfFire)
                 {
                     // Check raycasthit collider to see if it is a character with a faction
-                    // For some reason this returns null with most enemies
                     Character c = Character.FromObject(rh.collider.gameObject);
-
-                    Debug.Log("Found character " + c + " in this object");
 
                     // If there is a character class
                     // If the character class is not already in the list
                     // If the character class is considered an enemy of the attacker
+
+                    // For some reason 'c' returns null, even though 
+                    Debug.Log("Checking two character classes: " + attacker + ", " + c);
+
+                    Debug.Log((c != null) + ", " + (list.Contains(c) == false) + ", " + (attacker.HostileTowards(c)));
+
                     if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
                     {
                         Debug.Log("sandwiches");

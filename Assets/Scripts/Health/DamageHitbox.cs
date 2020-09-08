@@ -58,6 +58,7 @@ public class DamageHitbox : MonoBehaviour
     {
         if (healthScript != null)
         {
+            print("Explosion");
             return healthScript.gameObject;
         }
         return transform.root.gameObject;

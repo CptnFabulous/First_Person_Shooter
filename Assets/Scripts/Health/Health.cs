@@ -57,13 +57,13 @@ public class Health : MonoBehaviour
     {
         if (isDead == false)
         {
-            print(name + " has died");
+            //print(name + " has died");
             isDead = true;
             EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
         }
         else
         {
-            print(name + "is already dead");
+            //print(name + "is already dead");
         }
     }
 

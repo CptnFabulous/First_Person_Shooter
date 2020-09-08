@@ -734,7 +734,7 @@ MonoBehaviour:
   properName: 
   description: A placeholder enemy armed with an automatic rifle.
   isUnique: 0
-  faction: {fileID: 11400000, guid: 31d1f52273e7ec845826ab7bd8d5274e, type: 2}
+  faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
 --- !u!114 &2268550522159307089
 MonoBehaviour:
   m_ObjectHideFlags: 0

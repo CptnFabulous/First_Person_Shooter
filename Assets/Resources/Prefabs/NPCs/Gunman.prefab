@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   properName: Gunman
-  description: A shrewder militant armed with a stolen handgun.
+  description: A placeholder enemy armed with a gun.
   isUnique: 0
   faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
 --- !u!114 &3607017158169954316

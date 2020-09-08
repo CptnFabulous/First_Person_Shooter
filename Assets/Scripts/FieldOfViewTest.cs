@@ -35,18 +35,41 @@ public class FieldOfViewTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        string s;
+        RaycastHit rh;
+        if (Physics.Raycast(transform.position, transform.forward, out rh, 50, ~0))
+        {
+            Character c = Character.FromObject(rh.collider.gameObject);
+            if (c != null)
+            {
+                s = "Looking at a character named " + c.name;
+            }
+            else
+            {
+                s = "No character found";
+            }
 
+
+            
+        }
+        else
+        {
+            s = "Not looking at anything";
+        }
+        print(s);
+
+        /*
         t += Time.deltaTime;
         if (t > 0.5f)
         {
             hits = AIFunction.VisionCone(transform.position, transform.forward, transform.up, angle, range, stuffBeingSearchedFor, hitDetection, boxCastDiameter);
             t = 0;
         }
-
+        */
 
     }
 
+    /*
     private void OnGUI()
     {
         if (hits != null && hits.Length > 0)
@@ -63,13 +86,7 @@ public class FieldOfViewTest : MonoBehaviour
             GUI.Box(boxPos, text);
         }
     }
-
-    private void OnDrawGizmos()
-    {
-        //Gizmos.DrawCube(c.bounds.center, c.bounds.size);
-
-        
-    }
+    */
 
     /*
     private void OnDrawGizmos() // Lecks' stuff
