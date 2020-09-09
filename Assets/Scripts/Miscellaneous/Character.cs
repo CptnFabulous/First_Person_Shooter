@@ -17,9 +17,10 @@ public class Character : Entity
             return g.GetComponent<Character>();
         }
         */
-        return g.transform.root.GetComponent<Character>();
 
         //return g.GetComponentInParent<Character>();
+
+        return g.transform.root.GetComponent<Character>();
     }
 
     public bool HostileTowards(Character c)

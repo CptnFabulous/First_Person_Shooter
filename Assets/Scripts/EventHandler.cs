@@ -68,6 +68,7 @@ public class AttackMessage
         m.hitDetection = hitDetection;
 
         m.charactersAtRisk = m.GetCharactersAtRisk(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
+
         return m;
     }
 
@@ -103,12 +104,12 @@ public class AttackMessage
                 {
                     // Check raycasthit collider to see if it is a character with a faction
                     Character c = Character.FromObject(rh.collider.gameObject);
+                    // For some reason, this returns null often. Maybe the angle of attack is so small for some guns that it won't register the shot?
 
                     // If there is a character class
                     // If the character class is not already in the list
                     // If the character class is considered an enemy of the attacker
 
-                    // For some reason 'c' returns null, even though 
                     Debug.Log("Checking two character classes: " + attacker + ", " + c);
 
                     Debug.Log((c != null) + ", " + (list.Contains(c) == false) + ", " + (attacker.HostileTowards(c)));
