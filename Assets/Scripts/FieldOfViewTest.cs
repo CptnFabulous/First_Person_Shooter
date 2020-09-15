@@ -37,7 +37,7 @@ public class FieldOfViewTest : MonoBehaviour
     {
         string s;
         RaycastHit rh;
-        if (Physics.Raycast(transform.position, transform.forward, out rh, 50, ~0))
+        if (Physics.Raycast(transform.position, transform.forward, out rh, 50, hitDetection))
         {
             Character c = Character.FromObject(rh.collider.gameObject);
             if (c != null)

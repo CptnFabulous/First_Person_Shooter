@@ -41,7 +41,6 @@ public class AI : MonoBehaviour//, IEventObserver
     [Range(0, 180)]
     public float yFOV;
     public LayerMask viewDetection = ~0;
-    [HideInInspector] public List<GameObject> fieldOfVision; // { get; private set; } // Object FOV. This is used for other scripts to easily reference what the enemy can currently see
     public float pursueRange;
     
 
@@ -86,23 +85,7 @@ public class AI : MonoBehaviour//, IEventObserver
     // Update is called once per frame
     void Update()
     {
-        /*
-        fieldOfVision = FieldOfView(head, viewRange, xFOV, yFOV);
-        if (target == null)
-        {
-            Character bestTarget = null;
-            foreach (GameObject g in fieldOfVision)
-            {
-                Character ch = g.GetComponent<Character>();
-                if (ch != null && c.faction.Affiliation(ch.faction) == FactionState.Hostile)
-                {
-                    // Check other potential attributes for character
-                    bestTarget = ch;
-                }
-            }
-            target = bestTarget;
-        }
-        */
+        
 
         bool targetAcquired = target != null;
         if (target == null) // Checks for targets

@@ -8,7 +8,6 @@ public class Character : Entity
 
     public static Character FromObject(GameObject g)
     {
-        /*
         DamageHitbox d = g.GetComponent<DamageHitbox>();
         if (d != null)
         {
@@ -16,11 +15,9 @@ public class Character : Entity
             g = d.GetRootObject();
             return g.GetComponent<Character>();
         }
-        */
+        return g.GetComponentInParent<Character>();
 
-        //return g.GetComponentInParent<Character>();
-
-        return g.transform.root.GetComponent<Character>();
+        //return g.transform.root.GetComponent<Character>();
     }
 
     public bool HostileTowards(Character c)

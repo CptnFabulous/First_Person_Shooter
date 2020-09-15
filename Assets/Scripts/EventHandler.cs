@@ -28,8 +28,8 @@ public class AttackMessage
 
     public Character attacker; // The entity performing the attack
     public AttackType type;
-    public LayerMask hitDetection;
-    public LayerMask thingsInDanger = 9;
+    public LayerMask hitDetection = ~0;
+    public LayerMask damageableThings = (1 << 9);
 
     Character[] charactersAtRisk;
 
@@ -99,24 +99,17 @@ public class AttackMessage
             case AttackType.Ranged:
                 
                 // Perform a vision cone check
-                RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, thingsInDanger, hitDetection);
+                RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
                 foreach(RaycastHit rh in thingsInLineOfFire)
                 {
                     // Check raycasthit collider to see if it is a character with a faction
                     Character c = Character.FromObject(rh.collider.gameObject);
-                    // For some reason, this returns null often. Maybe the angle of attack is so small for some guns that it won't register the shot?
 
                     // If there is a character class
                     // If the character class is not already in the list
                     // If the character class is considered an enemy of the attacker
-
-                    Debug.Log("Checking two character classes: " + attacker + ", " + c);
-
-                    Debug.Log((c != null) + ", " + (list.Contains(c) == false) + ", " + (attacker.HostileTowards(c)));
-
                     if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
                     {
-                        Debug.Log("sandwiches");
                         // If so, the character is added to the list of at risk characters
                         list.Add(c);
                     }

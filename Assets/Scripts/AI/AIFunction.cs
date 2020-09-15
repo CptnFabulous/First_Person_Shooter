@@ -106,7 +106,7 @@ public static class AIFunction
     }
 
     // Uses raycast grids and bound checks to scan for partially concealed colliders
-    public static bool ComplexLineOfSightCheck(Collider c, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
+    public static bool LineOfSightCheckForVisionCone(Collider c, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
     {
         #region Create raycast grid data
         // Finds the largest of the bounds' 3 size axes and produces a value that always exceeds that distance, regardless of the shape and angle.
@@ -222,15 +222,21 @@ public static class AIFunction
     // A full featured vision cone that detects and stores everything inside certain parameters
     public static RaycastHit[] VisionCone(Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, float range, LayerMask checkingFor, LayerMask viewable, float raycastSpacing = 0.2f)
     {
+        // Assembles an empty list, to slowly be added to
         List<RaycastHit> hits = new List<RaycastHit>();
 
+        // Obtains a list of objects within the layers specified. The separate layer mask is important to improve performance, so the game does not check for objects it does not need.
         Collider[] objects = Physics.OverlapSphere(origin, range, checkingFor);
         foreach (Collider c in objects)
         {
-            if (ComplexColliderAngle(c, origin, forward) < angle) // If the angle of that point is inside the cone, perform a raycast check
+            // If the angle of that point is inside the cone, perform a raycast check
+            if (ComplexColliderAngle(c, origin, forward) < angle)
             {
+                // Should I have a first, simpler check to improve performance?
+                
+                // Perform a more complex line of sight check
                 RaycastHit lineOfSightCheck;
-                if (ComplexLineOfSightCheck(c, origin, forward, worldUp, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
+                if (LineOfSightCheckForVisionCone(c, origin, forward, worldUp, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
                 {
                     hits.Add(lineOfSightCheck); // Records hit
                 }
@@ -252,7 +258,7 @@ public static class AIFunction
                 if (ComplexColliderAngle(c, origin, forward) < angle) // If the angle of that point is inside the cone, perform a raycast check
                 {
                     RaycastHit lineOfSightCheck;
-                    if (ComplexLineOfSightCheck(c, origin, forward, worldUp, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
+                    if (LineOfSightCheckForVisionCone(c, origin, forward, worldUp, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
                     {
                         return true;
                     }

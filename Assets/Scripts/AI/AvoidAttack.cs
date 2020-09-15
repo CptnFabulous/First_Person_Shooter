@@ -28,8 +28,7 @@ public class AvoidAttack : AIMovementBehaviour
         ai.na.SetDestination(safeLocation.position);
         if (Vector3.Distance(ai.transform.position, safeLocation.position) <= destinationThreshold) // If enemy has reached the location, i.e. finished dodging
         {
-            ai.attackToDodge = null;
-            ai.stateMachine.SetBool("mustDodgeAttack", false);
+            EndAvoidance();
         }
     }
 
@@ -38,7 +37,7 @@ public class AvoidAttack : AIMovementBehaviour
         Collider[] characterColliders = ai.GetComponentsInChildren<Collider>();
 
         NullableVector3 newSafeLocation = null;
-        NavMeshPath followPath = null;
+        NavMeshPath referencePath = null;
 
         for (int i = 0; i < numberOfChecks; i++)
         {
@@ -51,22 +50,39 @@ public class AvoidAttack : AIMovementBehaviour
             {
                 if (attackToDodge.AtRisk(followCheck.position, characterColliders) == false) // Checks if the location is safe from the attack
                 {
-                    // Ensures that the agent can actually move to the cover position.
+                    // Creates a new path for reference
                     NavMeshPath nmp = new NavMeshPath();
+
+                    // If the agent can actually move to the location
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
-                        // Checks if the new cover position is easier to get to than the old one.
-                        if (newSafeLocation == null || AI.NavMeshPathLength(nmp) < AI.NavMeshPathLength(followPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
+                        // Check navmesh path cost between transform.position and the cover point currently being checked.
+                        bool pathIsBetter = AI.NavMeshPathLength(nmp) < AI.NavMeshPathLength(referencePath); // Checks if the new cover position is easier to get to than the old one.
+
+
+                        if (newSafeLocation == null || pathIsBetter == true) // If there is no path specified, or the new path is better than the old one
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
                             newSafeLocation = NullableVector3.New(followCheck.position);
-                            followPath = nmp;
+                            referencePath = nmp;
                         }
                     }
                 }
             }
         }
 
+        // If the NPC cannot find a safe location, end the state machine behaviour. The NPC will be forced to tank the attack, as there is nowhere for it to dodge to.
+        if (newSafeLocation == null)
+        {
+            EndAvoidance();
+        }
+
         return newSafeLocation;
+    }
+
+    void EndAvoidance()
+    {
+        ai.attackToDodge = null;
+        ai.stateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
     }
 }
