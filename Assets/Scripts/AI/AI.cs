@@ -183,23 +183,15 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public void Dodge(AttackMessage am)
     {
-        Collider[] hitboxes = new Collider[hp.hitboxes.Length];
-        for(int r = 0; r < hitboxes.Length; r++)
-        {
-            hitboxes[r] = hp.hitboxes[r].GetComponent<Collider>();
-        }
-
-        //print(name + " is checking an incoming attack message");
-
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack
         // If the AI is at risk of being damaged
         if (selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
         {
-            print(name + "is in danger!");
+            print(name + " is in danger!");
 
-            //attackToDodge = am; // Specifies attack to dodge from
-            //stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
+            attackToDodge = am; // Specifies attack to dodge from
+            stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
     }
 

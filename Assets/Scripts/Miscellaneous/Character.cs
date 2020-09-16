@@ -11,7 +11,6 @@ public class Character : Entity
         DamageHitbox d = g.GetComponent<DamageHitbox>();
         if (d != null)
         {
-            print("Damage hitbox found");
             g = d.GetRootObject();
             return g.GetComponent<Character>();
         }
