@@ -16,34 +16,40 @@ public class EngageTarget : AIMovementBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-        //Debug.Log(ai.target.transform);
+
         targetLocation = ai.target.transform;
-        currentDestination = NullableVector3.New(ai.transform.position);
-        //currentDestination = FindFollowPosition(targetLocation, minimumRange, maximumRange, numberOfChecks);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        #region Check validity of destination, and return null if no longer valid
         if (currentDestination != null)
         {
-           // For some reason the agent will constantly update its position, even if the target position is still suitable
-
+           // Checks if the agent's position is still ideal or not.
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
             if (AI.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
+                // If not, position is nulled so a new position can be found.
                 currentDestination = null;
             }
         }
+        #endregion
 
+        #region Find new destination if there is none
+        // If there is no position assigned, search for one.
         if (currentDestination == null)
         {
             currentDestination = FindFollowPosition(targetLocation, minimumRange, maximumRange, numberOfChecks);
         }
+        #endregion
 
+        #region Travel to destination
+        // If a valid position is found the agent must travel to it.
         if (currentDestination != null)
         {
             ai.na.SetDestination(currentDestination.position);
         }
+        #endregion
     }
 
     public NullableVector3 FindFollowPosition(Transform target, float minimumRange, float maximumRange, int numberOfChecks)
@@ -79,5 +85,18 @@ public class EngageTarget : AIMovementBehaviour
         }
 
         return newFollowPosition;
+    }
+
+
+
+
+
+
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+
+
+        base.OnStateExit(animator, stateInfo, layerIndex);
     }
 }

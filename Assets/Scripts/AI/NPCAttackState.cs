@@ -25,7 +25,39 @@ public class NPCAttackState : StateMachineBehaviour
         switch (type)
         {
             case NPCAttackType.Melee:
-                //c.projectileAttacks[attackIndex].TargetEnemy(); // Run attack from AI's attack array based on index
+                //c.projectileAttacks[attackIndex].Update(); // Run attack from AI's attack array based on index
+                break;
+            case NPCAttackType.Projectile:
+                if (c.projectileAttacks.Length > 0) // If the enemy has any attacks
+                {
+                    c.projectileAttacks[attackIndex].Update(); // Run attack from AI's attack array based on index
+                }
+                break;
+            case NPCAttackType.Throwable:
+                //c.projectileAttacks[attackIndex].Update(); // Run attack from AI's attack array based on index
+                break;
+            default:
+
+                break;
+        }
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        
+
+        base.OnStateExit(animator, stateInfo, layerIndex);
+
+
+    }
+
+
+    void Update()
+    {
+        switch (type)
+        {
+            case NPCAttackType.Melee:
+                //c.projectileAttacks[attackIndex].Update(); // Run attack from AI's attack array based on index
                 break;
             case NPCAttackType.Projectile:
                 if (c.projectileAttacks.Length > 0) // If the enemy has any attacks
@@ -35,6 +67,28 @@ public class NPCAttackState : StateMachineBehaviour
                 break;
             case NPCAttackType.Throwable:
                 //c.projectileAttacks[attackIndex].TargetEnemy(); // Run attack from AI's attack array based on index
+                break;
+            default:
+
+                break;
+        }
+    }
+
+    void EndAttack()
+    {
+        switch (type)
+        {
+            case NPCAttackType.Melee:
+                //c.projectileAttacks[attackIndex].EndAttack(); // Run attack from AI's attack array based on index
+                break;
+            case NPCAttackType.Projectile:
+                if (c.projectileAttacks.Length > 0) // If the enemy has any attacks
+                {
+                    c.projectileAttacks[attackIndex].EndAttack(); // Run attack from AI's attack array based on index
+                }
+                break;
+            case NPCAttackType.Throwable:
+                //c.projectileAttacks[attackIndex].EndAttack(); // Run attack from AI's attack array based on index
                 break;
             default:
 

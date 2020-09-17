@@ -85,8 +85,8 @@ public class AI : MonoBehaviour//, IEventObserver
     // Update is called once per frame
     void Update()
     {
-        
 
+        #region Check for targets (upgrade this to something snazzier)
         bool targetAcquired = target != null;
         if (target == null) // Checks for targets
         {
@@ -106,16 +106,19 @@ public class AI : MonoBehaviour//, IEventObserver
                 target = null;
             }
         }
-        
-        stateMachine.SetBool("targetAcquired", target != null);
+        #endregion
 
+
+
+        #region Set state machine variables
+        stateMachine.SetBool("targetAcquired", target != null);
         if (target != null)
         {
             stateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
         }
-
         stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         stateMachine.SetInteger("health", hp.health.current);
+        #endregion
     }
 
     #region Looking at stuff
@@ -195,8 +198,8 @@ public class AI : MonoBehaviour//, IEventObserver
         }
     }
 
-    
 
+    #region Target acquisition + checking
     Character AcquireTarget()
     {
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, viewRange);
@@ -212,9 +215,20 @@ public class AI : MonoBehaviour//, IEventObserver
                 }
             }
         }
-        //print("No target found");
+
         return null;
     }
+
+
+    bool CanFindTarget()
+    {
+        return false;
+    }
+
+
+    #endregion
+
+
 
     public static float NavMeshPathLength(NavMeshPath path)
     {

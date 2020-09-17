@@ -102,8 +102,8 @@ MonoBehaviour:
   ai: {fileID: 0}
   movementSpeed: 20
   destinationThreshold: 0.1
-  checkRadius: 2
-  maximumRange: 5
+  checkRadius: 10
+  maxMoveDistance: 20
   numberOfChecks: 15
   coverCriteria:
     serializedVersion: 2
@@ -236,10 +236,10 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 5.5483046e-10
   m_HasExitTime: 0
-  m_HasFixedDuration: 1
+  m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &1102145113775602120
 AnimatorState:
   serializedVersion: 5
