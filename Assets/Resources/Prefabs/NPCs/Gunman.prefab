@@ -580,10 +580,10 @@ MonoBehaviour:
   viewDetection:
     serializedVersion: 2
     m_Bits: 4294967295
-  fieldOfVision: []
   pursueRange: 100
   target: {fileID: 0}
   selfPreservationBehaviour: 1
+  dodgeCooldown: 1
   lookSpeed: 0
   lookThreshold: 0
   projectileAttacks:

@@ -17,6 +17,7 @@ public class Timer
             while(timer > 1)
             {
                 // Do action
+                Action();
                 timer -= 1;
             }
         }

@@ -52,7 +52,6 @@ public class AttackMessage
     public Vector2 attackAngles;
     #endregion
 
-
     #region Create new message
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
     {

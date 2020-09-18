@@ -52,7 +52,8 @@ public class AI : MonoBehaviour//, IEventObserver
     [Header("Self-preservation")]
     public SelfPreservation selfPreservationBehaviour;
     public AttackMessage attackToDodge;
-
+    public float dodgeCooldown;
+    float dodgeCooldownTimer;
 
 
 
@@ -75,6 +76,7 @@ public class AI : MonoBehaviour//, IEventObserver
         eo = GetComponent<EventObserver>();
         eo.OnAttack += Dodge;
     }
+
     /*
     // Start is called before the first frame update
     void Start()
@@ -82,9 +84,12 @@ public class AI : MonoBehaviour//, IEventObserver
         
     }
     */
+
     // Update is called once per frame
     void Update()
     {
+        dodgeCooldownTimer += Time.deltaTime;
+
 
         #region Check for targets (upgrade this to something snazzier)
         bool targetAcquired = target != null;
@@ -186,13 +191,15 @@ public class AI : MonoBehaviour//, IEventObserver
 
     public void Dodge(AttackMessage am)
     {
+        // If the cooldown has finished after the last dodge
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack
         // If the AI is at risk of being damaged
-        if (selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
+        if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
         {
-            print(name + " is in danger!");
-
+            // Resets timer
+            dodgeCooldownTimer = 0;
+            
             attackToDodge = am; // Specifies attack to dodge from
             stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
