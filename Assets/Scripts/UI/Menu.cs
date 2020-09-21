@@ -1,10 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
+    #region Selector prefabs
+    public Button buttonPrefab;
+    public Toggle togglePrefab;
+    public Slider sliderPrefab;
+    public Scrollbar scrollbarPrefab;
+    public Dropdown dropdownPrefab;
+    #endregion
+
+
+
+
+
+
+    
+
+
+
+
+
+    #region Actual functions
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
@@ -31,4 +52,8 @@ public class Menu : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
     }
+    #endregion
+
+
+
 }

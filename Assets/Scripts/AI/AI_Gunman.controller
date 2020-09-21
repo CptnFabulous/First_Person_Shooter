@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ai: {fileID: 0}
-  movementSpeed: 20
+  movementSpeed: 10
   destinationThreshold: 0.1
   checkRadius: 10
   maxMoveDistance: 20

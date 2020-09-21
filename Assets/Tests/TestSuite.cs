@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.AI;
-using SyntaxTree.VisualStudio.Unity.Bridge;
+//using SyntaxTree.VisualStudio.Unity.Bridge;
 
 namespace Tests
 {
