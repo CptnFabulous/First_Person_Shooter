@@ -6,16 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    #region Selector prefabs
+    [Header("UI element prefabs")]
     public Button buttonPrefab;
     public Toggle togglePrefab;
     public Slider sliderPrefab;
     public Scrollbar scrollbarPrefab;
+    public ScrollRect scrollPanelPrefab;
     public Dropdown dropdownPrefab;
-    #endregion
 
-
-
+    [Header("Scene elements")]
+    public ScrollRect options;
+    public ScrollRect flavourText;
+    public Image icon;
 
 
 
