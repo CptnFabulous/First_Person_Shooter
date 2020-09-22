@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 
-public class OptionsMenu : Menu
+public class OptionsMenu : MonoBehaviour
 {
 
     [Header("Video")]
@@ -53,7 +53,10 @@ public class OptionsMenu : Menu
     {
         //rowHeight = 0;
 
-
+        SetupMonitor();
+        SetupFullscreen();
+        SetupResolutionAndRefreshRate();
+        SetupGraphicsQuality();
 
 
     }
@@ -99,23 +102,10 @@ public class OptionsMenu : Menu
         }
         SetupDropdown(monitor, monitors, ApplyMonitor, 0);
     }
-    void ApplyMonitor(int m)
-    {
-        //Screen.
-        //Display.
-    }
-
-
     void SetupFullscreen()
     {
         SetupToggle(fullScreenMode, ApplyFullscreen, Screen.fullScreen);
     }
-    void ApplyFullscreen(bool b)
-    {
-        Screen.fullScreen = b;
-    }
-
-
     void SetupResolutionAndRefreshRate()
     {
         List<string> resolutions = new List<string>();
@@ -126,11 +116,12 @@ public class OptionsMenu : Menu
         }
         SetupDropdown(resolution, resolutions, ApplyResolutionAndRefreshRate, 0);
     }
-    void ApplyResolutionAndRefreshRate(int i)
+    void SetupGraphicsQuality()
     {
-        Resolution r = Screen.resolutions[i];
-        Screen.SetResolution(r.width, r.height, Screen.fullScreen, r.refreshRate);
+        List<string> presets = new List<string>(QualitySettings.names);
+        SetupDropdown(qualityPreset, presets, ApplyGraphicsQuality, 0);
     }
+
     /*
     void SetupResolution()
     {
@@ -172,15 +163,26 @@ public class OptionsMenu : Menu
     }
     */
 
-    void SetupGraphicsQuality()
+    void ApplyMonitor(int m)
     {
-        List<string> presets = new List<string>(QualitySettings.names);
-        SetupDropdown(qualityPreset, presets, ApplyGraphicsQuality, 0);
+        //Screen.
+        //Display.
+    }
+    void ApplyFullscreen(bool b)
+    {
+        Screen.fullScreen = b;
+    }
+    void ApplyResolutionAndRefreshRate(int i)
+    {
+        Resolution r = Screen.resolutions[i];
+        Screen.SetResolution(r.width, r.height, Screen.fullScreen, r.refreshRate);
     }
     void ApplyGraphicsQuality(int q)
     {
         QualitySettings.SetQualityLevel(q);
     }
+
+
     #endregion
 
 

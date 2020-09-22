@@ -16,8 +16,8 @@ public class Menu : MonoBehaviour
 
     [Header("Scene elements")]
     public ScrollRect options;
-    public ScrollRect flavourText;
-    public Image icon;
+    public Text flavourText;
+    public Image selectionGraphic;
 
 
 

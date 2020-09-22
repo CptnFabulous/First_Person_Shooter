@@ -780,6 +780,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5899540911162972339}
   - component: {fileID: 6609553296386221525}
+  - component: {fileID: 2497600696730479087}
   m_Layer: 5
   m_Name: DropdownOption
   m_TagString: Untagged
@@ -866,6 +867,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &2497600696730479087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549788222108480533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ead20c0adee3744f85c33ad0721a5f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 8127383658724049323}
+  graphic: {fileID: 0}
+  flavourText: 
 --- !u!1 &6746603570390704545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,7 +1131,7 @@ GameObject:
   - component: {fileID: 1302065647567842327}
   - component: {fileID: 8127383658724049323}
   m_Layer: 5
-  m_Name: Label
+  m_Name: OptionLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1180,6 +1196,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Dropdown option
-
-'
+  m_Text: DropdownOption

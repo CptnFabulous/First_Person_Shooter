@@ -6,35 +6,63 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof (Selectable))]
-public class SelectionData : MonoBehaviour//, IPointerEnterHandler
+public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public Text label;
     public Sprite graphic;
     public string flavourText;
 
-    public Selectable s;
+    Menu m;
 
-    public Menu m;
-    
-    // Start is called before the first frame update
-    void Awake()
+    public void OnValidate()
     {
-        s = GetComponent<Selectable>();
+        if (label != null)
+        {
+            label.text = name;
+        }
     }
 
+    
+    // Start is called before the first frame update
+
+
+
+    void Awake()
+    {
+        m = GetComponentInParent<Menu>();
+    }
+
+    /*
     // Update is called once per frame
     void Update()
     {
         
     }
+    */
 
-
-    public void OnSelect(BaseEventData eventData)
+    void ISelectHandler.OnSelect(BaseEventData eventData)
     {
-        // Do something.
-        //Debug.Log("<color=red>Event:</color> Completed selection.");
-
-        m.icon.sprite = graphic;
         
+        if (graphic != null && m.selectionGraphic != null)
+        {
+            m.selectionGraphic.sprite = graphic;
+        }
+
+        if (m.flavourText != null)
+        {
+            m.flavourText.text = flavourText;
+        }
+        
+        //throw new System.NotImplementedException();
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        //throw new System.NotImplementedException();
+    }
 }
