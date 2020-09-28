@@ -82,7 +82,7 @@ public class LevelCompleteScreen : MonoBehaviour
         }
         else
         {
-            nextLevelButton.onClick.AddListener(() => GetComponent<Menu>().LoadScene(oh.nextLevelName));
+            nextLevelButton.onClick.AddListener(() => GetComponent<MenuHandler>().LoadScene(oh.nextLevelName));
         }
     }
 }

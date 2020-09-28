@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 
-public class OptionsMenu : MonoBehaviour
+public class OptionsMenu : MenuWindow
 {
 
     [Header("Video")]
@@ -52,7 +52,7 @@ public class OptionsMenu : MonoBehaviour
     private void Start()
     {
         //rowHeight = 0;
-
+        print("Beginning to set up options menu");
         SetupMonitor();
         SetupFullscreen();
         SetupResolutionAndRefreshRate();

@@ -12,7 +12,7 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
     public Sprite graphic;
     public string flavourText;
 
-    Menu m;
+    MenuWindow m;
 
     public void OnValidate()
     {
@@ -29,7 +29,7 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
 
     void Awake()
     {
-        m = GetComponentInParent<Menu>();
+        m = GetComponentInParent<MenuWindow>();
     }
 
     /*
@@ -42,7 +42,7 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
 
     void ISelectHandler.OnSelect(BaseEventData eventData)
     {
-        
+        /*
         if (graphic != null && m.selectionGraphic != null)
         {
             m.selectionGraphic.sprite = graphic;
@@ -52,17 +52,29 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
         {
             m.flavourText.text = flavourText;
         }
-        
+        */
         //throw new System.NotImplementedException();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
+        if (graphic != null && m.selectionGraphic != null)
+        {
+            m.selectionGraphic.sprite = graphic;
+        }
+
+        if (m.flavourText != null)
+        {
+            m.flavourText.text = flavourText;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
+
+        m.selectionGraphic.sprite = null;
+        m.flavourText.text = null;
     }
 }
