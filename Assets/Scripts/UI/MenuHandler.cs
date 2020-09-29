@@ -6,16 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class MenuHandler : MonoBehaviour
 {
-    /*
-    [Header("UI element prefabs")]
-    public Button buttonPrefab;
-    public Toggle togglePrefab;
-    public Slider sliderPrefab;
-    public Scrollbar scrollbarPrefab;
-    public ScrollRect scrollPanelPrefab;
-    public Dropdown dropdownPrefab;
-    */
-
     [HideInInspector] public MenuWindow[] differentMenus;
     [HideInInspector] public MenuWindow rootWindow;
     [HideInInspector] public MenuWindow currentMenu;
@@ -24,17 +14,15 @@ public class MenuHandler : MonoBehaviour
     {
         print("Setting up menu");
         differentMenus = GetComponentsInChildren<MenuWindow>();
-        foreach(MenuWindow m in differentMenus)
+        foreach (MenuWindow m in differentMenus)
         {
+            print(m.name);
             // Searches for a menu component in m's parent. The first menu with no parent becomes the root.
             m.parent = m.transform.parent.GetComponent<MenuWindow>();
             if (m.parent == null)
             {
                 rootWindow = m;
             }
-
-            // Searches for all MenuWindow scripts that are immediate children of m
-            //m.children = GetComponentsInChildren<MenuWindow>().Where(.transform.parent == m.transform && x != m);
 
             /*
             // Requires System.Linq
@@ -47,6 +35,7 @@ public class MenuHandler : MonoBehaviour
             m.children = list.ToArray();
             */
 
+            // Searches for all MenuWindow scripts that are immediate children of m
             MenuWindow[] c = GetComponentsInChildren<MenuWindow>();
             List<MenuWindow> list = new List<MenuWindow>();
             foreach (MenuWindow mc in c)
@@ -65,6 +54,8 @@ public class MenuHandler : MonoBehaviour
         ReturnToRootWindow();
 
     }
+
+    //public List<T> RemoveInvalidEntries(List<T> list, System.Predicate<>)
 
 
     #region Navigation
@@ -117,12 +108,45 @@ public class MenuHandler : MonoBehaviour
     {
         GameStateHandler gsh = GetComponentInParent<GameStateHandler>();
         gsh.ResumeGame();
+
+
+
+
+    }
+
+    public void ResetMenuOnResume()
+    {
+        ReturnToRootWindow();
     }
 
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
+
+
+
+
+    // UNTESTED
+    public IEnumerator LoadSceneWithLoadingScreen(string sceneName, string loadingScreen)
+    {
+        // Pause time to prevent time from passing in the new scene, and load a separate loading screen scene to mask things
+        Time.timeScale = 0;
+        SceneManager.LoadScene(loadingScreen);
+
+        // Load new scene in the background
+        AsyncOperation levelLoading = SceneManager.LoadSceneAsync(sceneName);
+        yield return new WaitWhile(() => levelLoading.progress < 1);
+
+        // Once the actual scene is finished loading, unload the loading screen and resume normal time flow
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        Time.timeScale = 1;
+    }
+
+
+
+
+
 
     public void ReloadLevel()
     {

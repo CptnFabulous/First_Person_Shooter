@@ -31,8 +31,20 @@ public class MenuWindow : MonoBehaviour
 
 
 
-    public void ReturnToPreviousMenu()
+    public void ReturnToPreviousWindow()
     {
+        GetComponentInParent<MenuHandler>().ReturnToPreviousWindow();
+    }
 
+    public void ReturnToRootWindow()
+    {
+        GetComponentInParent<MenuHandler>().ReturnToRootWindow();
+    }
+
+    public void OnDisable()
+    {
+        // Reset window for next time
+        flavourText = null;
+        selectionGraphic.sprite = null;
     }
 }
