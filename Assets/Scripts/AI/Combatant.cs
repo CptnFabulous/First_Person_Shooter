@@ -6,7 +6,7 @@ public class Combatant : AI
 {
     [Header("Projectile attacks")]
     public ProjectileAttack[] projectileAttacks;
-    public MeleeAttack[] meleeAttacks;
+    public NPCMeleeAttack[] meleeAttacks;
 
     public override void Awake()
     {
@@ -17,7 +17,7 @@ public class Combatant : AI
             a.c = this;
         }
         
-        foreach (MeleeAttack a in meleeAttacks)
+        foreach (NPCMeleeAttack a in meleeAttacks)
         {
             a.c = this;
         }
