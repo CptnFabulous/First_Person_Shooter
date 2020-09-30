@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [System.Serializable]
-public class MeleeAttack : NPCAttack
+public class NPCMeleeAttack : NPCAttack
 {
     [Header("Melee attack stats")]
     public int damage = 10;

@@ -45,10 +45,7 @@ public static class Damage
         }
     }
 
-    public static void MeleeAttack()
-    {
-
-    }
+    
 
     public static void PointDamage(Character origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
