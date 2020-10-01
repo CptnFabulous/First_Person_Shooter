@@ -73,8 +73,14 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
+        if ( m.selectionGraphic != null)
+        {
+            m.selectionGraphic.sprite = null;
+        }
 
-        m.selectionGraphic.sprite = null;
-        m.flavourText.text = null;
+        if (m.flavourText != null)
+        {
+            m.flavourText.text = "";
+        }
     }
 }

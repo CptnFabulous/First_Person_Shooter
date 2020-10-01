@@ -20,7 +20,7 @@ public class SpawnPoint : MonoBehaviour
         }
 
 
-        ph.pc.SetTransform(transform);
+        ph.pc.SetToTransform(transform);
 
 
         //Vector3 rotationValues = transform.rotation.eulerAngles;

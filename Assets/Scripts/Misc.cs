@@ -73,4 +73,75 @@ public static class Misc
 
         return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
     }
+
+
+
+
+
+    public static LayerMask CollisionMask(int layer)
+    {
+        // Checks collisions for each layer against our current one, and if true adds that layer to the mask
+        LayerMask lm = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if (Physics.GetIgnoreLayerCollision(layer, i) == false)
+            {
+                lm = lm | 1 << i;
+            }
+        }
+
+        // Returns a layer mask of all the layers that will collide with our starting layer
+        return lm;
+    }
+
+
+
+
+    public class VariableValueFloat
+    {
+        float defaultValue;
+        float influencingPercentages;
+
+        public float Result()
+        {
+            return defaultValue * (1 + influencingPercentages);
+        }
+
+        public void Influence(float percentage)
+        {
+            influencingPercentages += percentage / 100;
+        }
+
+        public void StopInfluencing(float percentage)
+        {
+            influencingPercentages -= percentage / 100;
+        }
+
+    }
+
+    public class VariableValueBoolean
+    {
+        bool defaultValue = false;
+        int sourcesInfluencing;
+
+        public bool Result()
+        {
+            bool b = sourcesInfluencing > 0;
+            if (defaultValue)
+            {
+                b = !b;
+            }
+            return b;
+        }
+
+        public void Influence()
+        {
+            sourcesInfluencing++;
+        }
+
+        public void StopInfluencing()
+        {
+            sourcesInfluencing--;
+        }
+    }
 }

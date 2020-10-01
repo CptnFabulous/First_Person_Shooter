@@ -77,6 +77,7 @@ public class MeleeAttack
 
     }
 
+    /*
     IEnumerator PerformAttack(DamageHitbox dh)
     {
         // THE FULL METHOD I WANT
@@ -96,18 +97,7 @@ public class MeleeAttack
         // Make player movement/camera controls into accessible functions that can be triggered from other scripts
         // Do the same thing to AI characters
 
-
-        float t = 0;
-
-        while (t < 1)
-        {
-            
-
-            t += Time.deltaTime / attackTime;
-            yield return new WaitForEndOfFrame();
-
-        }
     }
-
+    */
 
 }

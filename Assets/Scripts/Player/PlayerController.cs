@@ -7,31 +7,45 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    #region Public variables
-    [Header("Camera control")]
+    [Header("References")]
     public GameObject head;
     public Camera playerCamera;
+    [HideInInspector] public Rigidbody rb;
+    CapsuleCollider cc; 
+
+    [Header("Camera control")]
     [Range(0, 180)]
     public float fieldOfView = 60;
-    [Tooltip("Camera control sensitivity for the X axis i.e. rotating left and right. Set to minus to invert it."), Range(-100, 100)]
+    [Tooltip("Horizontal camera sensitivity. Set to minus to invert it."), Range(-100, 100)]
     public float sensitivityX = 50;
-    [Tooltip("Camera control sensitivity for the Y axis i.e. looking up and down. Set to minus to invert it."), Range(-100, 100)]
+    [Tooltip("Vertical camera sensitivity. Set to minus to invert it."), Range(-100, 100)]
     public float sensitivityY = 50;
     [Tooltip("Minimum angle the player can look down."), Range(-90, 90)]
     public float minLookAngle = -90;
     [Tooltip("Maximum angle the player can look up."), Range(-90, 90)]
     public float maxLookAngle = 90;
 
+    [HideInInspector] public bool canLook;
+    public StatModifier sensitivityModifier = new StatModifier();
+    Vector2 lookVector;
+
     [Header("Movement")]
-    [Tooltip("The player's standard movement speed.")]
     public float movementSpeed = 10;
     [Range(-1, 0)]
     public float crouchSpeedMultiplier = -0.5f;
+
+    public StatModifier speedModifier = new StatModifier();
+    Vector2 moveInput;
+    Vector3 movementValue;
 
     [Header("Jumping")]
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
     public float groundedRayLength = 0.01f;
+
+    bool willJump;
+    float jumpTimer = 9999999;
+    LayerMask terrainDetection;
 
     [Header("Crouching")]
     public float standHeight = 2;
@@ -40,30 +54,10 @@ public class PlayerController : MonoBehaviour
     [Range(-0.5f, 0.5f)]
     public float relativeHeadHeight = 0.375f;
     public bool toggleCrouch;
-    #endregion
-
-    #region Noneditable variables
-    [HideInInspector] public Rigidbody rb;
-    CapsuleCollider cc;
-
-    Ray isGrounded;
-    RaycastHit floor;
-
-    [HideInInspector] public bool canLook;
-
-    public StatModifier sensitivityModifier = new StatModifier();
-    Vector2 lookVector;
-
-    public StatModifier speedModifier = new StatModifier();
-    Vector2 moveInput;
-    Vector3 movementValue;
-
-    bool willJump;
-    float jumpTimer = 9999999;
 
     float crouchTimer;
     bool isCrouching;
-    #endregion
+
 
     #region Validate variables
 #if UNITY_EDITOR
@@ -74,29 +68,15 @@ public class PlayerController : MonoBehaviour
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
         crouchSpeedMultiplier = Mathf.Clamp(crouchSpeedMultiplier, -1, 0);
-
-        /*
-        if (isCrouching)
-        {
-            crouchTimer = 1;
-            LerpCrouch(1);
-            
-        }
-        else
-        {
-            crouchTimer = 0;
-            LerpCrouch(-1);
-        }
-        */
     }
     #endif
     #endregion
 
     bool IsGrounded()
     {
-        isGrounded.origin = transform.position; // Sets the origin of isGrounded ray to the player's body
-        isGrounded.direction = Vector3.down; // Sets isGrounded direction to cast directly down under the player's 'feet'
-        if (Physics.SphereCast(isGrounded, cc.radius, cc.height / 2 + groundedRayLength)) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
+        // Casts a ray to determine if the player is standing on solid ground.
+        Ray r = new Ray(transform.position, -transform.up);
+        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
         {
             return true;
         }
@@ -108,6 +88,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CapsuleCollider>();
+        terrainDetection = Misc.CollisionMask(gameObject.layer);
     }
 
     // Update is called once per frame
@@ -130,11 +111,6 @@ public class PlayerController : MonoBehaviour
         {
             LerpCrouch(-crouchTime);
         }
-        //print(cc.height + "/" + movementSpeed + "/" + head.transform.localPosition.y);
-        // LERP CODE IS SCREWY AND DOESN'T ROUND PROPERLY
-        //print(cc.height + ", " + head.transform.localPosition.y + ", " + speed);
-        //print(crouchTimer + ", " + cc.height + ", " + head.transform.localPosition.y + ", " + speed);
-        //print("Crouch timer = " + crouchTimer + ", height = " + cc.height + ", head height = " + head.transform.localPosition.y + ", speed = " + speed);
         #endregion
 
         #region Movement
@@ -177,17 +153,18 @@ public class PlayerController : MonoBehaviour
         head.transform.localRotation = Quaternion.Euler(lookVector.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
     }
 
-    public void SetTransform(Transform newTransform)
+    public void SetLookDirection(Vector3 lookDirection)
+    {
+        Quaternion direction = Quaternion.LookRotation(lookDirection, transform.up);
+        transform.rotation = Quaternion.Euler(0, direction.y, direction.z);
+        head.transform.rotation = Quaternion.Euler(direction.x, transform.rotation.y, direction.z);
+        lookVector.y = head.transform.localRotation.x;
+    }
+
+    public void SetToTransform(Transform newTransform)
     {
         transform.position = newTransform.position;
-
-        Vector3 rotationValues = newTransform.rotation.eulerAngles;
-        print(rotationValues.x);
-        transform.rotation = Quaternion.Euler(0, rotationValues.y, 0);
-        //lookVector.y = -rotationValues.x;
-
-
-        //head.transform.localRotation = Quaternion.Euler(rotationValues.x, 0, 0);
+        SetLookDirection(newTransform.forward);
     }
 
     #region Crouch functions
@@ -212,6 +189,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+
 
     void LerpCrouch(float t)
     {

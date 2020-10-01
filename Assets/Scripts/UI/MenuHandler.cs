@@ -6,15 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class MenuHandler : MonoBehaviour
 {
-    [HideInInspector] public MenuWindow[] differentMenus;
+    [HideInInspector] public MenuWindow[] differentWindows;
     [HideInInspector] public MenuWindow rootWindow;
-    [HideInInspector] public MenuWindow currentMenu;
+    [HideInInspector] public MenuWindow currentWindow;
 
     private void Start()
     {
-        print("Setting up menu");
-        differentMenus = GetComponentsInChildren<MenuWindow>();
-        foreach (MenuWindow m in differentMenus)
+        differentWindows = GetComponentsInChildren<MenuWindow>(true);
+        foreach (MenuWindow m in differentWindows)
         {
             print(m.name);
             // Searches for a menu component in m's parent. The first menu with no parent becomes the root.
@@ -23,17 +22,6 @@ public class MenuHandler : MonoBehaviour
             {
                 rootWindow = m;
             }
-
-            /*
-            // Requires System.Linq
-            MenuWindow[] c = GetComponentsInChildren<MenuWindow>();
-            List<MenuWindow> list = new List<MenuWindow>();
-            foreach (MenuWindow mc in c.Where(x => x.transform.parent == m.transform && x != m))
-            {
-                list.Add(mc);
-            }
-            m.children = list.ToArray();
-            */
 
             // Searches for all MenuWindow scripts that are immediate children of m
             MenuWindow[] c = GetComponentsInChildren<MenuWindow>();
@@ -48,7 +36,7 @@ public class MenuHandler : MonoBehaviour
             m.children = list.ToArray();
 
             // Separates m from its hierarchy, so it can be active even if its parent is disabled.
-            m.transform.parent = transform;
+            m.transform.SetParent(transform, true);
         }
 
         ReturnToRootWindow();
@@ -62,7 +50,7 @@ public class MenuHandler : MonoBehaviour
 
     public void SwitchToDifferentWindow(MenuWindow newMenu)
     {
-        foreach(MenuWindow m in differentMenus)
+        foreach(MenuWindow m in differentWindows)
         {
             if (m != newMenu)
             {
@@ -71,14 +59,14 @@ public class MenuHandler : MonoBehaviour
             else
             {
                 m.gameObject.SetActive(true);
-                currentMenu = m;
+                currentWindow = m;
             }
         }
     }
 
     public MenuWindow GetCurrentMenu()
     {
-        foreach (MenuWindow m in differentMenus)
+        foreach (MenuWindow m in differentWindows)
         {
             if (m.gameObject.activeSelf == true)
             {
@@ -90,7 +78,7 @@ public class MenuHandler : MonoBehaviour
 
     public void ReturnToPreviousWindow()
     {
-        SwitchToDifferentWindow(currentMenu.parent);
+        SwitchToDifferentWindow(currentWindow.parent);
     }
 
     public void ReturnToRootWindow()
