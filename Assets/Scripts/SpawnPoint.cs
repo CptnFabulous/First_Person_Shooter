@@ -10,25 +10,15 @@ public class SpawnPoint : MonoBehaviour
     void Start()
     {
         PlayerHandler ph = FindObjectOfType<PlayerHandler>();
-        if (ph != null)
-        {
-            ph.transform.position = transform.position;
-        }
-        else
+        if (ph == null)
         {
             ph = Instantiate(playerPrefab, transform.position, Quaternion.identity);
         }
 
 
-        ph.pc.SetToTransform(transform);
+        //ph.pc.SetToTransform(transform);
 
 
-        //Vector3 rotationValues = transform.rotation.eulerAngles;
-        //Vector3 rotationValues = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z);
-        //print(rotationValues);
-
-        //ph.transform.rotation = Quaternion.Euler(0, rotationValues.y, 0);
-        //ph.pc.head.transform.localRotation = Quaternion.Euler(rotationValues.x, 0, 0);
     }
 
     // Update is called once per frame

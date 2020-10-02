@@ -97,51 +97,5 @@ public static class Misc
 
 
 
-    public class VariableValueFloat
-    {
-        float defaultValue;
-        float influencingPercentages;
-
-        public float Result()
-        {
-            return defaultValue * (1 + influencingPercentages);
-        }
-
-        public void Influence(float percentage)
-        {
-            influencingPercentages += percentage / 100;
-        }
-
-        public void StopInfluencing(float percentage)
-        {
-            influencingPercentages -= percentage / 100;
-        }
-
-    }
-
-    public class VariableValueBoolean
-    {
-        bool defaultValue = false;
-        int sourcesInfluencing;
-
-        public bool Result()
-        {
-            bool b = sourcesInfluencing > 0;
-            if (defaultValue)
-            {
-                b = !b;
-            }
-            return b;
-        }
-
-        public void Influence()
-        {
-            sourcesInfluencing++;
-        }
-
-        public void StopInfluencing()
-        {
-            sourcesInfluencing--;
-        }
-    }
+    
 }

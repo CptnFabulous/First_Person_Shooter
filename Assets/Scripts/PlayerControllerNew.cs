@@ -5,13 +5,13 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class PlayerController : MonoBehaviour
+public class PlayerControllerNew : MonoBehaviour
 {
     [Header("References")]
     public GameObject head;
     public Camera playerCamera;
     [HideInInspector] public Rigidbody rb;
-    CapsuleCollider cc; 
+    CapsuleCollider cc;
 
     [Header("Camera control")]
     [Range(0, 180)]
@@ -26,15 +26,14 @@ public class PlayerController : MonoBehaviour
     public float maxLookAngle = 90;
 
     [HideInInspector] public bool canLook;
-    public StatModifier sensitivityModifier = new StatModifier();
+    [HideInInspector] public VariableValueFloat sensitivityModifier;
     Vector2 lookVector;
 
     [Header("Movement")]
-    public float movementSpeed = 10;
-    [Range(-1, 0)]
-    public float crouchSpeedMultiplier = -0.5f;
+    public VariableValueFloat movementSpeed;
+    public PercentageModifier crouchSpeedModifier;
 
-    public StatModifier speedModifier = new StatModifier();
+
     Vector2 moveInput;
     Vector3 movementValue;
 
@@ -59,29 +58,15 @@ public class PlayerController : MonoBehaviour
     bool isCrouching;
 
 
-    #region Validate variables
-#if UNITY_EDITOR
-    void Reset() { OnValidate(); }
     void OnValidate()
     {
-
+        // Ensure minLookAngle is not larger than maxLookAngle, or the opposite way around.
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
-        crouchSpeedMultiplier = Mathf.Clamp(crouchSpeedMultiplier, -1, 0);
+        // void Reset() { OnValidate(); }
     }
-    #endif
-    #endregion
 
-    bool IsGrounded()
-    {
-        // Casts a ray to determine if the player is standing on solid ground.
-        Ray r = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
-        {
-            return true;
-        }
-        return false;
-    }
+    
 
     // Use this for initialization
     void Awake()
@@ -90,7 +75,11 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CapsuleCollider>();
         terrainDetection = Misc.CollisionMask(gameObject.layer);
 
+        // Establish a multiplier to be used for both camera sensitivity values
+        sensitivityModifier.defaultValue = 1;
 
+        // Add crouch speed modifier to movementSpeed
+        movementSpeed.Add(crouchSpeedModifier);
     }
 
     // Update is called once per frame
@@ -99,20 +88,14 @@ public class PlayerController : MonoBehaviour
         #region Camera
         if (canLook == true)
         {
-            LookAngle(new Vector2(Input.GetAxis("MouseX") * sensitivityModifier.NewFloat(sensitivityX) * Time.deltaTime, Input.GetAxis("MouseY") * sensitivityModifier.NewFloat(sensitivityY) * Time.deltaTime));
+            float cameraInputX = Input.GetAxis("MouseX") * sensitivityModifier.Calculate() * sensitivityX * Time.deltaTime;
+            float cameraInputY = Input.GetAxis("MouseY") * sensitivityModifier.Calculate() * sensitivityY * Time.deltaTime;
+            LookAngle(new Vector2(cameraInputX, cameraInputY));
         }
         #endregion
 
         #region Crouching
-        HoldOrToggleCrouch();
-        if (isCrouching)
-        {
-            LerpCrouch(crouchTime);
-        }
-        else
-        {
-            LerpCrouch(-crouchTime);
-        }
+        CrouchHandler();
         #endregion
 
         #region Movement
@@ -122,7 +105,8 @@ public class PlayerController : MonoBehaviour
         {
             moveInput.Normalize(); // Prevent movement input from going past 1. This ensures that players cannot go faster than the normal movement speed.
         }
-        float speed = Mathf.Clamp(speedModifier.NewFloat(movementSpeed), 0, Mathf.Infinity);
+
+        float speed = movementSpeed.Calculate();
         movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed);
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
         #endregion
@@ -167,10 +151,11 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-
-    #region Crouch functions
-    void HoldOrToggleCrouch()
+    #region Crouching
+    // Used for handling regular crouch input
+    void CrouchHandler()
     {
+        #region Determine whether the player is crouching or not
         if (toggleCrouch == true)
         {
             if (Input.GetButtonDown("Crouch"))
@@ -189,46 +174,64 @@ public class PlayerController : MonoBehaviour
                 isCrouching = false;
             }
         }
-    }
 
-
-    void CrouchHandler()
-    {
-        if (Input.GetButtonDown("Crouch"))
-        {
-            isCrouching = !isCrouching;
-        }
-
-
-
+        float t;
         if (isCrouching)
         {
-
+            t = 1;
         }
         else
         {
-
+            t = -1;
         }
+        #endregion
+
+        #region Actual crouching code happens
+        // If current crouch state does not match isCrouching, or if the crouchTimer is not 1 or 0 (indicating that crouching is in progress)
+        if (crouchTimer == 1 && isCrouching == false || crouchTimer == 0 && isCrouching == true || (crouchTimer != 1 && crouchTimer != 0))
+        {
+            crouchTimer += Time.deltaTime / crouchTime * t;
+            crouchTimer = Mathf.Clamp01(crouchTimer);
+            LerpCrouch(crouchTimer);
+        }
+        #endregion
     }
 
+    // Instantly set crouch state. For cancelling crouch animation in case something else needs to happen.
+    public void InstantCrouch(bool active)
+    {
+        float t;
+        if (active)
+        {
+            t = 1;
+        }
+        else
+        {
+            t = 0;
+        }
+        LerpCrouch(t);
+        isCrouching = active;
+    }
 
-
+    // Used for actually controlling crouch 'animation'
     void LerpCrouch(float t)
     {
-        crouchTimer += Time.deltaTime / t;
-        crouchTimer = Mathf.Clamp01(crouchTimer);
-        cc.height = Mathf.Lerp(standHeight, crouchHeight, crouchTimer);
-        float sm = Mathf.Lerp(0, crouchSpeedMultiplier, crouchTimer); // Lerps crouch speed multiplier between none and the normal amount
-
-        speedModifier.ApplyEffect("Crouching", sm, 0); // Adds crouch speed multiplier to movement speed effects
-
-
-
-
-
-        head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, crouchTimer), 0);
+        cc.height = Mathf.Lerp(standHeight, crouchHeight, t);
+        crouchSpeedModifier.SetIntensity(t); // Lerps crouch speed multiplier between none and fully active
+        head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, t), 0);
     }
     #endregion
+
+    bool IsGrounded()
+    {
+        // Casts a ray to determine if the player is standing on solid ground.
+        Ray r = new Ray(transform.position, -transform.up);
+        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
+        {
+            return true;
+        }
+        return false;
+    }
 
     void FixedUpdate()
     {
@@ -242,11 +245,5 @@ public class PlayerController : MonoBehaviour
         }
 
         //rb.AddForce(Physics.gravity * rb.mass);
-    }
-
-    private void LateUpdate()
-    {
-        speedModifier.CheckStatDuration();
-        sensitivityModifier.CheckStatDuration();
     }
 }
