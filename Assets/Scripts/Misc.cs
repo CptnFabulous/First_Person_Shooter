@@ -4,8 +4,6 @@ using UnityEngine;
 
 public static class Misc
 {
-
-
     #region Calculating perpendicular Vector3 directions
     public static Vector3 PerpendicularRight(Vector3 forward, Vector3 worldUp)
     {
@@ -60,24 +58,7 @@ public static class Misc
     }
     #endregion
 
-    public static float InverseCurveEvaluate(AnimationCurve curve, float t)
-    {
-        float curveMin = curve.keys[0].value;
-        float curveMax = curve.keys[0].value;
-        for (int i = 0; i < curve.keys.Length; i++)
-        {
-            curveMin = Mathf.Min(curveMin, curve.keys[i].value);
-            curveMax = Mathf.Max(curveMax, curve.keys[i].value);
-        }
-        float range = curveMax - curveMin;
-
-        return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
-    }
-
-
-
-
-
+    #region Physics
     public static LayerMask CollisionMask(int layer)
     {
         // Checks collisions for each layer against our current one, and if true adds that layer to the mask
@@ -93,9 +74,24 @@ public static class Misc
         // Returns a layer mask of all the layers that will collide with our starting layer
         return lm;
     }
+    #endregion
 
 
 
 
-    
+
+
+    public static float InverseCurveEvaluate(AnimationCurve curve, float t)
+    {
+        float curveMin = curve.keys[0].value;
+        float curveMax = curve.keys[0].value;
+        for (int i = 0; i < curve.keys.Length; i++)
+        {
+            curveMin = Mathf.Min(curveMin, curve.keys[i].value);
+            curveMax = Mathf.Max(curveMax, curve.keys[i].value);
+        }
+        float range = curveMax - curveMin;
+
+        return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
+    }
 }

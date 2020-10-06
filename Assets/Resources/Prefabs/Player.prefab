@@ -305,11 +305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640ed14836509e943b5c296450e16c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 0}
-  togglePrefab: {fileID: 0}
-  sliderPrefab: {fileID: 0}
-  scrollbarPrefab: {fileID: 0}
-  dropdownPrefab: {fileID: 0}
+  differentWindows: []
+  rootWindow: {fileID: 0}
+  currentWindow: {fileID: 0}
 --- !u!1 &7394104395992576411
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,13 +581,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   head: {fileID: 7394104396082026298}
   playerCamera: {fileID: 7394104396849714844}
+  rb: {fileID: 0}
   fieldOfView: 60
   sensitivityX: 40
   sensitivityY: 40
   minLookAngle: -90
   maxLookAngle: 90
-  movementSpeed: 10
-  crouchSpeedMultiplier: -0.5
+  canLook: 0
+  sensitivityModifier:
+    defaultValue: 0
+    influencingPercentages: []
+  movementSpeed:
+    defaultValue: 10
+    influencingPercentages: []
+  crouchSpeedModifier:
+    percentageValue: -50
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
   forceJump: 5
   jumpDelay: 0.1
   groundedRayLength: 0
@@ -598,8 +606,6 @@ MonoBehaviour:
   crouchTime: 0.25
   relativeHeadHeight: 0.375
   toggleCrouch: 1
-  rb: {fileID: 0}
-  canLook: 0
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,11 +1018,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640ed14836509e943b5c296450e16c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPrefab: {fileID: 0}
-  togglePrefab: {fileID: 0}
-  sliderPrefab: {fileID: 0}
-  scrollbarPrefab: {fileID: 0}
-  dropdownPrefab: {fileID: 0}
+  differentWindows: []
+  rootWindow: {fileID: 0}
+  currentWindow: {fileID: 0}
 --- !u!1001 &206552657312965921
 PrefabInstance:
   m_ObjectHideFlags: 0

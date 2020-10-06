@@ -7,12 +7,15 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerControllerNew : MonoBehaviour
 {
-    [Header("References")]
+    #region General
+    [Header("General")]
     public GameObject head;
     public Camera playerCamera;
     [HideInInspector] public Rigidbody rb;
     CapsuleCollider cc;
+    #endregion
 
+    #region Camera control
     [Header("Camera control")]
     [Range(0, 180)]
     public float fieldOfView = 60;
@@ -28,15 +31,17 @@ public class PlayerControllerNew : MonoBehaviour
     [HideInInspector] public bool canLook;
     [HideInInspector] public VariableValueFloat sensitivityModifier;
     Vector2 lookVector;
+    #endregion
 
+    #region Movement
     [Header("Movement")]
     public VariableValueFloat movementSpeed;
     public PercentageModifier crouchSpeedModifier;
-
-
     Vector2 moveInput;
     Vector3 movementValue;
+    #endregion
 
+    #region Jumping
     [Header("Jumping")]
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
@@ -45,7 +50,9 @@ public class PlayerControllerNew : MonoBehaviour
     bool willJump;
     float jumpTimer = 9999999;
     LayerMask terrainDetection;
+    #endregion
 
+    #region Crouching
     [Header("Crouching")]
     public float standHeight = 2;
     public float crouchHeight = 1;
@@ -56,14 +63,14 @@ public class PlayerControllerNew : MonoBehaviour
 
     float crouchTimer;
     bool isCrouching;
-
+    #endregion
 
     void OnValidate()
     {
+        // void Reset() { OnValidate(); }
         // Ensure minLookAngle is not larger than maxLookAngle, or the opposite way around.
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
-        // void Reset() { OnValidate(); }
     }
 
     
@@ -79,7 +86,7 @@ public class PlayerControllerNew : MonoBehaviour
         sensitivityModifier.defaultValue = 1;
 
         // Add crouch speed modifier to movementSpeed
-        movementSpeed.Add(crouchSpeedModifier);
+        movementSpeed.Add(crouchSpeedModifier, this);
     }
 
     // Update is called once per frame
@@ -121,12 +128,6 @@ public class PlayerControllerNew : MonoBehaviour
             }
             willJump = true;
         }
-        /*
-        else if (Input.GetButton("Jump"))
-        {
-            // Do jetpack hover
-        }
-        */
         #endregion
     }
 

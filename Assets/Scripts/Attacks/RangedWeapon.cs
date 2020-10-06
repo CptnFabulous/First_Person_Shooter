@@ -366,6 +366,10 @@ public class RangedWeapon : MonoBehaviour
     private void Start()
     {
         ResetWeaponMoveVariables();
+
+        //playerHolding.ph.pc.sensitivityModifier.Add(this);
+
+        //playerHolding.ph.pc.sensitivityModifier.Add()
     }
     
     void Update()
@@ -766,13 +770,13 @@ public class RangedWeapon : MonoBehaviour
         playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
         
         // Reduce sensitivity
-        float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
-        playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
+        //float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
+        //playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
 
         
         // Reduce movement speed
-        float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
-        playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
+        //float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
+        //playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
 
         // Alter accuracy if specified
         
