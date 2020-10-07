@@ -62,8 +62,26 @@ public class PlayerController : MonoBehaviour
     public bool toggleCrouch;
 
     float crouchTimer;
-    bool isCrouching;
+    [HideInInspector] public bool isCrouching;
     #endregion
+
+
+    bool IsGrounded()
+    {
+        // Casts a ray to determine if the player is standing on solid ground.
+        Ray r = new Ray(transform.position, -transform.up);
+        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public Vector2 Moving()
+    {
+        return moveInput;
+    }
+
 
     void OnValidate()
     {
@@ -72,8 +90,6 @@ public class PlayerController : MonoBehaviour
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
     }
-
-
 
     // Use this for initialization
     void Awake()
@@ -131,7 +147,9 @@ public class PlayerController : MonoBehaviour
         #endregion
     }
 
-    #region Camera control
+
+
+    #region Camera control functions
     public void LookAngle(Vector2 cameraInput) // This variable is public so it can be altered by other sources such as gun recoil
     {
         lookVector.x = cameraInput.x;
@@ -152,7 +170,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region Crouching
+    #region Crouching functions
     // Used for handling regular crouch input
     void CrouchHandler()
     {
@@ -228,16 +246,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    bool IsGrounded()
-    {
-        // Casts a ray to determine if the player is standing on solid ground.
-        Ray r = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
-        {
-            return true;
-        }
-        return false;
-    }
+    
 
     void FixedUpdate()
     {

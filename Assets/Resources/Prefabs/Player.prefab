@@ -606,6 +606,7 @@ MonoBehaviour:
   crouchTime: 0.25
   relativeHeadHeight: 0.375
   toggleCrouch: 1
+  isCrouching: 0
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,9 +682,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ph: {fileID: 0}
   toggleAim: 0
-  standingAccuracy: 0.5
-  runMultiplier: 1
-  crouchMultiplier: -0.5
+  standingAccuracy:
+    defaultValue: 2
+    influencingPercentages: []
+  runModifier:
+    percentageValue: 100
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
+  crouchModifier:
+    percentageValue: -75
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
   equippedWeapons: []
   currentWeaponIndex: 0
   weaponSelector: {fileID: 801657994281591209}
@@ -805,6 +814,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHandler: {fileID: 7394104395992576367}
+  attack:
+    damage: 0
+    range: 0
+    angle: 0
+    attackTime: 0
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 0
   damage: 20
   knockback: 15
   cooldown: 0.5

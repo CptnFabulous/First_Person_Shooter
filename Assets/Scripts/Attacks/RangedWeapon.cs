@@ -246,6 +246,8 @@ public class RangedWeapon : MonoBehaviour
     [HideInInspector] public bool isAiming;
     [HideInInspector] public float zoomVariable;
     [HideInInspector] public float zoomTimer;
+    [HideInInspector] public PercentageModifier sensitivityWhileAiming;
+    [HideInInspector] public PercentageModifier speedWhileAiming;
 
     [HideInInspector] public RecoilStats recoil;
     [HideInInspector] public float recoilToApply;
@@ -362,14 +364,14 @@ public class RangedWeapon : MonoBehaviour
         return magazineModes[firingModes[index].magazineMode];
     }
     #endregion
-    
+
+
     private void Start()
     {
         ResetWeaponMoveVariables();
 
-        //playerHolding.ph.pc.sensitivityModifier.Add(this);
-
-        //playerHolding.ph.pc.sensitivityModifier.Add()
+        playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
+        playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
     }
     
     void Update()
@@ -390,8 +392,21 @@ public class RangedWeapon : MonoBehaviour
 
         attackMessageLimitTimer += Time.deltaTime;
 
+        if (playerHolding.weaponSelector != null)
+        {
+            Debug.Log("Selector found");
+        }
+        else
+        {
+            Debug.Log("No selector is found");
+        }
+
+        // The script is failing due to something to do with the weapon selector
+
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
+            Debug.Log("Gun is working");
+            
             #region Firing mode controls
             if (Input.GetAxis("Mouse ScrollWheel") != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
             {
@@ -494,14 +509,15 @@ public class RangedWeapon : MonoBehaviour
                 Vector3 aimDirection = transform.forward;
                 if (optics == null || isAiming == false)
                 {
-                    aimDirection = Quaternion.Euler(Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy), Random.Range(-playerHolding.standingAccuracy, playerHolding.standingAccuracy)) * aimDirection;
+                    float accuracy = playerHolding.standingAccuracy.Calculate();
+                    aimDirection = Quaternion.Euler(Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy)) * aimDirection;
                 }
                 #endregion
 
                 #region Send attack message
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
-                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.diameter, playerHolding.standingAccuracy + accuracy.projectileSpread, projectile.velocity, projectile.hitDetection);
+                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.diameter, playerHolding.standingAccuracy.Calculate() + accuracy.projectileSpread, projectile.velocity, projectile.hitDetection);
                     EventObserver.TransmitAttack(am);
                     attackMessageLimitTimer = 0;
                 }
@@ -548,33 +564,6 @@ public class RangedWeapon : MonoBehaviour
     #region Weapon functions
 
     #region Switching functions
-    /*
-    public void SwitchWeaponMode(int index) // Switches firing modes instantly
-    {
-        if (index == firingModeIndex) // Prematurely ends (cancels) function if the weapon has already switched to the new firing mode
-        {
-            return;
-        }
-        
-        // Check if the weapon being switched to has different optics, and cancel out if so.
-        OpticsStats newOptics = GetOpticsStats(index);
-        if (optics != null && (newOptics == null || newOptics != optics))
-        {
-            isAiming = false;
-            zoomTimer = 0;
-            LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
-        }
-
-        if (magazine != null)
-        {
-            reloadTimer = 0;
-            isReloading = false;
-            print("Reload sequence cancelled");
-        }
-
-        firingModeIndex = index;
-    }
-    */
 
     public IEnumerator SwitchMode(int index)
     {
@@ -590,6 +579,15 @@ public class RangedWeapon : MonoBehaviour
                 zoomTimer = 0;
                 LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
             }
+
+
+            if (optics != null)
+            {
+                sensitivityWhileAiming.percentageValue = -(100 / newOptics.magnification);
+                speedWhileAiming.percentageValue = -(newOptics.moveSpeedReduction * 100);
+            }
+
+            
 
             if (magazine != null)
             {
@@ -768,12 +766,12 @@ public class RangedWeapon : MonoBehaviour
         // Reduces FOV to zoom in camera
         zoomVariable = Mathf.Lerp(1, 1 / os.magnification, timer);
         playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
-        
+
         // Reduce sensitivity
         //float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
         //playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
-
-        
+        sensitivityWhileAiming.SetIntensity(timer);
+        speedWhileAiming.SetIntensity(timer);
         // Reduce movement speed
         //float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
         //playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);

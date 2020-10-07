@@ -211,7 +211,7 @@ public class HeadsUpDisplay : MonoBehaviour
             if (noIronsights)
             {
                 #region Calculate reticle width
-                float spread = ph.wh.accuracyModifier.NewFloat(ph.wh.standingAccuracy) + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
+                float spread = ph.wh.standingAccuracy.Calculate() + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
                 
                 Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
                 reticleOffsetPoint = playerHead.position + reticleOffsetPoint * rw.accuracy.range;
@@ -229,13 +229,6 @@ public class HeadsUpDisplay : MonoBehaviour
                 reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticleRadius);
                 reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticleRadius, 0);
                 reticleRight.rectTransform.anchoredPosition = new Vector3(reticleRadius, 0);
-
-                /*
-                reticleUp.rectTransform.anchoredPosition = rt.up * reticleRadius;
-                reticleDown.rectTransform.anchoredPosition = rt.up * -reticleRadius;
-                reticleLeft.rectTransform.anchoredPosition = rt.right * -reticleRadius;
-                reticleRight.rectTransform.anchoredPosition = rt.right * reticleRadius;
-                */
                 #endregion
             }
 

@@ -25,7 +25,6 @@ public class PercentageModifier // Works for both floats and ints
     {
         
         intensity = Mathf.Clamp(f, 0, 1);
-        Debug.Log("Intensity = " + intensity);
     }
 
     // Used for turning the effect on and off in a binary state
@@ -44,7 +43,6 @@ public class PercentageModifier // Works for both floats and ints
     // What is the percentage being influenced by the intensity?
     public float Get()
     {
-        Debug.Log("Final value = " + percentageValue * intensity);
         return percentageValue * intensity;
     }
 
@@ -55,9 +53,6 @@ public class PercentageModifier // Works for both floats and ints
         // If either the original object is active OR the modifier has been set to be registered regardless
         return intensity > 0 && (origin.enabled == true || ignoresOriginActiveState);
     }
-
-
-
 }
 
 // Add modifier to variablevaluefloat in Awake() or Start(). Enable and disable when appropriate
@@ -85,7 +80,6 @@ public class VariableValueFloat
     {
         // Check float modifiers and update by removing all instances that aren't supposed to exist anymore
         influencingPercentages.RemoveAll(fm => fm.origin == null);
-        Debug.Log(influencingPercentages.Count);
     }
 
 

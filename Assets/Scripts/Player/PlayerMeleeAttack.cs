@@ -6,6 +6,9 @@ public class PlayerMeleeAttack : MonoBehaviour
 {
     public PlayerHandler playerHandler;
 
+    public MeleeAttack attack;
+
+
     public int damage = 10;
     public float knockback = 5;
     public float cooldown = 1;
