@@ -64,7 +64,7 @@ public class MeleeAttack
             // Perform animation and 'miss'
         }
 
-        //StartCoroutine(PerformAttack(target));
+        //MonoBehaviour.StartCoroutine(PerformAttack(origin, target));
 
         //StartCoroutine
 
@@ -77,9 +77,10 @@ public class MeleeAttack
 
     }
 
-    /*
-    IEnumerator PerformAttack(DamageHitbox dh)
+    
+    IEnumerator PerformPlayerAttack(PlayerHandler origin, DamageHitbox dh)
     {
+        float timer = 0;
         // THE FULL METHOD I WANT
         // Calculate a point out from the player, in the direction of the enemy hitbox.
         // Lerp the player towards that position
@@ -97,7 +98,17 @@ public class MeleeAttack
         // Make player movement/camera controls into accessible functions that can be triggered from other scripts
         // Do the same thing to AI characters
 
+        //origin.pc.canMove = false;
+
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / attackTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+
     }
-    */
+    
 
 }

@@ -55,9 +55,7 @@ public class OpticsStats
 [System.Serializable]
 public class AmmunitionStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     public bool consumesAmmo;
     public AmmunitionType ammoType;
     public int ammoPerShot = 1;
@@ -66,9 +64,7 @@ public class AmmunitionStats
 [System.Serializable]
 public class MagazineStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     public Resource magazine;
     public int roundsReloaded;
     public float reloadTime;
@@ -77,9 +73,7 @@ public class MagazineStats
 [System.Serializable]
 public class ProjectileStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     [Header("Generic stats")]
     public Projectile prefab;
     public Transform muzzle;
@@ -173,16 +167,6 @@ public class ProjectileStats
     }
 }
 
-public class CosmeticStats
-{
-    //public UnityEvent effectsOnFire;
-    public Sprite hudIcon;
-    public Transform heldPosition;
-    public AudioClip firingNoise;
-    public MuzzleFlashEffect muzzleFlash;
-    public float muzzleFlashRelativeDuration;
-    public ParticleSystem shellEjection;
-}
 
 #endregion
 
@@ -370,6 +354,8 @@ public class RangedWeapon : MonoBehaviour
     {
         ResetWeaponMoveVariables();
 
+        sensitivityWhileAiming = new PercentageModifier();
+        speedWhileAiming = new PercentageModifier();
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
         playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
     }
@@ -392,16 +378,6 @@ public class RangedWeapon : MonoBehaviour
 
         attackMessageLimitTimer += Time.deltaTime;
 
-        if (playerHolding.weaponSelector != null)
-        {
-            Debug.Log("Selector found");
-        }
-        else
-        {
-            Debug.Log("No selector is found");
-        }
-
-        // The script is failing due to something to do with the weapon selector
 
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
