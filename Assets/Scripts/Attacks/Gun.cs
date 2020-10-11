@@ -9,7 +9,7 @@ public class FiringModeData
 {
     [Header("General")]
     public string name;
-    
+    public float switchSpeed;
 
     [Header("Ammunition")]
     public bool consumesAmmo = true;
@@ -35,6 +35,11 @@ public class FiringModeData
     public float spreadRecoveryTimePerShot = 0.5f;
     [HideInInspector] public float spreadTimer = 0;
     [HideInInspector] public float spreadToApply = 0;
+
+    public float CalculatedSpread(float initialAccuracy)
+    {
+        return Mathf.Lerp(initialAccuracy, initialAccuracy * maxSpreadMultiplier, spreadCurve.Evaluate(spreadTimer));
+    }
 
     [Header("Recoil - Kick")]
     public float kickPerShot;
@@ -188,8 +193,8 @@ public class WeaponProjectileData
 public class WeaponMagazineData
 {
     public string name;
-    public Resource magazine;
-    public int roundsReloaded;
+    public Resource data;
+    public int roundsReloadedPerCycle;
     public float reloadTime;
 }
 
@@ -223,6 +228,12 @@ public class NewRangedWeapon : MonoBehaviour
     WeaponOpticsData optics;
     bool isSwitchingFiringMode;
 
+    float reloadTimer;
+    bool isReloading;
+
+    bool isAiming;
+
+
     [Header("Switching weapon")]
     public float drawSpeed;
     public float holsterSpeed;
@@ -234,6 +245,9 @@ public class NewRangedWeapon : MonoBehaviour
 
     [Header("Cosmetics")]
     public Animator animationHandler;
+
+
+    
     
     // Start is called before the first frame update
     void Start()
@@ -244,22 +258,18 @@ public class NewRangedWeapon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        attackMessageDelayTimer += Time.deltaTime / attackMessageDelay;
+
+        // If player is active
         // Checks following criteria to determine if the player should be able to control their weapon:
         // If the player is not currently switching weapon or firing mode
         // If the player's weapon selector is not active
-
-        attackMessageDelayTimer += Time.deltaTime / attackMessageDelay;
-
-
-        if (isSwitchingWeapon == false && isSwitchingFiringMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
+        if (playerHolding.ph.PlayerState() == GameState.Active && isSwitchingWeapon == false && isSwitchingFiringMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
-            // Firing mode controls
-
             mode.fireTimer += Time.deltaTime;
 
-            // If player is active
             // If player is pressing fire button
-            if (playerHolding.ph.PlayerState() == GameState.Active && Input.GetButton("Fire"))
+            if (Input.GetButton("Fire"))
             {
                 // If fireTimer has finished
                 // If burst count has not exceeded the limit OR burst count is set to zero
@@ -269,7 +279,7 @@ public class NewRangedWeapon : MonoBehaviour
                     if (mode.consumesAmmo == false || playerHolding.ph.a.GetStock(mode.ammoType) >= mode.ammoPerShot)
                     {
                         // If the magazine has ammunition and is not currently reloading, or the weapon does not use a magazine
-                        if (magazine == null || (magazine.magazine.current >= 1/*ammoPerShot*/ && isReloading == false))
+                        if (magazine == null || (magazine.data.current >= mode.ammoPerShot && isReloading == false))
                         {
                             #region Fire weapon
                             // Reset fire timer for next shot and update burst counter to ensure burst limit is not exceeded
@@ -288,26 +298,31 @@ public class NewRangedWeapon : MonoBehaviour
 
                             if (magazine != null)
                             {
-                                magazine.magazine.current -= mode.ammoPerShot;
+                                magazine.data.current -= mode.ammoPerShot;
                             }
 
                             // Obtain initial direction to fire weapon in
                             Transform aimOrigin = playerHolding.ph.pc.head.transform;
                             Vector3 aimDirection = aimOrigin.forward;
 
+                            // Creates a cone of fire based on the player's accuracy and current recoil spread
+                            float accuracy = playerHolding.standingAccuracy.Calculate();
+                            accuracy = mode.CalculatedSpread(accuracy);
+
+                            // While aiming normally, calculate player accuacy/recoil the same way as projectile spread, but beforehand.
+                            // While aiming down sights, substitute some kind of system where the player's actual aim wavers around a certain point.
                             if (optics == null || isAiming == false)
                             {
-                                float accuracy = playerHolding.standingAccuracy.Calculate();
                                 Vector3 angles = new Vector3(Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy));
-                                Vector3 processedDirection = Misc.AngledDirection(angles, aimDirection, transform.up);
+                                aimDirection = Misc.AngledDirection(angles, aimDirection, transform.up);
                             }
 
-                            // Shoots projectiles. ACCOUNT FOR RECOIL SPREAD
+                            // Shoots projectiles
                             projectile.Shoot(playerHolding.ph, aimOrigin.position, aimDirection, aimOrigin.up, mode.projectileSpread, mode.range);
 
                             if (attackMessageDelayTimer >= 1) // Sends attack message
                             {
-                                AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, mode.range, projectile.diameter, playerHolding.standingAccuracy.Calculate() + mode.projectileSpread, projectile.velocity, projectile.hitDetection);
+                                AttackMessage am = AttackMessage.Ranged(playerHolding.ph, aimOrigin.position, aimOrigin.forward, mode.range, projectile.diameter, accuracy + mode.projectileSpread, projectile.velocity, projectile.hitDetection);
                                 EventObserver.TransmitAttack(am);
                                 attackMessageDelayTimer = 0;
                             }
@@ -325,33 +340,49 @@ public class NewRangedWeapon : MonoBehaviour
                 mode.burstCounter = 0;
             }
 
-            if (magazine != null)
-            {
-                if (ammunition != null)
-                {
-                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine, playerHolding, ammunition.ammoType);
-                }
-                else
-                {
-                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloaded, magazine.magazine);
-                }
-            }
+            RecoilHandler(mode);
 
-            if (optics != null)
-            {
-                AimHandler(optics, firingModes[firingModeIndex].heldPosition, playerHolding.toggleAim);
-            }
+            ReloadHandler(magazine, mode);
 
-            RecoilHandler();
+            OpticsHandler(optics);
         }
     }
 
-    void SwitchFiringMode(int index)
+    IEnumerator SwitchFiringMode(int index)
     {
-        mode = firingModes[index];
+        FiringModeData previousMode = mode;
+        WeaponMagazineData previousMagazine = magazine;
+
+        yield return new WaitForEndOfFrame();
+
+        #region Before switching, cancel aim
+        // Before switching, exit aiming animation, if the new firing mode has different optics to the old one
+        FiringModeData newMode = firingModes[index];
+        WeaponOpticsData newOptics = opticsTypes[newMode.opticsIndex];
+        if (optics != newOptics)
+        {
+            // Cancel ADS. Wait while this is in progress
+            //yield return new WaitWhile(() => )
+        }
+        #endregion
+
+        #region Switch weapon
+        // Change the firing mode and optics data. Magazine changing will be done later, as after changing to the new firing mode the player might need to reload their weapon if the ammunition is different.
+        mode = newMode;
         projectile = projectileTypes[mode.projectileIndex];
         magazine = magazineTypes[mode.magazineIndex];
-        optics = opticsTypes[mode.opticsIndex];
+        optics = newOptics;
+        #endregion
+
+        #region After switching, reload magazine if necessary
+        // If the new firing mode feeds from the same magazine but uses different ammunition (i.e. if the player is swapping out ammo)
+        if (magazine == previousMagazine && mode.ammoType != previousMode.ammoType)
+        {
+            // Reload the weapon's magazine. It will be unrealistic if the player's magazine instantly switches from one ammo type to the other without reloading.
+            // I'm doing this by automatically emptying the magazine. This won't remove any of the player's ammunition.
+            magazine.data.current = 0;
+        }
+        #endregion
     }
 
 
@@ -416,5 +447,88 @@ public class NewRangedWeapon : MonoBehaviour
         */
         #endregion
     }
+    
+    void ReloadHandler(WeaponMagazineData magazine, FiringModeData mode)
+    {
+        if (magazine != null)
+        {
+            int remainingAmmo = playerHolding.ph.a.GetStock(mode.ammoType) - magazine.data.current; // Checks how much spare ammunition the player has
+
+            // Checks if the gun is being reloaded manually
+            bool manualReload = Input.GetButtonDown("Reload") && magazine.data.current < magazine.data.max;
+            // Checks if the magazine is not full enough to fire, and the previous shot has finished firing
+            bool automaticReload = magazine.data.current < mode.ammoPerShot && mode.fireTimer >= 60 / mode.roundsPerMinute;
+
+            if ((manualReload || automaticReload) && isReloading == false && remainingAmmo > 0)
+            {
+                StartCoroutine(ReloadSequence(magazine, mode));
+            }
+        }
+    }
+
+    IEnumerator ReloadSequence(WeaponMagazineData magazine, FiringModeData mode)
+    {
+        isReloading = true;
+        
+        // Wait until firing cycle has ended
+        yield return new WaitWhile(() => mode.fireTimer < mode.roundsPerMinute / 60);
+
+        reloadTimer = 0;
+
+
+
+
+        /*
+            // If reload button is pressed and weapon's magazine is not full OR if magazine is empty and gun is finished firing, PLUS if ammunition remains and the player is not already reloading
+            if (((Input.GetButtonDown("Reload") && magazine.current < magazine.max) || (magazine.current <= 0 && fireTimer >= 60 / roundsPerMinute)) && isReloading == false && remainingAmmo > 0)
+            {
+                reloadTimer = 0;
+                isReloading = true;
+                print("Reload sequence started");
+            }
+            if (isReloading == true)
+            {
+                reloadTimer += Time.deltaTime / reloadTime;
+
+                // If magazine is full, there is no more ammunition, or reload is interrupted by another action
+                if (isReloading == true && (magazine.current >= magazine.max || remainingAmmo <= 0 || (Input.GetButtonDown("Fire") && magazine.current > 0))) // Also include button options for melee attacking and any other functions that would cancel out the reload function
+                {
+                    CancelReload();
+                }
+
+                if (reloadTimer >= 1) // If reload time has been reached, reload ammunition into magazine
+                {
+                    print("Ammo reloaded");
+                    if (remainingAmmo < roundsReloaded) // If there is not enough ammunition to reload the usual amount
+                    {
+                        magazine.current += remainingAmmo; // Reload all remaining ammunition
+                    }
+                    else
+                    {
+                        magazine.current += roundsReloaded; // Reload standard amount of ammunition per reload cycle
+                    }
+                    magazine.current = Mathf.Clamp(magazine.current, 0, magazine.max); // Ensure magazine is not overloaded
+
+                    // If magazine is full, there is no more ammunition, or reload is interrupted by another action
+                    if (magazine.current >= magazine.max || remainingAmmo <= 0) // Also include button options for melee attacking and any other functions that would cancel out the reload function
+                    {
+                        CancelReload();
+                    }
+                    else
+                    {
+                        reloadTimer = 0; // Reset reload timer
+                        print("Reload sequence continued");
+                    }
+                }
+            }
+            */
+    }
+
+    void OpticsHandler(WeaponOpticsData optics)
+    {
+        if (optics != null)
+        {
+
+        }
     }
 }

@@ -23,7 +23,6 @@ public class PercentageModifier // Works for both floats and ints
     // Used for analog control over the effect's intensity
     public void SetIntensity(float f)
     {
-        
         intensity = Mathf.Clamp(f, 0, 1);
     }
 

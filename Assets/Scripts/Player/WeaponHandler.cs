@@ -95,7 +95,7 @@ public class WeaponHandler : MonoBehaviour
 
 
         crouchModifier.SetActiveFully(ph.pc.isCrouching);
-        runModifier.SetIntensity(ph.pc.Moving().magnitude);
+        runModifier.SetIntensity(ph.pc.MoveDirection().magnitude);
     }
 
     void RefreshWeapons(int index)

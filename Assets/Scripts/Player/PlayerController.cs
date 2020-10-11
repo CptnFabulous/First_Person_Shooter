@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour
 {
     #region General
     [Header("General")]
-    public GameObject head;
+    public Transform head;
+    public Transform torso;
     public Camera playerCamera;
     [HideInInspector] public Rigidbody rb;
     CapsuleCollider cc;
@@ -65,9 +66,38 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isCrouching;
     #endregion
 
+    [Header("Cosmetics")]
+    // Noises
+    public AudioClip footstepNoise;
+    public float alternateStepPitchShift;
+    public float footstepDelay;
+    public AudioClip jumpNoise;
+    public AudioClip landNoise;
+    // public AudioClip slideNoise;
+
+    // Head bobbing while walking
+    public float bobSpeed;
+    public float bobWidth;
+    public float bobHeight;
+    
+    // Torso lingering/dragging when moving
+    public float upperBodyLingerDistance;
+    public float speedForMaxLinger;
+
+    // Torso swaying/dragging when looking around
+    public float lookSwayDegrees;
+    public float speedForMaxSway;
+
+
+    Vector3 positionLastFrame;
+    Vector3 headDirectionLastFrame;
+    Quaternion headRotationLastFrame;
+
     [HideInInspector] public bool canMove = true;
 
 
+
+    #region Info on player movement
     bool IsGrounded()
     {
         // Casts a ray to determine if the player is standing on solid ground.
@@ -84,6 +114,36 @@ public class PlayerController : MonoBehaviour
         return moveInput;
     }
 
+    // Figure out how far the player has moved since the last frame, and in what direction
+    Vector3 DeltaMoveDistance()
+    {
+        return transform.position - positionLastFrame;
+    }
+
+    // Figure out how far the player's rotation has changed since the last frame, and in what direction
+    float DeltaRotateDistance()
+    {
+        return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
+    }
+
+    float SignedDeltaRotateDistance()
+    {
+        return Vector3.SignedAngle(headDirectionLastFrame, head.transform.forward, transform.up);
+    }
+
+    /*
+    Vector3 DeltaRotateDirection()
+    {
+        float arbitraryNumber = 5;
+        Vector3 outOld = headDirectionLastFrame.normalized * arbitraryNumber;
+        Vector3 outNew = head.transform.forward.normalized * arbitraryNumber;
+        Vector3 direction = outNew - outOld;
+
+
+        float signedAngle = DeltaRotateDistance();
+    }
+    */
+    #endregion
 
     void OnValidate()
     {
@@ -151,7 +211,7 @@ public class PlayerController : MonoBehaviour
             #endregion
         }
 
-
+        //CosmeticUpdate();
     }
 
     #region Camera control functions
@@ -264,4 +324,21 @@ public class PlayerController : MonoBehaviour
 
         //rb.AddForce(Physics.gravity * rb.mass);
     }
+
+    private void LateUpdate()
+    {
+        positionLastFrame = transform.position;
+        headRotationLastFrame = head.transform.rotation;
+    }
+
+
+    void CosmeticUpdate()
+    {
+        
+        
+        
+        //torso.transform.localPosition
+    }
+
+    
 }

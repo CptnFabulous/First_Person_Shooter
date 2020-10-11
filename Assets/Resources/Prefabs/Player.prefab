@@ -579,7 +579,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52afc32d01784c149a9adc71849819b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  head: {fileID: 7394104396082026298}
+  head: {fileID: 7394104396082026299}
+  torso: {fileID: 0}
   playerCamera: {fileID: 7394104396849714844}
   rb: {fileID: 0}
   fieldOfView: 60
@@ -607,6 +608,19 @@ MonoBehaviour:
   relativeHeadHeight: 0.375
   toggleCrouch: 1
   isCrouching: 0
+  footstepNoise: {fileID: 0}
+  alternateStepPitchShift: 0
+  footstepDelay: 0
+  jumpNoise: {fileID: 0}
+  landNoise: {fileID: 0}
+  bobSpeed: 0
+  bobWidth: 0
+  bobHeight: 0
+  upperBodyLingerDistance: 0
+  speedForMaxLinger: 0
+  lookSwayDegrees: 0
+  speedForMaxSway: 0
+  canMove: 1
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0
