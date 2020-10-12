@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public Camera playerCamera;
     [HideInInspector] public Rigidbody rb;
     CapsuleCollider cc;
+
+    [HideInInspector] public bool canMove = true;
     #endregion
 
     #region Camera control
@@ -32,6 +34,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool canLook;
     [HideInInspector] public VariableValueFloat sensitivityModifier;
     Vector2 lookVector;
+
+    Vector3 headDirectionLastFrame;
     #endregion
 
     #region Movement
@@ -40,6 +44,8 @@ public class PlayerController : MonoBehaviour
     public PercentageModifier crouchSpeedModifier;
     Vector2 moveInput;
     Vector3 movementValue;
+
+    Vector3 positionLastFrame;
     #endregion
 
     #region Jumping
@@ -66,6 +72,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isCrouching;
     #endregion
 
+    #region Cosmetics
     [Header("Cosmetics")]
     // Noises
     public AudioClip footstepNoise;
@@ -76,9 +83,11 @@ public class PlayerController : MonoBehaviour
     // public AudioClip slideNoise;
 
     // Head bobbing while walking
-    public float bobSpeed;
-    public float bobWidth;
-    public float bobHeight;
+    public float bobLoopTime;
+    public Vector2 bobExtents;
+    public AnimationCurve bobCurveX;
+    public AnimationCurve bobCurveY;
+    float bobTimer;
     
     // Torso lingering/dragging when moving
     public float upperBodyLingerDistance;
@@ -87,15 +96,7 @@ public class PlayerController : MonoBehaviour
     // Torso swaying/dragging when looking around
     public float lookSwayDegrees;
     public float speedForMaxSway;
-
-
-    Vector3 positionLastFrame;
-    Vector3 headDirectionLastFrame;
-    Quaternion headRotationLastFrame;
-
-    [HideInInspector] public bool canMove = true;
-
-
+    #endregion
 
     #region Info on player movement
     bool IsGrounded()
@@ -117,32 +118,34 @@ public class PlayerController : MonoBehaviour
     // Figure out how far the player has moved since the last frame, and in what direction
     Vector3 DeltaMoveDistance()
     {
-        return transform.position - positionLastFrame;
+        // Gets a vector3 of the direction the player has moved in since the last frame. It then also changes the magnitude to equal the full distance the player has moved.
+        Vector3 v = (transform.position - positionLastFrame).normalized;
+        v *= Vector3.Distance(transform.position, positionLastFrame);
+        return v;
     }
 
     // Figure out how far the player's rotation has changed since the last frame, and in what direction
     float DeltaRotateDistance()
     {
+        Debug.Log("Old: " + headDirectionLastFrame + " New: " + head.transform.forward);
         return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
     }
-
-    float SignedDeltaRotateDistance()
+    public Vector2 DeltaRotateDirection()
     {
-        return Vector3.SignedAngle(headDirectionLastFrame, head.transform.forward, transform.up);
+        Vector3 outOld = headDirectionLastFrame.normalized;
+        Vector3 outNew = head.transform.forward.normalized;
+
+        // Obtains the 'direction' the player looks in.
+        Vector3 direction = (outNew - outOld).normalized;
+
+        // Converts the direction from world to local space.
+        direction = transform.InverseTransformDirection(direction);
+
+        return new Vector2(direction.x, direction.y).normalized;
+
+
+        // Now I have a direction value. I just need to convert it to be relative to the transform's head.
     }
-
-    /*
-    Vector3 DeltaRotateDirection()
-    {
-        float arbitraryNumber = 5;
-        Vector3 outOld = headDirectionLastFrame.normalized * arbitraryNumber;
-        Vector3 outNew = head.transform.forward.normalized * arbitraryNumber;
-        Vector3 direction = outNew - outOld;
-
-
-        float signedAngle = DeltaRotateDistance();
-    }
-    */
     #endregion
 
     void OnValidate()
@@ -170,6 +173,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 m = DeltaMoveDistance();
+        Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
+        
         if (canMove == true)
         {
             #region Camera
@@ -328,7 +334,8 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         positionLastFrame = transform.position;
-        headRotationLastFrame = head.transform.rotation;
+        headDirectionLastFrame = head.transform.forward;
+        Debug.Log(head.transform.forward);
     }
 
 
@@ -338,6 +345,20 @@ public class PlayerController : MonoBehaviour
         
         
         //torso.transform.localPosition
+    }
+
+
+
+    void BobHandler()
+    {
+        bobTimer += Time.deltaTime / bobLoopTime;
+        bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+
+        float bobX = bobExtents.x * bobCurveX.Evaluate(bobTimer);
+        float bobY = bobExtents.y * bobCurveY.Evaluate(bobTimer);
+
+        Vector3 bobValue = new Vector3(bobX, bobY, 0);
+
     }
 
     

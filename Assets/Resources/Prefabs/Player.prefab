@@ -583,6 +583,7 @@ MonoBehaviour:
   torso: {fileID: 0}
   playerCamera: {fileID: 7394104396849714844}
   rb: {fileID: 0}
+  canMove: 1
   fieldOfView: 60
   sensitivityX: 40
   sensitivityY: 40
@@ -596,7 +597,8 @@ MonoBehaviour:
     defaultValue: 10
     influencingPercentages: []
   crouchSpeedModifier:
-    percentageValue: -50
+    percentageValue: 0.5
+    multiplicative: 1
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   forceJump: 5
@@ -613,14 +615,24 @@ MonoBehaviour:
   footstepDelay: 0
   jumpNoise: {fileID: 0}
   landNoise: {fileID: 0}
-  bobSpeed: 0
-  bobWidth: 0
-  bobHeight: 0
+  bobLoopTime: 0
+  bobExtents: {x: 0, y: 0}
+  bobCurveX:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bobCurveY:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   upperBodyLingerDistance: 0
   speedForMaxLinger: 0
   lookSwayDegrees: 0
   speedForMaxSway: 0
-  canMove: 1
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -697,14 +709,16 @@ MonoBehaviour:
   ph: {fileID: 0}
   toggleAim: 0
   standingAccuracy:
-    defaultValue: 2
+    defaultValue: 0.5
     influencingPercentages: []
   runModifier:
-    percentageValue: 100
+    percentageValue: 200
+    multiplicative: 0
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   crouchModifier:
-    percentageValue: -75
+    percentageValue: 0
+    multiplicative: 1
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   equippedWeapons: []

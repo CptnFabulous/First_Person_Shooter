@@ -11,6 +11,8 @@ public class PercentageModifier // Works for both floats and ints
 {
     // How much is the original float being influenced?
     public float percentageValue;
+    // is the float multiplied by this value? If not, this value is used additively.
+    public bool multiplicative;
     // If disabled, this modifier will only be counted if the original object is disabled
     public bool ignoresOriginActiveState;
 
@@ -81,7 +83,7 @@ public class VariableValueFloat
         influencingPercentages.RemoveAll(fm => fm.origin == null);
     }
 
-
+    /*
     // Obtains the final value from modifying the original float by influencing percentages.
     public float Calculate()
     {
@@ -103,6 +105,41 @@ public class VariableValueFloat
         // Alters defaultValue by the total percentage value
         return defaultValue * (1 + m);
     }
+    */
+
+    public float Calculate/*WithMultipliers*/()
+    {
+        ValidateModifiers();
+
+        float finalValue = defaultValue;
+
+        // Should I have some kind of code that only recalculates the variables if the list of modifiers change?
+        float additivePercentage = 0;
+        // Checks all modifiers
+        foreach (PercentageModifier fm in influencingPercentages)
+        {
+            // Is it worth it to bother with the IsActive bool? Since a float is used to determine intensity, if it's set to zero then it'll just return zero
+            if (fm.IsActive())
+            {
+                if (fm.multiplicative == true)
+                {
+                    finalValue *= fm.Get();
+                }
+                else
+                {
+                    additivePercentage += fm.Get();
+                }
+            }
+        }
+
+        additivePercentage /= 100;
+        additivePercentage = 1 + additivePercentage;
+
+        return finalValue * additivePercentage;
+    }
+
+
+
 
     public void Add(PercentageModifier pm, MonoBehaviour origin)
     {

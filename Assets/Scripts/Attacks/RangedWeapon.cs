@@ -381,7 +381,6 @@ public class RangedWeapon : MonoBehaviour
 
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
-            Debug.Log("Gun is working");
             
             #region Firing mode controls
             if (Input.GetAxis("Mouse ScrollWheel") != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
