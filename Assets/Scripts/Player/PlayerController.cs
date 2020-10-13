@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Info on player movement
+    // Is the player standing on solid ground, or are they airborne?
     bool IsGrounded()
     {
         // Casts a ray to determine if the player is standing on solid ground.
@@ -110,6 +111,7 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    // In what direction is the player intending to move?
     public Vector2 MoveDirection()
     {
         return moveInput;
@@ -130,6 +132,8 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Old: " + headDirectionLastFrame + " New: " + head.transform.forward);
         return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
     }
+
+    // In what direction is the player turning?
     public Vector2 DeltaRotateDirection()
     {
         Vector3 outOld = headDirectionLastFrame.normalized;
@@ -232,7 +236,7 @@ public class PlayerController : MonoBehaviour
         head.transform.localRotation = Quaternion.Euler(lookVector.y, 0, 0); // Player head is rotated in x axis based on Camera.y, for looking up and down
     }
 
-    public void SetLookDirection(Vector3 lookDirection)
+    public void LookAt(Vector3 lookDirection)
     {
         Quaternion direction = Quaternion.LookRotation(lookDirection, transform.up);
         transform.rotation = Quaternion.Euler(0, direction.y, direction.z);
@@ -312,7 +316,8 @@ public class PlayerController : MonoBehaviour
     void LerpCrouch(float t)
     {
         cc.height = Mathf.Lerp(standHeight, crouchHeight, t);
-        crouchSpeedModifier.SetIntensity(t); // Lerps crouch speed multiplier between none and fully active
+        //crouchSpeedModifier.SetIntensity(t); // Lerps crouch speed multiplier between none and fully active
+        crouchSpeedModifier.SetActiveFully(isCrouching);
         head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, t), 0);
     }
     #endregion

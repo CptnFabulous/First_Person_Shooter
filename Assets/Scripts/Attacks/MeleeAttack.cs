@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using UnityEditor;
 using UnityEngine;
 //using System.Linq;
 
@@ -11,26 +14,87 @@ public class MeleeAttack
     public float angle;
     public float attackTime;
     public LayerMask hitDetection;
+
+
+    bool isAttacking;
+
+
     
-    /*
-    // Start is called before the first frame update
-    void Start()
+
+
+    public IEnumerator PlayerSnapAttack(PlayerHandler origin, Vector3 attackOrigin, Vector3 direction)
     {
-        
+        DamageHitbox target = FindEnemyHitbox(origin, attackOrigin, direction);
+
+        if (target == null)
+        {
+            //Play swing animation
+        }
+
+
+        // Sets up loop
+        isAttacking = true;
+        float timer = 0;
+
+
+        // Temporarily disables player controller
+        origin.pc.canMove = false;
+
+
+
+
+        Vector3 oldLookDirection = origin.pc.head.transform.forward;
+        Vector3 oldPosition = origin.transform.position;
+
+        while (timer <= 1)
+        {
+            // Count up timer
+            timer += Time.deltaTime / attackTime;
+
+            // If the isAttacking bool has been remotely disabled, and end attack prematurely
+            if (isAttacking == false)
+            {
+                EndAttack();
+                yield break;
+            }
+
+            // Lerp player rotation so they are looking at the enemy
+            Vector3 newLookDirection = target.transform.position - origin.transform.position;
+            origin.pc.LookAt(Vector3.Lerp(oldLookDirection, newLookDirection, timer));
+
+            // Lerp player position closer to enemy
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        // Execute attack (play animation and deal damage)
+        target.Damage(damage, origin, DamageType.Bludgeoned, false);
+
+
+        EndAttack();
     }
 
-    // Update is called once per frame
-    void Update()
+   
+
+    void EndAttack()
     {
         
+        // Re-enable player controller
+        
+        
+        
+        isAttacking = false;
     }
-    */
 
-    public void ExecuteSingle(Character origin, Vector3 attackOrigin, Vector3 direction)
+
+
+
+
+    DamageHitbox FindEnemyHitbox(Character origin, Vector3 attackOrigin, Vector3 direction)
     {
         // Run a vision cone to check for entities inside the attack angle and range
         RaycastHit[] hits = AIFunction.VisionCone(attackOrigin, direction, origin.transform.up, angle, range, hitDetection, hitDetection);
-        
+
         // Create a 'target' variable to determine who the 
         DamageHitbox target = null;
         float bestRange = range * 2;
@@ -58,57 +122,12 @@ public class MeleeAttack
             }
         }
 
-        // If there is no target
-        if (target == null)
-        {
-            // Perform animation and 'miss'
-        }
-
-        //MonoBehaviour.StartCoroutine(PerformAttack(origin, target));
-
-        //StartCoroutine
-
-        // PERFORM MELEE ATTACK
-        
-        // Quickly lerp the attacker's position to a space close to the target
-        // Quickly lerp the attacker's look direction to face the target
-        // Deal damage
-
-
+        return target;
     }
 
-    
-    IEnumerator PerformPlayerAttack(PlayerHandler origin, DamageHitbox dh)
+    public void Cancel()
     {
-        float timer = 0;
-        // THE FULL METHOD I WANT
-        // Calculate a point out from the player, in the direction of the enemy hitbox.
-        // Lerp the player towards that position
-        // Lerp the player's rotation to face the enemy
-        // Do both of these things over the span of attackTime
-        // Deal damage
-        // Reposition player/enemy so they do not clip into terrain
-
-        // THE SIMPLER METHOD I WILL START OFF WITH
-        // Lerp the player's rotation to face the enemy, over the span of attackTime
-        // Deal damage
-
-
-        // STUFF I MAY NEED TO DO IN ORDER TO ACCOMPLISH THIS
-        // Make player movement/camera controls into accessible functions that can be triggered from other scripts
-        // Do the same thing to AI characters
-
-        //origin.pc.canMove = false;
-
-
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / attackTime;
-            yield return new WaitForEndOfFrame();
-        }
-
-
+        isAttacking = false;
     }
-    
 
 }

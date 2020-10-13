@@ -44,7 +44,7 @@ public class PercentageModifier // Works for both floats and ints
     // What is the percentage being influenced by the intensity?
     public float Get()
     {
-        return percentageValue * intensity;
+        return percentageValue * intensity / 100;
     }
 
     // Is the effect enabled?
@@ -83,31 +83,7 @@ public class VariableValueFloat
         influencingPercentages.RemoveAll(fm => fm.origin == null);
     }
 
-    /*
-    // Obtains the final value from modifying the original float by influencing percentages.
     public float Calculate()
-    {
-        ValidateModifiers();
-        // Should I have some kind of code that only recalculates the variables if the list of modifiers change?
-        float m = 0;
-        // Checks all modifiers
-        foreach (PercentageModifier fm in influencingPercentages)
-        {
-            // Is it worth it to bother with the IsActive bool? Since a float is used to determine intensity, if it's set to zero then it'll just return zero
-            if (fm.IsActive())
-            {
-                m += fm.Get();
-            }
-        }
-
-        m /= 100;
-
-        // Alters defaultValue by the total percentage value
-        return defaultValue * (1 + m);
-    }
-    */
-
-    public float Calculate/*WithMultipliers*/()
     {
         ValidateModifiers();
 
@@ -132,10 +108,7 @@ public class VariableValueFloat
             }
         }
 
-        additivePercentage /= 100;
-        additivePercentage = 1 + additivePercentage;
-
-        return finalValue * additivePercentage;
+        return finalValue * (1 + additivePercentage);
     }
 
 

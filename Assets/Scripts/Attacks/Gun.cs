@@ -264,7 +264,7 @@ public class NewRangedWeapon : MonoBehaviour
         // Checks following criteria to determine if the player should be able to control their weapon:
         // If the player is not currently switching weapon or firing mode
         // If the player's weapon selector is not active
-        if (playerHolding.ph.PlayerState() == GameState.Active && isSwitchingWeapon == false && isSwitchingFiringMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
+        if (playerHolding.ph.PlayerState() == GameState.Active && isSwitchingWeapon == false && isSwitchingFiringMode == false && isReloading == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
             mode.fireTimer += Time.deltaTime;
 
@@ -327,9 +327,9 @@ public class NewRangedWeapon : MonoBehaviour
                                 attackMessageDelayTimer = 0;
                             }
 
+                            animationHandler.SetTrigger("Fire " + mode.name);
                             // Trigger cosmetic effects
                             mode.effectsOnFire.Invoke();
-
                             #endregion
                         }
                     }
@@ -341,9 +341,7 @@ public class NewRangedWeapon : MonoBehaviour
             }
 
             RecoilHandler(mode);
-
             ReloadHandler(magazine, mode);
-
             OpticsHandler(optics);
         }
     }
@@ -405,13 +403,6 @@ public class NewRangedWeapon : MonoBehaviour
             s = s / mode.spreadRecoveryTimePerShot;
             mode.spreadTimer -= s;
         }
-
-        // Reuses variable s to figure out how wide the spread should be, based on spreadCurve and spreadTimer
-        s = mode.spreadCurve.Evaluate(mode.spreadTimer);
-
-        // Calculate current spread
-        float currentSpread = Mathf.Lerp(mode.projectileSpread, mode.projectileSpread * mode.maxSpreadMultiplier, s);
-
         #endregion
 
         #region Calculate kick
@@ -468,60 +459,58 @@ public class NewRangedWeapon : MonoBehaviour
 
     IEnumerator ReloadSequence(WeaponMagazineData magazine, FiringModeData mode)
     {
+        #region Set up loop and wait for firing cycle to end
+        // Establish variables that need to be present throughout the loop
         isReloading = true;
-        
-        // Wait until firing cycle has ended
-        yield return new WaitWhile(() => mode.fireTimer < mode.roundsPerMinute / 60);
-
         reloadTimer = 0;
+        int remainingAmmo = playerHolding.ph.a.GetStock(mode.ammoType) - magazine.data.current;
 
+        // Wait until firing cycle has ended, then begin reload sequence for real.
+        yield return new WaitUntil(() => mode.fireTimer >= mode.roundsPerMinute / 60 || isReloading == false);
+        // If the reload sequence is cancelled prematurely while in this stage, it will detect that isReloading is false and skip to the next step.
+        // The next step would be the update loop, but since that requires isReloading to be true, it will skip that.
+        #endregion
 
+        #region Start reload sequence for real
 
+        #endregion
 
-        /*
-            // If reload button is pressed and weapon's magazine is not full OR if magazine is empty and gun is finished firing, PLUS if ammunition remains and the player is not already reloading
-            if (((Input.GetButtonDown("Reload") && magazine.current < magazine.max) || (magazine.current <= 0 && fireTimer >= 60 / roundsPerMinute)) && isReloading == false && remainingAmmo > 0)
+        #region 'Update' loop
+        // If the reload cycle has not been automatically cancelled, the magazine is not full and there is ammunition remaining, count up and add ammunition to the magazine
+        // This is essentially a separate update loop for reloading
+        while (isReloading == true && magazine.data.PercentageFull() < 1 && remainingAmmo > 0)
+        {
+            reloadTimer += Time.deltaTime / magazine.reloadTime;
+
+            // If reload timer has maxed out, add ammunition to magazine. This is a while loop instead of an if, so if the game severely lags out it will 'reload' multiple times if appropriate
+            while (reloadTimer >= 1)
             {
-                reloadTimer = 0;
-                isReloading = true;
-                print("Reload sequence started");
+                reloadTimer -= 1;
+
+                #region Add ammunition to magazine
+                // Checks how much spare ammunition the player has
+                remainingAmmo = playerHolding.ph.a.GetStock(mode.ammoType) - magazine.data.current;
+
+                // Reload the appropriate amount per cycle, unless there is not enough, in which case load all remaining ammunition
+                magazine.data.current += Mathf.Min(remainingAmmo, magazine.roundsReloadedPerCycle);
+
+                // Ensure magazine is not overloaded
+                magazine.data.current = Mathf.Clamp(magazine.data.current, 0, magazine.data.max);
+                #endregion
             }
-            if (isReloading == true)
-            {
-                reloadTimer += Time.deltaTime / reloadTime;
 
-                // If magazine is full, there is no more ammunition, or reload is interrupted by another action
-                if (isReloading == true && (magazine.current >= magazine.max || remainingAmmo <= 0 || (Input.GetButtonDown("Fire") && magazine.current > 0))) // Also include button options for melee attacking and any other functions that would cancel out the reload function
-                {
-                    CancelReload();
-                }
+            yield return new WaitForEndOfFrame();
+        }
+        #endregion
 
-                if (reloadTimer >= 1) // If reload time has been reached, reload ammunition into magazine
-                {
-                    print("Ammo reloaded");
-                    if (remainingAmmo < roundsReloaded) // If there is not enough ammunition to reload the usual amount
-                    {
-                        magazine.current += remainingAmmo; // Reload all remaining ammunition
-                    }
-                    else
-                    {
-                        magazine.current += roundsReloaded; // Reload standard amount of ammunition per reload cycle
-                    }
-                    magazine.current = Mathf.Clamp(magazine.current, 0, magazine.max); // Ensure magazine is not overloaded
+        #region End reload sequence
+        isReloading = false;
+        #endregion
+    }
 
-                    // If magazine is full, there is no more ammunition, or reload is interrupted by another action
-                    if (magazine.current >= magazine.max || remainingAmmo <= 0) // Also include button options for melee attacking and any other functions that would cancel out the reload function
-                    {
-                        CancelReload();
-                    }
-                    else
-                    {
-                        reloadTimer = 0; // Reset reload timer
-                        print("Reload sequence continued");
-                    }
-                }
-            }
-            */
+    public void CancelReload()
+    {
+        isReloading = false;
     }
 
     void OpticsHandler(WeaponOpticsData optics)

@@ -597,7 +597,7 @@ MonoBehaviour:
     defaultValue: 10
     influencingPercentages: []
   crouchSpeedModifier:
-    percentageValue: 0.5
+    percentageValue: 50
     multiplicative: 1
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
@@ -717,8 +717,8 @@ MonoBehaviour:
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   crouchModifier:
-    percentageValue: 0
-    multiplicative: 1
+    percentageValue: -100
+    multiplicative: 0
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   equippedWeapons: []
