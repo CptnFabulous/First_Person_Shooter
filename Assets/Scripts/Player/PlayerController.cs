@@ -177,8 +177,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 m = DeltaMoveDistance();
-        Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
+        //Vector3 m = DeltaMoveDistance();
+        //Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
         
         if (canMove == true)
         {
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
             #endregion
         }
 
-        //CosmeticUpdate();
+        CosmeticUpdate();
     }
 
     #region Camera control functions
@@ -340,13 +340,12 @@ public class PlayerController : MonoBehaviour
     {
         positionLastFrame = transform.position;
         headDirectionLastFrame = head.transform.forward;
-        Debug.Log(head.transform.forward);
     }
 
 
     void CosmeticUpdate()
     {
-        
+        RunAnimationHandler();
         
         
         //torso.transform.localPosition
@@ -354,17 +353,81 @@ public class PlayerController : MonoBehaviour
 
 
 
-    void BobHandler()
+    void RunAnimationHandler()
     {
-        bobTimer += Time.deltaTime / bobLoopTime;
-        bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+        Vector3 bodyPosition = Vector3.zero;
+        
+        
+        Vector2 moveInputValue = moveInput;
+        if (moveInputValue.magnitude > 0 && IsGrounded())
+        {
+            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
+            float time = bobLoopTime / speedMagnitude;
 
-        float bobX = bobExtents.x * bobCurveX.Evaluate(bobTimer);
-        float bobY = bobExtents.y * bobCurveY.Evaluate(bobTimer);
+            bobTimer += Time.deltaTime / time;
+            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
 
-        Vector3 bobValue = new Vector3(bobX, bobY, 0);
+            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+
+            bodyPosition = new Vector3(bobX, bobY, 0);
+        }
+        else
+        {
+            bobTimer = 0;
+        }
+
+        torso.transform.localPosition = bodyPosition;
+        
+        
 
     }
 
-    
+    /*
+    void CosmeticUpdate()
+    {
+        Vector3 torsoPosition = Vector3.zero;
+
+        // Add together various animation forces on the player
+        #region Run animation handler
+        Vector3 bobBodyPosition = Vector3.zero;
+        Vector2 moveInputValue = moveInput;
+        if (moveInputValue.magnitude > 0 && IsGrounded())
+        {
+            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
+            float time = bobLoopTime / speedMagnitude;
+
+            bobTimer += Time.deltaTime / time;
+            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+
+            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+
+            bobBodyPosition = new Vector3(bobX, bobY, 0);
+        }
+        else
+        {
+            bobTimer = 0;
+        }
+
+        torsoPosition += bobBodyPosition;
+        #endregion
+
+        torso.transform.localPosition = torsoPosition;
+    }
+
+
+
+    void RunAnimationHandler()
+    {
+        
+
+        
+        
+        
+
+    }
+    */
+
+
 }
