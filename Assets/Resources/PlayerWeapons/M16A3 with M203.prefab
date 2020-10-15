@@ -91,7 +91,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7790646450444556799}
   - component: {fileID: 7790646450444556798}
-  - component: {fileID: 8448751402392245094}
   m_Layer: 0
   m_Name: M16A3 with M203
   m_TagString: Untagged
@@ -172,7 +171,7 @@ MonoBehaviour:
   - name: 4x ACOG
     magnification: 4
     transitionTime: 0.25
-    moveSpeedReduction: -0.4
+    moveSpeedReductionPercentage: -40
     aimPosition: {fileID: 7790646452389621174}
     scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
     disableReticle: 0
@@ -363,7 +362,7 @@ MonoBehaviour:
     name: 
     magnification: 0
     transitionTime: 0
-    moveSpeedReduction: 0
+    moveSpeedReductionPercentage: 0
     aimPosition: {fileID: 0}
     scopeGraphic: {fileID: 0}
     disableReticle: 0
@@ -372,10 +371,12 @@ MonoBehaviour:
   zoomTimer: 0
   sensitivityWhileAiming:
     percentageValue: 0
+    multiplicative: 0
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   speedWhileAiming:
     percentageValue: 0
+    multiplicative: 0
     ignoresOriginActiveState: 0
     origin: {fileID: 0}
   recoil:
@@ -458,41 +459,6 @@ MonoBehaviour:
   firingModeIndex: 0
   isSwitchingWeapon: 0
   isSwitchingFireMode: 0
---- !u!114 &8448751402392245094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7790646450444556796}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36ed032775bb4f240be3fdc01af9024f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firingModes:
-  - name: 
-    projectileSpread: 0
-    range: 0
-    rayDetection:
-      serializedVersion: 2
-      m_Bits: 0
-    recoilSpreadMax: 0
-    recoilKick: 0
-    maxRecoilPerShot: 0
-    recoilCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
-    kickPerShot: 0
-    recoilApplyRate: 0
-    recoilRecovery: 0
-    roundsPerMinute: 0
-    maxBurst: 0
-    fireTimer: 0
-    burstCounter: 0
 --- !u!1 &7790646450466463838
 GameObject:
   m_ObjectHideFlags: 0

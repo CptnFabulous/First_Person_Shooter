@@ -177,8 +177,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 m = DeltaMoveDistance();
-        Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
+        //Vector3 m = DeltaMoveDistance();
+        //Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
         
         if (canMove == true)
         {
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
             #endregion
         }
 
-        //CosmeticUpdate();
+        CosmeticUpdate();
     }
 
     #region Camera control functions
@@ -340,31 +340,59 @@ public class PlayerController : MonoBehaviour
     {
         positionLastFrame = transform.position;
         headDirectionLastFrame = head.transform.forward;
-        Debug.Log(head.transform.forward);
     }
-
 
     void CosmeticUpdate()
     {
-        
-        
-        
-        //torso.transform.localPosition
+        Vector3 torsoPosition = Vector3.zero;
+
+        #region Bobbing
+        Vector2 moveInputValue = moveInput;
+        if (moveInputValue.magnitude > 0 && IsGrounded())
+        {
+            Vector3 bodyPosition = Vector3.zero;
+            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
+            float time = bobLoopTime / speedMagnitude;
+
+            bobTimer += Time.deltaTime / time;
+            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+
+            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+
+            bodyPosition = new Vector3(bobX, bobY, 0);
+            torsoPosition += bodyPosition;
+        }
+        else
+        {
+            bobTimer = 0;
+        }
+        #endregion
+
+        #region Drag
+        // Implement function for dragging while the player is moving
+        /*
+        //Vector3 velocity = DeltaMoveDistance();
+        //float speed = velocity.magnitude / Time.deltaTime;
+
+        Vector3 velocity = rb.velocity;
+        float speed = velocity.magnitude;
+        float dragIntensity = Mathf.Clamp01(speed / speedForMaxLinger);
+
+        Vector3 direction = transform.InverseTransformDirection(velocity);
+        Vector3 dragMax = direction.normalized * -upperBodyLingerDistance;
+        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
+
+        torsoPosition += dragValue;
+        */
+        #endregion
+
+        #region Sway
+
+        #endregion
+
+        torso.transform.localPosition = torsoPosition;
     }
 
 
-
-    void BobHandler()
-    {
-        bobTimer += Time.deltaTime / bobLoopTime;
-        bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
-
-        float bobX = bobExtents.x * bobCurveX.Evaluate(bobTimer);
-        float bobY = bobExtents.y * bobCurveY.Evaluate(bobTimer);
-
-        Vector3 bobValue = new Vector3(bobX, bobY, 0);
-
-    }
-
-    
 }
