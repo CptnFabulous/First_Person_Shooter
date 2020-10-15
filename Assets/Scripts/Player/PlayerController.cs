@@ -342,25 +342,15 @@ public class PlayerController : MonoBehaviour
         headDirectionLastFrame = head.transform.forward;
     }
 
-
     void CosmeticUpdate()
     {
-        RunAnimationHandler();
-        
-        
-        //torso.transform.localPosition
-    }
+        Vector3 torsoPosition = Vector3.zero;
 
-
-
-    void RunAnimationHandler()
-    {
-        Vector3 bodyPosition = Vector3.zero;
-        
-        
+        #region Bobbing
         Vector2 moveInputValue = moveInput;
         if (moveInputValue.magnitude > 0 && IsGrounded())
         {
+            Vector3 bodyPosition = Vector3.zero;
             float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
             float time = bobLoopTime / speedMagnitude;
 
@@ -371,63 +361,38 @@ public class PlayerController : MonoBehaviour
             float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
 
             bodyPosition = new Vector3(bobX, bobY, 0);
+            torsoPosition += bodyPosition;
         }
         else
         {
             bobTimer = 0;
         }
+        #endregion
 
-        torso.transform.localPosition = bodyPosition;
-        
-        
+        #region Drag
+        // Implement function for dragging while the player is moving
+        /*
+        //Vector3 velocity = DeltaMoveDistance();
+        //float speed = velocity.magnitude / Time.deltaTime;
 
-    }
+        Vector3 velocity = rb.velocity;
+        float speed = velocity.magnitude;
+        float dragIntensity = Mathf.Clamp01(speed / speedForMaxLinger);
 
-    /*
-    void CosmeticUpdate()
-    {
-        Vector3 torsoPosition = Vector3.zero;
+        Vector3 direction = transform.InverseTransformDirection(velocity);
+        Vector3 dragMax = direction.normalized * -upperBodyLingerDistance;
+        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
 
-        // Add together various animation forces on the player
-        #region Run animation handler
-        Vector3 bobBodyPosition = Vector3.zero;
-        Vector2 moveInputValue = moveInput;
-        if (moveInputValue.magnitude > 0 && IsGrounded())
-        {
-            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
-            float time = bobLoopTime / speedMagnitude;
+        torsoPosition += dragValue;
+        */
+        #endregion
 
-            bobTimer += Time.deltaTime / time;
-            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+        #region Sway
 
-            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-
-            bobBodyPosition = new Vector3(bobX, bobY, 0);
-        }
-        else
-        {
-            bobTimer = 0;
-        }
-
-        torsoPosition += bobBodyPosition;
         #endregion
 
         torso.transform.localPosition = torsoPosition;
     }
-
-
-
-    void RunAnimationHandler()
-    {
-        
-
-        
-        
-        
-
-    }
-    */
 
 
 }

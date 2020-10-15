@@ -749,8 +749,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  upperBodyLingerDistance: 0
-  speedForMaxLinger: 0
+  upperBodyLingerDistance: 0.5
+  speedForMaxLinger: 20
   lookSwayDegrees: 0
   speedForMaxSway: 0
 --- !u!114 &7394104395992576402

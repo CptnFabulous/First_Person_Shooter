@@ -46,7 +46,7 @@ public class OpticsStats
 #endif
     public float magnification;
     public float transitionTime;
-    [Range(-1, 0)] public float moveSpeedReduction;
+    public float moveSpeedReductionPercentage;
     public Transform aimPosition;
     public Sprite scopeGraphic;
     public bool disableReticle;
@@ -355,8 +355,10 @@ public class RangedWeapon : MonoBehaviour
         ResetWeaponMoveVariables();
 
         sensitivityWhileAiming = new PercentageModifier();
-        speedWhileAiming = new PercentageModifier();
+        sensitivityWhileAiming.multiplicative = true;
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
+
+        speedWhileAiming = new PercentageModifier();
         playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
     }
     
@@ -555,14 +557,11 @@ public class RangedWeapon : MonoBehaviour
                 LerpSights(optics, 0, firingModes[firingModeIndex].heldPosition);
             }
 
-
-            if (optics != null)
+            if (newOptics != null)
             {
-                sensitivityWhileAiming.percentageValue = -(100 / newOptics.magnification);
-                speedWhileAiming.percentageValue = -(newOptics.moveSpeedReduction * 100);
+                sensitivityWhileAiming.percentageValue = 100 / newOptics.magnification;
+                speedWhileAiming.percentageValue = newOptics.moveSpeedReductionPercentage;
             }
-
-            
 
             if (magazine != null)
             {
@@ -748,7 +747,7 @@ public class RangedWeapon : MonoBehaviour
         sensitivityWhileAiming.SetIntensity(timer);
         speedWhileAiming.SetIntensity(timer);
         // Reduce movement speed
-        //float newSpeed = Mathf.Lerp(0, os.moveSpeedReduction, timer);
+        //float newSpeed = Mathf.Lerp(0, os.moveSpeedReductionPercentage, timer);
         //playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
 
         // Alter accuracy if specified

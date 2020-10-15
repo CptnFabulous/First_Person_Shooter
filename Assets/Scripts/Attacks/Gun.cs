@@ -216,7 +216,7 @@ public class WeaponOpticsData
 public class NewRangedWeapon : MonoBehaviour
 {
     public WeaponHandler playerHolding;
-    
+
     [Header("Firing modes")]
     public FiringModeData[] firingModes;
     public WeaponProjectileData[] projectileTypes;
@@ -232,6 +232,8 @@ public class NewRangedWeapon : MonoBehaviour
     bool isReloading;
 
     bool isAiming;
+    [HideInInspector] PercentageModifier sensitivityWhileAiming = new PercentageModifier { multiplicative = true };
+    [HideInInspector] PercentageModifier speedWhileAiming = new PercentageModifier { };
 
 
     [Header("Switching weapon")]
@@ -268,6 +270,7 @@ public class NewRangedWeapon : MonoBehaviour
         {
             mode.fireTimer += Time.deltaTime;
 
+            #region Fire controls
             // If player is pressing fire button
             if (Input.GetButton("Fire"))
             {
@@ -281,7 +284,7 @@ public class NewRangedWeapon : MonoBehaviour
                         // If the magazine has ammunition and is not currently reloading, or the weapon does not use a magazine
                         if (magazine == null || (magazine.data.current >= mode.ammoPerShot && isReloading == false))
                         {
-                            #region Fire weapon
+                            #region Calculate variables for other gun stats
                             // Reset fire timer for next shot and update burst counter to ensure burst limit is not exceeded
                             mode.fireTimer = 0;
                             mode.burstCounter += 1;
@@ -296,10 +299,15 @@ public class NewRangedWeapon : MonoBehaviour
                                 playerHolding.ph.a.Spend(mode.ammoType, mode.ammoPerShot);
                             }
 
+                            // Deplete magazine if the weapon feeds from one
                             if (magazine != null)
                             {
                                 magazine.data.current -= mode.ammoPerShot;
                             }
+
+                            #endregion
+
+                            #region Calculate shot
 
                             // Obtain initial direction to fire weapon in
                             Transform aimOrigin = playerHolding.ph.pc.head.transform;
@@ -320,6 +328,10 @@ public class NewRangedWeapon : MonoBehaviour
                             // Shoots projectiles
                             projectile.Shoot(playerHolding.ph, aimOrigin.position, aimDirection, aimOrigin.up, mode.projectileSpread, mode.range);
 
+                            #endregion
+
+                            #region Send attack message
+
                             if (attackMessageDelayTimer >= 1) // Sends attack message
                             {
                                 AttackMessage am = AttackMessage.Ranged(playerHolding.ph, aimOrigin.position, aimOrigin.forward, mode.range, projectile.diameter, accuracy + mode.projectileSpread, projectile.velocity, projectile.hitDetection);
@@ -327,6 +339,10 @@ public class NewRangedWeapon : MonoBehaviour
                                 attackMessageDelayTimer = 0;
                             }
 
+                            #endregion
+
+                            #region Cosmetic effects
+                            // Play animation
                             animationHandler.SetTrigger("Fire " + mode.name);
                             // Trigger cosmetic effects
                             mode.effectsOnFire.Invoke();
@@ -339,6 +355,7 @@ public class NewRangedWeapon : MonoBehaviour
             {
                 mode.burstCounter = 0;
             }
+            #endregion
 
             RecoilHandler(mode);
             ReloadHandler(magazine, mode);
