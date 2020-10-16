@@ -645,8 +645,10 @@ MonoBehaviour:
   footstepDelay: 0
   jumpNoise: {fileID: 0}
   landNoise: {fileID: 0}
+  torsoAnimateSpeed: 0.2
+  torsoAnimateTime: 20
   bobLoopTime: 1
-  bobExtents: {x: 0.05, y: 0.05}
+  bobExtents: {x: 0.2, y: 0.2}
   bobCurveX:
     serializedVersion: 2
     m_Curve:
@@ -749,10 +751,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  upperBodyLingerDistance: 0.5
-  speedForMaxLinger: 20
-  lookSwayDegrees: 0
-  speedForMaxSway: 0
+  upperBodyDragDistance: 0.2
+  speedForMaxDrag: 20
+  lookSwayDegrees: 15
+  speedForMaxSway: 10
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,8 +876,8 @@ MonoBehaviour:
     current: 120
     critical: 30
   - refName: Grenade
-    max: 8
-    current: 8
+    max: 4
+    current: 4
     critical: 2
   - refName: Petrol
     max: 500
