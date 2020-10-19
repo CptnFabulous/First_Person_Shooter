@@ -78,7 +78,22 @@ public static class Misc
 
 
 
+    public static float SubtractDecimalFromFloat(float f)
+    {
+        int wholeNumber = Mathf.RoundToInt(f);
 
+        if (f < wholeNumber)
+        {
+            wholeNumber -= 1;
+        }
+
+        if (f > wholeNumber)
+        {
+            f -= wholeNumber;
+        }
+
+        return f;
+    }
 
 
     public static float InverseCurveEvaluate(AnimationCurve curve, float t)

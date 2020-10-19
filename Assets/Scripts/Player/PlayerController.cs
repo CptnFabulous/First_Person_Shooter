@@ -73,6 +73,14 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Cosmetics
+
+    [Header("Cosmetics - General")]
+
+    public float torsoTranslateSpeed = 1;
+    public float torsoTranslateTime = 1;
+    public float torsoRotateSpeed = 1;
+    public float torsoRotateTime = -0.1f;
+
     [Header("Cosmetics - Audio")]
     // Noises
     public AudioClip footstepNoise;
@@ -83,8 +91,6 @@ public class PlayerController : MonoBehaviour
     // public AudioClip slideNoise;
 
     [Header("Cosmetics - Bobbing")]
-    public float torsoAnimateSpeed = 1;
-    public float torsoAnimateTime = 1;
     // Head bobbing while walking
     public float bobLoopTime;
     public Vector2 bobExtents;
@@ -182,8 +188,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        
         if (canMove == true)
         {
             #region Camera
@@ -225,8 +229,8 @@ public class PlayerController : MonoBehaviour
             #endregion
         }
 
-        Vector3 m = DeltaMoveDistance();
-        Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
+        //Vector3 m = DeltaMoveDistance();
+        //Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
 
         CosmeticUpdate();
     }
@@ -345,10 +349,13 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
+        //CosmeticUpdate();
+
         positionLastFrame = transform.position;
         headDirectionLastFrame = head.transform.forward;
     }
 
+    #region Cosmetics
     void CosmeticUpdate()
     {
         Vector3 torsoPosition = Vector3.zero;
@@ -388,61 +395,114 @@ public class PlayerController : MonoBehaviour
         Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
         Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
         torsoPosition += dragValue;
-        
+
         #endregion
 
         #region Sway
-        
         /*
-        float intensity = DeltaRotateDistance() / speedForMaxSway;
-        Vector3 swayAxes = new Vector3(DeltaRotateDirection().y * -lookSwayDegrees, DeltaRotateDirection().x * -lookSwayDegrees, 0);
-        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes, intensity);
+        float intensity = Mathf.Clamp01(DeltaRotateDistance() / speedForMaxSway);
+        float swayXaxis = DeltaRotateDirection().y * lookSwayDegrees * intensity;
+        float swayYaxis = DeltaRotateDirection().x * -lookSwayDegrees * intensity;
+        Vector3 swayAxes = new Vector3(swayXaxis, swayYaxis, 0);
         torsoRotationAxes += swayAxes;
+        //Debug.Log("Torso sway axes " + swayAxes);
         */
 
-        /*
-        Vector2 d = DeltaRotateDirection();
-        Vector3 swayCurrentOffset = new Vector3(d.y * DeltaRotateDistance(), d.x * DeltaRotateDistance(), 0);
-        float rotateVelocity = DeltaRotateDistance() / Time.deltaTime;
-        Vector3 turnVelocity = -swayCurrentOffset.normalized * rotateVelocity;
-        //Vector3 swayValue = Vector3.SmoothDamp(swayCurrentOffset, Vector3.zero, ref turnVelocity, 5f);
+        float intensity = Mathf.Clamp01(DeltaRotateDistance() / speedForMaxSway);
+        Vector3 swayAxes = new Vector3(DeltaRotateDirection().y, -DeltaRotateDirection().x, 0);
+        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
+        torsoRotationAxes += swayAxes;
 
-        Vector3 swayDirection = head.transform.InverseTransformPoint(headDirectionLastFrame);
-        //Vector3 swayValue = Vector3.SmoothDamp(swayDirection, Vector3.zero, ref turnVelocity, 5f);
-        */
-
-
-
-
-
-
-
-        /*
-        Vector3 currentTorsoDirection = head.transform.InverseTransformDirection(headDirectionLastFrame);
-        Vector3 desiredTorsoDirection = Vector3.zero;
-        Vector3 turningVelocity;
-        float turnTime = 1;
-
-
-        Vector3 swayValue = Vector3.SmoothDamp(currentTorsoDirection, desiredTorsoDirection, turningVelocity, turnTime);
-
-
-
-
-        torsoRotationAxes += swayValue;
-        */
 
 
         #endregion
 
-        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoAnimateSpeed;
-        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoAnimateTime);
+        #region Update position
+        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
+        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
+        #endregion
 
+
+
+
+
+        #region Update rotation
         Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
-        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoAnimateSpeed;
-        Vector3 newTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoAnimateTime);
-        torso.transform.localRotation = Quaternion.Euler(newTorsoRotationAxes);
+        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
+        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
+        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
+        //Debug.Log("torsoCurrentAngles = " + torsoCurrentAngles + ", torsoAnimateAngleVelocity = " + torsoAnimateAngleVelocity + ", dampedTorsoRotationAxes = " + dampedTorsoRotationAxes);
+
+        //torso.transform.localRotation = Quaternion.Euler(torsoRotationAxes);
+        #endregion
     }
 
+    public static IEnumerator ShakeCamera(Camera camera, float duration, float shakesPerSecond, Vector2 intensity)
+    {
+        // Obtains original camera position
+        Vector3 originalPosition = camera.transform.localPosition;
+        float timer = 0;
+        float shakeTimer = 1;
+        Vector3 shakePosition = Vector3.zero;
 
+
+
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float numberOfShakesCompleted = timer * shakesPerSecond;
+            float individualShakeTimer = Misc.SubtractDecimalFromFloat(numberOfShakesCompleted);
+
+            
+
+
+
+
+
+
+            // Lerps camera position between originalPosition and shakePosition
+            //camera.transform.localPosition = Vector3.Lerp(originalPosition, shakePosition, shakeLerpValue);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+
+
+
+
+
+        /*
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / duration;
+
+            if (shakeTimer >= 1)
+            {
+                shakeTimer = 0;
+                shakePosition = new Vector3(Mathf.RoundToInt(Random.Range(-1, 1)) * intensity.x, Mathf.RoundToInt(Random.Range(-1, 1)) * intensity.y, 0).normalized;
+            }
+
+            shakeTimer += Time.deltaTime * shakesPerSecond;
+
+            // If timer is greater than 0.5, shake value is reversed to create a back and forth motion
+            float shakeLerpValue = shakeTimer * 2;
+            if (shakeLerpValue > 1)
+            {
+                shakeLerpValue -= 1;
+                shakeLerpValue = 1 - shakeLerpValue;
+            }
+
+            // Lerps camera position between originalPosition and shakePosition
+            camera.transform.localPosition = Vector3.Lerp(originalPosition, shakePosition, shakeLerpValue);
+
+            yield return new WaitForEndOfFrame();
+        }
+        */
+        // Returns camera to normal
+        camera.transform.localPosition = originalPosition;
+    }
+
+    #endregion
 }

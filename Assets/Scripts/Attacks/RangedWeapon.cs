@@ -354,8 +354,17 @@ public class RangedWeapon : MonoBehaviour
     {
         ResetWeaponMoveVariables();
 
+        playerHolding = GetComponentInParent<WeaponHandler>();
+
+
         sensitivityWhileAiming = new PercentageModifier();
         sensitivityWhileAiming.multiplicative = true;
+        Debug.Log(playerHolding);
+        Debug.Log(playerHolding.ph);
+        Debug.Log(playerHolding.ph.pc);
+        Debug.Log(playerHolding.ph.pc.sensitivityModifier);
+        Debug.Log(sensitivityWhileAiming);
+        Debug.Log(this);
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
 
         speedWhileAiming = new PercentageModifier();
@@ -561,6 +570,7 @@ public class RangedWeapon : MonoBehaviour
             {
                 sensitivityWhileAiming.percentageValue = 100 / newOptics.magnification;
                 speedWhileAiming.percentageValue = newOptics.moveSpeedReductionPercentage;
+                Debug.Log("Sensitivity modifier = " + sensitivityWhileAiming.percentageValue + ", final sensitivity value = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
             }
 
             if (magazine != null)

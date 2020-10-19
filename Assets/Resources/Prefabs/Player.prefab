@@ -640,15 +640,17 @@ MonoBehaviour:
   relativeHeadHeight: 0.375
   toggleCrouch: 1
   isCrouching: 0
+  torsoTranslateSpeed: 1
+  torsoTranslateTime: 1
+  torsoRotateSpeed: 0.2
+  torsoRotateTime: -0.1
   footstepNoise: {fileID: 0}
   alternateStepPitchShift: 0
   footstepDelay: 0
   jumpNoise: {fileID: 0}
   landNoise: {fileID: 0}
-  torsoAnimateSpeed: 0.2
-  torsoAnimateTime: 20
   bobLoopTime: 1
-  bobExtents: {x: 0.2, y: 0.2}
+  bobExtents: {x: 0.05, y: 0.025}
   bobCurveX:
     serializedVersion: 2
     m_Curve:
@@ -753,8 +755,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   upperBodyDragDistance: 0.2
   speedForMaxDrag: 20
-  lookSwayDegrees: 15
-  speedForMaxSway: 10
+  lookSwayDegrees: 5
+  speedForMaxSway: 15
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0

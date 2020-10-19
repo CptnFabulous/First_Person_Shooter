@@ -103,7 +103,7 @@ public class WeaponHandler : MonoBehaviour
         equippedWeapons = GetComponentsInChildren<RangedWeapon>();
         foreach (RangedWeapon rw in equippedWeapons)
         {
-            rw.playerHolding = this;
+            //rw.playerHolding = this;
             rw.gameObject.SetActive(false);
         }
 

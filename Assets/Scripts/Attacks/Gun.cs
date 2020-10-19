@@ -206,7 +206,6 @@ public class WeaponOpticsData
     public float transitionTime;
     [Range(-1, 0)] public float moveSpeedReduction;
     public Transform aimPosition;
-    public Sprite scopeGraphic;
     public bool disableReticle;
 }
 
