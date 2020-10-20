@@ -643,7 +643,7 @@ MonoBehaviour:
   torsoTranslateSpeed: 1
   torsoTranslateTime: 1
   torsoRotateSpeed: 0.2
-  torsoRotateTime: -0.1
+  torsoRotateTime: -1
   footstepNoise: {fileID: 0}
   alternateStepPitchShift: 0
   footstepDelay: 0
@@ -756,7 +756,7 @@ MonoBehaviour:
   upperBodyDragDistance: 0.2
   speedForMaxDrag: 20
   lookSwayDegrees: 5
-  speedForMaxSway: 15
+  speedForMaxSway: 10
 --- !u!114 &7394104395992576402
 MonoBehaviour:
   m_ObjectHideFlags: 0

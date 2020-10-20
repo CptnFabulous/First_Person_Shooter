@@ -359,12 +359,12 @@ public class RangedWeapon : MonoBehaviour
 
         sensitivityWhileAiming = new PercentageModifier();
         sensitivityWhileAiming.multiplicative = true;
-        Debug.Log(playerHolding);
-        Debug.Log(playerHolding.ph);
-        Debug.Log(playerHolding.ph.pc);
-        Debug.Log(playerHolding.ph.pc.sensitivityModifier);
-        Debug.Log(sensitivityWhileAiming);
-        Debug.Log(this);
+        //Debug.Log(playerHolding);
+        //Debug.Log(playerHolding.ph);
+        //Debug.Log(playerHolding.ph.pc);
+        //Debug.Log(playerHolding.ph.pc.sensitivityModifier);
+        //Debug.Log(sensitivityWhileAiming);
+        //Debug.Log(this);
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
 
         speedWhileAiming = new PercentageModifier();

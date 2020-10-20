@@ -99,10 +99,12 @@ public class VariableValueFloat
             {
                 if (fm.multiplicative == true)
                 {
+                    // Directly multiply the value if it's a multiplicative modifier
                     finalValue *= fm.Get();
                 }
                 else
                 {
+                    // Otherwise, add it to the flat percentage multiplier at the end
                     additivePercentage += fm.Get();
                 }
             }
@@ -110,9 +112,6 @@ public class VariableValueFloat
 
         return finalValue * (1 + additivePercentage);
     }
-
-
-
 
     public void Add(PercentageModifier pm, MonoBehaviour origin)
     {

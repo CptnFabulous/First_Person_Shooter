@@ -243,7 +243,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 4294967295
     damage: 30
-    knockback: 50
+    knockback: 10
     criticalMultiplier: 0
     directHitMultiplier: 1.5
     blastRadius: 10

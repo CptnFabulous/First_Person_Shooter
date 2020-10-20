@@ -64,6 +64,7 @@ public class AI : MonoBehaviour//, IEventObserver
     public float lookThreshold;
     bool inLookIENumerator;
     Vector3 aimMarker;
+    public float reactionTime;
 
     public virtual void Awake()
     {
@@ -150,11 +151,13 @@ public class AI : MonoBehaviour//, IEventObserver
 
         Quaternion originalRotation = head.transform.rotation;
 
-        while (IsLookingAt(position, threshold) == false)
+        while (timer < 1)
         {
+            timer += Time.deltaTime / lookTime;
+
             Quaternion lookLerp = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
             head.transform.rotation = lookLerp;
-            timer += Time.deltaTime / lookTime;
+            
             yield return new WaitForEndOfFrame();
         }
 
@@ -189,7 +192,7 @@ public class AI : MonoBehaviour//, IEventObserver
 
 
 
-    public void Dodge(AttackMessage am)
+    void Dodge(AttackMessage am)
     {
         // If the cooldown has finished after the last dodge
         // If the AI is willing to dodge attacks

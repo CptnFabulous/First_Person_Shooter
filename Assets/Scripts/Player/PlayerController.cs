@@ -224,15 +224,33 @@ public class PlayerController : MonoBehaviour
                 {
                     isCrouching = false;
                 }
+                
                 willJump = true;
             }
             #endregion
         }
+    }
 
-        //Vector3 m = DeltaMoveDistance();
-        //Debug.Log("Moved " + m.magnitude + " distance in " + m.normalized + "direction. Rotated " + DeltaRotateDistance() + " distance in " + DeltaRotateDirection() + " direction.");
+    void FixedUpdate()
+    {
+        rb.MovePosition(transform.position + movementValue * Time.fixedDeltaTime);
 
+        if (willJump)
+        {
+            rb.velocity += transform.up * forceJump;
+            willJump = false;
+            jumpTimer = 0;
+        }
+
+        //rb.AddForce(Physics.gravity * rb.mass);
+    }
+
+    private void LateUpdate()
+    {
         CosmeticUpdate();
+
+        positionLastFrame = transform.position;
+        headDirectionLastFrame = head.transform.forward;
     }
 
     #region Camera control functions
@@ -333,27 +351,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    void FixedUpdate()
-    {
-        rb.MovePosition(transform.position + movementValue * Time.fixedDeltaTime);
-
-        if (willJump)
-        {
-            rb.velocity += transform.up * forceJump;
-            willJump = false;
-            jumpTimer = 0;
-        }
-
-        //rb.AddForce(Physics.gravity * rb.mass);
-    }
-
-    private void LateUpdate()
-    {
-        //CosmeticUpdate();
-
-        positionLastFrame = transform.position;
-        headDirectionLastFrame = head.transform.forward;
-    }
+    
 
     #region Cosmetics
     void CosmeticUpdate()
@@ -399,22 +397,10 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Sway
-        /*
-        float intensity = Mathf.Clamp01(DeltaRotateDistance() / speedForMaxSway);
-        float swayXaxis = DeltaRotateDirection().y * lookSwayDegrees * intensity;
-        float swayYaxis = DeltaRotateDirection().x * -lookSwayDegrees * intensity;
-        Vector3 swayAxes = new Vector3(swayXaxis, swayYaxis, 0);
-        torsoRotationAxes += swayAxes;
-        //Debug.Log("Torso sway axes " + swayAxes);
-        */
-
         float intensity = Mathf.Clamp01(DeltaRotateDistance() / speedForMaxSway);
         Vector3 swayAxes = new Vector3(DeltaRotateDirection().y, -DeltaRotateDirection().x, 0);
         swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
         torsoRotationAxes += swayAxes;
-
-
-
         #endregion
 
         #region Update position
@@ -422,28 +408,20 @@ public class PlayerController : MonoBehaviour
         torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
         #endregion
 
-
-
-
-
         #region Update rotation
         Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
         Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
         Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
         torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
-        //Debug.Log("torsoCurrentAngles = " + torsoCurrentAngles + ", torsoAnimateAngleVelocity = " + torsoAnimateAngleVelocity + ", dampedTorsoRotationAxes = " + dampedTorsoRotationAxes);
-
-        //torso.transform.localRotation = Quaternion.Euler(torsoRotationAxes);
         #endregion
     }
 
+    /*
     public static IEnumerator ShakeCamera(Camera camera, float duration, float shakesPerSecond, Vector2 intensity)
     {
         // Obtains original camera position
         Vector3 originalPosition = camera.transform.localPosition;
         float timer = 0;
-        float shakeTimer = 1;
-        Vector3 shakePosition = Vector3.zero;
 
 
 
@@ -452,57 +430,15 @@ public class PlayerController : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            float numberOfShakesCompleted = timer * shakesPerSecond;
-            float individualShakeTimer = Misc.SubtractDecimalFromFloat(numberOfShakesCompleted);
-
-            
-
-
-
-
-
-
-            // Lerps camera position between originalPosition and shakePosition
-            //camera.transform.localPosition = Vector3.Lerp(originalPosition, shakePosition, shakeLerpValue);
+            //float numberOfShakesCompleted = timer * shakesPerSecond;
+            //float individualShakeTimer = Misc.SubtractDecimalFromFloat(numberOfShakesCompleted);
 
             yield return new WaitForEndOfFrame();
         }
 
-
-
-
-
-
-        /*
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / duration;
-
-            if (shakeTimer >= 1)
-            {
-                shakeTimer = 0;
-                shakePosition = new Vector3(Mathf.RoundToInt(Random.Range(-1, 1)) * intensity.x, Mathf.RoundToInt(Random.Range(-1, 1)) * intensity.y, 0).normalized;
-            }
-
-            shakeTimer += Time.deltaTime * shakesPerSecond;
-
-            // If timer is greater than 0.5, shake value is reversed to create a back and forth motion
-            float shakeLerpValue = shakeTimer * 2;
-            if (shakeLerpValue > 1)
-            {
-                shakeLerpValue -= 1;
-                shakeLerpValue = 1 - shakeLerpValue;
-            }
-
-            // Lerps camera position between originalPosition and shakePosition
-            camera.transform.localPosition = Vector3.Lerp(originalPosition, shakePosition, shakeLerpValue);
-
-            yield return new WaitForEndOfFrame();
-        }
-        */
         // Returns camera to normal
         camera.transform.localPosition = originalPosition;
     }
-
+    */
     #endregion
 }

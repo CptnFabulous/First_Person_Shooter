@@ -7,12 +7,19 @@ public class MenuWindow : MonoBehaviour
 {
     
     public MenuWindow parent;
-    public MenuWindow[] children;
+
+    MenuHandler menuHandler;
 
     [Header("Scene elements")]
     public ScrollRect selections;
     public Text flavourText;
     public Image selectionGraphic;
+
+
+    private void Awake()
+    {
+        menuHandler = GetComponentInParent<MenuHandler>();
+    }
 
     /*
     // Start is called before the first frame update
@@ -20,7 +27,7 @@ public class MenuWindow : MonoBehaviour
     {
         
     }
-
+    /*
     // Update is called once per frame
     void Update()
     {
@@ -28,23 +35,15 @@ public class MenuWindow : MonoBehaviour
     }
     */
 
-
-
-
     public void ReturnToPreviousWindow()
     {
-        GetComponentInParent<MenuHandler>().ReturnToPreviousWindow();
-    }
-
-    public void ReturnToRootWindow()
-    {
-        GetComponentInParent<MenuHandler>().ReturnToRootWindow();
+        menuHandler.SwitchWindow(parent);
     }
 
     public void OnDisable()
     {
         // Reset window for next time
-        flavourText = null;
+        flavourText.text = null;
         selectionGraphic.sprite = null;
     }
 }

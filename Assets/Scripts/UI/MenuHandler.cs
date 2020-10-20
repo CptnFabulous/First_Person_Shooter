@@ -6,10 +6,23 @@ using UnityEngine.SceneManagement;
 
 public class MenuHandler : MonoBehaviour
 {
+    public MenuWindow rootWindow;
     [HideInInspector] public MenuWindow[] differentWindows;
-    [HideInInspector] public MenuWindow rootWindow;
     [HideInInspector] public MenuWindow currentWindow;
 
+
+    private void Start()
+    {
+        differentWindows = GetComponentsInChildren<MenuWindow>(true);
+    }
+
+    private void OnEnable()
+    {
+        SwitchWindow(rootWindow);
+    }
+
+
+    /*
     private void Start()
     {
         differentWindows = GetComponentsInChildren<MenuWindow>(true);
@@ -47,8 +60,8 @@ public class MenuHandler : MonoBehaviour
 
 
     #region Navigation
-
-    public void SwitchToDifferentWindow(MenuWindow newMenu)
+    
+    public void SwitchWindow(MenuWindow newMenu)
     {
         foreach(MenuWindow m in differentWindows)
         {
@@ -78,16 +91,30 @@ public class MenuHandler : MonoBehaviour
 
     public void ReturnToPreviousWindow()
     {
-        SwitchToDifferentWindow(currentWindow.parent);
+        SwitchWindow(currentWindow.parent);
     }
 
     public void ReturnToRootWindow()
     {
-        SwitchToDifferentWindow(rootWindow);
+        SwitchWindow(rootWindow);
     }
-
+    
     #endregion
+    
 
+    */
+
+
+
+    public void SwitchWindow(MenuWindow newWindow)
+    {
+        foreach (MenuWindow w in differentWindows)
+        {
+            w.gameObject.SetActive(false);
+        }
+        newWindow.gameObject.SetActive(true);
+        currentWindow = newWindow;
+    }
 
 
     #region Functions
@@ -96,15 +123,6 @@ public class MenuHandler : MonoBehaviour
     {
         GameStateHandler gsh = GetComponentInParent<GameStateHandler>();
         gsh.ResumeGame();
-
-
-
-
-    }
-
-    public void ResetMenuOnResume()
-    {
-        ReturnToRootWindow();
     }
 
     public void LoadScene(string sceneName)
@@ -112,14 +130,16 @@ public class MenuHandler : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-
-
-
     // UNTESTED
     public IEnumerator LoadSceneWithLoadingScreen(string sceneName, string loadingScreen)
     {
-        // Pause time to prevent time from passing in the new scene, and load a separate loading screen scene to mask things
+        // Pause time to prevent time from passing in the new scene
         Time.timeScale = 0;
+
+        // Reference current scene
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // Load a separate loading screen scene to mask things
         SceneManager.LoadScene(loadingScreen);
 
         // Load new scene in the background
@@ -127,14 +147,9 @@ public class MenuHandler : MonoBehaviour
         yield return new WaitWhile(() => levelLoading.progress < 1);
 
         // Once the actual scene is finished loading, unload the loading screen and resume normal time flow
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.UnloadSceneAsync(currentScene);
         Time.timeScale = 1;
     }
-
-
-
-
-
 
     public void ReloadLevel()
     {
@@ -158,7 +173,4 @@ public class MenuHandler : MonoBehaviour
         #endif
     }
     #endregion
-
-
-
 }

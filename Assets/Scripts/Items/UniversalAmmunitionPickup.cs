@@ -18,6 +18,7 @@ public class UniversalAmmunitionPickup : ItemPickup
                 if (ai.GetStock(a) < ai.GetMax(a))
                 {
                     int amountToRestore = Mathf.RoundToInt(ai.GetMax(a) * (percentageValue / 100));
+                    amountToRestore = Mathf.Clamp(amountToRestore, 1, ai.GetMax(a));
                     ai.Collect(a, amountToRestore);
                     hasBeenConsumed = true;
                 }
