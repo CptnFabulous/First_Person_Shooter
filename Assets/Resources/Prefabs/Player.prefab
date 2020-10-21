@@ -305,8 +305,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640ed14836509e943b5c296450e16c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  differentWindows: []
   rootWindow: {fileID: 0}
+  differentWindows: []
   currentWindow: {fileID: 0}
 --- !u!1 &6713804967157019558
 GameObject:
@@ -642,8 +642,8 @@ MonoBehaviour:
   isCrouching: 0
   torsoTranslateSpeed: 1
   torsoTranslateTime: 1
-  torsoRotateSpeed: 0.2
-  torsoRotateTime: -1
+  torsoRotateSpeed: 0.05
+  torsoRotateTime: -0.1
   footstepNoise: {fileID: 0}
   alternateStepPitchShift: 0
   footstepDelay: 0
@@ -1188,8 +1188,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640ed14836509e943b5c296450e16c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  differentWindows: []
   rootWindow: {fileID: 0}
+  differentWindows: []
   currentWindow: {fileID: 0}
 --- !u!1001 &206552657312965921
 PrefabInstance:

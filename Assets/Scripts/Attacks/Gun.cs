@@ -536,4 +536,126 @@ public class NewRangedWeapon : MonoBehaviour
 
         }
     }
+
+
+
+    bool isAnimating;
+
+    IEnumerator MoveInWorldSpace(Transform transform, Vector3 position, Quaternion rotation, float time, AnimationCurve curve = null, bool overridesOtherAnimations = false)
+    {
+        // Add code so the animation can combine its data. Maybe in a different function?
+
+        #region End coroutine prematurely or override others, if the animation is in progress
+        if (isAnimating == true)
+        {
+            // If this coroutine has permission, end and override other animations
+            if (overridesOtherAnimations == true)
+            {
+                isAnimating = false;
+                yield return new WaitForEndOfFrame();
+            }
+            else
+            {
+                yield break;
+            }
+        }
+        #endregion
+
+        #region Setup
+        isAnimating = true;
+        Vector3 originalPosition = transform.position;
+        Quaternion originalRotation = transform.rotation;
+        float timer = 0;
+        #endregion
+
+        #region Loop
+        while (timer < 1)
+        {
+            // End function prematurely if remotely disabled
+            if (isAnimating == false)
+            {
+                yield break;
+            }
+
+            // Count up timer
+            timer += Time.deltaTime / time;
+
+            // Determine percentage value based on how far through the animation is
+            float completed = timer;
+            if (curve != null)
+            {
+                completed = curve.Evaluate(timer);
+            }
+
+            // Move transform
+            transform.position = Vector3.LerpUnclamped(originalPosition, position, completed);
+            transform.rotation = Quaternion.LerpUnclamped(originalRotation, rotation, completed);
+            // Should I use slerps?
+
+            // End frame
+            yield return new WaitForEndOfFrame();
+        }
+        #endregion
+
+        isAnimating = false;
+    }
+
+    IEnumerator MoveInLocalSpace(Transform transform, Vector3 position, Quaternion rotation, float time, AnimationCurve curve = null, bool overridesOtherAnimations = false)
+    {
+        // Add code so the animation can combine its data. Maybe in a different function?
+
+        #region End coroutine prematurely or override others, if the animation is in progress
+        if (isAnimating == true)
+        {
+            // If this coroutine has permission, end and override other animations
+            if (overridesOtherAnimations == true)
+            {
+                isAnimating = false;
+                yield return new WaitForEndOfFrame();
+            }
+            else
+            {
+                yield break;
+            }
+        }
+        #endregion
+
+        #region Setup
+        isAnimating = true;
+        Vector3 originalPosition = transform.localPosition;
+        Quaternion originalRotation = transform.localRotation;
+        float timer = 0;
+        #endregion
+
+        #region Loop
+        while (timer < 1)
+        {
+            // End function prematurely if remotely disabled
+            if (isAnimating == false)
+            {
+                yield break;
+            }
+
+            // Count up timer
+            timer += Time.deltaTime / time;
+
+            // Determine percentage value based on how far through the animation is
+            float completed = timer;
+            if (curve != null)
+            {
+                completed = curve.Evaluate(timer);
+            }
+
+            // Move transform
+            transform.localPosition = Vector3.LerpUnclamped(originalPosition, position, completed);
+            transform.localRotation = Quaternion.LerpUnclamped(originalRotation, rotation, completed);
+            // Should I use slerps?
+
+            // End frame
+            yield return new WaitForEndOfFrame();
+        }
+        #endregion
+
+        isAnimating = false;
+    }
 }
