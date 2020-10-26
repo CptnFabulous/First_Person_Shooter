@@ -85,7 +85,8 @@ public class PlayerController : MonoBehaviour
     // Noises
     public AudioClip footstepNoise;
     public float alternateStepPitchShift;
-    public float footstepDelay;
+    public float timeToToPlayStepMain = 0.25f;
+    public float timeToPlayStepAlternate = 0.75f;
     public AudioClip jumpNoise;
     public AudioClip landNoise;
     // public AudioClip slideNoise;
@@ -359,7 +360,7 @@ public class PlayerController : MonoBehaviour
         Vector3 torsoPosition = Vector3.zero;
         Vector3 torsoRotationAxes = Vector3.zero;
 
-        #region Bobbing
+        #region Bobbing and footsteps
         Vector2 moveInputValue = moveInput;
         if (moveInputValue.magnitude > 0 && IsGrounded())
         {
@@ -374,6 +375,8 @@ public class PlayerController : MonoBehaviour
 
             Vector3 bodyPosition = new Vector3(bobX, bobY, 0);
             torsoPosition += bodyPosition;
+
+            
         }
         else
         {

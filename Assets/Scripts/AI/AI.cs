@@ -91,7 +91,6 @@ public class AI : MonoBehaviour//, IEventObserver
     {
         dodgeCooldownTimer += Time.deltaTime;
 
-
         #region Check for targets (upgrade this to something snazzier)
         bool targetAcquired = target != null;
         if (target == null) // Checks for targets
@@ -113,8 +112,6 @@ public class AI : MonoBehaviour//, IEventObserver
             }
         }
         #endregion
-
-
 
         #region Set state machine variables
         stateMachine.SetBool("targetAcquired", target != null);

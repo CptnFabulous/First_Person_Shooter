@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Reflection;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -11,9 +12,51 @@ public class MenuHandler : MonoBehaviour
     [HideInInspector] public MenuWindow currentWindow;
 
 
-    private void Start()
+
+    void SortMenus()
     {
         differentWindows = GetComponentsInChildren<MenuWindow>(true);
+
+        foreach(MenuWindow mw in differentWindows)
+        {
+            if (mw.parent == null)
+            {
+                mw.parent = mw.GetComponentInParent<MenuWindow>();
+
+                if (mw.parent == null)
+                {
+                    if (rootWindow == null)
+                    {
+                        rootWindow = mw;
+                    }
+                    else
+                    {
+                        Debug.LogError("MenuWindow " + mw.name + " does not have a parent assigned, but there is already a root window!");
+                    }
+                }
+            }
+            mw.transform.SetParent(transform);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void Awake()
+    {
+        differentWindows = GetComponentsInChildren<MenuWindow>(true);
+        //SortMenus();
     }
 
     private void OnEnable()
@@ -21,93 +64,9 @@ public class MenuHandler : MonoBehaviour
         SwitchWindow(rootWindow);
     }
 
-
-    /*
-    private void Start()
-    {
-        differentWindows = GetComponentsInChildren<MenuWindow>(true);
-        foreach (MenuWindow m in differentWindows)
-        {
-            print(m.name);
-            // Searches for a menu component in m's parent. The first menu with no parent becomes the root.
-            m.parent = m.transform.parent.GetComponent<MenuWindow>();
-            if (m.parent == null)
-            {
-                rootWindow = m;
-            }
-
-            // Searches for all MenuWindow scripts that are immediate children of m
-            MenuWindow[] c = GetComponentsInChildren<MenuWindow>();
-            List<MenuWindow> list = new List<MenuWindow>();
-            foreach (MenuWindow mc in c)
-            {
-                if (mc.transform.parent == m.transform && mc != m)
-                {
-                    list.Add(mc);
-                }
-            }
-            m.children = list.ToArray();
-
-            // Separates m from its hierarchy, so it can be active even if its parent is disabled.
-            m.transform.SetParent(transform, true);
-        }
-
-        ReturnToRootWindow();
-
-    }
-
-    //public List<T> RemoveInvalidEntries(List<T> list, System.Predicate<>)
-
-
-    #region Navigation
-    
-    public void SwitchWindow(MenuWindow newMenu)
-    {
-        foreach(MenuWindow m in differentWindows)
-        {
-            if (m != newMenu)
-            {
-                m.gameObject.SetActive(false);
-            }
-            else
-            {
-                m.gameObject.SetActive(true);
-                currentWindow = m;
-            }
-        }
-    }
-
-    public MenuWindow GetCurrentMenu()
-    {
-        foreach (MenuWindow m in differentWindows)
-        {
-            if (m.gameObject.activeSelf == true)
-            {
-                return m;
-            }
-        }
-        return null;
-    }
-
-    public void ReturnToPreviousWindow()
-    {
-        SwitchWindow(currentWindow.parent);
-    }
-
-    public void ReturnToRootWindow()
-    {
-        SwitchWindow(rootWindow);
-    }
-    
-    #endregion
-    
-
-    */
-
-
-
     public void SwitchWindow(MenuWindow newWindow)
     {
+        Debug.Log(newWindow);
         foreach (MenuWindow w in differentWindows)
         {
             w.gameObject.SetActive(false);

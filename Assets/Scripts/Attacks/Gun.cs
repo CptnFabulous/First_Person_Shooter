@@ -52,7 +52,9 @@ public class FiringModeData
 
     [Header("Other stats")]
     public int projectileIndex;
+    public bool feedsFromMagazine;
     public int magazineIndex;
+    public bool hasOptics;
     public int opticsIndex;
 
     [Header("Cosmetic")]
@@ -364,39 +366,47 @@ public class NewRangedWeapon : MonoBehaviour
 
     IEnumerator SwitchFiringMode(int index)
     {
-        FiringModeData previousMode = mode;
-        WeaponMagazineData previousMagazine = magazine;
+        // Obtains old stats
+        FiringModeData oldMode = mode;
+        WeaponProjectileData oldProjectile = projectile;
+        WeaponMagazineData oldMagazine = magazine;
+        WeaponOpticsData oldOptics = optics;
+
+        // Obtains new stats
+        FiringModeData newMode = firingModes[index];
+        WeaponProjectileData newProjectile = projectileTypes[newMode.projectileIndex];
+        WeaponMagazineData newMagazine = null;
+        if (newMode.feedsFromMagazine == true)
+        {
+            newMagazine = magazineTypes[newMode.magazineIndex];
+        }
+        WeaponOpticsData newOptics = null;
+        if (newMode.hasOptics == true)
+        {
+            newOptics = opticsTypes[newMode.opticsIndex];
+        }
 
         yield return new WaitForEndOfFrame();
 
-        #region Before switching, cancel aim
         // Before switching, exit aiming animation, if the new firing mode has different optics to the old one
-        FiringModeData newMode = firingModes[index];
-        WeaponOpticsData newOptics = opticsTypes[newMode.opticsIndex];
-        if (optics != newOptics)
+        if (oldOptics != newOptics)
         {
             // Cancel ADS. Wait while this is in progress
             //yield return new WaitWhile(() => )
         }
-        #endregion
 
-        #region Switch weapon
-        // Change the firing mode and optics data. Magazine changing will be done later, as after changing to the new firing mode the player might need to reload their weapon if the ammunition is different.
         mode = newMode;
-        projectile = projectileTypes[mode.projectileIndex];
-        magazine = magazineTypes[mode.magazineIndex];
+        projectile = newProjectile;
+        magazine = newMagazine;
         optics = newOptics;
-        #endregion
 
-        #region After switching, reload magazine if necessary
         // If the new firing mode feeds from the same magazine but uses different ammunition (i.e. if the player is swapping out ammo)
-        if (magazine == previousMagazine && mode.ammoType != previousMode.ammoType)
+        if (newMagazine == oldMagazine && mode.ammoType != oldMode.ammoType)
         {
             // Reload the weapon's magazine. It will be unrealistic if the player's magazine instantly switches from one ammo type to the other without reloading.
             // I'm doing this by automatically emptying the magazine. This won't remove any of the player's ammunition.
             magazine.data.current = 0;
         }
-        #endregion
     }
 
 

@@ -16,7 +16,7 @@ public class MenuWindow : MonoBehaviour
     public Image selectionGraphic;
 
 
-    private void Awake()
+    private void Start()
     {
         menuHandler = GetComponentInParent<MenuHandler>();
     }
@@ -37,13 +37,26 @@ public class MenuWindow : MonoBehaviour
 
     public void ReturnToPreviousWindow()
     {
+        Debug.Log(menuHandler);
+        Debug.Log(parent);
+        
         menuHandler.SwitchWindow(parent);
     }
 
-    public void OnDisable()
+    public virtual void OnEnable()
     {
         // Reset window for next time
-        flavourText.text = null;
-        selectionGraphic.sprite = null;
+
+
+        if (flavourText != null)
+        {
+            flavourText.text = null;
+        }
+
+        if (selectionGraphic != null)
+        {
+            selectionGraphic.sprite = null;
+        }
+        
     }
 }

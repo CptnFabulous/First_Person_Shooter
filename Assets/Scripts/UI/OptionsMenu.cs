@@ -6,18 +6,30 @@ using UnityEngine.Audio;
 
 public class OptionsMenu : MenuWindow
 {
+    [Header("General")]
+    public Button applyButton;
+
 
     [Header("Video")]
     // Simple
     public Dropdown monitor;
     public Toggle fullScreenMode;
+    //FullScreenMode mode;
     public Dropdown resolution;
     //public Dropdown refreshRate;
     public Dropdown qualityPreset;
-    //FullScreenMode mode;
     // Advanced
     // CHECK VARIOUS GRAPHICAL OPTIONS
 
+
+    Display prevMonitor;
+    bool prevFullScreenMode;
+    Resolution prevResolution;
+    int prevQualityLevel;
+
+
+
+    /*
     [Header("Audio")]
     public AudioMixer audioMixer;
     public Slider masterVolume;
@@ -42,54 +54,28 @@ public class OptionsMenu : MenuWindow
     public Slider reticleColourRed;
     public Slider reticleColourGreen;
     public Slider reticleColourBlue;
+    */
 
 
-
-
-    //float rowHeight;
-
-
-    private void Start()
+    /*
+    private void Awake()
     {
-        //rowHeight = 0;
-        print("Beginning to set up options menu");
+        
+    }
+    */
+    public override void OnEnable()
+    {
+        base.OnEnable();
+
+        //prevMonitor = Display.
+        /*
         SetupMonitor();
         SetupFullscreen();
         SetupResolutionAndRefreshRate();
         SetupGraphicsQuality();
-
-
+        */
     }
 
-
-
-    #region Set up options
-    /*
-    void InstantiateSelectableInList(Selectable s, Selectable prefab)
-    {
-        s = Instantiate(prefab, options.content);
-        RectTransform rt = s.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(0, rowHeight);
-        rowHeight -= rt.rect.height;
-    }
-    */
-    void SetupDropdown(Dropdown d, List<string> textOptions, UnityEngine.Events.UnityAction<int> call, int setOnStart)
-    {
-        d.AddOptions(textOptions);
-        d.onValueChanged.AddListener(call);
-    }
-
-    void SetupToggle(Toggle t, UnityEngine.Events.UnityAction<bool> call, bool setOnStart)
-    {
-        t.enabled = setOnStart;
-        t.onValueChanged.AddListener(call);
-    }
-
-    void SetupSlider(Slider s, UnityEngine.Events.UnityAction<float> call, float setOnStart)
-    {
-        s.onValueChanged.AddListener(call);
-    }
-    #endregion
 
     #region Graphics
     void SetupMonitor()
@@ -167,6 +153,7 @@ public class OptionsMenu : MenuWindow
     {
         //Screen.
         //Display.
+        
     }
     void ApplyFullscreen(bool b)
     {
@@ -186,8 +173,41 @@ public class OptionsMenu : MenuWindow
     #endregion
 
 
+    void ApplyVideoSettings()
+    {
+
+    }
+
+    #region Set up option interactables
+    /*
+    void InstantiateSelectableInList(Selectable s, Selectable prefab)
+    {
+        s = Instantiate(prefab, options.content);
+        RectTransform rt = s.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector2(0, rowHeight);
+        rowHeight -= rt.rect.height;
+    }
+    */
+    void SetupDropdown(Dropdown d, List<string> textOptions, UnityEngine.Events.UnityAction<int> call, int setOnStart)
+    {
+        d.AddOptions(textOptions);
+        d.onValueChanged.AddListener(call);
+    }
+
+    void SetupToggle(Toggle t, UnityEngine.Events.UnityAction<bool> call, bool setOnStart)
+    {
+        t.enabled = setOnStart;
+        t.onValueChanged.AddListener(call);
+    }
+
+    void SetupSlider(Slider s, UnityEngine.Events.UnityAction<float> call, float setOnStart)
+    {
+        s.onValueChanged.AddListener(call);
+    }
+    #endregion
 
     #region Audio
+    /*
     void SetupMasterVolume()
     {
         SetupSlider(masterVolume, ApplyMasterVolume, 0);
@@ -196,7 +216,7 @@ public class OptionsMenu : MenuWindow
     {
         audioMixer.SetFloat("MasterVolume", v);
     }
-
+    */
     #endregion
 
     #region Controls

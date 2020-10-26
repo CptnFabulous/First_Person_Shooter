@@ -41,7 +41,7 @@ public static class Misc
         }
     }
 
-    public static int InverseClamp(int value, int min, int max)
+    public static float InverseClamp(float value, int min, int max)
     {
         if (value > max)
         {
@@ -76,9 +76,14 @@ public static class Misc
     }
     #endregion
 
+    #region Even more miscellaneous
+    public static bool RandomBool(float trueChance = 0.5f)
+    {
+        // Randomly returns true or false. trueChance is used for probability - 0 means always false, 1 means always true
+        return Random.Range(0f, 1f) < trueChance;
+    }
 
-
-    public static float SubtractDecimalFromFloat(float f)
+    public static float GetDecimalFromFloat(float f)
     {
         int wholeNumber = Mathf.RoundToInt(f);
 
@@ -95,7 +100,6 @@ public static class Misc
         return f;
     }
 
-
     public static float InverseCurveEvaluate(AnimationCurve curve, float t)
     {
         float curveMin = curve.keys[0].value;
@@ -109,4 +113,5 @@ public static class Misc
 
         return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
     }
+    #endregion
 }
