@@ -412,12 +412,46 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Update rotation
+
+        //Vector3 v = new Vector3(torso.lo)
+
         Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
+
+        //Vector3 torsoCurrentAngles = torso.localEulerAngles;
+
+
         Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
         Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
         torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
         #endregion
     }
+
+    /* // A guy named Willis on Discord gave me this code. It doesn't do the exact thing I want but it might be helpful anyway.
+
+    private float swayVal = 0.5f;
+    private float baselineZAngle = 0f;
+    public float swayScalar = 1f;
+    public float maxSwayAngle = 30f;
+
+    void Awake()
+    {
+      baselineZAngle = torso.localRotation.eulerAngles.z;
+    }
+
+    void Update()
+    {
+      swayVal = Mathf.PingPong(Time.time, 1);
+    }
+
+    public void UpdateSway()
+    {
+      var current = torso.localRotation.eulerAngles;
+      current.z = Mathf.Lerp(baselineZAngle - (maxSwayAngle * swayScalar / 2), baselineZAngle + (maxSwayAngle * swayScalar / 2), swayVal);
+      torso.localRotation = Quaternion.Euler(current);
+    }
+
+    */
+
 
     /*
     public static IEnumerator ShakeCamera(Camera camera, float duration, float shakesPerSecond, Vector2 intensity)

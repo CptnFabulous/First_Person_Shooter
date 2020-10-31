@@ -642,11 +642,12 @@ MonoBehaviour:
   isCrouching: 0
   torsoTranslateSpeed: 1
   torsoTranslateTime: 1
-  torsoRotateSpeed: 0.05
+  torsoRotateSpeed: 0.01
   torsoRotateTime: -0.1
   footstepNoise: {fileID: 0}
   alternateStepPitchShift: 0
-  footstepDelay: 0
+  timeToToPlayStepMain: 0.25
+  timeToPlayStepAlternate: 0.75
   jumpNoise: {fileID: 0}
   landNoise: {fileID: 0}
   bobLoopTime: 1
