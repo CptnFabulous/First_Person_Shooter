@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VideoOptions : MenuWindow
+public class GraphicsMenu : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
