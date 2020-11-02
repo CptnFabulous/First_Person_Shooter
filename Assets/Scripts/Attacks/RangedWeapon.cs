@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,9 +8,7 @@ using UnityEngine.Events;
 [System.Serializable]
 public class FireControlStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     public float roundsPerMinute;
     public int maxBurst;
     [HideInInspector] public float fireTimer;
@@ -19,9 +18,7 @@ public class FireControlStats
 [System.Serializable]
 public class AccuracyStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     [Range(0, 180)] public float projectileSpread;
     public float range;
     public LayerMask rayDetection;
@@ -30,9 +27,7 @@ public class AccuracyStats
 [System.Serializable]
 public class RecoilStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     public float recoil;
     public float recoilApplyRate;
     public float recoilRecovery;
@@ -41,12 +36,11 @@ public class RecoilStats
 [System.Serializable]
 public class OpticsStats
 {
-#if UNITY_EDITOR
     public string name;
-#endif
     public float magnification;
     public float transitionTime;
     public float moveSpeedReductionPercentage;
+    public Transform sightLine;
     public Transform aimPosition;
     public Sprite scopeGraphic;
     public bool disableReticle;
@@ -134,8 +128,6 @@ public class ProjectileStats
 
     public Projectile NewProjectileClass(Character origin)
     {
-        
-
         Projectile p = prefab;
         p.velocity = velocity;
         p.diameter = diameter;
@@ -167,7 +159,13 @@ public class ProjectileStats
     }
 }
 
-
+[System.Serializable]
+public class CosmeticsStats
+{
+    public string name;
+    public Transform heldPosition;
+    public UnityEvent effectsOnFire;
+}
 #endregion
 
 [System.Serializable]
@@ -179,16 +177,21 @@ public class FiringMode
     public int accuracyMode;
     public int projectileMode;
     public int recoilMode;
+
+    public bool hasOptics;
     public int opticsMode;
+
     public int ammunitionMode;
+    public bool feedsFromMagazine;
+
     public int magazineMode;
     public int miscStatsMode;
 
     [Header("Other")]
+    public Sprite hudIcon;
     public float switchSpeed;
 
     [Header("Cosmetics")]
-    public Sprite hudIcon;
     public Transform heldPosition;
     public AudioClip firingNoise;
     public MuzzleFlashEffect muzzleFlash;
@@ -199,8 +202,7 @@ public class FiringMode
 
 public class RangedWeapon : MonoBehaviour
 {
-    public WeaponHandler playerHolding;
-
+    #region Stats
     [Header("Fire controls")]
     public FireControlStats[] fireControlModes;
     [Header("Accuracy stats")]
@@ -215,66 +217,61 @@ public class RangedWeapon : MonoBehaviour
     public MagazineStats[] magazineModes;
     [Header("Projectiles")]
     public ProjectileStats[] projectileModes;
+    [Header("Cosmetics")]
+    public CosmeticsStats cosmeticsModes;
+
+    [Header("Firing modes")]
+    public FiringMode[] firingModes;
 
     [HideInInspector] public FireControlStats fireControls;
-
     [HideInInspector] public AccuracyStats accuracy;
-
-    [HideInInspector] public RaycastHit targetFound;
-    [HideInInspector] public Vector3 aimDirection;
-    [HideInInspector] public Vector3 target;
-
     [HideInInspector] public ProjectileStats projectile;
-
     [HideInInspector] public OpticsStats optics;
+    [HideInInspector] public RecoilStats recoil;
+    [HideInInspector] public AmmunitionStats ammunition;
+    [HideInInspector] public MagazineStats magazine;
+    [HideInInspector] public CosmeticsStats cosmetics;
+    #endregion
+
+    #region Additional variables for weapon function
+    // Additional optics stats
     [HideInInspector] public bool isAiming;
     [HideInInspector] public float zoomVariable;
     [HideInInspector] public float zoomTimer;
     [HideInInspector] public PercentageModifier sensitivityWhileAiming;
     [HideInInspector] public PercentageModifier speedWhileAiming;
 
-    [HideInInspector] public RecoilStats recoil;
+    // Additional recoil stats
     [HideInInspector] public float recoilToApply;
     [HideInInspector] public Vector2 aimOrigin;
     [HideInInspector] public Vector2 aimCurrent;
 
-    [HideInInspector] public AmmunitionStats ammunition;
-
-    [HideInInspector] public MagazineStats magazine;
+    // Additional magazine stats
     [HideInInspector] public bool isReloading;
     [HideInInspector] public float reloadTimer;
-
-    [Header("Firing modes")]
-    public FiringMode[] firingModes;
+    #endregion
 
     #region Universal variables (variables that can be used multiple times for different firing modes)
     [Header("Universal variables")]
     public float switchSpeed;
-    public GameObject weaponModel;
+    public Transform weaponModel;
     public AudioSource weaponSoundSource;
     public Transform holsterPosition;
     public int firingModeIndex;
-    
+
+    [HideInInspector] public WeaponHandler playerHolding;
+
     // Switching modes
     [HideInInspector] public bool isSwitchingWeapon;
     [HideInInspector] public bool isSwitchingFireMode;
-    
+
     // Moving weapon model
-    Transform newWeaponTransform;
-    Transform oldWeaponTransform;
-    Transform previousNewWeaponTransform;
-    float moveWeaponTime;
-    float moveWeaponTimer;
-    #endregion
+    bool isAnimating = false;
 
     float attackMessageLimitTimer = float.MaxValue;
     float attackMessageLimitDelay = 1;
-    /*
-    private void Reset()
-    {
-        OnValidate();
-    }
-    */
+    #endregion
+
     private void OnValidate()
     {
         if (fireControlModes.Length <= 0)
@@ -352,21 +349,14 @@ public class RangedWeapon : MonoBehaviour
 
     private void Start()
     {
-        ResetWeaponMoveVariables();
+        //ResetWeaponMoveVariables();
 
         playerHolding = GetComponentInParent<WeaponHandler>();
 
 
         sensitivityWhileAiming = new PercentageModifier();
         sensitivityWhileAiming.multiplicative = true;
-        //Debug.Log(playerHolding);
-        //Debug.Log(playerHolding.ph);
-        //Debug.Log(playerHolding.ph.pc);
-        //Debug.Log(playerHolding.ph.pc.sensitivityModifier);
-        //Debug.Log(sensitivityWhileAiming);
-        //Debug.Log(this);
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
-
         speedWhileAiming = new PercentageModifier();
         playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
     }
@@ -542,13 +532,6 @@ public class RangedWeapon : MonoBehaviour
         }
     }
     
-    private void LateUpdate()
-    {
-        MoveWeaponHandler();
-    }
-
-    #region Weapon functions
-
     #region Switching functions
 
     public IEnumerator SwitchMode(int index)
@@ -570,7 +553,7 @@ public class RangedWeapon : MonoBehaviour
             {
                 sensitivityWhileAiming.percentageValue = 100 / newOptics.magnification;
                 speedWhileAiming.percentageValue = newOptics.moveSpeedReductionPercentage;
-                Debug.Log("Sensitivity modifier = " + sensitivityWhileAiming.percentageValue + ", final sensitivity value = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
+                //Debug.Log("Sensitivity modifier = " + sensitivityWhileAiming.percentageValue + ", final sensitivity value = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
             }
 
             if (magazine != null)
@@ -595,8 +578,9 @@ public class RangedWeapon : MonoBehaviour
         gameObject.SetActive(true);
         // Draw weapon animation
         weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
-        UpdateWeaponTransform(firingModes[firingModeIndex].heldPosition, Vector3.Distance(holsterPosition.position, firingModes[firingModeIndex].heldPosition.position) / switchSpeed, true);
 
+        Transform newMoveTransform = firingModes[firingModeIndex].heldPosition;
+        StartCoroutine(MoveWeaponModel(newMoveTransform.localPosition, newMoveTransform.localRotation, switchSpeed));
         yield return new WaitForSeconds(switchSpeed);
         isSwitchingWeapon = false;
     }
@@ -621,68 +605,73 @@ public class RangedWeapon : MonoBehaviour
 
         // Begin holster animation
         weaponModel.transform.SetPositionAndRotation(firingModes[firingModeIndex].heldPosition.position, firingModes[firingModeIndex].heldPosition.rotation);
-        UpdateWeaponTransform(holsterPosition, Vector3.Distance(firingModes[firingModeIndex].heldPosition.position, holsterPosition.position) / switchSpeed, true);
+        StartCoroutine(MoveWeaponModel(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed));
 
         yield return new WaitForSeconds(switchSpeed);
 
         gameObject.SetActive(false);
-        //print("Weapon holstered");
         isSwitchingWeapon = false;
     }
-    
+
     #endregion
-
-    #region Move weapon model
-
-    void ResetWeaponMoveVariables()
+    IEnumerator MoveWeaponModel(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
     {
-        if (oldWeaponTransform == null)
+        #region Check for existing animations and cancel/override
+        if (isAnimating == true)
         {
-            oldWeaponTransform = transform;
+            if (interruptsOtherAnimations == false)
+            {
+                // Abort coroutine if another animation is already running
+                yield break;
+            }
+            else
+            {
+                // Unless interruptsOtherAnimations is enabled, in which case it cancels the currently running animation.
+                // It disables isAnimating, then other coroutines will notice and end prematurely.
+                isAnimating = false;
+                yield return new WaitForEndOfFrame();
+            }
         }
-        if (newWeaponTransform == null)
+        #endregion
+
+        #region Setup
+        isAnimating = true;
+        if (curve == null)
         {
-            newWeaponTransform = firingModes[firingModeIndex].heldPosition;
+            curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         }
-        if (previousNewWeaponTransform == null)
+        Vector3 oldPosition = weaponModel.localPosition;
+        Quaternion oldRotation = weaponModel.localRotation;
+        float timer = 0;
+        #endregion
+
+        #region Loop
+        while (timer < 1)
         {
-            previousNewWeaponTransform = newWeaponTransform;
+            // End loop prematurely if isAnimating is remotely declared false
+            if (isAnimating == false)
+            {
+                yield break;
+            }
+
+            float percentage = curve.Evaluate(timer);
+
+            weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
+            weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
+
+            timer += Time.deltaTime / time;
+            yield return new WaitForEndOfFrame();
         }
-        if (moveWeaponTime <= 0)
-        {
-            moveWeaponTime = 1;
-            moveWeaponTimer = 1;
-        }
+        #endregion
+
+        #region End
+        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, curve.Evaluate(1));
+        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, curve.Evaluate(1));
+
+        isAnimating = false;
+        #endregion
     }
 
-    void UpdateWeaponTransform(Transform newTransform, float moveSpeed, bool oneShot)
-    {
-        newWeaponTransform = newTransform;
-
-        if (newWeaponTransform != previousNewWeaponTransform || oneShot == true)
-        {
-            oldWeaponTransform = weaponModel.transform;
-            moveWeaponTime = Vector3.Distance(weaponModel.transform.position, newWeaponTransform.position) / moveSpeed; // Calculates time taken for the weapon to move the appropriate distance at the desired speed
-            moveWeaponTimer = 0;
-            previousNewWeaponTransform = newWeaponTransform;
-        }
-    }
-
-    void MoveWeaponHandler()
-    {
-        if (Time.timeScale != 0) // Checks if time is moving in either direction, otherwise model will move even when not paused
-        {
-            moveWeaponTimer += Time.deltaTime / moveWeaponTime;
-            moveWeaponTimer = Mathf.Clamp01(moveWeaponTimer);
-            // Moves weapon position via lerping. Should I change this to an animation?
-            Vector3 currentWeaponPosition = Vector3.Lerp(oldWeaponTransform.position, newWeaponTransform.position, moveWeaponTimer);
-            Quaternion currentWeaponRotation = Quaternion.Lerp(oldWeaponTransform.rotation, newWeaponTransform.rotation, moveWeaponTimer);
-            weaponModel.transform.SetPositionAndRotation(currentWeaponPosition, currentWeaponRotation);
-        }
-        
-    }
-    #endregion
-    
     #region Firing functions
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
     {
@@ -709,6 +698,38 @@ public class RangedWeapon : MonoBehaviour
     #endregion
 
     #region ADS functions
+
+    
+
+    public void ADSHandler()
+    {
+        if (playerHolding.toggleAim == true)
+        {
+            if (Input.GetButtonDown("MouseRight"))
+            {
+                isAiming = !isAiming;
+            }
+        }
+        else
+        {
+            if (Input.GetButton("MouseRight"))
+            {
+                isAiming = true;
+            }
+            else
+            {
+                isAiming = false;
+            }
+        }
+
+        Vector3 sightlineDifference = Vector3.zero - optics.sightLine.localPosition;
+
+
+        
+
+
+    }
+
 
     public void AimHandler(OpticsStats os, Transform hipPosition, bool toggleAim)
     {
@@ -751,20 +772,14 @@ public class RangedWeapon : MonoBehaviour
         zoomVariable = Mathf.Lerp(1, 1 / os.magnification, timer);
         playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView * zoomVariable;
 
-        // Reduce sensitivity
-        //float newSensitivity = Mathf.Lerp(0, -1 + (1 / os.magnification), timer);
-        //playerHolding.ph.pc.sensitivityModifier.ApplyEffect("Aiming down sights", newSensitivity, Time.deltaTime);
+        // Reduce sensitivity and movement speed
         sensitivityWhileAiming.SetIntensity(timer);
         speedWhileAiming.SetIntensity(timer);
-        // Reduce movement speed
-        //float newSpeed = Mathf.Lerp(0, os.moveSpeedReductionPercentage, timer);
-        //playerHolding.ph.pc.speedModifier.ApplyEffect("Aiming down sights", newSpeed, Time.deltaTime);
-
         // Alter accuracy if specified
         
-
-        // Move weapon model
-        UpdateWeaponTransform(newWeaponPosition, Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) / os.transitionTime, false);
+        // Move weapon model. THIS DOES NOT WORK FOR SOME REASON
+        float moveTime = Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) * os.transitionTime;
+        MoveWeaponModel(newWeaponPosition.position, newWeaponPosition.rotation, moveTime);
 
         // Toggle overlay
         playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);
@@ -866,7 +881,5 @@ public class RangedWeapon : MonoBehaviour
         isReloading = false;
         //print("Reload sequence ended");
     }
-    #endregion
-
     #endregion
 }

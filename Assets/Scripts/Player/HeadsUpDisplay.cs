@@ -189,81 +189,88 @@ public class HeadsUpDisplay : MonoBehaviour
         #endregion
 
         #region Weapon HUD
+
+        opticsOverlay.gameObject.SetActive(opticsOverlay.graphic.sprite != null);
+
         RangedWeapon rw = ph.wh.CurrentWeapon();
-        bool activeWeapon = !ph.wh.IsSwitchingWeapon;
-        bool noIronsights = rw.optics == null || rw.optics.disableReticle == false;
-        reticleCentre.gameObject.SetActive(!activeWeapon || noIronsights);
-        reticleUp.gameObject.SetActive(activeWeapon && noIronsights);
-        reticleDown.gameObject.SetActive(activeWeapon && noIronsights);
-        reticleLeft.gameObject.SetActive(activeWeapon && noIronsights);
-        reticleRight.gameObject.SetActive(activeWeapon && noIronsights);
-        ammoDisplay.gameObject.SetActive(activeWeapon);
-        opticsOverlay.gameObject.SetActive(activeWeapon);
-        opticsTransition.gameObject.SetActive(activeWeapon);
-
-        if (activeWeapon == true)
+        if (rw != null)
         {
-            if (rw.optics == null)
+            bool activeWeapon = !ph.wh.IsSwitchingWeapon;
+            bool noIronsights = rw.optics == null || rw.optics.disableReticle == false;
+            reticleCentre.gameObject.SetActive(!activeWeapon || noIronsights);
+            reticleUp.gameObject.SetActive(activeWeapon && noIronsights);
+            reticleDown.gameObject.SetActive(activeWeapon && noIronsights);
+            reticleLeft.gameObject.SetActive(activeWeapon && noIronsights);
+            reticleRight.gameObject.SetActive(activeWeapon && noIronsights);
+            ammoDisplay.gameObject.SetActive(activeWeapon);
+            opticsOverlay.gameObject.SetActive(activeWeapon);
+            opticsTransition.gameObject.SetActive(activeWeapon);
+
+            if (activeWeapon == true)
             {
-                ADSTransition(0, null);
-            }
-
-            if (noIronsights)
-            {
-                #region Calculate reticle width
-                float spread = ph.wh.standingAccuracy.Calculate() + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
-                
-                Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
-                reticleOffsetPoint = playerHead.position + reticleOffsetPoint * rw.accuracy.range;
-
-                Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
-                Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * rw.accuracy.range, Color.red);
-
-                reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
-                Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
-                float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
-
-                // Adjust reticleRadius to match the canvas size
-                reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticleRadius);
-                reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticleRadius);
-                reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticleRadius, 0);
-                reticleRight.rectTransform.anchoredPosition = new Vector3(reticleRadius, 0);
-                #endregion
-            }
-
-
-            firingMode.text = rw.firingModes[rw.firingModeIndex].name;
-            firingModeIcon.sprite = rw.firingModes[rw.firingModeIndex].hudIcon;
-
-            ammoCounter.text = AmmoInfo(rw, rw.firingModeIndex);
-
-            AmmunitionStats a = rw.GetAmmunitionStats(rw.firingModeIndex);
-            MagazineStats m = rw.GetMagazineStats(rw.firingModeIndex);
-
-            if (a == null)
-            {
-                if (m == null)
+                if (rw.optics == null)
                 {
-                    FillMeter(ammoBar, 1, 1);
+                    ADSTransition(0, null);
+                }
+
+                if (noIronsights)
+                {
+                    #region Calculate reticle width
+                    float spread = ph.wh.standingAccuracy.Calculate() + rw.accuracy.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
+
+                    Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
+                    reticleOffsetPoint = playerHead.position + reticleOffsetPoint * rw.accuracy.range;
+
+                    Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
+                    Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * rw.accuracy.range, Color.red);
+
+                    reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
+                    Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
+                    float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
+
+                    // Adjust reticleRadius to match the canvas size
+                    reticleUp.rectTransform.anchoredPosition = new Vector3(0, reticleRadius);
+                    reticleDown.rectTransform.anchoredPosition = new Vector3(0, -reticleRadius);
+                    reticleLeft.rectTransform.anchoredPosition = new Vector3(-reticleRadius, 0);
+                    reticleRight.rectTransform.anchoredPosition = new Vector3(reticleRadius, 0);
+                    #endregion
+                }
+
+
+                firingMode.text = rw.firingModes[rw.firingModeIndex].name;
+                firingModeIcon.sprite = rw.firingModes[rw.firingModeIndex].hudIcon;
+
+                ammoCounter.text = AmmoInfo(rw, rw.firingModeIndex);
+
+                AmmunitionStats a = rw.GetAmmunitionStats(rw.firingModeIndex);
+                MagazineStats m = rw.GetMagazineStats(rw.firingModeIndex);
+
+                if (a == null)
+                {
+                    if (m == null)
+                    {
+                        FillMeter(ammoBar, 1, 1);
+                    }
+                    else
+                    {
+                        FillMeter(ammoBar, m.magazine.current, m.magazine.max);
+                    }
                 }
                 else
                 {
-                    FillMeter(ammoBar, m.magazine.current, m.magazine.max);
-                }
-            }
-            else
-            {
-                if (m == null)
-                {
-                    FillMeter(ammoBar, ph.a.GetStock(a.ammoType), ph.a.GetMax(a.ammoType));
-                }
-                else
-                {
-                    FillMeter(ammoBar, m.magazine.current, m.magazine.max);
+                    if (m == null)
+                    {
+                        FillMeter(ammoBar, ph.a.GetStock(a.ammoType), ph.a.GetMax(a.ammoType));
+                    }
+                    else
+                    {
+                        FillMeter(ammoBar, m.magazine.current, m.magazine.max);
+                    }
                 }
             }
         }
+        
         #endregion
     }
 

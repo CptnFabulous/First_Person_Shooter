@@ -331,7 +331,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 183dbbb92d271804fb78ff962d72ea3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHolding: {fileID: 0}
   fireControlModes:
   - name: Pump-action
     roundsPerMinute: 120
@@ -442,6 +441,49 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  cosmeticsModes:
+    name: 
+    heldPosition: {fileID: 0}
+    effectsOnFire:
+      m_PersistentCalls:
+        m_Calls: []
+  firingModes:
+  - name: Buckshot
+    fireControlMode: 0
+    accuracyMode: 0
+    projectileMode: 0
+    recoilMode: 0
+    hasOptics: 0
+    opticsMode: -1
+    ammunitionMode: 0
+    feedsFromMagazine: 0
+    magazineMode: 0
+    miscStatsMode: 0
+    hudIcon: {fileID: 21300008, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
+    switchSpeed: 0.5
+    heldPosition: {fileID: 2816232894353579547}
+    firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}
+    muzzleFlash: {fileID: 2816232892958514158}
+    muzzleFlashRelativeDuration: 2
+    shellEjection: {fileID: 2816232893789883997}
+  - name: Slugs
+    fireControlMode: 0
+    accuracyMode: 1
+    projectileMode: 1
+    recoilMode: 0
+    hasOptics: 0
+    opticsMode: -1
+    ammunitionMode: 1
+    feedsFromMagazine: 0
+    magazineMode: 1
+    miscStatsMode: 0
+    hudIcon: {fileID: 21300010, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
+    switchSpeed: 0.5
+    heldPosition: {fileID: 2816232894353579547}
+    firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}
+    muzzleFlash: {fileID: 2816232892958514158}
+    muzzleFlashRelativeDuration: 2
+    shellEjection: {fileID: 2816232893348017715}
   fireControls:
     name: 
     roundsPerMinute: 0
@@ -455,8 +497,6 @@ MonoBehaviour:
     rayDetection:
       serializedVersion: 2
       m_Bits: 0
-  aimDirection: {x: 0, y: 0, z: 0}
-  target: {x: 0, y: 0, z: 0}
   projectile:
     name: 
     prefab: {fileID: 0}
@@ -491,30 +531,15 @@ MonoBehaviour:
     magnification: 0
     transitionTime: 0
     moveSpeedReductionPercentage: 0
+    sightLine: {fileID: 0}
     aimPosition: {fileID: 0}
     scopeGraphic: {fileID: 0}
     disableReticle: 0
-  isAiming: 0
-  zoomVariable: 0
-  zoomTimer: 0
-  sensitivityWhileAiming:
-    percentageValue: 0
-    multiplicative: 0
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
-  speedWhileAiming:
-    percentageValue: 0
-    multiplicative: 0
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
   recoil:
     name: 
     recoil: 0
     recoilApplyRate: 0
     recoilRecovery: 0
-  recoilToApply: 0
-  aimOrigin: {x: 0, y: 0}
-  aimCurrent: {x: 0, y: 0}
   ammunition:
     name: 
     consumesAmmo: 0
@@ -529,46 +554,36 @@ MonoBehaviour:
       critical: 0
     roundsReloaded: 0
     reloadTime: 0
+  cosmetics:
+    name: 
+    heldPosition: {fileID: 0}
+    effectsOnFire:
+      m_PersistentCalls:
+        m_Calls: []
+  isAiming: 0
+  zoomVariable: 0
+  zoomTimer: 0
+  sensitivityWhileAiming:
+    percentageValue: 0
+    multiplicative: 0
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
+  speedWhileAiming:
+    percentageValue: 0
+    multiplicative: 0
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
+  recoilToApply: 0
+  aimOrigin: {x: 0, y: 0}
+  aimCurrent: {x: 0, y: 0}
   isReloading: 0
   reloadTimer: 0
-  firingModes:
-  - name: Buckshot
-    fireControlMode: 0
-    accuracyMode: 0
-    projectileMode: 0
-    recoilMode: 0
-    opticsMode: -1
-    ammunitionMode: 0
-    magazineMode: 0
-    miscStatsMode: 0
-    switchSpeed: 0.5
-    hudIcon: {fileID: 21300008, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    heldPosition: {fileID: 2816232894353579547}
-    firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}
-    muzzleFlash: {fileID: 2816232892958514158}
-    muzzleFlashRelativeDuration: 2
-    shellEjection: {fileID: 2816232893789883997}
-  - name: Slugs
-    fireControlMode: 0
-    accuracyMode: 1
-    projectileMode: 1
-    recoilMode: 0
-    opticsMode: -1
-    ammunitionMode: 1
-    magazineMode: 1
-    miscStatsMode: 0
-    switchSpeed: 0.5
-    hudIcon: {fileID: 21300010, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    heldPosition: {fileID: 2816232894353579547}
-    firingNoise: {fileID: 8300000, guid: 825eac875729e334aafd6038599df80d, type: 3}
-    muzzleFlash: {fileID: 2816232892958514158}
-    muzzleFlashRelativeDuration: 2
-    shellEjection: {fileID: 2816232893348017715}
   switchSpeed: 0.25
-  weaponModel: {fileID: 2816232893638339650}
+  weaponModel: {fileID: 2816232893638339649}
   weaponSoundSource: {fileID: 2816232893638339648}
   holsterPosition: {fileID: 2816232892727586851}
   firingModeIndex: 0
+  playerHolding: {fileID: 0}
   isSwitchingWeapon: 0
   isSwitchingFireMode: 0
 --- !u!1 &2816232892804422640

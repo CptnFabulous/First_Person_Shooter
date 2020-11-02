@@ -128,7 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 183dbbb92d271804fb78ff962d72ea3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHolding: {fileID: 0}
   fireControlModes:
   - name: Full-Auto
     roundsPerMinute: 900
@@ -172,6 +171,7 @@ MonoBehaviour:
     magnification: 4
     transitionTime: 0.25
     moveSpeedReductionPercentage: -40
+    sightLine: {fileID: 0}
     aimPosition: {fileID: 7790646452389621174}
     scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
     disableReticle: 0
@@ -314,6 +314,67 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  cosmeticsModes:
+    name: 
+    heldPosition: {fileID: 0}
+    effectsOnFire:
+      m_PersistentCalls:
+        m_Calls: []
+  firingModes:
+  - name: Full-Auto
+    fireControlMode: 0
+    accuracyMode: 0
+    projectileMode: 0
+    recoilMode: 0
+    hasOptics: 0
+    opticsMode: 0
+    ammunitionMode: 0
+    feedsFromMagazine: 0
+    magazineMode: 0
+    miscStatsMode: 0
+    hudIcon: {fileID: 21300002, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
+    switchSpeed: 0.5
+    heldPosition: {fileID: 7790646450496658551}
+    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
+    muzzleFlash: {fileID: 7790646451592390249}
+    muzzleFlashRelativeDuration: 2
+    shellEjection: {fileID: 7790646451329015788}
+  - name: Semi-Auto
+    fireControlMode: 1
+    accuracyMode: 0
+    projectileMode: 0
+    recoilMode: 0
+    hasOptics: 0
+    opticsMode: 0
+    ammunitionMode: 0
+    feedsFromMagazine: 0
+    magazineMode: 0
+    miscStatsMode: 0
+    hudIcon: {fileID: 21300000, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
+    switchSpeed: 0.5
+    heldPosition: {fileID: 7790646450496658551}
+    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
+    muzzleFlash: {fileID: 7790646451592390249}
+    muzzleFlashRelativeDuration: 2
+    shellEjection: {fileID: 7790646451329015788}
+  - name: HEDP Grenades
+    fireControlMode: 2
+    accuracyMode: 1
+    projectileMode: 1
+    recoilMode: 1
+    hasOptics: 0
+    opticsMode: -1
+    ammunitionMode: 1
+    feedsFromMagazine: 0
+    magazineMode: 1
+    miscStatsMode: 0
+    hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
+    switchSpeed: 0.5
+    heldPosition: {fileID: 7790646450496658551}
+    firingNoise: {fileID: 8300000, guid: 2d7e49f97b469a341a7f12f2c20464eb, type: 3}
+    muzzleFlash: {fileID: 0}
+    muzzleFlashRelativeDuration: 0
+    shellEjection: {fileID: 0}
   fireControls:
     name: 
     roundsPerMinute: 0
@@ -327,8 +388,6 @@ MonoBehaviour:
     rayDetection:
       serializedVersion: 2
       m_Bits: 0
-  aimDirection: {x: 0, y: 0, z: 0}
-  target: {x: 0, y: 0, z: 0}
   projectile:
     name: 
     prefab: {fileID: 0}
@@ -363,30 +422,15 @@ MonoBehaviour:
     magnification: 0
     transitionTime: 0
     moveSpeedReductionPercentage: 0
+    sightLine: {fileID: 0}
     aimPosition: {fileID: 0}
     scopeGraphic: {fileID: 0}
     disableReticle: 0
-  isAiming: 0
-  zoomVariable: 0
-  zoomTimer: 0
-  sensitivityWhileAiming:
-    percentageValue: 0
-    multiplicative: 0
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
-  speedWhileAiming:
-    percentageValue: 0
-    multiplicative: 0
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
   recoil:
     name: 
     recoil: 0
     recoilApplyRate: 0
     recoilRecovery: 0
-  recoilToApply: 0
-  aimOrigin: {x: 0, y: 0}
-  aimCurrent: {x: 0, y: 0}
   ammunition:
     name: 
     consumesAmmo: 0
@@ -401,62 +445,36 @@ MonoBehaviour:
       critical: 0
     roundsReloaded: 0
     reloadTime: 0
+  cosmetics:
+    name: 
+    heldPosition: {fileID: 0}
+    effectsOnFire:
+      m_PersistentCalls:
+        m_Calls: []
+  isAiming: 0
+  zoomVariable: 0
+  zoomTimer: 0
+  sensitivityWhileAiming:
+    percentageValue: 0
+    multiplicative: 0
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
+  speedWhileAiming:
+    percentageValue: 0
+    multiplicative: 0
+    ignoresOriginActiveState: 0
+    origin: {fileID: 0}
+  recoilToApply: 0
+  aimOrigin: {x: 0, y: 0}
+  aimCurrent: {x: 0, y: 0}
   isReloading: 0
   reloadTimer: 0
-  firingModes:
-  - name: Full-Auto
-    fireControlMode: 0
-    accuracyMode: 0
-    projectileMode: 0
-    recoilMode: 0
-    opticsMode: 0
-    ammunitionMode: 0
-    magazineMode: 0
-    miscStatsMode: 0
-    switchSpeed: 0.5
-    hudIcon: {fileID: 21300002, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    heldPosition: {fileID: 7790646450496658551}
-    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
-    muzzleFlash: {fileID: 7790646451592390249}
-    muzzleFlashRelativeDuration: 2
-    shellEjection: {fileID: 7790646451329015788}
-  - name: Semi-Auto
-    fireControlMode: 1
-    accuracyMode: 0
-    projectileMode: 0
-    recoilMode: 0
-    opticsMode: 0
-    ammunitionMode: 0
-    magazineMode: 0
-    miscStatsMode: 0
-    switchSpeed: 0.5
-    hudIcon: {fileID: 21300000, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    heldPosition: {fileID: 7790646450496658551}
-    firingNoise: {fileID: 8300000, guid: 63f2a209f327afe4eb8332a2cf8898b4, type: 3}
-    muzzleFlash: {fileID: 7790646451592390249}
-    muzzleFlashRelativeDuration: 2
-    shellEjection: {fileID: 7790646451329015788}
-  - name: HEDP Grenades
-    fireControlMode: 2
-    accuracyMode: 1
-    projectileMode: 1
-    recoilMode: 1
-    opticsMode: -1
-    ammunitionMode: 1
-    magazineMode: 1
-    miscStatsMode: 0
-    switchSpeed: 0.5
-    hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    heldPosition: {fileID: 7790646450496658551}
-    firingNoise: {fileID: 8300000, guid: 2d7e49f97b469a341a7f12f2c20464eb, type: 3}
-    muzzleFlash: {fileID: 0}
-    muzzleFlashRelativeDuration: 0
-    shellEjection: {fileID: 0}
   switchSpeed: 0.5
-  weaponModel: {fileID: 7790646450565241321}
+  weaponModel: {fileID: 7790646450565241320}
   weaponSoundSource: {fileID: 7790646450565241322}
   holsterPosition: {fileID: 7790646452092944018}
   firingModeIndex: 0
+  playerHolding: {fileID: 0}
   isSwitchingWeapon: 0
   isSwitchingFireMode: 0
 --- !u!1 &7790646450466463838
@@ -491,7 +509,7 @@ Transform:
   - {fileID: 7790646451585735312}
   - {fileID: 7790646451972727152}
   m_Father: {fileID: 7790646450565241320}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!108 &7790646450466463832
 Light:
@@ -644,6 +662,7 @@ Transform:
   m_LocalPosition: {x: 0.19899988, y: -0.2179985, z: 0.69400024}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 9005227041341684071}
   - {fileID: 7790646451592390254}
   - {fileID: 7790646450466463833}
   - {fileID: 7790646451329015778}
@@ -1317,7 +1336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7790646450565241320}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 9}
 --- !u!198 &7790646451329015788
 ParticleSystem:
@@ -6380,7 +6399,7 @@ Transform:
   - {fileID: 7790646450609389936}
   - {fileID: 7790646451762918493}
   m_Father: {fileID: 7790646450565241320}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!108 &7790646451592390255
 Light:
@@ -7034,3 +7053,33 @@ Transform:
   m_Father: {fileID: 7790646450444556799}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &8400599710053171035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9005227041341684071}
+  m_Layer: 12
+  m_Name: OpticsSightline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9005227041341684071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8400599710053171035}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.5, y: 0.16, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7790646450565241320}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}

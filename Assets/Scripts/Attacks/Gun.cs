@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
 [System.Serializable]
 public class FiringModeData
 {
@@ -25,12 +24,12 @@ public class FiringModeData
     [Header("Accuracy")]
     [Range(0, 180)] public float projectileSpread;
     public float range = 400;
-    public LayerMask rayDetection;
+    public LayerMask rayDetection = ~0;
 
     [Header("Recoil - Spread")]
     public float maxSpreadMultiplier = 2;
     public int shotsToReachMaxSpread = 5;
-    public AnimationCurve spreadCurve;
+    public AnimationCurve spreadCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     public float spreadApplyTimePerShot = 0.25f;
     public float spreadRecoveryTimePerShot = 0.5f;
     [HideInInspector] public float spreadTimer = 0;
@@ -207,16 +206,16 @@ public class WeaponOpticsData
     public float magnification;
     public float transitionTime;
     [Range(-1, 0)] public float moveSpeedReduction;
-    public Transform aimPosition;
+    public Transform playerSightline;
     public bool disableReticle;
 }
 
 
 
 
-public class NewRangedWeapon : MonoBehaviour
+public class Gun : MonoBehaviour
 {
-    public WeaponHandler playerHolding;
+    [HideInInspector] public WeaponHandler playerHolding;
 
     [Header("Firing modes")]
     public FiringModeData[] firingModes;
@@ -247,6 +246,7 @@ public class NewRangedWeapon : MonoBehaviour
     float attackMessageDelayTimer;
 
     [Header("Cosmetics")]
+    Transform weaponModel;
     public Animator animationHandler;
 
 
@@ -358,9 +358,11 @@ public class NewRangedWeapon : MonoBehaviour
             }
             #endregion
 
+            /*
             RecoilHandler(mode);
             ReloadHandler(magazine, mode);
             OpticsHandler(optics);
+            */
         }
     }
 
@@ -551,6 +553,7 @@ public class NewRangedWeapon : MonoBehaviour
 
     bool isAnimating;
 
+    /*
     IEnumerator MoveInWorldSpace(Transform transform, Vector3 position, Quaternion rotation, float time, AnimationCurve curve = null, bool overridesOtherAnimations = false)
     {
         // Add code so the animation can combine its data. Maybe in a different function?
@@ -667,5 +670,54 @@ public class NewRangedWeapon : MonoBehaviour
         #endregion
 
         isAnimating = false;
+    }
+
+    */
+
+    IEnumerator MoveWeaponModel(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = false)
+    {
+        isAnimating = true;
+        
+        if (curve == null)
+        {
+            curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        }
+
+        Vector3 oldPosition = weaponModel.localPosition;
+        Quaternion oldRotation = weaponModel.localRotation;
+        
+        float timer = 0;
+        while (timer < 1)
+        {
+            float percentage = curve.Evaluate(timer);
+
+            weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
+            weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
+
+            timer += Time.deltaTime / time;
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        isAnimating = false;
+    }
+}
+
+[System.Serializable]
+public class TransformData
+{
+    public Vector3 position;
+    public Quaternion rotation;
+
+    public TransformData(Vector3 _position, Quaternion _rotation)
+    {
+        position = _position;
+        rotation = _rotation;
+    }
+
+    public TransformData(Transform transform)
+    {
+        position = transform.position;
+        rotation = transform.rotation;
     }
 }

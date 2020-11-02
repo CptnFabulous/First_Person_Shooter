@@ -25,18 +25,34 @@ public class WeaponHandler : MonoBehaviour
     [Header("Switching")]
     public RadialMenu weaponSelector;
 
+    #region Method variables
     public bool IsSwitchingWeapon
     {
         get { return isSwitching; }
     }
 
-
-
-
     public RangedWeapon CurrentWeapon()
     {
+        if (equippedWeapons.Length < 1)
+        {
+            return null;
+        }
+        
         return equippedWeapons[currentWeaponIndex];
     }
+
+    bool AllOtherWeaponsHolstered()
+    {
+        foreach (RangedWeapon rw in equippedWeapons)
+        {
+            if (rw.isSwitchingWeapon == true)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    #endregion
 
     private void Awake()
     {
@@ -100,6 +116,8 @@ public class WeaponHandler : MonoBehaviour
 
     void RefreshWeapons(int index)
     {
+        Debug.Log("Refreshing weapons");
+
         equippedWeapons = GetComponentsInChildren<RangedWeapon>();
         foreach (RangedWeapon rw in equippedWeapons)
         {
@@ -140,6 +158,11 @@ public class WeaponHandler : MonoBehaviour
 
     IEnumerator SwitchWeaponAndFiringMode(int weaponIndex, int firingModeIndex)
     {
+        if (equippedWeapons.Length < 1)
+        {
+            yield break;
+        }
+
         weaponIndex = Mathf.Clamp(weaponIndex, 0, equippedWeapons.Length - 1);
         firingModeIndex = Mathf.Clamp(firingModeIndex, 0, equippedWeapons[weaponIndex].firingModes.Length);
 
@@ -178,6 +201,13 @@ public class WeaponHandler : MonoBehaviour
 
     IEnumerator SwitchWeapon(int index)
     {
+        Debug.Log("Weapon switch routine started");
+        
+        if (equippedWeapons.Length < 1)
+        {
+            yield break;
+        }
+        
         isSwitching = true;
         index = Mathf.Clamp(index, 0, equippedWeapons.Length - 1);
 
@@ -195,7 +225,8 @@ public class WeaponHandler : MonoBehaviour
         yield return new WaitUntil(() => AllOtherWeaponsHolstered());
 
         StartCoroutine(equippedWeapons[index].Draw());
-        //print(equippedWeapons[index].name + " has been drawn.");
+
+
         currentWeaponIndex = index;
 
         yield return new WaitUntil(() => equippedWeapons[index].isSwitchingWeapon == false);
@@ -203,17 +234,7 @@ public class WeaponHandler : MonoBehaviour
         isSwitching = false;
     }
 
-    bool AllOtherWeaponsHolstered()
-    {
-        foreach (RangedWeapon rw in equippedWeapons)
-        {
-            if (rw.isSwitchingWeapon == true)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
 }
 
