@@ -21,6 +21,7 @@ public class Character : Entity
 
     public bool HostileTowards(Character c)
     {
+        Debug.Log(this + ", " + c);
         return faction.HostileTowards(c.faction);
     }
 }

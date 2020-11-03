@@ -21,7 +21,8 @@ public class PlayerController : MonoBehaviour
     #region Camera control
     [Header("Camera control")]
     [Range(0, 180)]
-    public float fieldOfView = 60;
+    public VariableValueFloat fieldOfView = new VariableValueFloat(60);
+    //public float fieldOfView = 60;
     [Tooltip("Horizontal camera sensitivity. Set to minus to invert it."), Range(-100, 100)]
     public float sensitivityX = 50;
     [Tooltip("Vertical camera sensitivity. Set to minus to invert it."), Range(-100, 100)]
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviour
     public float maxLookAngle = 90;
 
     [HideInInspector] public bool canLook;
-    [HideInInspector] public VariableValueFloat sensitivityModifier;
+    [HideInInspector] public VariableValueFloat sensitivityModifier = new VariableValueFloat(1);
     Vector2 lookVector;
 
     Vector3 headDirectionLastFrame;
@@ -179,7 +180,6 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CapsuleCollider>();
         terrainDetection = Misc.CollisionMask(gameObject.layer);
 
-        // Establish a multiplier to be used for both camera sensitivity values
         sensitivityModifier.defaultValue = 1;
 
         // Add crouch speed modifier to movementSpeed

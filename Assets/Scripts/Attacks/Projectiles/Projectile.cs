@@ -13,12 +13,11 @@ public class Projectile : MonoBehaviour
     public float velocity;
     public float gravityMultiplier;
     public float diameter;
-    public LayerMask hitDetection; // LayerMask ensuring raycast does not hit player's own body
+    public LayerMask hitDetection = ~0; // LayerMask ensuring raycast does not hit player's own body
 
     Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
     Vector3 ballisticDirection; // The direction the projectile will actualy go in
     Vector3 gravityModifier; // An increasing Vector3 value to slowly drag the projectile down with gravity
-    //public RaycastHit projectileHit; // Point where raycast hits target
     float timerLifetime;
 
     [HideInInspector] public Character origin;
@@ -33,9 +32,13 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        
+        
+        
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
         RaycastHit projectileHit;
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && IsAlly(projectileHit.collider.gameObject) == false)
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && origin.HostileTowards(Character.FromObject(projectileHit.collider.gameObject))/*IsAlly(projectileHit.collider.gameObject) == false*/)
         {
             OnHit(projectileHit);
         }
@@ -69,16 +72,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    bool IsAlly(GameObject g)
-    {
-        //Character ch = Character.FromHit(g);
-        Character ch = Character.FromObject(g);
-        if (ch != null && !origin.HostileTowards(ch))
-        {
-            return true;
-        }
-        return false;
-    }
+    
     
     public void InstantiateOnImpact(RaycastHit rh, GameObject prefab, bool alignWithSurface)
     {

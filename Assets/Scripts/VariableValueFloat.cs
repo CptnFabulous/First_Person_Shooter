@@ -21,7 +21,21 @@ public class PercentageModifier // Works for both floats and ints
     // Which object is the source of this modifier? When calling the result, check if this object still exists, and destroy this class if not.
     [HideInInspector] public MonoBehaviour origin;
 
+    #region Constructors
+    public PercentageModifier(float _percentageValue, bool _multiplicative, bool _ignoresOriginActiveState)
+    {
+        percentageValue = _percentageValue;
+        multiplicative = _multiplicative;
+        ignoresOriginActiveState = _ignoresOriginActiveState;
+    }
 
+    public PercentageModifier()
+    {
+        // Creates an empty, default PercentageModifier
+    }
+    #endregion
+
+    #region Enable/disable
     // Used for analog control over the effect's intensity
     public void SetIntensity(float f)
     {
@@ -40,7 +54,9 @@ public class PercentageModifier // Works for both floats and ints
             SetIntensity(0);
         }
     }
+    #endregion
 
+    #region Obtain values
     // What is the percentage being influenced by the intensity?
     public float Get()
     {
@@ -54,6 +70,7 @@ public class PercentageModifier // Works for both floats and ints
         // If either the original object is active OR the modifier has been set to be registered regardless
         return intensity > 0 && (origin.enabled == true || ignoresOriginActiveState);
     }
+    #endregion
 }
 
 // Add modifier to variablevaluefloat in Awake() or Start(). Enable and disable when appropriate
@@ -72,9 +89,20 @@ public class VariableValueFloat
     */
 
     // The original value, when no external forces are acting on it
-    public float defaultValue;
+    public float defaultValue = 1;
     // A list of all modifiers influencing the final value
     [HideInInspector] public List<PercentageModifier> influencingPercentages;
+
+
+    public VariableValueFloat(float _defaultValue)
+    {
+        defaultValue = _defaultValue;
+    }
+
+    public VariableValueFloat()
+    {
+        // Create a default VariableValueFloat
+    }
 
     // I don't need to figure out how to do this in Update() because it only needs to be checked when the variable is called
     public void ValidateModifiers()

@@ -15,6 +15,48 @@ public enum DamageType
 
 public static class Damage
 {
+    public static void ShootProjectile(Projectile prefab, int count, float spread, float range, Character origin, Vector3 aimOrigin, Vector3 forward, Vector3 up, Vector3 muzzle)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            #region Calculate initial variables
+            // Declare RaycastHit
+            RaycastHit targetFound;
+            // Declare direction in which to fire projectile
+            Vector3 direction = new Vector3(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread));
+            direction = Misc.AngledDirection(direction, forward, up);
+            #endregion
+
+            #region Launch raycast to determine where to shoot projectile
+            if (Physics.Raycast(aimOrigin, direction, out targetFound, range, prefab.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+            {
+                direction = targetFound.point;
+            }
+            else
+            {
+                direction = aimOrigin + direction.normalized * range;
+            }
+            #endregion
+
+            #region Instantiate projectile
+            Projectile p = prefab;
+
+            p.origin = origin;
+
+            if (Vector3.Angle(forward, direction - muzzle) < 90) // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
+            {
+                Object.Instantiate(p, muzzle, Quaternion.LookRotation(direction - muzzle, up));
+            }
+            else // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
+            {
+                Object.Instantiate(p, direction, Quaternion.LookRotation(direction - aimOrigin, up));
+                p.OnHit(targetFound);
+            }
+            #endregion
+        }
+    }
+
+
     public static void ShootProjectile(ProjectileStats projectile, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
     {
         for (int i = 0; i < projectile.projectileCount; i++)
