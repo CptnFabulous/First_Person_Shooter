@@ -149,37 +149,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 ColourReticle(reticleDefaultColour);
             }
 
-            /*
-            Character c = null;
-            DamageHitbox d = lookingAt.collider.GetComponent<DamageHitbox>();
-            if (d != null)
-            {
-                c = Character.FromHitbox(d);
-                if (c != null)
-                {
-                    switch (ph.faction.Affiliation(c.faction))
-                    {
-                        case FactionState.Allied:
-                            ColourReticle(allyColour);
-                            break;
-                        case FactionState.Hostile:
-                            ColourReticle(enemyColour);
-                            break;
-                        default:
-                            ColourReticle(reticleDefaultColour);
-                            break;
-                    }
-                }
-                else
-                {
-                    ColourReticle(reticleDefaultColour);
-                }
-            }
-            else
-            {
-                ColourReticle(reticleDefaultColour);
-            }
-            */
+
 
             // Do interacting stuff
         }
@@ -196,6 +166,7 @@ public class HeadsUpDisplay : MonoBehaviour
         Gun rw = ph.wh.CurrentWeapon();
         if (rw != null)
         {
+            GunGeneralStats ggs = rw.firingModes[rw.firingModeIndex].general;
             GunOpticsStats gos = rw.firingModes[rw.firingModeIndex].optics;
             
             
@@ -220,14 +191,14 @@ public class HeadsUpDisplay : MonoBehaviour
                 if (noIronsights)
                 {
                     #region Calculate reticle width
-                    GunAccuracyStats gas = rw.firingModes[rw.firingModeIndex].accuracy;
-                    float spread = ph.wh.standingAccuracy.Calculate() + gas.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
+                    
+                    float spread = ph.wh.standingAccuracy.Calculate() + ggs.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
 
                     Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
-                    reticleOffsetPoint = playerHead.position + reticleOffsetPoint * gas.range;
+                    reticleOffsetPoint = playerHead.position + reticleOffsetPoint * ggs.range;
 
                     Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
-                    Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * gas.range, Color.red);
+                    Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * ggs.range, Color.red);
 
                     reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
                     Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
@@ -248,10 +219,10 @@ public class HeadsUpDisplay : MonoBehaviour
 
                 ammoCounter.text = AmmoInfo(rw, rw.firingModeIndex);
 
-                GunAmmunitionStats a = rw.firingModes[rw.firingModeIndex].ammunition;
+                
                 GunMagazineStats m = rw.firingModes[rw.firingModeIndex].magazine;
 
-                if (a == null)
+                if (ggs.consumesAmmo == null)
                 {
                     if (m == null)
                     {
@@ -266,7 +237,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 {
                     if (m == null)
                     {
-                        FillMeter(ammoBar, ph.a.GetStock(a.ammoType), ph.a.GetMax(a.ammoType));
+                        FillMeter(ammoBar, ph.a.GetStock(ggs.ammoType), ph.a.GetMax(ggs.ammoType));
                     }
                     else
                     {
@@ -292,12 +263,12 @@ public class HeadsUpDisplay : MonoBehaviour
 
     string AmmoInfo(Gun rw, int firingModeIndex)
     {
-        GunAmmunitionStats a = rw.firingModes[firingModeIndex].ammunition;
+        GunGeneralStats ggs = rw.firingModes[firingModeIndex].general;
         GunMagazineStats m = rw.firingModes[firingModeIndex].magazine;
 
         string s = "";
 
-        if (a == null)
+        if (ggs.consumesAmmo == false)
         {
             if (m == null)
             {
@@ -312,11 +283,11 @@ public class HeadsUpDisplay : MonoBehaviour
         {
             if (m == null)
             {
-                s = ph.a.GetStock(a.ammoType).ToString();
+                s = ph.a.GetStock(ggs.ammoType).ToString();
             }
             else
             {
-                s = m.data.current + "/" + (ph.a.GetStock(a.ammoType) - m.data.current);
+                s = m.data.current + "/" + (ph.a.GetStock(ggs.ammoType) - m.data.current);
             }
         }
 

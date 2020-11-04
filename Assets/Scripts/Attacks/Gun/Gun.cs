@@ -11,20 +11,14 @@ public class GunFiringMode
     public string description;
 
     [Header("Stats")]
+    public GunGeneralStats general;
     public GunFireControlStats fireControls;
-    public GunAccuracyStats accuracy;
-    public GunRecoilStats recoil;
-    public GunProjectileStats projectile;
-    public GunAmmunitionStats ammunition;
     public GunMagazineStats magazine;
     public GunOpticsStats optics;
-    public GunCosmeticStats cosmetics;
 
     [Header("Other")]
     public Sprite hudIcon;
     public float switchSpeed;
-
-    
 }
 
 public class Gun : MonoBehaviour
@@ -33,15 +27,6 @@ public class Gun : MonoBehaviour
     [Header("Firing modes and stats")]
     public GunFiringMode[] firingModes;
     public int firingModeIndex;
-
-    GunFireControlStats fireControls;
-    GunAccuracyStats accuracy;
-    GunRecoilStats recoil;
-    GunProjectileStats projectile;
-    GunAmmunitionStats ammunition;
-    GunMagazineStats magazine;
-    GunOpticsStats optics;
-    GunCosmeticStats cosmetics;
 
     [Header("Switching")]
     public float switchSpeed;
@@ -52,7 +37,15 @@ public class Gun : MonoBehaviour
     public Transform weaponModel;
     public AudioSource weaponSoundSource;
 
+    [Header("Other")]
+    public float attackMessageLimitDelay = 1;
+
     #region Additional variables for weapon function
+    GunGeneralStats general;
+    GunFireControlStats fireControls;
+    GunMagazineStats magazine;
+    GunOpticsStats optics;
+
     // Additional optics stats
     [HideInInspector] public bool isAiming;
     [HideInInspector] public float zoomVariable;
@@ -70,9 +63,7 @@ public class Gun : MonoBehaviour
     [HideInInspector] public float reloadTimer;
     #endregion
 
-    #region Universal variables (variables that can be used multiple times for different firing modes)
-    
-
+    #region Universal variables
     [HideInInspector] public WeaponHandler playerHolding;
 
     // Switching modes
@@ -83,7 +74,6 @@ public class Gun : MonoBehaviour
     bool isAnimating = false;
 
     float attackMessageLimitTimer = float.MaxValue;
-    float attackMessageLimitDelay = 1;
     #endregion
 
     /*
@@ -131,6 +121,8 @@ public class Gun : MonoBehaviour
         playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
         speedWhileAiming = new PercentageModifier();
         playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
+
+        AssignFiringModes(firingModeIndex);
     }
 
 
@@ -138,13 +130,9 @@ public class Gun : MonoBehaviour
     {
         AssignFiringModes(firingModeIndex);
 
-        // Checks following criteria to determine if the player should be able to control their weapon:
-        // If the player is not currently switching weapon or firing mode
-        // If the player's weapon selector is not active
-
         attackMessageLimitTimer += Time.deltaTime;
 
-
+        // If the player is not switching weapons or fire modes, and is therefore able to operate the weapon
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
 
@@ -163,6 +151,8 @@ public class Gun : MonoBehaviour
 
                 i += firingModeIndex;
 
+                i = (int)Misc.InverseClamp(i, 0, firingModes.Length - 1);
+                /*
                 if (i > firingModes.Length - 1)
                 {
                     i = 0;
@@ -171,8 +161,8 @@ public class Gun : MonoBehaviour
                 {
                     i = firingModes.Length - 1;
                 }
-
-                //SwitchWeaponMode(i);
+                */
+                
                 StartCoroutine(SwitchMode(i));
             }
             #endregion
@@ -182,47 +172,40 @@ public class Gun : MonoBehaviour
             // If player is active
             // If player is pressing fire button
             // If fireTimer has finished
-            // If burst count has not exceeded the limit OR burst count is set to zero
-            // If ammo is available OR supply is null
+            // If burst count has not exceeded the limit OR there is no burst limit
+            // If ammo is available OR not required
             // If magazine is not empty OR null
-            if (playerHolding.ph.PlayerState() == GameState.Active && Input.GetButton("Fire") && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0) && (ammunition == null || (playerHolding.ph.a.GetStock(ammunition.ammoType) >= ammunition.ammoPerShot)) && (magazine == null || (magazine.data.current >= 1/*ammoPerShot*/ && isReloading == false)))
+            if (playerHolding.ph.PlayerState() == GameState.Active
+                && Input.GetButton("Fire")
+                && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute
+                && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0)
+                && (general.consumesAmmo == false || (playerHolding.ph.a.GetStock(general.ammoType) >= general.ammoPerShot))
+                && (magazine == null || (magazine.data.current >= general.ammoPerShot && isReloading == false)))
             {
-                // Adjust fire control variables
+                #region Adjust fire control variables
                 fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
                 fireControls.burstCounter += 1;
+                #endregion
 
-                // Consume ammo if supply is present
-                if (ammunition != null)
+                #region Consume ammo if supply is present
+                if (general.consumesAmmo == true)
                 {
-                    playerHolding.ph.a.Spend(ammunition.ammoType, ammunition.ammoPerShot);
+                    playerHolding.ph.a.Spend(general.ammoType, general.ammoPerShot);
                 }
+                #endregion
 
-                // Deplete magazine if present
+                #region Deplete magazine if present
                 if (magazine != null)
                 {
-                    if (ammunition != null) // If ammunition supply is present, consume appropriate amount of 
-                    {
-                        magazine.data.current -= ammunition.ammoPerShot;
-                    }
-                    else
-                    {
-                        magazine.data.current -= 1;
-                    }
+                    magazine.data.current -= general.ammoPerShot;
                 }
+                #endregion
 
-                // Apply recoil if recoil stat exists
-                if (recoil != null)
-                {
-                    recoilToApply += recoil.recoil;
-                }
+                #region Apply recoil
+                recoilToApply += general.recoil;
+                #endregion
 
-
-
-
-
-
-                
-                // Calculate direction to shoot in
+                #region Calculate and fire shot
                 Transform head = playerHolding.ph.pc.head;
                 Vector3 aimDirection = head.forward;
                 if (optics == null || isAiming == false)
@@ -231,101 +214,108 @@ public class Gun : MonoBehaviour
                     aimDirection = Quaternion.Euler(Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy)) * aimDirection;
                 }
 
-                Damage.ShootProjectile(projectile.prefab, projectile.projectileCount, accuracy.projectileSpread, accuracy.range, playerHolding.ph, head.position, aimDirection, head.up, projectile.muzzle.position);
+                Damage.ShootProjectile(general.projectilePrefab, general.projectileCount, general.projectileSpread, general.range, playerHolding.ph, head.position, aimDirection, head.up, general.muzzle.position);
+                #endregion
 
-                // Play firing animation
+                #region Play firing animations
                 //animator.SetTrigger("Fire_" + firingModes[firingModeIndex].name);
-                cosmetics.effectsOnFire.Invoke();
+                general.effectsOnFire.Invoke();
+                #endregion
 
+                #region Send attack message if the timer is right
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
-                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, accuracy.range, projectile.prefab.diameter, playerHolding.standingAccuracy.Calculate() + accuracy.projectileSpread, projectile.prefab.velocity, projectile.prefab.hitDetection);
+                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, general.range, general.projectilePrefab.diameter, playerHolding.standingAccuracy.Calculate() + general.projectileSpread, general.projectilePrefab.velocity, general.projectilePrefab.hitDetection);
                     EventObserver.TransmitAttack(am);
                     attackMessageLimitTimer = 0;
                 }
+                #endregion
             }
             else if (!Input.GetButton("Fire"))
             {
                 fireControls.burstCounter = 0;
             }
 
-
-
-
-
-
-
+            #region ADS code
             if (optics != null)
             {
-                AimHandler(optics, firingModes[firingModeIndex].cosmetics.heldPosition, playerHolding.toggleAim);
+                AimHandler(optics, general.heldPosition, playerHolding.toggleAim);
             }
+            #endregion
 
+            #region Reloading code
             if (magazine != null)
             {
-                if (ammunition != null)
+                if (general.consumesAmmo == true)
                 {
-                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloadedPerCycle, magazine.data, playerHolding, ammunition.ammoType);
+                    ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloadedPerCycle, magazine.data, playerHolding, general.ammoType);
                 }
                 else
                 {
                     ReloadHandler(magazine.reloadTime, fireControls.fireTimer, fireControls.roundsPerMinute, magazine.roundsReloadedPerCycle, magazine.data);
                 }
             }
+            #endregion
         }
 
-        if (recoil != null)
-        {
-            RecoilHandler(recoil.recoilApplyRate, playerHolding);
-        }
+        RecoilHandler(general.recoilApplyRate, playerHolding);
     }
 
     #region Switching functions
     public IEnumerator SwitchMode(int index)
     {
-        if (index != firingModeIndex) // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run
+        // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run
+        if (index == firingModeIndex)
         {
-            isSwitchingFireMode = true;
-
-            // Check if the weapon being switched to has different optics, and cancel out if so.
-            GunOpticsStats newOptics = firingModes[index].optics;
-            if (optics != null && (newOptics == null || newOptics != optics))
-            {
-                isAiming = false;
-                zoomTimer = 0;
-                LerpSights(optics, 0, firingModes[firingModeIndex].cosmetics.heldPosition);
-            }
-
-            if (newOptics != null)
-            {
-                sensitivityWhileAiming.percentageValue = 100 / newOptics.magnification;
-                speedWhileAiming.percentageValue = newOptics.moveSpeedReductionPercentage;
-                //Debug.Log("Sensitivity modifier = " + sensitivityWhileAiming.percentageValue + ", final sensitivity value = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
-            }
-
-            if (magazine != null)
-            {
-                reloadTimer = 0;
-                isReloading = false;
-                print("Reload sequence cancelled");
-            }
-
-            yield return new WaitForSeconds(firingModes[firingModeIndex].switchSpeed);
-
-            firingModeIndex = index;
-
-            isSwitchingFireMode = false;
+            yield break;
         }
+
+        isSwitchingFireMode = true;
+
+        // Check if the weapon being switched to has different optics, and cancel out if so.
+        GunFiringMode newMode = firingModes[index];
+        if (optics != null && (newMode.optics == null || newMode.optics != optics))
+        {
+            isAiming = false;
+            zoomTimer = 0;
+            LerpSights(optics, 0, newMode.general.heldPosition);
+        }
+
+        if (newMode.optics != null)
+        {
+            sensitivityWhileAiming.percentageValue = 100 / newMode.optics.magnification;
+            speedWhileAiming.percentageValue = newMode.optics.moveSpeedReductionPercentage;
+        }
+
+        if (magazine != null)
+        {
+            CancelReload();
+            /*
+            reloadTimer = 0;
+            isReloading = false;
+            print("Reload sequence cancelled");
+            */
+        }
+
+        yield return new WaitForSeconds(newMode.switchSpeed);
+
+        firingModeIndex = index;
+
+        isSwitchingFireMode = false;
     }
 
     public IEnumerator Draw()
     {
         isSwitchingWeapon = true;
 
+        AssignFiringModes(firingModeIndex);
+
         gameObject.SetActive(true);
         // Draw weapon animation
         weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
 
-        Transform newMoveTransform = firingModes[firingModeIndex].cosmetics.heldPosition;
+        Transform newMoveTransform = general.heldPosition;
+        Debug.Log(newMoveTransform);
         StartCoroutine(MoveWeaponModel(newMoveTransform.localPosition, newMoveTransform.localRotation, switchSpeed));
         yield return new WaitForSeconds(switchSpeed);
         isSwitchingWeapon = false;
@@ -340,7 +330,7 @@ public class Gun : MonoBehaviour
         {
             isAiming = false;
             zoomTimer = 0;
-            LerpSights(optics, 0, firingModes[firingModeIndex].cosmetics.heldPosition);
+            LerpSights(optics, 0, general.heldPosition);
         }
 
         if (magazine != null)
@@ -350,7 +340,7 @@ public class Gun : MonoBehaviour
         #endregion
 
         // Begin holster animation
-        weaponModel.transform.SetPositionAndRotation(firingModes[firingModeIndex].cosmetics.heldPosition.position, firingModes[firingModeIndex].cosmetics.heldPosition.rotation);
+        weaponModel.transform.SetPositionAndRotation(general.heldPosition.position, general.heldPosition.rotation);
         StartCoroutine(MoveWeaponModel(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed));
 
         yield return new WaitForSeconds(switchSpeed);
@@ -361,14 +351,10 @@ public class Gun : MonoBehaviour
 
     void AssignFiringModes(int index)
     {
+        general = firingModes[index].general;
         fireControls = firingModes[index].fireControls;
-        accuracy = firingModes[index].accuracy;
-        recoil = firingModes[index].recoil;
-        projectile = firingModes[index].projectile;
-        ammunition = firingModes[index].ammunition;
         magazine = firingModes[index].magazine;
         optics = firingModes[index].optics;
-        cosmetics = firingModes[index].cosmetics;
     }
     #endregion
 

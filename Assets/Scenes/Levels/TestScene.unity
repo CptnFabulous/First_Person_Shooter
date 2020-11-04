@@ -2041,13 +2041,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 634446619}
+  - component: {fileID: 634446627}
   - component: {fileID: 634446625}
-  - component: {fileID: 634446624}
-  - component: {fileID: 634446623}
-  - component: {fileID: 634446622}
-  - component: {fileID: 634446621}
   - component: {fileID: 634446626}
-  - component: {fileID: 634446620}
   m_Layer: 0
   m_Name: M203 Grenade Launcher
   m_TagString: Untagged
@@ -2069,93 +2065,6 @@ Transform:
   m_Father: {fileID: 3680709854112999373}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &634446620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634446618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1beac2969a286344b8c973f39051fdf1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heldPosition: {fileID: 3680709854022492741}
-  effectsOnFire:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3680709854224312280}
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 2d7e49f97b469a341a7f12f2c20464eb,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &634446621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634446618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d3aa2ce98f8414ba36744b9eb4c9d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  consumesAmmo: 1
-  ammoType: 4
-  ammoPerShot: 1
---- !u!114 &634446622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634446618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70e73e6678c21f940a9ebf2e3c587333, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 3441580320547347983, guid: 3a070b71fb6a90d4682292f55507cc57, type: 3}
-  muzzle: {fileID: 3680709854059470443}
-  projectileCount: 1
---- !u!114 &634446623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634446618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85ce0743f09b80547bb0198dc0d13b96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recoil: 6
-  recoilApplyRate: 12
-  recoilRecovery: 10
---- !u!114 &634446624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 634446618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaafdfecbe878044be6b2e7723c0065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  projectileSpread: 0
-  range: 300
 --- !u!114 &634446625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2191,6 +2100,46 @@ MonoBehaviour:
     critical: 0
   roundsReloadedPerCycle: 1
   reloadTime: 1.2
+--- !u!114 &634446627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634446618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 3441580320547347983, guid: 3a070b71fb6a90d4682292f55507cc57,
+    type: 3}
+  muzzle: {fileID: 3680709854059470443}
+  projectileCount: 1
+  projectileSpread: 0
+  range: 300
+  recoil: 6
+  recoilApplyRate: 12
+  recoilRecovery: 10
+  consumesAmmo: 1
+  ammoType: 4
+  ammoPerShot: 1
+  heldPosition: {fileID: 3680709854022492741}
+  effectsOnFire:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3680709854224312280}
+        m_MethodName: PlayOneShot
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8300000, guid: 2d7e49f97b469a341a7f12f2c20464eb,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &648045316
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3391,11 +3340,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1016689046}
-  - component: {fileID: 1016689051}
-  - component: {fileID: 1016689050}
-  - component: {fileID: 1016689049}
-  - component: {fileID: 1016689048}
-  - component: {fileID: 1016689047}
+  - component: {fileID: 1016689052}
   m_Layer: 0
   m_Name: M16A3 damage stats
   m_TagString: Untagged
@@ -3417,7 +3362,7 @@ Transform:
   m_Father: {fileID: 3680709854112999373}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1016689047
+--- !u!114 &1016689052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3426,14 +3371,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 1016689045}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1beac2969a286344b8c973f39051fdf1, type: 3}
+  m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 6320666630984438089, guid: ae43fdf7744475742922a18cb078b731,
+    type: 3}
+  muzzle: {fileID: 3680709852962412636}
+  projectileCount: 1
+  projectileSpread: 0.25
+  range: 300
+  recoil: 1
+  recoilApplyRate: 12
+  recoilRecovery: 10
+  consumesAmmo: 1
+  ammoType: 3
+  ammoPerShot: 1
   heldPosition: {fileID: 3680709854022492741}
   effectsOnFire:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3680709852962412635}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3680709853729726942}
         m_MethodName: Play
         m_Mode: 1
         m_Arguments:
@@ -3456,76 +3424,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3680709853729726942}
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1016689048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016689045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d3aa2ce98f8414ba36744b9eb4c9d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  consumesAmmo: 1
-  ammoType: 3
-  ammoPerShot: 1
---- !u!114 &1016689049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016689045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70e73e6678c21f940a9ebf2e3c587333, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 6320666630984438089, guid: ae43fdf7744475742922a18cb078b731, type: 3}
-  muzzle: {fileID: 3680709852962412636}
-  projectileCount: 1
---- !u!114 &1016689050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016689045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85ce0743f09b80547bb0198dc0d13b96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recoil: 1
-  recoilApplyRate: 12
-  recoilRecovery: 10
---- !u!114 &1016689051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016689045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaafdfecbe878044be6b2e7723c0065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  projectileSpread: 0.25
-  range: 300
 --- !u!1001 &1030069947
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5633,6 +5531,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   weaponModel: {fileID: 0}
   weaponSoundSource: {fileID: 0}
+  attackMessageLimitDelay: 1
   isAiming: 0
   zoomVariable: 0
   zoomTimer: 0
@@ -8161,7 +8060,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3680709852348411914
 Transform:
   m_ObjectHideFlags: 0
@@ -8791,7 +8690,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &3680709853064776288
 GameObject:
   m_ObjectHideFlags: 0
@@ -14212,27 +14111,19 @@ MonoBehaviour:
   firingModes:
   - name: Full-Auto
     description: Fires a continuous stream of bullets.
+    general: {fileID: 1016689052}
     fireControls: {fileID: 736120098}
-    accuracy: {fileID: 1016689051}
-    recoil: {fileID: 1016689050}
-    projectile: {fileID: 1016689049}
-    ammunition: {fileID: 1016689048}
     magazine: {fileID: 694699881}
     optics: {fileID: 512775183}
-    cosmetics: {fileID: 1016689047}
     hudIcon: {fileID: 21300002, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     switchSpeed: 0.5
   - name: Semi-Auto
     description: Fires one shot with each pull of the trigger, reducing overall damage
       output but allowing for precise ranged shots.
+    general: {fileID: 1016689052}
     fireControls: {fileID: 1275213720}
-    accuracy: {fileID: 1016689051}
-    recoil: {fileID: 1016689050}
-    projectile: {fileID: 1016689049}
-    ammunition: {fileID: 1016689048}
     magazine: {fileID: 694699881}
     optics: {fileID: 512775183}
-    cosmetics: {fileID: 1016689047}
     hudIcon: {fileID: 21300000, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     switchSpeed: 0.5
   - name: HEDP Grenades
@@ -14240,14 +14131,10 @@ MonoBehaviour:
       enemies, or massive damage on direct hits. The grenade will harmlessly whiff
       if it lands too close to the user, protecting the player from harm but wasting
       ammunition.
+    general: {fileID: 634446627}
     fireControls: {fileID: 634446625}
-    accuracy: {fileID: 634446624}
-    recoil: {fileID: 634446623}
-    projectile: {fileID: 634446622}
-    ammunition: {fileID: 634446621}
     magazine: {fileID: 634446626}
     optics: {fileID: 0}
-    cosmetics: {fileID: 634446620}
     hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     switchSpeed: 0.5
   firingModeIndex: 0
@@ -14256,6 +14143,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   weaponModel: {fileID: 3680709854224312282}
   weaponSoundSource: {fileID: 3680709854224312280}
+  attackMessageLimitDelay: 1
   isAiming: 0
   zoomVariable: 0
   zoomTimer: 0

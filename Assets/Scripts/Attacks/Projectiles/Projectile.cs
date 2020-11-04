@@ -35,10 +35,10 @@ public class Projectile : MonoBehaviour
         
         
         
-        
+        /*
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
         RaycastHit projectileHit;
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && origin.HostileTowards(Character.FromObject(projectileHit.collider.gameObject))/*IsAlly(projectileHit.collider.gameObject) == false*/)
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection) && Character.FromObject(projectileHit.collider.gameObject) != null && origin.HostileTowards(Character.FromObject(projectileHit.collider.gameObject)))
         {
             OnHit(projectileHit);
         }
@@ -46,6 +46,18 @@ public class Projectile : MonoBehaviour
         {
             MoveBullet();
         }
+        */
+
+
+        float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
+        RaycastHit projectileHit;
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection))
+        {
+            OnHit(projectileHit);
+        }
+        
+
+        MoveBullet();
 
         timerLifetime += Time.deltaTime;
         if (timerLifetime >= projectileLifetime)
