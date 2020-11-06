@@ -12,7 +12,7 @@ public class Bullet : Projectile
 
     [Header("Other")]
     public bool passThroughFriendlies = true;
-    public ParticleSystem impactEffect;
+    public ParticleSystem bulletDecal;
     
     public override void OnHit(RaycastHit rh)
     {
@@ -27,7 +27,7 @@ public class Bullet : Projectile
 
         if (c == null || (origin.HostileTowards(c) == false && passThroughFriendlies == false))
         {
-            InstantiateOnImpact(rh, impactEffect.gameObject, true);
+            InstantiateOnImpact(rh, bulletDecal.gameObject, true, true);
             base.OnHit(rh);
         }
 

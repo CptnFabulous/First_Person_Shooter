@@ -58,7 +58,9 @@ MonoBehaviour:
   damage: 5
   knockback: 0
   criticalMultiplier: 1
-  impactEffect: {fileID: 8093613007427399318, guid: 141515667f45add4da5c7e12c7ce8c6c,
+  friendlyFire: 0
+  passThroughFriendlies: 1
+  bulletDecal: {fileID: 8093613007427399318, guid: 141515667f45add4da5c7e12c7ce8c6c,
     type: 3}
 --- !u!96 &8466749447774014708
 TrailRenderer:

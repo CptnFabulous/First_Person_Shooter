@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]
@@ -20,6 +21,7 @@ public class WeaponHandler : MonoBehaviour
     [Header("Inventory")]
     public Gun[] equippedWeapons;
     public int currentWeaponIndex;
+    int previousWeaponIndex;
     bool isSwitching = false;
 
     [Header("Switching")]
@@ -114,7 +116,7 @@ public class WeaponHandler : MonoBehaviour
         runModifier.SetIntensity(ph.pc.MoveDirection().magnitude);
     }
 
-    void RefreshWeapons(int index)
+    public void RefreshWeapons(int index)
     {
         Debug.Log("Refreshing weapons");
 
@@ -127,7 +129,8 @@ public class WeaponHandler : MonoBehaviour
 
         RefreshWeaponSelector();
 
-        StartCoroutine(SwitchWeapon(index));
+        // StartCoroutine(SwitchWeapon(index));
+        StartCoroutine(SwitchWeaponAndFiringMode(index, equippedWeapons[index].firingModeIndex));
     }
 
     void RefreshWeaponSelector()
@@ -163,9 +166,11 @@ public class WeaponHandler : MonoBehaviour
             yield break;
         }
 
+        // Clamp indexes to ensure they always switch to a proper weapon and firing mode
         weaponIndex = Mathf.Clamp(weaponIndex, 0, equippedWeapons.Length - 1);
         firingModeIndex = Mathf.Clamp(firingModeIndex, 0, equippedWeapons[weaponIndex].firingModes.Length);
 
+        // Check if the firing mode is actually different
         if (equippedWeapons[weaponIndex] != equippedWeapons[currentWeaponIndex])
         {
             isSwitching = true;
@@ -234,7 +239,60 @@ public class WeaponHandler : MonoBehaviour
         isSwitching = false;
     }
 
+    void Equip(Gun rw, bool autoSwitch = true)
+    {
+        // Disable physics functions
+        Collider c = rw.GetComponent<Collider>();
+        c.enabled = false;
+        Rigidbody rb = rw.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
 
+        // Parent weapon to player
+        rw.transform.SetParent(ph.pc.torso, true);
+        rw.playerHolding = this;
+
+        // Set position
+        Transform t = rw.firingModes[rw.firingModeIndex].general.heldPosition;
+        rw.transform.SetPositionAndRotation(t.position, t.rotation);
+
+        // Enable gun script and disable gun
+        rw.enabled = true;
+        rw.gameObject.SetActive(false);
+
+        //playerHolding.
+
+        if (autoSwitch == true)
+        {
+            // Auto switch to new weapon
+            //Gun g = equippedWeapo
+        }
+
+
+    }
+
+    void Drop(int index)
+    {
+        float dropForce = 5;
+        
+        Gun droppedWeapon = equippedWeapons[index];
+
+        // Disable and disconnect weapon from player
+        droppedWeapon.enabled = false;
+        droppedWeapon.playerHolding = null;
+        droppedWeapon.transform.SetParent(null, true);
+
+        // Enable physics
+        Collider c = droppedWeapon.GetComponent<Collider>();
+        c.enabled = true;
+        Rigidbody rb = droppedWeapon.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+
+        // Toss away
+        droppedWeapon.gameObject.SetActive(true);
+        rb.AddForce(ph.pc.head.forward * dropForce);
+
+        RefreshWeapons(0);
+    }
 
 }
 

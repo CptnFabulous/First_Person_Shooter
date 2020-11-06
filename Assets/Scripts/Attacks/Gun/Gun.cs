@@ -7,8 +7,8 @@ using UnityEngine.Events;
 [System.Serializable]
 public class GunFiringMode
 {
-    public string name;
-    public string description;
+    public string name = "Placeholder";
+    public string description = "Placeholder, insert description here";
 
     [Header("Stats")]
     public GunGeneralStats general;
@@ -23,7 +23,7 @@ public class GunFiringMode
 
 public class Gun : MonoBehaviour
 {
-    public string description;
+    public string description = "Placeholder, insert description here";
     [Header("Firing modes and stats")]
     public GunFiringMode[] firingModes;
     public int firingModeIndex;
@@ -76,42 +76,44 @@ public class Gun : MonoBehaviour
     float attackMessageLimitTimer = float.MaxValue;
     #endregion
 
-    /*
+    
     private void OnValidate()
     {
-        foreach(GunFiringMode fm in firingModes)
+        if (firingModes.Length > 0)
         {
-            string errorStart = "Firing mode " + fm.name + " does not have ";
-            string errorComma = ", "
-            string error = errorStart;
-            if (fm.fireControls == null)
+            foreach (GunFiringMode fm in firingModes)
             {
-                error += "fire controls" + errorComma;
+                bool generalStatsMissing = fm.general == null;
+                bool fireControlsMissing = fm.fireControls == null;
+
+                if (generalStatsMissing || fireControlsMissing)
+                {
+                    string error = "Error: ";
+
+                    if (generalStatsMissing)
+                    {
+                        error += "general ";
+                        if (fireControlsMissing)
+                        {
+                            error += "and ";
+                        }
+                    }
+
+                    if (fireControlsMissing)
+                    {
+                        error += "fire control ";
+                    }
+
+                    error += "stats are missing from " + fm.name + "!";
+                    Debug.LogError(error);
+                }
             }
-            if (fm.accuracy == null)
-            {
-                error += "accuracy" + errorComma;
-            }
-            if (fm.recoil == null)
-            {
-                error += "recoil" + errorComma;
-            }
-            if (fm.projectile == null)
-            {
-                error += "projectile" + errorComma;
-            }
-            if (fm.ammunition == null)
-            {
-                error += "ammunition" + errorComma;
-            }
-            if (fm.cosmetics == null)
-            {
-                error += "cosmetics" + errorComma;
-            }
-            
+        }
+        else
+        {
+            Debug.LogError("No firing modes present!");
         }
     }
-    */
 
     private void Start()
     {
@@ -356,6 +358,7 @@ public class Gun : MonoBehaviour
         magazine = firingModes[index].magazine;
         optics = firingModes[index].optics;
     }
+
     #endregion
 
 
