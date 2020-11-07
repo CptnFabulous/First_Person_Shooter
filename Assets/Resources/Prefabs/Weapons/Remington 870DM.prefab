@@ -11045,7 +11045,7 @@ MonoBehaviour:
     magazine: {fileID: 4553456814588973376}
     optics: {fileID: 0}
     hudIcon: {fileID: 21300008, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0
+    switchSpeed: 0.5
   - name: Slugs
     description: 
     general: {fileID: 4553456813225644492}
@@ -11053,9 +11053,9 @@ MonoBehaviour:
     magazine: {fileID: 0}
     optics: {fileID: 0}
     hudIcon: {fileID: 21300010, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0
+    switchSpeed: 0.5
   firingModeIndex: 0
-  switchSpeed: 0.5
+  switchSpeed: 0.25
   holsterPosition: {fileID: 8170633856775943861}
   animator: {fileID: 0}
   weaponModel: {fileID: 8170633855841200855}

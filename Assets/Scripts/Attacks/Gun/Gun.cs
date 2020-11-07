@@ -52,6 +52,7 @@ public class Gun : MonoBehaviour
     [HideInInspector] public float zoomTimer;
     [HideInInspector] public PercentageModifier sensitivityWhileAiming;
     [HideInInspector] public PercentageModifier speedWhileAiming;
+    float adsTimer;
 
     // Additional recoil stats
     [HideInInspector] public float recoilToApply;
@@ -239,10 +240,13 @@ public class Gun : MonoBehaviour
             }
 
             #region ADS code
+            ADSHandler(optics);
+            /*
             if (optics != null)
             {
                 AimHandler(optics, general.heldPosition, playerHolding.toggleAim);
             }
+            */
             #endregion
 
             #region Reloading code
@@ -278,9 +282,12 @@ public class Gun : MonoBehaviour
         GunFiringMode newMode = firingModes[index];
         if (optics != null && (newMode.optics == null || newMode.optics != optics))
         {
+            /*
             isAiming = false;
             zoomTimer = 0;
             LerpSights(optics, 0, newMode.general.heldPosition);
+            */
+            CancelADS();
         }
 
         if (newMode.optics != null)
@@ -330,9 +337,12 @@ public class Gun : MonoBehaviour
         #region Cancel running weapon functions
         if (optics != null) // DOES NOT WORK PROPERLY
         {
+            CancelADS();
+            /*
             isAiming = false;
             zoomTimer = 0;
             LerpSights(optics, 0, general.heldPosition);
+            */
         }
 
         if (magazine != null)
@@ -446,8 +456,13 @@ public class Gun : MonoBehaviour
         // 2: Just give it a spring joint and use Physics.AddForce or AddForceAtPosition to make it jump back
     }
 
-    public void ADSHandler()
+    public void ADSHandler(GunOpticsStats optics)
     {
+        if (optics == null)
+        {
+            return;
+        }
+
         if (playerHolding.toggleAim == true)
         {
             if (Input.GetButtonDown("MouseRight"))
@@ -467,19 +482,62 @@ public class Gun : MonoBehaviour
             }
         }
 
+        if (isAiming)
+        {
+            adsTimer += Time.deltaTime / optics.transitionTime;
+        }
+        else
+        {
+            adsTimer -= Time.deltaTime / optics.transitionTime;
+        }
+        adsTimer = Mathf.Clamp01(adsTimer);
 
-        Vector3 sightLine;
-        Vector3 aimPosition;
-        Vector3 holsterPosition;
+        LerpADS(adsTimer);
+    }
 
+    void LerpADS(float timer)
+    {
+        if (optics == null)
+        {
+            return;
+        }
+        
+        PlayerController pc = playerHolding.ph.pc;
 
-        Vector3 sightlineDifference = Vector3.zero - optics.sightLine.localPosition;
+        // Change FOV for zoom (update later to use variablevaluefloat)
+        float defaultFOV = pc.fieldOfView.defaultValue;
+        pc.playerCamera.fieldOfView = Mathf.Lerp(defaultFOV, defaultFOV / optics.magnification, timer);
 
+        // Reduce sensitivity and movement speed, alter accuracy if specified
+        sensitivityWhileAiming.SetIntensity(timer);
+        speedWhileAiming.SetIntensity(timer);
 
+        // Lerp weapon model between hip position and ADS position. Should I make this work with the MoveWeaponModel function?
+        // Something is screwy here
+        Vector3 relativeAimPosition = pc.head.position + (transform.position - optics.sightLine.position);
+        weaponModel.transform.position = Vector3.Lerp(general.heldPosition.position, relativeAimPosition, timer);
 
+        // Toggle overlay
+        playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);
+    }
 
+    void CancelADS()
+    {
+        zoomTimer = 0;
+        
+        isAiming = false;
+        adsTimer = 0;
+        LerpADS(0);
 
     }
+
+
+
+
+
+
+
+
 
 
     public void AimHandler(GunOpticsStats os, Transform hipPosition, bool toggleAim)
@@ -530,7 +588,7 @@ public class Gun : MonoBehaviour
 
         // Move weapon model. THIS DOES NOT WORK FOR SOME REASON
         float moveTime = Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) * os.transitionTime;
-        MoveWeaponModel(newWeaponPosition.position, newWeaponPosition.rotation, moveTime);
+        //MoveWeaponModel(newWeaponPosition.position, newWeaponPosition.rotation, moveTime);
 
         // Toggle overlay
         playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);

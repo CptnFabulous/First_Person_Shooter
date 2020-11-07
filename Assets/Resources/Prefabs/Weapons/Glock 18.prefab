@@ -732,7 +732,7 @@ MonoBehaviour:
     magazine: {fileID: 2893987888635974909}
     optics: {fileID: 0}
     hudIcon: {fileID: 21300016, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0.5
+    switchSpeed: 0.15
   - name: Full-Auto
     description: PLACEHOLDER
     general: {fileID: 2893987888039974589}
@@ -740,9 +740,9 @@ MonoBehaviour:
     magazine: {fileID: 2893987888635974909}
     optics: {fileID: 0}
     hudIcon: {fileID: 21300018, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0.5
+    switchSpeed: 0.15
   firingModeIndex: 0
-  switchSpeed: 0.5
+  switchSpeed: 0.2
   holsterPosition: {fileID: 7361818275031449477}
   animator: {fileID: 0}
   weaponModel: {fileID: 7361818273333844223}

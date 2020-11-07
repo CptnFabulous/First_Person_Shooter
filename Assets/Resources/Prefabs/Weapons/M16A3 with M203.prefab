@@ -24,13 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5609149695962810510}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.16, y: 0.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 9134199386818329422}
+  m_Children:
+  - {fileID: 7937066653885127638}
+  m_Father: {fileID: 9134199386419182425}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!114 &5609149695962810508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,7 +48,7 @@ MonoBehaviour:
   transitionTime: 0.25
   moveSpeedReductionPercentage: -40
   aimPosition: {fileID: 9134199384871096071}
-  sightLine: {fileID: 0}
+  sightLine: {fileID: 7937066653885127638}
   scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
   disableReticle: 0
 --- !u!1 &5609149696465677590
@@ -79,7 +80,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609149696465677599
 MonoBehaviour:
@@ -174,7 +175,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609149696579354528
 MonoBehaviour:
@@ -280,7 +281,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609149696638622698
 MonoBehaviour:
@@ -330,7 +331,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609149696681087393
 MonoBehaviour:
@@ -377,7 +378,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5609149697261890331
 MonoBehaviour:
@@ -418,11 +419,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7370759490539724266}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.5, y: 0.16, z: -0}
+  m_LocalRotation: {x: 0.0000000016463609, y: -0, z: -9.878166e-10, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 9134199386419182425}
+  m_Father: {fileID: 5609149695962810509}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &9134199384802695428
@@ -484,7 +485,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &9134199384941780562
 GameObject:
@@ -657,7 +658,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9134199385234478819
 GameObject:
@@ -6449,12 +6450,12 @@ Transform:
   m_LocalPosition: {x: 0.19899988, y: -0.2179985, z: 0.69400024}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7937066653885127638}
+  - {fileID: 5609149695962810509}
   - {fileID: 9134199385667667167}
   - {fileID: 9134199386789921512}
   - {fileID: 9134199385924435283}
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: -0.343, y: 77.076, z: -4.988}
 --- !u!212 &9134199386419182426
 SpriteRenderer:
@@ -6661,7 +6662,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9134199386818329422}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9134199386789921519
 GameObject:
@@ -6802,7 +6803,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5609149695962810509}
   - {fileID: 5609149696638622699}
   - {fileID: 5609149696681087394}
   - {fileID: 5609149697261890324}
@@ -6836,7 +6836,7 @@ MonoBehaviour:
     magazine: {fileID: 5609149696638622698}
     optics: {fileID: 5609149695962810508}
     hudIcon: {fileID: 21300002, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0.5
+    switchSpeed: 0.25
   - name: Semi-Auto
     description: Fires one shot with each pull of the trigger, reducing overall damage
       output but allowing for precise ranged shots.
@@ -6845,7 +6845,7 @@ MonoBehaviour:
     magazine: {fileID: 5609149696638622698}
     optics: {fileID: 5609149695962810508}
     hudIcon: {fileID: 21300000, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0.5
+    switchSpeed: 0.25
   - name: HEDP Grenades
     description: Shoots powerful impact grenades that deal splash damage to clustered
       enemies, or massive damage on direct hits. The grenade will harmlessly whiff
@@ -6856,7 +6856,7 @@ MonoBehaviour:
     magazine: {fileID: 5609149696579354529}
     optics: {fileID: 0}
     hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
-    switchSpeed: 0.5
+    switchSpeed: 0.25
   firingModeIndex: 0
   switchSpeed: 0.5
   holsterPosition: {fileID: 9134199385161882659}
