@@ -71,13 +71,16 @@ public class Gun : MonoBehaviour
     [HideInInspector] public bool isSwitchingWeapon;
     [HideInInspector] public bool isSwitchingFireMode;
 
+    IEnumerator drawingOrHolstering;
+    IEnumerator reloading;
+    IEnumerator animatingWeaponModel;
+
     // Moving weapon model
     bool isAnimating = false;
 
     float attackMessageLimitTimer = float.MaxValue;
     #endregion
 
-    
     private void OnValidate()
     {
         if (firingModes.Length > 0)
@@ -128,10 +131,9 @@ public class Gun : MonoBehaviour
         AssignFiringModes(firingModeIndex);
     }
 
-
     void Update()
     {
-        AssignFiringModes(firingModeIndex);
+        //AssignFiringModes(firingModeIndex);
 
         attackMessageLimitTimer += Time.deltaTime;
 
@@ -268,6 +270,8 @@ public class Gun : MonoBehaviour
     }
 
     #region Switching functions
+
+
     public IEnumerator SwitchMode(int index)
     {
         // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run
@@ -282,11 +286,6 @@ public class Gun : MonoBehaviour
         GunFiringMode newMode = firingModes[index];
         if (optics != null && (newMode.optics == null || newMode.optics != optics))
         {
-            /*
-            isAiming = false;
-            zoomTimer = 0;
-            LerpSights(optics, 0, newMode.general.heldPosition);
-            */
             CancelADS();
         }
 
@@ -298,17 +297,19 @@ public class Gun : MonoBehaviour
 
         if (magazine != null)
         {
+            // If a reload sequence is in progress, cancel it
             CancelReload();
-            /*
-            reloadTimer = 0;
-            isReloading = false;
-            print("Reload sequence cancelled");
-            */
+
+            if (magazine == newMode.magazine && general.ammoType != newMode.general.ammoType)
+            {
+                magazine.data.current = 0;
+            }
         }
 
         yield return new WaitForSeconds(newMode.switchSpeed);
 
         firingModeIndex = index;
+        AssignFiringModes(firingModeIndex);
 
         isSwitchingFireMode = false;
     }
@@ -317,16 +318,21 @@ public class Gun : MonoBehaviour
     {
         isSwitchingWeapon = true;
 
+        // Reassigns firing modes
         AssignFiringModes(firingModeIndex);
 
         gameObject.SetActive(true);
         // Draw weapon animation
         weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
 
+        // Animate weapon model moving from holstered to drawn position
         Transform newMoveTransform = general.heldPosition;
-        Debug.Log(newMoveTransform);
         StartCoroutine(MoveWeaponModel(newMoveTransform.localPosition, newMoveTransform.localRotation, switchSpeed));
+
+        // Waits until animation has completed
         yield return new WaitForSeconds(switchSpeed);
+
+        // End sequence
         isSwitchingWeapon = false;
     }
 
@@ -334,29 +340,26 @@ public class Gun : MonoBehaviour
     {
         isSwitchingWeapon = true;
 
-        #region Cancel running weapon functions
-        if (optics != null) // DOES NOT WORK PROPERLY
+        // Cancel ADS animations
+        if (optics != null)
         {
             CancelADS();
-            /*
-            isAiming = false;
-            zoomTimer = 0;
-            LerpSights(optics, 0, general.heldPosition);
-            */
         }
 
+        // Cancel reload sequence
         if (magazine != null)
         {
             CancelReload();
         }
-        #endregion
 
-        // Begin holster animation
+        // Animate weapon model moving from drawn to holstered position
         weaponModel.transform.SetPositionAndRotation(general.heldPosition.position, general.heldPosition.rotation);
         StartCoroutine(MoveWeaponModel(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed));
 
+        // Waits until animation has completed
         yield return new WaitForSeconds(switchSpeed);
 
+        // Disables weapon object and ends sequence
         gameObject.SetActive(false);
         isSwitchingWeapon = false;
     }
@@ -370,8 +373,6 @@ public class Gun : MonoBehaviour
     }
 
     #endregion
-
-
 
 
     IEnumerator MoveWeaponModel(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
@@ -596,12 +597,70 @@ public class Gun : MonoBehaviour
 
     #endregion
 
-    #region Reloading functions
+    
+
+
+    int RemainingAmmo()
+    {
+        return playerHolding.ph.a.GetStock(general.ammoType) - magazine.data.current;
+    }
+
+    void ReloadHandler()
+    {
+        // Checks if either the player has pressed the reload button, or the magazine is empty
+        bool manualReload = Input.GetButtonDown("Reload") && magazine.data.current < magazine.data.max;
+        bool automaticReload = magazine.data.current <= 0;
+
+        // Checks for manual or automatic reload, and if the player is not already reloading
+        if ((manualReload || automaticReload) && isReloading == false && RemainingAmmo() > 0)
+        {
+            // Starts the current reload sequence
+            reloading = ReloadSequence();
+            StartCoroutine(reloading);
+        }
+
+        // Put this into the main firing code
+        if (Input.GetButtonDown("Fire") && magazine.data.current > 0)
+        {
+            CancelReloadSequence();
+        }
+    }
+
+    IEnumerator ReloadSequence()
+    {
+        // Wait for firing sequence to end
+        yield return new WaitUntil(() => fireControls.fireTimer >= 60 / fireControls.roundsPerMinute);
+
+        isReloading = true;
+
+        // Start reload sequence, e.g. play animations
+
+        while (magazine.data.current < magazine.data.max || RemainingAmmo() <= 0)
+        {
+            yield return new WaitForSeconds(magazine.reloadTime);
+            // Add ammunition to the magazine based off roundsReloadedPerCycle. Unless there is not enough ammo for a full cycle, in which case load all remaining ammo.
+            magazine.data.current += Mathf.Min(magazine.roundsReloadedPerCycle, RemainingAmmo());
+            magazine.data.current = Mathf.Clamp(magazine.data.current, 0, magazine.data.max); // Ensure magazine is not overloaded
+        }
+
+        // End reload sequence
+        isReloading = false;
+    }
+
+    void CancelReloadSequence()
+    {
+        StopCoroutine(reloading);
+        isReloading = false;
+    }
+
+
+    #region Old reloading functions
+
     public void ReloadHandler(float reloadTime, float fireTimer, float roundsPerMinute, int roundsReloaded, Resource magazine, WeaponHandler playerHolding, AmmunitionType caliber)
     {
         int remainingAmmo = playerHolding.ph.a.GetStock(caliber) - magazine.current; // Checks how much spare ammunition the player has
 
-        // If reload button is pressed and weapon's magazine is not full OR if magazine is empty and gun is finished firing, PLUS if ammunition remains and the player is not already reloading
+        
         if (((Input.GetButtonDown("Reload") && magazine.current < magazine.max) || (magazine.current <= 0 && fireTimer >= 60 / roundsPerMinute)) && isReloading == false && remainingAmmo > 0)
         {
             reloadTimer = 0;

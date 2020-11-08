@@ -129,8 +129,8 @@ public class WeaponHandler : MonoBehaviour
 
         RefreshWeaponSelector();
 
-        // StartCoroutine(SwitchWeapon(index));
-        StartCoroutine(SwitchWeaponAndFiringMode(index, equippedWeapons[index].firingModeIndex));
+        StartCoroutine(SwitchWeapon(index));
+        //StartCoroutine(SwitchWeaponAndFiringMode(index, equippedWeapons[index].firingModeIndex));
     }
 
     void RefreshWeaponSelector()

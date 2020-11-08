@@ -30,23 +30,5 @@ public class Bullet : Projectile
             InstantiateOnImpact(rh, bulletDecal.gameObject, true, true);
             base.OnHit(rh);
         }
-
-
-
-        /*
-        if (origin.HostileTowards(c) || friendlyFire == true)   
-        {
-            GameObject o = rh.collider.gameObject;
-            Damage.PointDamage(origin, o, damage, criticalMultiplier, DamageType.Shot, DamageType.CriticalShot);
-            Damage.Knockback(o, knockback, transform.forward);
-
-            Impact(rh);
-        }
-        
-        if (c == null || (origin.HostileTowards(c) == false && passThroughFriendlies == false))
-        {
-            Impact(rh);
-        }
-        */
     }
 }

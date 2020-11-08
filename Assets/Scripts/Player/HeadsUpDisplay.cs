@@ -150,7 +150,7 @@ public class HeadsUpDisplay : MonoBehaviour
             }
 
 
-
+ 
             // Do interacting stuff
         }
         else
