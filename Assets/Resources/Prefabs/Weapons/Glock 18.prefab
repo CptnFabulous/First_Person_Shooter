@@ -747,6 +747,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   weaponModel: {fileID: 7361818273333844223}
   weaponSoundSource: {fileID: 7361818273333844221}
+  weaponSelectorIcon: {fileID: 21300000, guid: 887db615a0bcb7649a995ed68e6ad5c3, type: 3}
   attackMessageLimitDelay: 1
   isAiming: 0
   zoomVariable: 0
@@ -764,8 +765,6 @@ MonoBehaviour:
   recoilToApply: 0
   aimOrigin: {x: 0, y: 0}
   aimCurrent: {x: 0, y: 0}
-  isReloading: 0
-  reloadTimer: 0
   playerHolding: {fileID: 0}
   isSwitchingWeapon: 0
   isSwitchingFireMode: 0

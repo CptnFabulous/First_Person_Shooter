@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1888,6 +1888,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -62
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 6231957955032080223, guid: b27ed847f5d727c45a3179d652510e51,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1948,26 +1968,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Rifle_Right (9)
       objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -14
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -62
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 21
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17e72b5aee168874d9d3cc712340f207, type: 3}
 --- !u!114 &607043122 stripped
@@ -1989,6 +1989,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -66
+      objectReference: {fileID: 0}
+    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 6231957955032080223, guid: b27ed847f5d727c45a3179d652510e51,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2048,26 +2068,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_Rifle_Right (8)
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 28
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -66
-      objectReference: {fileID: 0}
-    - target: {fileID: 3607017158169954318, guid: 17e72b5aee168874d9d3cc712340f207,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17e72b5aee168874d9d3cc712340f207, type: 3}
@@ -4880,7 +4880,6 @@ GameObject:
   - component: {fileID: 1554079125}
   - component: {fileID: 1554079124}
   - component: {fileID: 1554079123}
-  - component: {fileID: 1554079122}
   m_Layer: 0
   m_Name: M4A1 with M203
   m_TagString: Untagged
@@ -4888,48 +4887,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1554079122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554079121}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36ed032775bb4f240be3fdc01af9024f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  description: 
-  firingModes: []
-  firingModeIndex: 0
-  switchSpeed: 0
-  holsterPosition: {fileID: 0}
-  animator: {fileID: 0}
-  weaponModel: {fileID: 0}
-  weaponSoundSource: {fileID: 0}
-  attackMessageLimitDelay: 1
-  isAiming: 0
-  zoomVariable: 0
-  zoomTimer: 0
-  sensitivityWhileAiming:
-    percentageValue: 0
-    multiplicative: 1
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
-  speedWhileAiming:
-    percentageValue: 0
-    multiplicative: 0
-    ignoresOriginActiveState: 0
-    origin: {fileID: 0}
-  recoilToApply: 0
-  aimOrigin: {x: 0, y: 0}
-  aimCurrent: {x: 0, y: 0}
-  isReloading: 0
-  reloadTimer: 0
-  playerHolding: {fileID: 0}
-  isSwitchingWeapon: 0
-  isSwitchingFireMode: 0
 --- !u!54 &1554079123
 Rigidbody:
   m_ObjectHideFlags: 0

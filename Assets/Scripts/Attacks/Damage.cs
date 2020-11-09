@@ -43,12 +43,14 @@ public static class Damage
 
             p.origin = origin;
 
-            if (Vector3.Angle(forward, direction - muzzle) < 90) // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
+            // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
+            if (Vector3.Angle(forward, direction - muzzle) < 90)
             {
                 Object.Instantiate(p, muzzle, Quaternion.LookRotation(direction - muzzle, up));
             }
-            else // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
+            else
             {
+                // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
                 Object.Instantiate(p, direction, Quaternion.LookRotation(direction - aimOrigin, up));
                 p.OnHit(targetFound);
             }

@@ -313,7 +313,7 @@ public class HeadsUpDisplay : MonoBehaviour
         selectorWeaponName.text = rw.name;
         selectorWeaponFiringMode.text = rw.firingModes[firingModeIndex].name;
         selectorWeaponRemainingAmmunition.text = AmmoInfo(rw, firingModeIndex);
-        selectorWeaponImage.sprite = rw.weaponModel.GetComponent<SpriteRenderer>().sprite; // Substitute for finding object mesh if weapon has a 3D model
+        selectorWeaponImage.sprite = rw.weaponSelectorIcon; // Possibly substitute for finding object mesh if weapon has a 3D model
     }
 
     public void ADSTransition(float timer, Sprite opticsGraphic)

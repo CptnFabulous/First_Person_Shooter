@@ -90,12 +90,12 @@ namespace Tests
         {
             GameObject g = Object.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), Vector3.zero, Quaternion.identity); // Creates a 'gun' to shoot the projectile from
             Projectile prefab = Resources.Load("Prefabs/Projectiles/Bullet") as Projectile;
-            ProjectileStats ps = new ProjectileStats();
-            ps.prefab = prefab;
-            ps.velocity = 5;
+            //ProjectileStats ps = new ProjectileStats();
+            //ps.prefab = prefab;
+            //ps.velocity = 5;
 
-
-            Damage.ShootProjectile(ps, 3, 50, null, g.transform, g.transform.position, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
+            Damage.ShootProjectile(prefab, 1, 0, 100, null, g.transform.position, g.transform.forward, g.transform.up, g.transform.position);
+            //Damage.ShootProjectile(ps, 3, 50, null, g.transform, g.transform.position, g.transform.forward); // Declares static function ShootProjectile to launch projectile from ProjectileData, at the desired position and in the desired direction
             yield return new WaitForEndOfFrame(); // Waits until all previous functions have finished
             Projectile p = Object.FindObjectOfType<Projectile>(); // Searches for a projectile gameObject in the scene
             Assert.IsNotNull(p.gameObject); // Asserts if projectile was found

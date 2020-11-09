@@ -18,8 +18,10 @@ public abstract class TimedVisualEffect : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
+        Debug.Log(name + ", " + directControl + ", " + timer + ", " + isPaused);
         if (directControl == false && timer < 1 && isPaused == false)
         {
+            Debug.Log("Effect is playing");
             timer += Time.deltaTime / lifetime;
 
             if (timer >= 1)
@@ -45,11 +47,12 @@ public abstract class TimedVisualEffect : MonoBehaviour
 
     public void Play()
     {
-        timer = 0;
+        Debug.Log("Playing");
         isPaused = false;
+        timer = 0;
     }
 
-    public void IsPaused(bool pause)
+    public void SetPause(bool pause)
     {
         isPaused = pause;
     }

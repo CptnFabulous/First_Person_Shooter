@@ -20,4 +20,13 @@ public class MuzzleFlashEffect : TimedVisualEffect
         transform.localScale = scale * magnitudeOverLifetime.Evaluate(timer);
         l.range = brightnessRange * magnitudeOverLifetime.Evaluate(timer);
     }
+
+    /*
+    public override void Update()
+    {
+        Debug.Log(name + ", " + directControl + ", " + timer + ", " + isPaused);
+        base.Update();
+
+    }
+    */
 }

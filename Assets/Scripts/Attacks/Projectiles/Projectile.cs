@@ -70,15 +70,15 @@ public class Projectile : MonoBehaviour
     
     public void InstantiateOnImpact(RaycastHit rh, GameObject prefab, bool alignWithSurface, bool makeChild)
     {
-        GameObject g = prefab;
+        GameObject g;
         if (alignWithSurface == true)
         {
             Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, rh.normal);
-            Instantiate(g, rh.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
+            g = Instantiate(prefab, rh.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
         }
         else
         {
-            Instantiate(g, rh.point, Quaternion.identity);
+            g = Instantiate(prefab, rh.point, Quaternion.identity);
         }
 
         if (makeChild == true)
