@@ -564,6 +564,62 @@ public class Gun : MonoBehaviour
     #endregion
 
     #region Cosmetics
+
+    void ChangeWeaponModelPosition(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
+    {
+        if (animatingWeaponModel != null)
+        {
+            if (interruptsOtherAnimations == true)
+            {
+                CancelMoveWeaponModel();
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        animatingWeaponModel = MoveWeaponModelSequence(newLocalPosition, newLocalRotation, time, curve);
+        StartCoroutine(animatingWeaponModel);
+    }
+
+    IEnumerator MoveWeaponModelSequence(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null)
+    {
+        if (curve == null)
+        {
+            curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        }
+        Vector3 oldPosition = weaponModel.localPosition;
+        Quaternion oldRotation = weaponModel.localRotation;
+        float timer = 0;
+
+        while (timer < 1)
+        {
+            float percentage = curve.Evaluate(timer);
+
+            weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
+            weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
+
+            timer += Time.deltaTime / time;
+            yield return new WaitForEndOfFrame();
+        }
+
+        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, curve.Evaluate(1));
+        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, curve.Evaluate(1));
+
+        isAnimating = false;
+    }
+
+    void CancelMoveWeaponModel()
+    {
+        if (animatingWeaponModel != null)
+        {
+            StopCoroutine(animatingWeaponModel);
+            animatingWeaponModel = null;
+        }
+    }
+
+
     IEnumerator MoveWeaponModel(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
     {
         #region Check for existing animations and cancel/override

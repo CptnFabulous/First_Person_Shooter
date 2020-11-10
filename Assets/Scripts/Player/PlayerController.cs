@@ -386,7 +386,7 @@ public class PlayerController : MonoBehaviour
 
         #region Drag
         // Implement function for dragging while the player is moving
-        
+
         //Vector3 velocity = DeltaMoveDistance();
         //float speed = velocity.magnitude / Time.deltaTime;
         Vector3 velocity = rb.velocity;

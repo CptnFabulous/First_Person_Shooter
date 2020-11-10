@@ -58,6 +58,74 @@ public static class Misc
     }
     #endregion
 
+    #region MultiLerp
+    public static float MultiLerp(float[] values, float t)
+    {
+        #region Deals with arrays too short to work with properly
+        if (values.Length == 1)
+        {
+            return values[0];
+        }
+        else if (values.Length <= 0)
+        {
+            return 0;
+        }
+        #endregion
+
+        float segment = 1 / values.Length - 1;
+        float wayThroughDecimal = t / segment;
+
+        float percentageThroughCurrentLerp = GetDecimalFromFloat(wayThroughDecimal);
+        int lerpsCompleted = Mathf.Min(Mathf.RoundToInt(wayThroughDecimal), Mathf.RoundToInt(wayThroughDecimal - 1));
+
+        return Mathf.Lerp(values[lerpsCompleted], values[lerpsCompleted + 1], percentageThroughCurrentLerp);
+    }
+
+    public static Vector3 Vector3MultiLerp(Vector3[] values, float t)
+    {
+        #region Deals with arrays too short to work with properly
+        if (values.Length == 1)
+        {
+            return values[0];
+        }
+        else if (values.Length <= 0)
+        {
+            return Vector3.zero;
+        }
+        #endregion
+
+        float segment = 1 / values.Length - 1;
+        float wayThroughDecimal = t / segment;
+
+        float percentageThroughCurrentLerp = GetDecimalFromFloat(wayThroughDecimal);
+        int lerpsCompleted = Mathf.Min(Mathf.RoundToInt(wayThroughDecimal), Mathf.RoundToInt(wayThroughDecimal - 1));
+        
+        return Vector3.Lerp(values[lerpsCompleted], values[lerpsCompleted + 1], percentageThroughCurrentLerp);
+    }
+
+    public static Quaternion QuaternionMultiLerp(Quaternion[] values, float t)
+    {
+        #region Deals with arrays too short to work with properly
+        if (values.Length == 1)
+        {
+            return values[0];
+        }
+        else if (values.Length <= 0)
+        {
+            return Quaternion.identity;
+        }
+        #endregion
+
+        float segment = 1 / values.Length - 1;
+        float wayThroughDecimal = t / segment;
+
+        float percentageThroughCurrentLerp = GetDecimalFromFloat(wayThroughDecimal);
+        int lerpsCompleted = Mathf.Min(Mathf.RoundToInt(wayThroughDecimal), Mathf.RoundToInt(wayThroughDecimal - 1));
+
+        return Quaternion.Lerp(values[lerpsCompleted], values[lerpsCompleted + 1], percentageThroughCurrentLerp);
+    }
+    #endregion
+
     #region Physics
     public static LayerMask CollisionMask(int layer)
     {
