@@ -6856,11 +6856,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Glock 18
       objectReference: {fileID: 0}
-    - target: {fileID: 7361818273466652907, guid: cf3a568ef5101cf4786819472576bb32,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf3a568ef5101cf4786819472576bb32, type: 3}
 --- !u!1001 &4022429616935494627
@@ -7048,11 +7043,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Remington 870DM
-      objectReference: {fileID: 0}
-    - target: {fileID: 8170633856610756671, guid: 76b63dafba5b8a24a8042c757aedefa2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 76b63dafba5b8a24a8042c757aedefa2, type: 3}
@@ -8068,7 +8058,7 @@ Transform:
   m_GameObject: {fileID: 5252758750660768257}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.5, y: 0.075, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.0020991564, y: 0.0020991564, z: 0.0020991564}
   m_Children:
   - {fileID: 5252758750762463838}
   - {fileID: 5252758749117314611}

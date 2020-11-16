@@ -69,12 +69,10 @@ public class Gun : MonoBehaviour
     [HideInInspector] public bool isSwitchingWeapon;
     [HideInInspector] public bool isSwitchingFireMode;
 
-    IEnumerator drawingOrHolstering;
+    IEnumerator switching;
     IEnumerator reloading;
     IEnumerator animatingWeaponModel;
 
-    // Moving weapon model
-    bool isAnimating = false;
 
     float attackMessageLimitTimer = float.MaxValue;
     #endregion
@@ -242,6 +240,8 @@ public class Gun : MonoBehaviour
     #region Switching functions
     public IEnumerator SwitchMode(int index)
     {
+        
+        
         // Checks if the firing mode is actually changing, otherwise code is not unnecessarily run
         if (index == firingModeIndex)
         {
@@ -295,7 +295,7 @@ public class Gun : MonoBehaviour
 
         // Animate weapon model moving from holstered to drawn position
         Transform newMoveTransform = general.heldPosition;
-        StartCoroutine(MoveWeaponModel(newMoveTransform.localPosition, newMoveTransform.localRotation, switchSpeed));
+        ChangeWeaponModelPosition(newMoveTransform.localPosition, newMoveTransform.localRotation, switchSpeed);
 
         // Waits until animation has completed
         yield return new WaitForSeconds(switchSpeed);
@@ -322,7 +322,7 @@ public class Gun : MonoBehaviour
 
         // Animate weapon model moving from drawn to holstered position
         weaponModel.transform.SetPositionAndRotation(general.heldPosition.position, general.heldPosition.rotation);
-        StartCoroutine(MoveWeaponModel(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed));
+        ChangeWeaponModelPosition(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed);
 
         // Waits until animation has completed
         yield return new WaitForSeconds(switchSpeed);
@@ -564,7 +564,6 @@ public class Gun : MonoBehaviour
     #endregion
 
     #region Cosmetics
-
     void ChangeWeaponModelPosition(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
     {
         if (animatingWeaponModel != null)
@@ -604,10 +603,9 @@ public class Gun : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, curve.Evaluate(1));
-        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, curve.Evaluate(1));
-
-        isAnimating = false;
+        float final = curve.Evaluate(1);
+        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, final);
+        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, final);
     }
 
     void CancelMoveWeaponModel()
@@ -617,65 +615,6 @@ public class Gun : MonoBehaviour
             StopCoroutine(animatingWeaponModel);
             animatingWeaponModel = null;
         }
-    }
-
-
-    IEnumerator MoveWeaponModel(Vector3 newLocalPosition, Quaternion newLocalRotation, float time, AnimationCurve curve = null, bool interruptsOtherAnimations = true)
-    {
-        #region Check for existing animations and cancel/override
-        if (isAnimating == true)
-        {
-            if (interruptsOtherAnimations == false)
-            {
-                // Abort coroutine if another animation is already running
-                yield break;
-            }
-            else
-            {
-                // Unless interruptsOtherAnimations is enabled, in which case it cancels the currently running animation.
-                // It disables isAnimating, then other coroutines will notice and end prematurely.
-                isAnimating = false;
-                yield return new WaitForEndOfFrame();
-            }
-        }
-        #endregion
-
-        #region Setup
-        isAnimating = true;
-        if (curve == null)
-        {
-            curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-        }
-        Vector3 oldPosition = weaponModel.localPosition;
-        Quaternion oldRotation = weaponModel.localRotation;
-        float timer = 0;
-        #endregion
-
-        #region Loop
-        while (timer < 1)
-        {
-            // End loop prematurely if isAnimating is remotely declared false
-            if (isAnimating == false)
-            {
-                yield break;
-            }
-
-            float percentage = curve.Evaluate(timer);
-
-            weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
-            weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
-
-            timer += Time.deltaTime / time;
-            yield return new WaitForEndOfFrame();
-        }
-        #endregion
-
-        #region End
-        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, curve.Evaluate(1));
-        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, curve.Evaluate(1));
-
-        isAnimating = false;
-        #endregion
     }
     #endregion
 

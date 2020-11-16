@@ -10,6 +10,7 @@ public class RadialMenu : MonoBehaviour
     public Transform cursorAxis;
     public Image highlight;
     public bool lockHighlightRotation;
+    Transform radiusMarker;
     public float wheelRadius;
     [Range(-180, 180)]
     public float rotationOffset;
@@ -153,7 +154,11 @@ public class RadialMenu : MonoBehaviour
 
                 float segmentSize = 360 / slots;
                 float segmentAngle = (segmentSize * i) + rotationOffset;
+                //float wheelRadius = Vector3.Distance(cursorAxis.position, radiusMarker.position);
                 Vector3 iconPosition = Quaternion.Euler(0, 0, -segmentAngle) * new Vector3(0, wheelRadius, 0);
+
+
+
                 wheelIcons[i].rectTransform.anchoredPosition = iconPosition;
             }
         }
@@ -166,34 +171,4 @@ public class RadialMenu : MonoBehaviour
             }
         }
     }
-
-    
-
-    /*
-    float InverseClamp(float input, float min, float max)
-    {
-        if (input > max)
-        {
-            input = min;
-        }
-        else if (input < min)
-        {
-            input = max;
-        }
-        return input;
-    }
-
-    int InverseClamp(int input, int min, int max)
-    {
-        if (input > max)
-        {
-            input = min;
-        }
-        else if (input < min)
-        {
-            input = max;
-        }
-        return input;
-    }
-    */
 }

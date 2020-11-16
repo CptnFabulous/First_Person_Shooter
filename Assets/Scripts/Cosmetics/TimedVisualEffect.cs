@@ -11,17 +11,15 @@ public abstract class TimedVisualEffect : MonoBehaviour
     public bool playOnEnable;
     
 
-    [HideInInspector] public float timer = 0;
+    public float timer = 0;
     bool isPaused = true;
-
-
+    
+    
     // Update is called once per frame
     public void Update()
     {
-        Debug.Log(name + ", " + directControl + ", " + timer + ", " + isPaused);
         if (directControl == false && timer < 1 && isPaused == false)
         {
-            Debug.Log("Effect is playing");
             timer += Time.deltaTime / lifetime;
 
             if (timer >= 1)
