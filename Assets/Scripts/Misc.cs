@@ -41,7 +41,7 @@ public static class Misc
         }
     }
 
-    public static float InverseClamp(float value, int min, int max)
+    public static float InverseClamp(int value, int min, int max)
     {
         if (value > max)
         {
@@ -141,6 +141,30 @@ public static class Misc
 
         // Returns a layer mask of all the layers that will collide with our starting layer
         return lm;
+    }
+    #endregion
+
+    #region X where child is at the same X as another separate X (find better names for these)
+    public static Vector3 PositionWhereChildIsAtSamePositionAsAnotherTransform(Vector3 transformToMove, Vector3 child, Vector3 position)
+    {
+        /*
+        Vector3 posA = wmt.position;
+        Vector3 posB = optics.sightLine.position;
+        Vector3 posC = pc.head.position;
+        Vector3 relativePosition = posC + (posA - posB);
+        */
+        return position + (transformToMove - child);
+    }
+
+    public static Quaternion RotationWhereChildIsAtSameRotationAsAnotherTransform(Quaternion transformToMove, Quaternion child, Quaternion position)
+    {
+        /*
+        Quaternion rotA = wmt.rotation;
+        Quaternion rotB = optics.sightLine.rotation;
+        Quaternion rotC = pc.head.rotation;
+        Quaternion relativeRotation = rotA * (Quaternion.Inverse(rotB) * rotC);
+        */
+        return transformToMove * (Quaternion.Inverse(child) * position);
     }
     #endregion
 

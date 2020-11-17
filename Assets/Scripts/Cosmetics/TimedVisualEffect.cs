@@ -45,7 +45,7 @@ public abstract class TimedVisualEffect : MonoBehaviour
 
     public void Play()
     {
-        Debug.Log("Playing");
+        //Debug.Log("Playing");
         isPaused = false;
         timer = 0;
     }

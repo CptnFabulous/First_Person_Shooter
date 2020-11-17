@@ -422,12 +422,12 @@ public class Gun : MonoBehaviour
         speedWhileAiming.SetIntensity(timer);
 
         // Lerp weapon model between hip position and ADS position. Should I make this work with the MoveWeaponModel function?
-        // Something is screwy here
-        Vector3 relativeAimPosition = pc.head.position + (transform.position - optics.sightLine.position);
-        weaponModel.transform.position = Vector3.Lerp(general.heldPosition.position, relativeAimPosition, timer);
-
-        //Quaternion relativeAimRotation = pc.torso.rotation;
-        //weaponModel.transform.rotation = Quaternion.Lerp(general.heldPosition.rotation, relativeAimRotation, timer);
+        Transform wmt = weaponModel;
+        
+        Vector3 relativePosition = Misc.PositionWhereChildIsAtSamePositionAsAnotherTransform(wmt.position, optics.sightLine.position, pc.head.position);
+        Quaternion relativeRotation = Misc.RotationWhereChildIsAtSameRotationAsAnotherTransform(wmt.rotation, optics.sightLine.rotation, pc.head.rotation);
+        wmt.position = Vector3.Lerp(general.heldPosition.position, relativePosition, timer);
+        wmt.rotation = Quaternion.Lerp(general.heldPosition.rotation, relativeRotation, timer);
 
         // Toggle overlay
         playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);

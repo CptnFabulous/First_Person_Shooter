@@ -96,8 +96,6 @@ public static class Damage
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
         if (hitbox != null)
         {
-            Debug.Log("Hit");
-
             hitbox.Damage(damage, criticalMultiplier, origin, normalCause, criticalCause);
         }
     }
