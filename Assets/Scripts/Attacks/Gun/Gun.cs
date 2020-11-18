@@ -254,7 +254,7 @@ public class Gun : MonoBehaviour
         GunFiringMode newMode = firingModes[index];
         if (optics != null && (newMode.optics == null || newMode.optics != optics))
         {
-            CancelADS();
+            CancelADSInstantly();
         }
 
         if (newMode.optics != null)
@@ -311,7 +311,7 @@ public class Gun : MonoBehaviour
         // Cancel ADS animations
         if (optics != null)
         {
-            CancelADS();
+            CancelADSInstantly();
         }
 
         // Cancel reload sequence
@@ -433,16 +433,31 @@ public class Gun : MonoBehaviour
         playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);
     }
 
-    void CancelADS()
+    void CancelADSInstantly()
     {
         zoomTimer = 0;
         
         isAiming = false;
         adsTimer = 0;
         LerpADS(0);
-
     }
 
+    
+    IEnumerator CancelADS()
+    {
+        float timer = 1;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime / optics.transitionTime;
+
+            LerpADS(timer);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+
+    }
+    
 
     #region Old ADS functions
     public void AimHandler(GunOpticsStats os, Transform hipPosition, bool toggleAim)
