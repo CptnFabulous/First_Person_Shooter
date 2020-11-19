@@ -340,8 +340,7 @@ public class Gun : MonoBehaviour
         optics = firingModes[index].optics;
     }
     #endregion
-
-    #region Firing functions
+    
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
     {
         if (recoilToApply > 0)
@@ -365,6 +364,7 @@ public class Gun : MonoBehaviour
         // 2: Just give it a spring joint and use Physics.AddForce or AddForceAtPosition to make it jump back
     }
 
+    #region ADS functions
     public void ADSHandler()
     {
         if (optics == null)
@@ -402,6 +402,9 @@ public class Gun : MonoBehaviour
         adsTimer = Mathf.Clamp01(adsTimer);
 
         LerpADS(adsTimer);
+
+        // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
+        Debug.Log(sensitivityWhileAiming);
     }
 
     void LerpADS(float timer)
@@ -442,7 +445,6 @@ public class Gun : MonoBehaviour
         LerpADS(0);
     }
 
-    
     IEnumerator CancelADS()
     {
         float timer = 1;
@@ -458,62 +460,6 @@ public class Gun : MonoBehaviour
 
     }
     
-
-    #region Old ADS functions
-    public void AimHandler(GunOpticsStats os, Transform hipPosition, bool toggleAim)
-    {
-        if (toggleAim == true)
-        {
-            if (Input.GetButtonDown("MouseRight"))
-            {
-                isAiming = !isAiming;
-            }
-        }
-        else
-        {
-            if (Input.GetButton("MouseRight"))
-            {
-                isAiming = true;
-            }
-            else
-            {
-                isAiming = false;
-            }
-        }
-
-        if (isAiming) //Sets timer value to specify lerping of variables
-        {
-            zoomTimer += Time.deltaTime / os.transitionTime;
-            LerpSights(os, zoomTimer, os.aimPosition);
-        }
-        else
-        {
-            zoomTimer -= Time.deltaTime / os.transitionTime;
-            LerpSights(os, zoomTimer, hipPosition);
-        }
-        zoomTimer = Mathf.Clamp01(zoomTimer);
-    }
-
-    void LerpSights(GunOpticsStats os, float timer, Transform newWeaponPosition)
-    {
-
-        // Reduces FOV to zoom in camera
-        zoomVariable = Mathf.Lerp(1, 1 / os.magnification, timer);
-        playerHolding.ph.pc.playerCamera.fieldOfView = playerHolding.ph.pc.fieldOfView.defaultValue * zoomVariable;
-
-        // Reduce sensitivity and movement speed
-        sensitivityWhileAiming.SetIntensity(timer);
-        speedWhileAiming.SetIntensity(timer);
-        // Alter accuracy if specified
-
-        // Move weapon model. THIS DOES NOT WORK FOR SOME REASON
-        float moveTime = Vector3.Distance(weaponModel.transform.position, newWeaponPosition.position) * os.transitionTime;
-        //MoveWeaponModel(newWeaponPosition.position, newWeaponPosition.rotation, moveTime);
-
-        // Toggle overlay
-        playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);
-    }
-    #endregion
     #endregion
 
     #region Reloading functions
