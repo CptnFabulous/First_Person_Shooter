@@ -460,6 +460,29 @@ public class Gun : MonoBehaviour
 
     }
     
+
+
+    IEnumerator EnableOrDisableADS(bool enabled)
+    {
+        float timer = 0;
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / optics.transitionTime;
+
+            float t = timer;
+            if (enabled == false)
+            {
+                t = 1 / timer;
+            }
+
+            LerpADS(t);
+
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+
     #endregion
 
     #region Reloading functions
