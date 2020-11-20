@@ -107,13 +107,13 @@ public class GraphicsMenu : MenuWindow
     {
         public int width;
         public int height;
-        public List<int> refreshRates = new List<int>();
+        public List<Resolution> resolutionsWithRefreshRates = new List<Resolution>();
 
-        public ResolutionAndRefreshRates(int w, int h, int refreshRate)
+        public ResolutionAndRefreshRates(Resolution r)
         {
-            width = w;
-            height = h;
-            refreshRates.Add(refreshRate);
+            width = r.width;
+            height = r.height;
+            resolutionsWithRefreshRates.Add(r);
         }
     }
 
@@ -122,22 +122,38 @@ public class GraphicsMenu : MenuWindow
         List<ResolutionAndRefreshRates> options = new List<ResolutionAndRefreshRates>();
         foreach (Resolution r in Screen.resolutions)
         {
-
             // Check if a ResolutionAndRefreshRates exists with r's resolution.
-            if (true)
+            bool noMatchingResolutionFound = true;
+            foreach(ResolutionAndRefreshRates rarr in options)
             {
-                // If so, check it and see if it has r's refresh rate.
-                if (false)
+                if (rarr.width == r.width && rarr.height == r.height)
                 {
+                    // If so, check it and see if it has r's refresh rate.
+                    bool noMatchingRefreshRateFound = true;
+                    foreach(Resolution rr in rarr.resolutionsWithRefreshRates)
+                    {
+                        if (rr.refreshRate == r.refreshRate)
+                        {
+                            noMatchingRefreshRateFound = false;
+                        }
+                    }
+
                     // If not, add the refresh rate.
+                    if (noMatchingRefreshRateFound)
+                    {
+                        rarr.resolutionsWithRefreshRates.Add(r);
+                    }
                 }
             }
-            else
+
+            // If not, create one and add the current refresh rate to it.
+            if (noMatchingResolutionFound)
             {
-                // If not, create one and add the current refresh rate to it.
-                options.Add(new ResolutionAndRefreshRates(r.width, r.height, r.refreshRate));
+                options.Add(new ResolutionAndRefreshRates(r));
             }
         }
+
+        // Now that we have the list of resolution structs sorted by dimensions and framerate, we can create the appropriate dropdown menus.
     }
 
 
