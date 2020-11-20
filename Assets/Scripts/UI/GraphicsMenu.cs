@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 
 
-public class CurrentSettings
+public class CurrentPlayerSettings
 {
     // Player stats
     float playerFieldOfView;
@@ -46,7 +46,14 @@ public class GraphicsMenu : MenuWindow
     public Toggle fullScreenMode;
     //FullScreenMode mode;
     public Dropdown resolution;
-    //public Dropdown refreshRate;
+    List<Vector2> resolutions;
+    
+    public Dropdown refreshRate;
+    List<int> refreshRates;
+
+
+
+
     public Dropdown qualityPreset;
     // Advanced
     // CHECK VARIOUS GRAPHICAL OPTIONS
@@ -75,6 +82,128 @@ public class GraphicsMenu : MenuWindow
         SetupGraphicsQuality();
         */
     }
+
+
+
+    void SetupResolutions()
+    {
+        List<Vector2> foundResolutions = new List<Vector2>();
+        foreach(Resolution r in Screen.resolutions)
+        {
+            Vector2 wh = new Vector2(r.width, r.height);
+            if (!foundResolutions.Contains(wh))
+            {
+                foundResolutions.Add(wh);
+            }
+        }
+
+        resolutions = foundResolutions;
+    }
+
+
+
+
+    class ResolutionAndRefreshRates
+    {
+        public int width;
+        public int height;
+        public List<int> refreshRates = new List<int>();
+
+        public ResolutionAndRefreshRates(int w, int h, int refreshRate)
+        {
+            width = w;
+            height = h;
+            refreshRates.Add(refreshRate);
+        }
+    }
+
+    void SetupResolutionAndRefreshRateDropdowns()
+    {
+        List<ResolutionAndRefreshRates> options = new List<ResolutionAndRefreshRates>();
+        foreach (Resolution r in Screen.resolutions)
+        {
+
+            // Check if a ResolutionAndRefreshRates exists with r's resolution.
+            if (true)
+            {
+                // If so, check it and see if it has r's refresh rate.
+                if (false)
+                {
+                    // If not, add the refresh rate.
+                }
+            }
+            else
+            {
+                // If not, create one and add the current refresh rate to it.
+                options.Add(new ResolutionAndRefreshRates(r.width, r.height, r.refreshRate));
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void SetupRefreshRates()
+    {
+        List<Resolution> refreshRates = new List<Resolution>();
+
+        Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
+        foreach (Resolution r in Screen.resolutions)
+        {
+            Vector2 wh = new Vector2(r.width, r.height);
+
+            // If the resolution is the same but the framerate isn't, add it. This way you get all the framerates for the current resolution.
+            if (wh == currentResolution && !refreshRates.Contains(r))
+            {
+                refreshRates.Add(r);
+            }
+        }
+
+        // Theoretically sorts refresh rates. I kinda copied the code off the internet.
+        refreshRates.Sort((rr1, rr2) => rr1.refreshRate.CompareTo(rr2.refreshRate));
+
+        /*
+        List<int> refreshRates = new List<int>();
+        
+        Vector2 crurentResolution = new Vector2(Screen.width, Screen.height);
+        foreach (Resolution r in Screen.resolutions)
+        {
+            Vector2 wh = new Vector2(r.width, r.height);
+            int rr = r.refreshRate;
+
+            if (wh == crurentResolution && !refreshRates.Contains(rr))
+            {
+                refreshRates.Add(rr);
+            }
+        }
+
+        // Theoretically sorts refresh rates. I kinda copied the code off the internet.
+        refreshRates.Sort((rr1, rr2) => rr1.CompareTo(rr2));
+        */
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     #region Graphics
