@@ -46,10 +46,8 @@ public class GraphicsMenu : MenuWindow
     public Toggle fullScreenMode;
     //FullScreenMode mode;
     public Dropdown resolution;
-    List<Vector2> resolutions;
     
     public Dropdown refreshRate;
-    List<int> refreshRates;
 
 
 
@@ -84,7 +82,7 @@ public class GraphicsMenu : MenuWindow
     }
 
 
-
+    /*
     void SetupResolutions()
     {
         List<Vector2> foundResolutions = new List<Vector2>();
@@ -99,116 +97,13 @@ public class GraphicsMenu : MenuWindow
 
         resolutions = foundResolutions;
     }
+    */
 
 
 
+    
 
-    class ResolutionAndRefreshRates
-    {
-        public int width;
-        public int height;
-        public List<Resolution> resolutionsWithRefreshRates = new List<Resolution>();
-
-        public ResolutionAndRefreshRates(Resolution r)
-        {
-            width = r.width;
-            height = r.height;
-            resolutionsWithRefreshRates.Add(r);
-        }
-    }
-
-    void SetupResolutionAndRefreshRateDropdowns()
-    {
-        List<ResolutionAndRefreshRates> options = new List<ResolutionAndRefreshRates>();
-        foreach (Resolution r in Screen.resolutions)
-        {
-            // Check if a ResolutionAndRefreshRates exists with r's resolution.
-            bool noMatchingResolutionFound = true;
-            foreach(ResolutionAndRefreshRates rarr in options)
-            {
-                if (rarr.width == r.width && rarr.height == r.height)
-                {
-                    // If so, check it and see if it has r's refresh rate.
-                    bool noMatchingRefreshRateFound = true;
-                    foreach(Resolution rr in rarr.resolutionsWithRefreshRates)
-                    {
-                        if (rr.refreshRate == r.refreshRate)
-                        {
-                            noMatchingRefreshRateFound = false;
-                        }
-                    }
-
-                    // If not, add the refresh rate.
-                    if (noMatchingRefreshRateFound)
-                    {
-                        rarr.resolutionsWithRefreshRates.Add(r);
-                    }
-                }
-            }
-
-            // If not, create one and add the current refresh rate to it.
-            if (noMatchingResolutionFound)
-            {
-                options.Add(new ResolutionAndRefreshRates(r));
-            }
-        }
-
-        // Now that we have the list of resolution structs sorted by dimensions and framerate, we can create the appropriate dropdown menus.
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    void SetupRefreshRates()
-    {
-        List<Resolution> refreshRates = new List<Resolution>();
-
-        Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
-        foreach (Resolution r in Screen.resolutions)
-        {
-            Vector2 wh = new Vector2(r.width, r.height);
-
-            // If the resolution is the same but the framerate isn't, add it. This way you get all the framerates for the current resolution.
-            if (wh == currentResolution && !refreshRates.Contains(r))
-            {
-                refreshRates.Add(r);
-            }
-        }
-
-        // Theoretically sorts refresh rates. I kinda copied the code off the internet.
-        refreshRates.Sort((rr1, rr2) => rr1.refreshRate.CompareTo(rr2.refreshRate));
-
-        /*
-        List<int> refreshRates = new List<int>();
-        
-        Vector2 crurentResolution = new Vector2(Screen.width, Screen.height);
-        foreach (Resolution r in Screen.resolutions)
-        {
-            Vector2 wh = new Vector2(r.width, r.height);
-            int rr = r.refreshRate;
-
-            if (wh == crurentResolution && !refreshRates.Contains(rr))
-            {
-                refreshRates.Add(rr);
-            }
-        }
-
-        // Theoretically sorts refresh rates. I kinda copied the code off the internet.
-        refreshRates.Sort((rr1, rr2) => rr1.CompareTo(rr2));
-        */
-    }
+    
 
 
 
@@ -236,6 +131,76 @@ public class GraphicsMenu : MenuWindow
     void SetupFullscreen()
     {
         SetupToggle(fullScreenMode, ApplyFullscreen, Screen.fullScreen);
+    }
+    class ResolutionAndRefreshRates
+    {
+        public int width;
+        public int height;
+        public List<Resolution> resolutionsWithRefreshRates = new List<Resolution>();
+
+        public ResolutionAndRefreshRates(Resolution r)
+        {
+            width = r.width;
+            height = r.height;
+            resolutionsWithRefreshRates.Add(r);
+        }
+    }
+    void SetupResolutionAndRefreshRateDropdowns()
+    {
+        List<ResolutionAndRefreshRates> options = new List<ResolutionAndRefreshRates>();
+        foreach (Resolution r in Screen.resolutions)
+        {
+            // Check if a ResolutionAndRefreshRates exists with r's resolution.
+            bool noMatchingResolutionFound = true;
+            foreach (ResolutionAndRefreshRates rarr in options)
+            {
+                if (rarr.width == r.width && rarr.height == r.height)
+                {
+                    // If so, check it and see if it has r's refresh rate.
+                    bool noMatchingRefreshRateFound = true;
+                    foreach (Resolution rr in rarr.resolutionsWithRefreshRates)
+                    {
+                        if (rr.refreshRate == r.refreshRate)
+                        {
+                            noMatchingRefreshRateFound = false;
+                        }
+                    }
+
+                    // If not, add the refresh rate.
+                    if (noMatchingRefreshRateFound)
+                    {
+                        rarr.resolutionsWithRefreshRates.Add(r);
+                    }
+                }
+            }
+
+            // If not, create one and add the current refresh rate to it.
+            if (noMatchingResolutionFound)
+            {
+                options.Add(new ResolutionAndRefreshRates(r));
+            }
+        }
+
+        // Now that we have the list of resolution structs sorted by dimensions and framerate, we can create the appropriate dropdown menus.
+    }
+    void SetupRefreshRates()
+    {
+        List<Resolution> refreshRates = new List<Resolution>();
+
+        Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
+        foreach (Resolution r in Screen.resolutions)
+        {
+            Vector2 wh = new Vector2(r.width, r.height);
+
+            // If the resolution is the same but the framerate isn't, add it. This way you get all the framerates for the current resolution.
+            if (wh == currentResolution && !refreshRates.Contains(r))
+            {
+                refreshRates.Add(r);
+            }
+        }
+
+        // Theoretically sorts refresh rates. I kinda copied the code off the internet.
+        refreshRates.Sort((rr1, rr2) => rr1.refreshRate.CompareTo(rr2.refreshRate));
     }
     void SetupResolutionAndRefreshRate()
     {
