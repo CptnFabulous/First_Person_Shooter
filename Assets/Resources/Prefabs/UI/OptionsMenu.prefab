@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8226042876781429949}
   - component: {fileID: 7391129708487885036}
+  - component: {fileID: 234979237657827279}
   m_Layer: 5
   m_Name: OptionsMenu
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213941333718186726}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 541e947dd5c2f9348bf678bdaa7f42ad, type: 3}
   m_Name: 
@@ -59,27 +60,34 @@ MonoBehaviour:
   selections: {fileID: 0}
   flavourText: {fileID: 0}
   selectionGraphic: {fileID: 0}
+  applyButton: {fileID: 0}
   monitor: {fileID: 1163459847021389765}
   fullScreenMode: {fileID: 2440046749630904752}
   resolution: {fileID: 1806514407960546985}
   qualityPreset: {fileID: 7811492526344110477}
-  audioMixer: {fileID: 0}
-  masterVolume: {fileID: 0}
-  language: {fileID: 0}
-  subtitles: {fileID: 0}
-  muteAudioOnFocusLoss: {fileID: 0}
-  keyboardPreset: {fileID: 0}
-  controllerPreset: {fileID: 0}
-  sensitivityX: {fileID: 0}
-  sensitivityY: {fileID: 0}
-  invertYAxis: {fileID: 0}
-  controllerVibration: {fileID: 0}
-  tutorials: {fileID: 0}
-  aimAssist: {fileID: 0}
-  colourBlindMode: {fileID: 0}
-  reticleColourRed: {fileID: 0}
-  reticleColourGreen: {fileID: 0}
-  reticleColourBlue: {fileID: 0}
+--- !u!114 &234979237657827279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213941333718186726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724c369f8dcf7924c8451c993f56d01d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  selections: {fileID: 0}
+  flavourText: {fileID: 0}
+  selectionGraphic: {fileID: 0}
+  screenResolution: {fileID: 1806514407960546985}
+  qualityPreset: {fileID: 7811492526344110477}
+  fullScreen: {fileID: 2440046749630904752}
+  mainMixer: {fileID: 0}
+  masterVolumeSlider: {fileID: 0}
+  minVolume: -80
+  maxVolume: 20
 --- !u!1 &2258368095367712439
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +243,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Video settings
+  m_Text: Generic options screen for now
 --- !u!1 &8762280938852414858
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +359,7 @@ PrefabInstance:
     - target: {fileID: 5899540911162972339, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -450
+      value: -400
       objectReference: {fileID: 0}
     - target: {fileID: 5899540911162972339, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
         type: 3}
@@ -846,6 +854,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Monitor
+      objectReference: {fileID: 0}
+    - target: {fileID: 6549788222108480533, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8127383658724049323, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
         type: 3}

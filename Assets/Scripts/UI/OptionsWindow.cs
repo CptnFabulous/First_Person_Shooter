@@ -1,6 +1,133 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UI;
+
+public class OptionsWindow : MenuWindow
+{
+    [Header("Video")]
+    public Dropdown screenResolution;
+    public Dropdown qualityPreset;
+    public Toggle fullScreen;
+
+    [Header("Audio")]
+    public AudioMixer mainMixer;
+    public Slider masterVolumeSlider;
+    public float minVolume = -80;
+    public float maxVolume = 20;
+
+    Resolution[] resolutions;
+
+    // Use this for initialization
+    void Start()
+    {
+        // Set up basic video options
+        SetupResolution();
+        SetupFullscreen();
+        SetupQualityPreset();
+
+        // Set up audio options
+        SetupMasterVolume();
+    }
+
+
+
+
+
+
+
+
+
+    #region Video settings - Basic
+    void SetupResolution()
+    {
+        resolutions = Screen.resolutions;
+        screenResolution.ClearOptions();
+        List<string> resOptions = new List<string>();
+
+        int currentResolutionIndex = 0;
+
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+            resOptions.Add(option);
+
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            {
+                currentResolutionIndex = i;
+            }
+        }
+
+        screenResolution.AddOptions(resOptions);
+        screenResolution.value = currentResolutionIndex;
+        screenResolution.RefreshShownValue();
+
+        screenResolution.onValueChanged.AddListener(ApplyResolution);
+    }
+    public void ApplyResolution(int resolutionIndex)
+    {
+        Resolution r = resolutions[resolutionIndex];
+        Screen.SetResolution(r.width, r.height, Screen.fullScreen);
+    }
+
+    void SetupFullscreen()
+    {
+        fullScreen.onValueChanged.AddListener(ApplyFullscreen);
+    }
+    public void ApplyFullscreen(bool isTrue)
+    {
+        Screen.fullScreen = isTrue;
+    }
+
+    void SetupQualityPreset()
+    {
+        qualityPreset.ClearOptions();
+        List<string> options = new List<string>();
+        foreach(string s in QualitySettings.names)
+        {
+            options.Add(s);
+        }
+        qualityPreset.AddOptions(options);
+
+        qualityPreset.onValueChanged.AddListener(ApplyQualityPreset);
+    }
+    public void ApplyQualityPreset(int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex);
+        print("Graphics quality changed to " + qualityIndex);
+    }
+    #endregion
+
+    #region Video settings - Advanced
+
+    #endregion
+
+    #region Audio settings
+    void SetupMasterVolume()
+    {
+        masterVolumeSlider.minValue = minVolume;
+        masterVolumeSlider.maxValue = maxVolume;
+        masterVolumeSlider.onValueChanged.AddListener(ApplyMasterVolume);
+    }
+    public void ApplyMasterVolume(float volume)
+    {
+        mainMixer.SetFloat("MasterVolume", volume);
+    }
+
+
+
+
+    #endregion
+
+}
+
+
+/*
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -32,26 +159,18 @@ public class OptionsWindow : MenuWindow
 
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = resolutions[i].width + " x " +
-                     resolutions[i].height;
+            string option = resolutions[i].width + " x " + resolutions[i].height;
             options.Add(option);
-            if (resolutions[i].width == Screen.currentResolution.width
-                  && resolutions[i].height == Screen.currentResolution.height)
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            {
                 currentResolutionIndex = i;
+            }
         }
 
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.RefreshShownValue();
         LoadSettings(currentResolutionIndex);
     }
-
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    */
 
 
 
@@ -202,26 +321,25 @@ public class OptionsWindow : MenuWindow
         }
     }
 
-    /*
+    
     void HypotheticalQualitySettingUpdateThingIGotFromAGuyOnDiscord()
     {
-    // From someone called Foonix #5812    
+        // From someone called Foonix #5812    
     
-    qualitySelectorControl.options = QualitySettings.names
-                    .Select(name => new Dropdown.OptionData(name))
-                    .ToList();
+        qualitySelectorControl.options = QualitySettings.names.Select(name => new Dropdown.OptionData(name)).ToList();
         if (ConfigurationManager.Configuration.visualConfiguration.qualityPreset == -1)
         {
             ConfigurationManager.Configuration.visualConfiguration.qualityPreset = QualitySettings.GetQualityLevel();
         }
         qualitySelectorControl.value = ConfigurationManager.Configuration.visualConfiguration.qualityPreset;
 
-        // There was a separation, I don't know why, maybe they're different things
+        // There was a separation here, I don't know why, maybe they're different things
 
         if (Configuration.visualConfiguration.qualityPreset != -1)
         {
             QualitySettings.SetQualityLevel(Configuration.visualConfiguration.qualityPreset, true);
         }
     }
-    */
+    
 }
+*/
