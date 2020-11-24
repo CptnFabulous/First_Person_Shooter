@@ -15,25 +15,11 @@ public class MenuWindow : MonoBehaviour
     public Text flavourText;
     public Image selectionGraphic;
 
-
-    private void Start()
-    {
-        menuHandler = GetComponentInParent<MenuHandler>();
-    }
-
-    /*
     // Start is called before the first frame update
     void Start()
     {
-        
+        menuHandler = GetComponentInParent<MenuHandler>();
     }
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    */
 
     public void ReturnToPreviousWindow()
     {

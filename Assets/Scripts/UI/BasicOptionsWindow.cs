@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-public class OptionsWindow : MenuWindow
+public class BasicOptionsWindow : MenuWindow
 {
     [Header("Video")]
     public Dropdown screenResolution;

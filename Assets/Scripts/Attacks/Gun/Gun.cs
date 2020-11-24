@@ -129,28 +129,25 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        // Ensure things don't happen if the game is paused.
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+        
+        
         attackMessageLimitTimer += Time.deltaTime;
 
         // If the player is not switching weapons or fire modes, and is therefore able to operate the weapon
         if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
         {
             #region Firing mode controls
-            if (Input.GetAxis("Mouse ScrollWheel") != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
+            float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+            if (scrollInput != 0 && firingModes.Length > 1) // Switch firing modes with the scroll wheel
             {
-                int i = 0;
-                if (Input.GetAxis("Mouse ScrollWheel") < 0)
-                {
-                    i = 1;
-                }
-                else if (Input.GetAxis("Mouse ScrollWheel") > 0)
-                {
-                    i = -1;
-                }
-
-                i += firingModeIndex;
-
+                int i = firingModeIndex;
+                i -= (int)new Vector2(scrollInput, 0).normalized.x;
                 i = (int)Misc.InverseClamp(i, 0, firingModes.Length - 1);
-                
                 StartCoroutine(SwitchMode(i));
             }
             #endregion

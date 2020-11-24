@@ -7,45 +7,29 @@ using System.Reflection;
 
 public class MenuHandler : MonoBehaviour
 {
+    /*
+    [System.Serializable]
+    public class MenuAndChildren
+    {
+        public MenuWindow window;
+        public MenuAndChildren[] children;
+    }
+
+    public MenuAndChildren hierarchy;
+    */
     public MenuWindow rootWindow;
+
+    
+
+
     [HideInInspector] public MenuWindow[] differentWindows;
     [HideInInspector] public MenuWindow currentWindow;
 
 
 
-    void SortMenus()
-    {
-        differentWindows = GetComponentsInChildren<MenuWindow>(true);
 
-        foreach(MenuWindow mw in differentWindows)
-        {
-            if (mw.parent == null)
-            {
-                mw.parent = mw.GetComponentInParent<MenuWindow>();
-
-                if (mw.parent == null)
-                {
-                    if (rootWindow == null)
-                    {
-                        rootWindow = mw;
-                    }
-                    else
-                    {
-                        Debug.LogError("MenuWindow " + mw.name + " does not have a parent assigned, but there is already a root window!");
-                    }
-                }
-            }
-            mw.transform.SetParent(transform);
-        }
-    }
-
-
-
-
-
-
-
-
+    
+    
 
 
 
