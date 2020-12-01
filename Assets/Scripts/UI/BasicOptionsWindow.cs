@@ -63,6 +63,9 @@ public class BasicOptionsWindow : MenuWindow
         screenResolution.value = currentResolutionIndex;
         screenResolution.RefreshShownValue();
 
+        // Change scroll sensitivity to match size of option buttons
+        //screenResolution.GetComponentInChildren<ScrollRect>().scrollSensitivity = screenResolution.GetComponentInChildren<Toggle>().GetComponent<RectTransform>().rect.height;
+
         screenResolution.onValueChanged.AddListener(ApplyResolution);
     }
     public void ApplyResolution(int resolutionIndex)
@@ -89,6 +92,9 @@ public class BasicOptionsWindow : MenuWindow
             options.Add(s);
         }
         qualityPreset.AddOptions(options);
+
+        // Change scroll sensitivity to match size of option buttons
+        //qualityPreset.GetComponentInChildren<ScrollRect>().scrollSensitivity = qualityPreset.GetComponentInChildren<Toggle>().GetComponent<RectTransform>().rect.height;
 
         qualityPreset.onValueChanged.AddListener(ApplyQualityPreset);
     }

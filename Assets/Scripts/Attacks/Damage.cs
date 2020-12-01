@@ -161,8 +161,8 @@ public static class Damage
                         if (undamagedCheck == false)
                         {
                             int d = Mathf.RoundToInt(damage * damageFalloff.Evaluate(i));
+                            //int d = (int) (damage * damageFalloff.Evaluate(i));
                             hitbox.Damage(d, origin, cause, isSevere);
-                            Debug.Log("Dealt " + d + " damage to " + hitbox.name + " at " + hitbox.transform.position + ".");
                             alreadyDamaged.Add(hitbox.healthScript);
                         }
                     }

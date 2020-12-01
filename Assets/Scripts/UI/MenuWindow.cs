@@ -23,8 +23,8 @@ public class MenuWindow : MonoBehaviour
 
     public void ReturnToPreviousWindow()
     {
-        Debug.Log(menuHandler);
-        Debug.Log(parent);
+        //Debug.Log(menuHandler);
+        //Debug.Log(parent);
         
         menuHandler.SwitchWindow(parent);
     }

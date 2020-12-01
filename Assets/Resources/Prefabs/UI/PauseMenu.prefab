@@ -695,7 +695,7 @@ PrefabInstance:
     - target: {fileID: 7504517457654495229, guid: 5cbc987189c3e4746afdca922e8ff267,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: QuitToMenu
+      value: QuitGame
       objectReference: {fileID: 0}
     - target: {fileID: 7504517457654495229, guid: 5cbc987189c3e4746afdca922e8ff267,
         type: 3}
@@ -974,10 +974,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionsMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 213941333718186726, guid: d89858767a42fa647b792adfd628bd7c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 359640470343231610, guid: d89858767a42fa647b792adfd628bd7c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1028324602430542879, guid: d89858767a42fa647b792adfd628bd7c,
         type: 3}
@@ -1002,7 +1007,7 @@ PrefabInstance:
     - target: {fileID: 2089755588418577298, guid: d89858767a42fa647b792adfd628bd7c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2149133916790868810, guid: d89858767a42fa647b792adfd628bd7c,
         type: 3}
@@ -1267,16 +1272,16 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3999170404471183288}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5903507744664803156 stripped
+--- !u!114 &3764226524198027383 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7391129708487885036, guid: d89858767a42fa647b792adfd628bd7c,
+  m_CorrespondingSourceObject: {fileID: 234979237657827279, guid: d89858767a42fa647b792adfd628bd7c,
     type: 3}
   m_PrefabInstance: {fileID: 3999170404471183288}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 541e947dd5c2f9348bf678bdaa7f42ad, type: 3}
+  m_Script: {fileID: 11500000, guid: 724c369f8dcf7924c8451c993f56d01d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5668878075516449857
@@ -1490,7 +1495,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 5903507744664803156}
+      objectReference: {fileID: 3764226524198027383}
     - target: {fileID: 7504517457654495230, guid: 5cbc987189c3e4746afdca922e8ff267,
         type: 3}
       propertyPath: m_Text

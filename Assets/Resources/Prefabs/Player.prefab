@@ -645,9 +645,11 @@ MonoBehaviour:
   playerCamera: {fileID: 7394104396849714844}
   rb: {fileID: 0}
   canMove: 1
-  fieldOfView: 60
-  sensitivityX: 40
-  sensitivityY: 40
+  fieldOfView:
+    defaultValue: 60
+    influencingPercentages: []
+  sensitivityX: 50
+  sensitivityY: 50
   minLookAngle: -90
   maxLookAngle: 90
   canLook: 0

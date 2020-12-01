@@ -427,6 +427,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8226042876781429949}
     m_Modifications:
+    - target: {fileID: 1869510697667425207, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3348855753032495524, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3348855753032495524, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5899540911162972339, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -536,6 +551,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Graphics quality preset
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036239171369513164, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036239171369513164, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036239171369513164, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -47
       objectReference: {fileID: 0}
     - target: {fileID: 8127383658724049323, guid: ac6cf6d1621eb7c4c9abd8223646a4ac,
         type: 3}
@@ -698,7 +728,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 234979237657827279}
     - target: {fileID: 6425345717498937329, guid: e0bc6f829f98fcc4ba8626223f52dad5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
