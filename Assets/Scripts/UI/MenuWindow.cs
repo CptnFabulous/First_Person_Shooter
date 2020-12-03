@@ -25,8 +25,8 @@ public class MenuWindow : MonoBehaviour
     {
         //Debug.Log(menuHandler);
         //Debug.Log(parent);
-        
-        menuHandler.SwitchWindow(parent);
+        //menuHandler.SwitchWindow(parent);
+        GetComponentInParent<MenuHandler>().SwitchWindow(parent);
     }
 
     public virtual void OnEnable()
