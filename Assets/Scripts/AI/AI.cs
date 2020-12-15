@@ -125,13 +125,13 @@ public class AI : MonoBehaviour//, IEventObserver
     }
 
     #region Looking at stuff
-    void LookTowards(Vector3 position, float degreesPerSecond)
+    public void LookTowards(Vector3 position, float degreesPerSecond)
     {
         Quaternion correctRotation = Quaternion.LookRotation(position, transform.up);
         head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
     }
 
-    bool IsLookingAt(Vector3 position, float threshold)
+    public bool IsLookingAt(Vector3 position, float threshold)
     {
         if (Vector3.Angle(position - head.transform.position, head.transform.forward) < threshold)
         {
