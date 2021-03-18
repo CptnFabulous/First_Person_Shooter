@@ -64,7 +64,7 @@ public class PlayerHealth : Health
         deathMessage += " by ";
 
         Character c = sourceOfDeath.GetComponent<Character>();
-        if (c == null || c.isUnique == false)
+        if (c == null || c.isUniquelyNamed == false)
         {
             bool startsWithVowel = false;
 

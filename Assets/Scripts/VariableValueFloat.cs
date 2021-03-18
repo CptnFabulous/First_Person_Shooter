@@ -87,12 +87,9 @@ public class VariableValueFloat
     but I realised that the list of modifiers only matters when it's being called,
     I can just perform calculations then.
     */
-
-    // The original value, when no external forces are acting on it
-    public float defaultValue = 1;
-    // A list of all modifiers influencing the final value
-    [HideInInspector] public List<PercentageModifier> influencingPercentages;
-
+    
+    public float defaultValue = 1; // The original value, when no external forces are acting on it
+    [HideInInspector] public List<PercentageModifier> influencingPercentages; // A list of all modifiers influencing the final value
 
     public VariableValueFloat(float _defaultValue)
     {

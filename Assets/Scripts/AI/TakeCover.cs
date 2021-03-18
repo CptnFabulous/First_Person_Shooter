@@ -32,7 +32,7 @@ public class TakeCover : AIMovementBehaviour
         {
             Debug.Log("Enemy is taking cover");
             
-            if (AI.LineOfSight(currentCover.position, attacker, coverCriteria))
+            if (AIFunction.LineOfSight(currentCover.position, attacker, coverCriteria))
             {
                 Debug.Log("Cover is compromised");
                 // Reset and find a new cover point
@@ -54,8 +54,8 @@ public class TakeCover : AIMovementBehaviour
 
     public NullableVector3 FindCover(Transform attacker, NavMeshAgent na, float coverCheckRadius, int numberOfChecks, LayerMask coverCriteria)
     {
-        NullableVector3 newCover = null;
-        NavMeshPath newCoverPath = null;
+        NullableVector3 cover = null;
+        NavMeshPath coverPath = null;
 
         for (int i = 0; i < numberOfChecks; i++)
         {
@@ -66,24 +66,24 @@ public class TakeCover : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out coverCheck, na.height * 2, NavMesh.AllAreas))
             {
                 
-                if (AI.LineOfSight(coverCheck.position, attacker, coverCriteria) == false) // If line of sight is not established
+                if (AIFunction.LineOfSight(coverCheck.position, attacker, coverCriteria) == false) // If line of sight is not established
                 {
                     // Ensures that the agent can actually move to the cover position.
-                    NavMeshPath nmp = new NavMeshPath();
-                    if (na.CalculatePath(coverCheck.position, nmp))
+                    NavMeshPath newPathToTest = new NavMeshPath();
+                    if (na.CalculatePath(coverCheck.position, newPathToTest))
                     {
                         // Checks if the new cover position is easier to get to than the old one.
-                        if (newCover == null || AI.NavMeshPathLength(nmp) < AI.NavMeshPathLength(newCoverPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
+                        if (cover == null || AIFunction.NavMeshPathLength(newPathToTest) < AIFunction.NavMeshPathLength(coverPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
-                            newCover = NullableVector3.New(coverCheck.position);
-                            newCoverPath = nmp;
+                            cover = NullableVector3.New(coverCheck.position);
+                            coverPath = newPathToTest;
                         }
                     }
                 }
             }
         }
 
-        return newCover;
+        return cover;
     }
 }

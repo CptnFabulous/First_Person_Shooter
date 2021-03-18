@@ -33,7 +33,8 @@ public class HeadsUpDisplay : MonoBehaviour
     [Header("Interaction")]
     public RectTransform interactWindow;
     public Text interactObjectName;
-    public Text interactPrompt;
+    public Text interactInstruction;
+    public Image interactButtonPrompt;
 
     [Header("Health elements")]
     public GameObject healthDisplay;
@@ -222,7 +223,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 
                 GunMagazineStats m = rw.firingModes[rw.firingModeIndex].magazine;
 
-                if (ggs.consumesAmmo == null)
+                if (ggs.consumesAmmo == false)
                 {
                     if (m == null)
                     {
@@ -255,10 +256,19 @@ public class HeadsUpDisplay : MonoBehaviour
         if (interactWindow.gameObject.activeSelf == false)
         {
             interactWindow.gameObject.SetActive(true);
+
+            //interactButtonPrompt.sprite = 
+
+
             interactObjectName.text = i.name;
-            interactPrompt.text = i.instruction;
+            interactInstruction.text = i.instruction;
         }
 
+    }
+
+    public void HideInteractionMenu()
+    {
+        interactWindow.gameObject.SetActive(false);
     }
 
     string AmmoInfo(Gun rw, int firingModeIndex)

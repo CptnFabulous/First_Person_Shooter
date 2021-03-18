@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
 
     #region Camera control
     [Header("Camera control")]
-    [Range(0, 180)]
     public VariableValueFloat fieldOfView = new VariableValueFloat(60);
     //public float fieldOfView = 60;
     [Tooltip("Horizontal camera sensitivity. Set to minus to invert it."), Range(-100, 100)]

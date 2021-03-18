@@ -50,7 +50,7 @@ public class RepeatingSound : ScriptableObject
 
     // Add specific audio data as well, so I can adjust on the fly
 
-    public void PlaySound(AudioSource source)
+    public void PlaySoundOnce(AudioSource source)
     {
         // Randomly selects a clip
         AudioClip randomClip = clips[Random.Range(0, clips.Length - 1)];

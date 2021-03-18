@@ -8,6 +8,8 @@ public class InteractFunction : MonoBehaviour
     public float maxDistance;
 
     public HeadsUpDisplay hud;
+
+    public LayerMask interactMask = ~0;
     
     /*
     // Start is called before the first frame update
@@ -17,22 +19,39 @@ public class InteractFunction : MonoBehaviour
     }
     */
 
+
+    Interactable LookingAt()
+    {
+        RaycastHit thingFound;
+        if (Physics.Raycast(transform.position, transform.forward, out thingFound, maxDistance, interactMask))
+        {
+            // If an object is found, return whatever interactable the object might have. If the object isn't interactable, it will return null.
+            return thingFound.collider.GetComponent<Interactable>();
+        }
+
+        return null;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        RaycastHit thingFound;
-        if (Physics.Raycast(transform.position, transform.forward, out thingFound, maxDistance))
+        Interactable i = LookingAt();
+        if (i != null && i.NotDisabled == true)
         {
-            Interactable i = thingFound.collider.GetComponent<Interactable>();
-            if (i != null)
+            hud.PopulateInteractionMenu(i);
+
+            if (Input.GetButtonDown("Interact"))
             {
-                //hud.PopulateInteractionMenu(i);
-                
-                if (Input.GetButtonDown("Interact"))
-                {
-                    i.OnInteract(playerHandler);
-                }
+                i.OnInteract(playerHandler);
             }
         }
+        else
+        {
+            hud.HideInteractionMenu();
+        }
     }
+
+
+    
+
 }

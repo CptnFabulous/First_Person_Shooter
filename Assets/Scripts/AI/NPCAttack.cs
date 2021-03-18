@@ -48,7 +48,7 @@ public class NPCAttack : NPCAction
         {
             cooldownTimer += Time.deltaTime;
 
-            if (AI.LineOfSight(c.head.position, c.target.transform, hitDetection)) // If the NPC can see the target
+            if (AIFunction.LineOfSight(c.head.position, c.target.transform, hitDetection)) // If the NPC can see the target
             {
                 if (Vector3.Distance(aimMarker, c.target.transform.position) <= targetThreshold && cooldownTimer >= cooldown) // If aimMarker has reached target (i.e. NPC has aimed at target) and attack cooldown has finished
                 {

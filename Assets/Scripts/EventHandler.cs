@@ -13,6 +13,13 @@ public class EventHandler : MonoBehaviour
 {
     public List<EventObserver> eventObservers = new List<EventObserver>();
     // Add more delegates, functions, etc. if I need to add new game events in the future
+
+    /*
+    public void BroadcastDamage(DamageMessage dm)
+    {
+
+    }
+    */
 }
 
 public class AttackMessage
@@ -232,9 +239,12 @@ public class DamageMessage
     public DamageType method;
     public int amount;
 
-    public static DamageMessage New(Character attacker, Character victim, DamageType method, int amount)
+    public DamageMessage(Character _attacker, Character _victim, DamageType _method, int _amount)
     {
-        return new DamageMessage { attacker = attacker, victim = victim, method = method, amount = amount };
+        attacker = _attacker;
+        victim = _victim;
+        method = _method;
+        amount = _amount;
     }
 }
 
@@ -243,9 +253,12 @@ public class KillMessage
     public Character attacker;
     public Character victim;
     public DamageType causeOfDeath;
-    public static KillMessage New(Character attacker, Character victim, DamageType causeOfDeath)
+
+    public KillMessage(Character _attacker, Character _victim, DamageType _causeOfDeath)
     {
-        return new KillMessage { attacker = attacker, victim = victim, causeOfDeath = causeOfDeath };
+        attacker = _attacker;
+        victim = _victim;
+        causeOfDeath = _causeOfDeath;
     }
 }
 
@@ -254,9 +267,10 @@ public class InteractMessage
     public PlayerHandler player;
     public Interactable interactable;
 
-    public static InteractMessage New(PlayerHandler player, Interactable interactable)
+    public InteractMessage(PlayerHandler _player, Interactable _interactable)
     {
-        return new InteractMessage { player = player, interactable = interactable };
+        player = _player;
+        interactable = _interactable;
     }
 }
 
@@ -265,8 +279,9 @@ public class SpawnMessage
     public Entity spawned;
     public Vector3 location;
 
-    public static SpawnMessage New(Entity spawned, Vector3 location)
+    public SpawnMessage(Entity _spawned, Vector3 _location)
     {
-        return new SpawnMessage { spawned = spawned, location = location };
+        spawned = _spawned;
+        location = _location;
     }
 }

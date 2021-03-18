@@ -23,8 +23,7 @@ public enum AmmunitionType
     Buckshot,
     Slugs,
     Rifle,
-    Grenade,
-    Petrol
+    Grenade
 }
 
 public class AmmunitionInventory : MonoBehaviour

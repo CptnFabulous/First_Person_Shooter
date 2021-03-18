@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 using Unity.Collections;
 using Unity.Jobs;
@@ -37,7 +38,6 @@ public static class AIFunction
         return Vector3.Angle(compareDirection, closestPoint - origin);
     }
 
-
     public static bool TwoAxisAngleCheck(Vector3 origin, Vector3 forward, Vector3 worldUp, Vector3 positionBeingChecked, Vector2 angles)
     {
         // Calculate position of positionBeingChecked relative to origin, and somehow rotate it based on worldUp to produce a position that would still be equally relative to the origin if the cone was upright
@@ -71,10 +71,10 @@ public static class AIFunction
     #region Line of sight
 
     // Simply checks line of sight
-    public static bool SimpleLineOfSightCheck(Vector3 position, Vector3 origin, LayerMask viewable)
+    public static bool SimpleLineOfSightCheck(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable)
     {
         RaycastHit rh;
-        if (Physics.Raycast(origin, position - origin, out rh, Vector3.Distance(origin, position), viewable))
+        if (Physics.Raycast(viewOrigin, lookingFor - viewOrigin, out rh, Vector3.Distance(viewOrigin, lookingFor), viewable))
         {
             return false;
         }
@@ -83,14 +83,14 @@ public static class AIFunction
     }
 
     // Simply checks line of sight, but allows a list of colliders that should be ignored
-    public static bool SimpleLineOfSightCheck(Vector3 position, Vector3 origin, LayerMask viewable, Collider[] exceptions = null)
+    public static bool SimpleLineOfSightCheck(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable, Collider[] exceptions = null)
     {
         if (exceptions == null || exceptions.Length <= 0) // Returns a simpler and less performant check if there are no exceptions. This is for situations where there may or may not need to be exceptions
         {
-            return SimpleLineOfSightCheck(position, origin, viewable);
+            return SimpleLineOfSightCheck(lookingFor, viewOrigin, viewable);
         }
 
-        RaycastHit[] hits = Physics.RaycastAll(origin, position - origin, Vector3.Distance(origin, position), viewable);
+        RaycastHit[] hits = Physics.RaycastAll(viewOrigin, lookingFor - viewOrigin, Vector3.Distance(viewOrigin, lookingFor), viewable);
         foreach (RaycastHit rh in hits)
         {
             foreach (Collider c in exceptions)
@@ -214,6 +214,75 @@ public static class AIFunction
         return false;
         #endregion
     }
+
+
+    #region Deprecated but replacing them with the newer ones made things stop working and I'm not sure why
+    public static bool LineOfSight(Vector3 origin, Transform target, Transform exception, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        RaycastHit[] objectsBetween = Physics.RaycastAll(origin, target.position - origin, Vector3.Distance(origin, target.position) + overlap, coverCriteria);
+        foreach (RaycastHit lineOfSightCheck in objectsBetween) // Checks if line of sight is established between the attacker and the cover position. If not, the agent can take cover there.
+        {
+            Transform t = lineOfSightCheck.collider.transform; // Gets transform of object
+
+            // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            DamageHitbox dh = t.GetComponent<DamageHitbox>();
+            if (dh != null)
+            {
+                if (dh.healthScript != null)
+                {
+                    t = dh.healthScript.transform;
+                }
+            }
+
+            //print(t.name);
+
+            if (t == target) // Checks if the object hit is the target
+            {
+                return true;
+            }
+
+            // Compares t and the exception object. If they do not match, t is not the target or any exceptions, meaning line of sight is not established.
+            if (t != exception)
+            {
+                return false;
+            }
+        }
+
+        return false; // If the raycast somehow doesn't hit anything, the enemy has disappeared, so it cannot establish line of sight with anything
+    }
+
+    public static bool LineOfSight(Vector3 origin, Transform target, LayerMask coverCriteria, float overlap = 0.01f)
+    {
+        // Launches a raycast between the cover position and the attacker
+        RaycastHit lineOfSightCheck;
+        if (Physics.Raycast(origin, target.position - origin, out lineOfSightCheck, Vector3.Distance(origin, target.position) + overlap, coverCriteria))
+        {
+            Transform t = lineOfSightCheck.collider.transform; // Gets transform of object
+
+
+            DamageHitbox dh = t.GetComponent<DamageHitbox>(); // If object is a DamageHitbox, find the root object, which is the actual thing being tracked if it's an enemy
+            if (dh != null)
+            {
+                if (dh.healthScript != null)
+                {
+                    if (dh.healthScript.transform == target)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            if (t == target)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+
 
     #endregion
 
@@ -401,10 +470,20 @@ public static class AIFunction
     */
     #endregion
 
+    #region Navmesh related
+    public static float NavMeshPathLength(NavMeshPath path)
+    {
+        // Calculate path length
+        float pathLength = 0;
+        for (int r = 1; r < path.corners.Length; r++)
+        {
+            pathLength += Vector3.Distance(path.corners[r - 1], path.corners[r]);
+        }
 
+        return pathLength;
+    }
 
-
-
+    #endregion
 
 
 

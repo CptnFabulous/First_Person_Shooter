@@ -5,6 +5,7 @@ using UnityEngine;
 public class EventObserver : MonoBehaviour
 {
     /*
+    // These events can use multiple parameters at once, but I opted to use events with just one each, so I can easily alter required parameters on the fly
     public event System.Action<Character, Character> OnAttack;
     public event System.Action<Character, Character, DamageType, int> OnDamage;
     public event System.Action<KillMessage> OnKill;
@@ -23,28 +24,33 @@ public class EventObserver : MonoBehaviour
 
     public void Awake()
     {
-        if (eventHandler == null) // If a GameEventManager is not assigned
+        #region Find an EventHandler in the scene, and make one if there isn't. This ensures there is only one EventObserver, and that I do not have to manually add one.
+
+        if (eventHandler == null) // If an EventHandler is not assigned
         {
             eventHandler = FindObjectOfType<EventHandler>(); // Search for one
             if (eventHandler == null) // If one couldn't be found
             {
-                // Instantiate object with GameEventManager
+                // Instantiate object with an EventHandler
                 GameObject manager = Instantiate(new GameObject("EventHandler"), Vector3.zero, Quaternion.identity);
                 manager.AddComponent<EventHandler>();
                 eventHandler = manager.GetComponent<EventHandler>(); // Search for the now created EventHandler
             }
         }
+        #endregion
 
-        if (eventHandler != null)
-        {
-            eventHandler.eventObservers.Add(this);
-        }
+        eventHandler.eventObservers.Add(this);
     }
 
     private void OnDestroy()
     {
         eventHandler.eventObservers.Remove(this);
     }
+    
+
+
+
+
 
 
 
@@ -105,7 +111,7 @@ public class EventObserver : MonoBehaviour
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
         if (eh != null) // If one is found
         {
-            DamageMessage m = DamageMessage.New(attacker, victim, method, amount); // Generate new message
+            DamageMessage m = new DamageMessage(attacker, victim, method, amount); // Generate new message
             foreach (EventObserver eo in eh.eventObservers)
             {
                 if (eo.gameObject.activeSelf == true && eo.OnDamage != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
@@ -122,7 +128,7 @@ public class EventObserver : MonoBehaviour
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
         if (eh != null) // If one is found
         {
-            KillMessage m = KillMessage.New(attacker, victim, causeOfDeath); // Generate new message
+            KillMessage m = new KillMessage(attacker, victim, causeOfDeath); // Generate new message
             foreach (EventObserver eo in eh.eventObservers)
             {
                 if (eo.gameObject.activeSelf == true && eo.OnKill != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
@@ -139,7 +145,7 @@ public class EventObserver : MonoBehaviour
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
         if (eh != null) // If one is found
         {
-            InteractMessage m = InteractMessage.New(player, interactable); // Generate new message
+            InteractMessage m = new InteractMessage(player, interactable); // Generate new message
             foreach (EventObserver eo in eh.eventObservers)
             {
                 if (eo.gameObject.activeSelf == true && eo.OnInteract != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
@@ -156,7 +162,7 @@ public class EventObserver : MonoBehaviour
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
         if (eh != null) // If one is found
         {
-            SpawnMessage m = SpawnMessage.New(spawned, location); // Generate new message
+            SpawnMessage m = new SpawnMessage(spawned, location); // Generate new message
             foreach (EventObserver eo in eh.eventObservers)
             {
                 if (eo.gameObject.activeSelf == true && eo.OnSpawn != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it

@@ -69,7 +69,7 @@ public class AvoidAttack : AIMovementBehaviour
                     // If the agent can actually move to the location
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
-                        float distance = AI.NavMeshPathLength(nmp); // Check navmesh path cost between transform.position and the cover point currently being checked.
+                        float distance = AIFunction.NavMeshPathLength(nmp); // Check navmesh path cost between transform.position and the cover point currently being checked.
 
                         if (distance < maxPathDistance) // If the NPC is willing to travel that distance to the dodge zone, or if this distance is shorter than that of the previous route.
                         {

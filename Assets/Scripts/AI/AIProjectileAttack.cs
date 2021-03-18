@@ -45,10 +45,22 @@ public class AIProjectileAttack : NPCAttack
                 ExecuteAttack();
             }
         }
+        else
+        {
+            if (attackBeingExecuted != null)
+            {
+                CancelAttack();
+            }
+        }
     }
 
     public override void ExecuteAttack()
     {
+        if (attackBeingExecuted != null)
+        {
+            return;
+        }
+        
         currentAimSpeed = aimSpeed * telegraphAimModifier;
         attackBeingExecuted = AttackSequence();
         stats.StartCoroutine(attackBeingExecuted);

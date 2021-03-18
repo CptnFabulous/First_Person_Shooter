@@ -144,6 +144,29 @@ public static class Misc
     }
     #endregion
 
+    #region UI
+
+    /*
+    public static string GetButtonPrompt(string input)
+    {
+
+
+        string[] blah = Input.GetJoystickNames();
+
+
+
+        return null; 
+    }
+    
+    public static Sprite GetButtonPrompt(string input)
+    {
+
+    }
+    */
+    #endregion
+
+
+
     #region X where child is at the same X as another separate X (find better names for these)
     public static Vector3 PositionWhereChildIsAtSamePositionAsAnotherTransform(Vector3 transformToMove, Vector3 child, Vector3 position)
     {
