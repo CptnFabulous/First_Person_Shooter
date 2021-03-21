@@ -104,7 +104,7 @@ public class VariableValueFloat
     // I don't need to figure out how to do this in Update() because it only needs to be checked when the variable is called
     public void ValidateModifiers()
     {
-        // Check float modifiers and update by removing all instances that aren't supposed to exist anymore
+        // Check float modifiers and update by removing all instances that aren't supposed to exist anymore, because their origin does not
         influencingPercentages.RemoveAll(fm => fm.origin == null);
     }
 
