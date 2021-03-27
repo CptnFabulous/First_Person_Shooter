@@ -31,8 +31,8 @@ public class FightingAI : AI
 
         // If target is close enough to aim to hit
         // If user is not in the middle of another attack
-        // If 
-        if (a.CanHit(a.aimConfirmThreshold) && attackInProgress == null)
+        // If the attack being aimed is not on cooldown
+        if (a.CanHit(a.aimConfirmThreshold) && attackInProgress == null && a.OffCooldown())
         {
             //attackInProgress = StartCoroutine()
 

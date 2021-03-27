@@ -30,6 +30,7 @@ public class EntityAttack : MonoBehaviour
     public PercentageModifier aimSpeedWhileAttacking;
     public float telegraphDelay = 0.5f;
     public float cooldownTime = 1;
+    float cooldownTimer;
 
     [Header("Cosmetics")]
     public UnityEvent telegraphCosmeticEffects;
@@ -170,6 +171,11 @@ public class EntityAttack : MonoBehaviour
         return false;
     }
 
+
+    public bool OffCooldown()
+    {
+        return (cooldownTimer >= cooldownTime);
+    }
 
     /*
     // Checks if the 

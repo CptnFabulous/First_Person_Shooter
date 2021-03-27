@@ -66,6 +66,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    void Ricochet(RaycastHit rh)
+    {
+        //Vector3.Reflect based on normal of raycasthit
+        // Reduce velocity (multiplicative or additive? Should I put velocity dampener in projectile itself or set it based on the physics material?)
+    }
+
     
     
     public void InstantiateOnImpact(RaycastHit rh, GameObject prefab, bool alignWithSurface, bool makeChild)
