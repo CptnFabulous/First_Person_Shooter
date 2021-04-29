@@ -3,15 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
+    public bool enabled = true;
+    /*
+    private bool _enabled;
+    public bool Enabled
+    {
+        get
+        {
+            return _enabled;
+        }
+
+        set
+        {
+            _enabled = value;
+            foreach (var obj in GetComponents<Interactable>())
+            {
+                obj._enabled = value;
+            }
+        }
+    }
+    */
+
     public UnityEvent onInteract;
     public float cooldown = 0.5f;
-    public string instruction = "Interact";
-    public string disabledMessage = "Cannot interact";
+    public string instructionMessage = "Interact";
+    public string inProgressMessage = "In progress";
+    public string deniedMessage = "Cannot interact";
 
-    public bool NotDisabled { get; private set; } = true;
+    public bool InProgress { get; private set; } = false;
     
     IEnumerator coolingDown;
     
@@ -19,29 +42,63 @@ public class Interactable : MonoBehaviour
     {
         onInteract.Invoke();
         EventObserver.TransmitInteract(ph, this);
-
-        
         coolingDown = Cooldown(cooldown);
         StartCoroutine(coolingDown);
-        
     }
 
-
-    
     IEnumerator Cooldown(float duration)
     {
-        NotDisabled = false;
+        InProgress = true;
         yield return new WaitForSeconds(duration);
-        NotDisabled = true;
+        InProgress = false;
     }
-    
-
-
-
-
-    public void PrintMessage(string s)
-    {
-        print(s);
-    }
-
 }
+
+
+
+/*
+[RequireComponent(typeof(Collider))]
+public class Interactable : MonoBehaviour
+{
+    [System.Serializable]
+    public struct Interaction
+    {
+        public bool enabled;
+        public UnityEvent onInteract;
+        public float cooldown;
+        public string instructionMessage;
+        public string inProgressMessage;
+        public string disabledMessage;
+    }
+
+    public Interaction[] possibleInteractions = new Interaction[1];
+    public int currentlyActive;
+
+    public bool InProgress { get; private set; } = false;
+
+    IEnumerator coolingDown;
+
+    public Interaction Current()
+    {
+        return possibleInteractions[currentlyActive];
+    }
+
+    public virtual void OnInteract(PlayerHandler ph)
+    {
+        // Set something up so f the object is merely locked and doesn’t meet the criteria for some reason, it will display a locked message, and if the interactability is disabled, nothing will occur.
+
+        Interaction i = possibleInteractions[currentlyActive];
+        i.onInteract.Invoke();
+        EventObserver.TransmitInteract(ph, this);
+        coolingDown = Cooldown(i.cooldown);
+        StartCoroutine(coolingDown);
+    }
+
+    IEnumerator Cooldown(float duration)
+    {
+        InProgress = true;
+        yield return new WaitForSeconds(duration);
+        InProgress = false;
+    }
+}
+*/

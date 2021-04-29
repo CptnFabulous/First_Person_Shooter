@@ -253,15 +253,21 @@ public class HeadsUpDisplay : MonoBehaviour
 
     public void PopulateInteractionMenu(Interactable i)
     {
-        if (interactWindow.gameObject.activeSelf == false)
+        interactWindow.gameObject.SetActive(true);
+
+        //interactButtonPrompt.sprite = 
+
+        interactObjectName.text = i.name;
+
+        if (i.InProgress == true)
         {
-            interactWindow.gameObject.SetActive(true);
-
-            //interactButtonPrompt.sprite = 
-
-
-            interactObjectName.text = i.name;
-            interactInstruction.text = i.instruction;
+            //interactInstruction.text = i.Current().inProgressMessage;
+            interactInstruction.text = i.inProgressMessage;
+        }
+        else
+        {
+            //interactInstruction.text = i.Current().instructionMessage;
+            interactInstruction.text = i.instructionMessage;
         }
 
     }

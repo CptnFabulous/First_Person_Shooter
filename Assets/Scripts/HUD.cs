@@ -37,10 +37,10 @@ public class HUD : MonoBehaviour
     public Color healthNormalColour;
     public Color healthCriticalColour;
 
-    public UnityEvent onPlayerDamage;
-    public UnityEvent onHeal;
-    public UnityEvent onCritical;
-    public UnityEvent onFine;
+    public UnityEvent onHealthDamage;
+    public UnityEvent onHealthHeal;
+    public UnityEvent onHealthCritical;
+    public UnityEvent onHealthFine;
 
     int prevHealthValue;
 
@@ -60,21 +60,21 @@ public class HUD : MonoBehaviour
 
         if (current < prevHealthValue)
         {
-            onPlayerDamage.Invoke();
+            onHealthDamage.Invoke();
         }
         else if (current > prevHealthValue)
         {
-            onHeal.Invoke();
+            onHealthHeal.Invoke();
         }
         prevHealthValue = current;
 
         if (ph.ph.health.IsCritical())
         {
-            onCritical.Invoke();
+            onHealthCritical.Invoke();
         }
         else
         {
-            onFine.Invoke();
+            onHealthFine.Invoke();
         }
 
         
