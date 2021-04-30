@@ -4,36 +4,59 @@ using UnityEngine;
 
 public class DoorHandler : MonoBehaviour
 {
+    public bool isLocked;
+
     public Animator animationHandler;
     public string openBoolName;
-    
     public Interactable openFunction;
     public Interactable closeFunction;
-    
 
+    IEnumerator toggleStateTimer;
 
-    IEnumerator SetOpen(bool openState)
+    public void SetOpen(bool openState)
     {
+        animationHandler.StartPlayback();
         animationHandler.SetBool(openBoolName, openState);
 
-        Interactable y;
-        Interactable n;
         if (openState == true)
         {
-            y = openFunction;
-            n = closeFunction;
+            toggleStateTimer = Open();
         }
         else
         {
-            y = closeFunction;
-            n = openFunction;
+            toggleStateTimer = Close();
         }
 
-        //yield return new WaitForSeconds(y.possibleInteractions[y.currentlyActive].cooldown);
-        yield return new WaitForSeconds(y.cooldown);
+        StartCoroutine(toggleStateTimer);
+    }
 
+    IEnumerator Open()
+    {
+        yield return new WaitForSeconds(openFunction.cooldown);
+        openFunction.enabled = false;
+        openFunction.gameObject.SetActive(false);
+        closeFunction.enabled = true;
+        closeFunction.gameObject.SetActive(true);
+    }
 
-        y.enabled = false;
-        n.enabled = true;
+    IEnumerator Close()
+    {
+        yield return new WaitForSeconds(closeFunction.cooldown);
+        closeFunction.enabled = false;
+        closeFunction.gameObject.SetActive(false);
+        openFunction.enabled = true;
+        openFunction.gameObject.SetActive(true);
+    }
+
+    /*
+    private void OnCollisionEnter(Collision collision)
+    {
+        CancelAnimation();
+    }
+    */
+    public void CancelAnimation()
+    {
+        StopCoroutine(toggleStateTimer);
+        animationHandler.StopPlayback();
     }
 }

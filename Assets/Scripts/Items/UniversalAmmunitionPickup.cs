@@ -6,9 +6,9 @@ public class UniversalAmmunitionPickup : ItemPickup
 {
     [Range(0, 100)] public float percentageValue;
 
-    public override void Pickup(Collider c)
+    public override void Pickup(PlayerHandler ph)
     {
-        AmmunitionInventory ai = c.GetComponent<AmmunitionInventory>();
+        AmmunitionInventory ai = ph.a;
         if (ai != null)
         {
             bool hasBeenConsumed = false;

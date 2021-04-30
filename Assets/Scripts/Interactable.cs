@@ -52,6 +52,12 @@ public class Interactable : MonoBehaviour
         yield return new WaitForSeconds(duration);
         InProgress = false;
     }
+
+    // Is something preventing this particular player from being able to interact with this object?
+    public virtual bool CanPlayerInteract(PlayerHandler ph)
+    {
+        return true;
+    }
 }
 
 

@@ -6,18 +6,22 @@ public abstract class ItemPickup : MonoBehaviour
 {
     public bool consumeImmediately = true;
     
+    
 
     public virtual void OnTriggerEnter(Collider c)
     {
-        if (c.GetComponent<PlayerHandler>() != null)
+        PlayerHandler ph = c.GetComponent<PlayerHandler>();
+        if (ph != null)
         {
-            Pickup(c);
+            Pickup(ph);
         }
     }
 
-    public virtual void Pickup(Collider c)
+    public virtual void Pickup(PlayerHandler ph)
     {
         // Do item pickup stuff
+
+        
 
         if (consumeImmediately == true)
         {

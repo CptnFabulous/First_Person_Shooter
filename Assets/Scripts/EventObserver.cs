@@ -49,7 +49,7 @@ public class EventObserver : MonoBehaviour
     
 
 
-
+    
 
 
 
@@ -68,6 +68,19 @@ public class EventObserver : MonoBehaviour
             }
         }
     }
+
+    /*
+    public static void AddAttackReceiver(System.Action<AttackMessage> action, MonoBehaviour original)
+    {
+        EventObserver eo = original.GetComponentInParent<EventObserver>();
+        if (eo == null)
+        {
+            eo = original.transform.root.gameObject.AddComponent<EventObserver>();
+        }
+        
+        eo.OnAttack += action;
+    }
+    */
 
     /*
     // This function is run whenever a player or NPC initiates an attack

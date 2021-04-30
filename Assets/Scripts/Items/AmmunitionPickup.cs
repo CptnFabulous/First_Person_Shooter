@@ -19,9 +19,9 @@ public class AmmunitionPickup : ItemPickup
         */
     }
 
-    public override void Pickup(Collider c)
+    public override void Pickup(PlayerHandler ph)
     {
-        AmmunitionInventory ai = c.GetComponent<AmmunitionInventory>();
+        AmmunitionInventory ai = ph.GetComponent<AmmunitionInventory>();
         
         if (ai != null)
         {
@@ -34,7 +34,7 @@ public class AmmunitionPickup : ItemPickup
                 }
                 else
                 {
-                    base.Pickup(c);
+                    base.Pickup(ph);
                 }
             }
             

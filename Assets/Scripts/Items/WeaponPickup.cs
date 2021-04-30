@@ -6,8 +6,8 @@ public class WeaponPickup : ItemPickup
 {
     public WeaponData data;
 
-    public override void Pickup(Collider c)
+    public override void Pickup(PlayerHandler ph)
     {
-        base.Pickup(c);
+        base.Pickup(ph);
     }
 }

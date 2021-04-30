@@ -76,6 +76,7 @@ public class AI : MonoBehaviour//, IEventObserver
 
         eo = GetComponent<EventObserver>();
         eo.OnAttack += Dodge;
+        //EventObserver.AddAttackReceiver(Dodge, this);
     }
 
     /*

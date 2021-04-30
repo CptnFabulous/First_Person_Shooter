@@ -5,12 +5,12 @@ using UnityEngine;
 public class HealthPickup : ItemPickup
 {
     public int value;
-    public override void Pickup(Collider c)
+    public override void Pickup(PlayerHandler ph)
     {
-        PlayerHealth ph = c.GetComponent<PlayerHealth>();
-        if (ph != null)
+        PlayerHealth h = ph.ph;
+        if (h != null)
         {
-            int healthToReplenish = ph.health.max - ph.health.current;
+            int healthToReplenish = h.health.max - h.health.current;
             if (healthToReplenish > 0)
             {
                 if (healthToReplenish >= value)
@@ -18,10 +18,10 @@ public class HealthPickup : ItemPickup
                     healthToReplenish = value;
                 }
 
-                ph.health.current += healthToReplenish;
+                h.health.current += healthToReplenish;
                 value -= healthToReplenish;
 
-                base.Pickup(c);
+                base.Pickup(ph);
             }
         }
     }
