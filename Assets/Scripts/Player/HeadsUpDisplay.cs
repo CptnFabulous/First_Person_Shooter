@@ -35,6 +35,9 @@ public class HeadsUpDisplay : MonoBehaviour
     public Text interactObjectName;
     public Text interactInstruction;
     public Image interactButtonPrompt;
+    public Sprite interactable;
+    public Sprite denied;
+    public Sprite inProgress;
     
 
     [Header("Health elements")]
@@ -256,23 +259,24 @@ public class HeadsUpDisplay : MonoBehaviour
     {
         interactWindow.gameObject.SetActive(true);
 
-        //interactButtonPrompt.sprite = 
-
         interactObjectName.text = i.name;
 
         if (i.InProgress == true)
         {
             interactInstruction.text = i.inProgressMessage;
+            interactButtonPrompt.sprite = inProgress;
+
         }
         else if (i.CanPlayerInteract(ph) == false)
         {
             interactInstruction.text = i.deniedMessage;
+            interactButtonPrompt.sprite = denied;
         }
         else
         {
             interactInstruction.text = i.instructionMessage;
+            interactButtonPrompt.sprite = interactable;
         }
-
     }
 
     public void HideInteractionMenu()

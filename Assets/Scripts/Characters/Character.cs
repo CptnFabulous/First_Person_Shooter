@@ -21,4 +21,11 @@ public class Character : Entity
     {
         return faction.HostileTowards(c.faction);
     }
+
+
+
+
+
+
+
 }

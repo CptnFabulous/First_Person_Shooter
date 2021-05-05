@@ -4,16 +4,21 @@ using UnityEngine;
 
 public abstract class ItemPickup : MonoBehaviour
 {
+    public bool pickupOnContact = true;
     public bool consumeImmediately = true;
+
     
     
 
     public virtual void OnTriggerEnter(Collider c)
     {
-        PlayerHandler ph = c.GetComponent<PlayerHandler>();
-        if (ph != null)
+        if (pickupOnContact == true)
         {
-            Pickup(ph);
+            PlayerHandler ph = c.GetComponent<PlayerHandler>();
+            if (ph != null)
+            {
+                Pickup(ph);
+            }
         }
     }
 

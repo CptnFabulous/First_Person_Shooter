@@ -45,7 +45,7 @@ public class InteractFunction : MonoBehaviour
             // If the player presses the interact button
             // If the player can currently interact with the object
             // If the object is not cooling down or in the middle of performing an action
-            if (Input.GetButtonDown("Interact") && i.CanPlayerInteract(playerHandler) && i.InProgress == false)
+            if (Input.GetButtonDown("Interact") && i.CanPlayerInteract(playerHandler) == true && i.InProgress == false)
             {
                 i.OnInteract(playerHandler);
             }

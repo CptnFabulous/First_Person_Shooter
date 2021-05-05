@@ -824,6 +824,11 @@ MonoBehaviour:
   interactObjectName: {fileID: 4117832374547852222}
   interactInstruction: {fileID: 4284360043039767633}
   interactButtonPrompt: {fileID: 3225917393038542723}
+  interactable: {fileID: 4782931132444023062, guid: 0fd01b245505440438bf3d5593deba4a,
+    type: 3}
+  denied: {fileID: 4510328748800036071, guid: 0fd01b245505440438bf3d5593deba4a, type: 3}
+  inProgress: {fileID: 8686082287310036609, guid: 0fd01b245505440438bf3d5593deba4a,
+    type: 3}
   healthDisplay: {fileID: 8014551193019703023}
   healthCounter: {fileID: 3560601923766194336}
   healthBar: {fileID: 5146769274886609455}
@@ -1030,7 +1035,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHandler: {fileID: 7394104395992576367}
   maxDistance: 5
-  hud: {fileID: 7394104395992576402}
   interactMask:
     serializedVersion: 2
     m_Bits: 4294967295
