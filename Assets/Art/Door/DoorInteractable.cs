@@ -13,7 +13,8 @@ public class DoorInteractable : Interactable
 
     public void Start()
     {
-        animationHandler.SetBool(openBoolName, openAtStart);
+        //animationHandler.StartPlayback();
+        //animationHandler.SetBool(openBoolName, openAtStart);
     }
 
     public override void OnInteract(PlayerHandler ph)

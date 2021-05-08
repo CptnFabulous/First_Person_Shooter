@@ -433,7 +433,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 1.5
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &7394104395992576405
@@ -667,7 +667,7 @@ MonoBehaviour:
   forceJump: 5
   jumpDelay: 0.1
   groundedRayLength: 0.1
-  standHeight: 1.5
+  standHeight: 2
   crouchHeight: 1
   crouchTime: 0.25
   relativeHeadHeight: 0.375

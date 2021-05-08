@@ -20,6 +20,7 @@ public class KillRadius : MonoBehaviour
         checkTimer += Time.deltaTime;
         if (checkTimer > delayBetweenChecks)
         {
+            Debug.Log("Kill sweep on frame " + Time.frameCount);
             checkTimer = 0;
             Entity[] entities = FindObjectsOfType<Entity>();
             foreach(Entity e in entities)

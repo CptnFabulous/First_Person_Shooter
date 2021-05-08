@@ -32,8 +32,14 @@ public class PlayerHandler : Character
         return gsh.CurrentState();
     }
 
+    public override void Destroy()
+    {
+        Die();
+    }
+
     public void Die()
     {
+        ph.health.current = 0;
         pc.rb.constraints = RigidbodyConstraints.None;
         pc.enabled = false;
         wh.CurrentWeapon().enabled = false;
