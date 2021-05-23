@@ -191,6 +191,18 @@ public static class Misc
     }
     #endregion
 
+    #region Audio
+
+    public static void ThisFunctionIsNotCompletedYet_PlaySoundClipFromAnywhere(AudioClip clip, Vector3 position, float delay = 0)
+    {
+        GameObject audioSourceObject = Object.Instantiate(new GameObject(), position, Quaternion.identity);
+        AudioSource source = audioSourceObject.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.PlayDelayed(delay);
+    }
+
+    #endregion
+
     #region Even more miscellaneous
     public static bool RandomBool(float trueChance = 0.5f)
     {

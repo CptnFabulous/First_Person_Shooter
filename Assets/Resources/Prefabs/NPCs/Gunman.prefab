@@ -500,7 +500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   properName: Gunman
   description: A placeholder enemy armed with a gun.
-  isUnique: 0
+  isUniquelyNamed: 0
   faction: {fileID: 11400000, guid: 0c5d1c8880298be419c54a2f8d46de85, type: 2}
 --- !u!114 &3607017158169954316
 MonoBehaviour:
@@ -590,21 +590,21 @@ MonoBehaviour:
   lookThreshold: 0
   reactionTime: 0
   projectileAttacks:
-  - name: Handgun burst
+  - name: Rifle burst
     c: {fileID: 0}
-    telegraphMoveSpeed: 3
-    attackMoveSpeed: 3
+    telegraphMoveSpeed: 5
+    attackMoveSpeed: 5
     hitDetection:
       serializedVersion: 2
       m_Bits: 4294967295
     range: 30
-    aimSpeed: 50
+    aimSpeed: 100
     telegraphAimSpeed: 0
     targetThreshold: 0.2
     aimMarker: {x: 0, y: 0, z: 0}
     isAttacking: 0
-    attacksPerMinute: 300
-    delay: 0.5
+    attacksPerMinute: 900
+    delay: 0.25
     cooldown: 0.5
     onTelegraph:
       m_PersistentCalls:

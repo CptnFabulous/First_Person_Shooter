@@ -115,6 +115,25 @@ public class Gun : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        // Check all magazines, and set to zero if the player does not have enough ammo (or there is no player assigned)
+        foreach(GunFiringMode f in firingModes)
+        {
+            if (f.magazine != null)
+            {
+                if (playerHolding == null)
+                {
+                    f.magazine.data.current = 0;
+                }
+                else if (playerHolding.ph.a.GetStock(f.general.ammoType) < f.magazine.data.max)
+                {
+                    f.magazine.data.current = playerHolding.ph.a.GetStock(f.general.ammoType);
+                }
+            }
+        }
+    }
+
     private void Start()
     {
         playerHolding = GetComponentInParent<WeaponHandler>();
@@ -401,7 +420,7 @@ public class Gun : MonoBehaviour
         LerpADS(adsTimer);
 
         // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
-        Debug.Log(sensitivityWhileAiming);
+        Debug.Log("Player camera sensitivity = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
     }
 
     void LerpADS(float timer)

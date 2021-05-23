@@ -40,6 +40,9 @@ public class EventObserver : MonoBehaviour
         #endregion
 
         eventHandler.eventObservers.Add(this);
+
+
+        
     }
 
     private void OnDestroy()
