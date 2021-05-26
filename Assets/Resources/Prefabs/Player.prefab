@@ -913,7 +913,7 @@ MonoBehaviour:
   - refName: Slugs
     max: 6
     current: 6
-    critical: 4
+    critical: 2
   - refName: Rifle
     max: 120
     current: 120

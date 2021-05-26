@@ -594,8 +594,8 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "Function:\nMovement\r\nCamera controls\r\nJump\r\nCrouch\r\nFire weapon\r\nUse
-    optics\r\nReload weapon\r\nWeapon selector\r\nMelee attack\r\nPause\r\nIn-game
-    menu\r"
+    optics\r\nReload weapon\r\nWeapon selector\r\nInteract (when prompt appears)\nMelee
+    attack\r\nPause\r\nIn-game menu\r"
 --- !u!222 &419277682
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1344,6 +1344,8 @@ MonoBehaviour:
     R
 
     Q
+
+    E
 
     Scroll wheel click
 

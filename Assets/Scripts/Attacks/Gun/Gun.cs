@@ -130,6 +130,11 @@ public class Gun : MonoBehaviour
                 {
                     f.magazine.data.current = playerHolding.ph.a.GetStock(f.general.ammoType);
                 }
+                else
+                {
+                    Debug.Log("Enough ammo");
+                    f.magazine.data.current = f.magazine.data.max;
+                }
             }
         }
     }
@@ -144,6 +149,8 @@ public class Gun : MonoBehaviour
         playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
 
         AssignFiringModes(firingModeIndex);
+
+        OnEnable();
     }
 
     void Update()
