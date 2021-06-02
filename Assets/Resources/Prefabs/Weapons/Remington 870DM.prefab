@@ -10172,7 +10172,8 @@ MonoBehaviour:
   description: 
   firingModes:
   - name: Buckshot
-    description: 
+    description: Launches a spread of pellets, for situations not permitting precision
+      aiming or requiring an imposing explosive overstatement.
     general: {fileID: 4553456812664206733}
     fireControls: {fileID: 4553456813516393988}
     magazine: {fileID: 4553456814588973376}
@@ -10180,7 +10181,7 @@ MonoBehaviour:
     hudIcon: {fileID: 21300008, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     switchSpeed: 0.5
   - name: Slugs
-    description: 
+    description: Launches a single solid slug.
     general: {fileID: 4553456813225644492}
     fireControls: {fileID: 4553456813516393988}
     magazine: {fileID: 0}

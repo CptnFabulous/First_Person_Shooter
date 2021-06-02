@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -55,8 +56,10 @@ public class PlayerController : MonoBehaviour
     public float groundedRayLength = 0.01f;
 
     bool willJump;
-    float jumpTimer = 9999999;
+    float jumpTimer = float.MaxValue;
     LayerMask terrainDetection;
+    public UnityEvent onJump;
+    public UnityEvent onLand;
     #endregion
 
     #region Crouching
@@ -70,6 +73,8 @@ public class PlayerController : MonoBehaviour
 
     float crouchTimer;
     [HideInInspector] public bool isCrouching;
+    public UnityEvent onCrouch;
+    public UnityEvent onStand;
     #endregion
 
     #region Cosmetics
@@ -81,23 +86,16 @@ public class PlayerController : MonoBehaviour
     public float torsoRotateSpeed = 1;
     public float torsoRotateTime = -0.1f;
 
-    [Header("Cosmetics - Audio")]
-    // Noises
-    public AudioClip footstepNoise;
-    public float alternateStepPitchShift;
-    public float timeToToPlayStepMain = 0.25f;
-    public float timeToPlayStepAlternate = 0.75f;
-    public AudioClip jumpNoise;
-    public AudioClip landNoise;
-    // public AudioClip slideNoise;
 
-    [Header("Cosmetics - Bobbing")]
+    [Header("Cosmetics - Walking")]
     // Head bobbing while walking
     public float bobLoopTime;
     public Vector2 bobExtents;
     public AnimationCurve bobCurveX;
     public AnimationCurve bobCurveY;
     float bobTimer;
+    public int numberOfLegsForSteps = 2;
+    public UnityEvent onStep;
 
     [Header("Cosmetics - Torso Drag")]
     // Torso lingering/dragging when moving
@@ -366,8 +364,11 @@ public class PlayerController : MonoBehaviour
             float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
             float time = bobLoopTime / speedMagnitude;
 
+
             bobTimer += Time.deltaTime / time;
             bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+
+            //if (bobTimer >= )
 
             float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
             float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
