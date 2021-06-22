@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ai: {fileID: 0}
-  movementSpeed: 5
+  movementSpeed: 8
   minimumRange: 15
   maximumRange: 20
   numberOfChecks: 15

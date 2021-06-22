@@ -42,7 +42,8 @@ public class AI : MonoBehaviour//, IEventObserver
     public float yFOV;
     public LayerMask viewDetection = ~0;
     public float pursueRange;
-    
+    public float pursuePatience = 10;
+    float patienceTimer = float.MaxValue;
 
     public Character target;
 
@@ -98,13 +99,23 @@ public class AI : MonoBehaviour//, IEventObserver
         {
             target = AcquireTarget();
         }
-        else
+        else // if a target has already been acquired
         {
-            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange)
+            #region Check if out of range and cancel pursuit after a timer
+            // If the AI cannot immediately find their target, count up a timer and continue pursuing until the timer expires
+            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(target.transform.position, head.position, viewDetection) == false)
+            {
+                patienceTimer = 0;
+            }
+
+            patienceTimer += Time.deltaTime;
+
+            if (patienceTimer >= pursuePatience)
             {
                 print("Target out of range");
                 target = null;
             }
+            #endregion
 
             Health h = target.GetComponent<Health>();
             if (h != null && h.IsAlive() == false)
