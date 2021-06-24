@@ -3,52 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-
-/*
-
-Current AI behaviours to make:
-* Seek cover
-* Dodge attack
-* Evade target
-* Pursue target
-* Patrol along route
-* Wander randomly
-
-Current AI action behaviours to make:
-* Ranged projectile attack
-* Ranged throwable attack (calculate arcs)
-* Melee attack
-*/
-
-public class AI : MonoBehaviour//, IEventObserver
+public class AIEntity : MonoBehaviour
 {
-    [Header("References")]
-    [HideInInspector] public Animator stateMachine;
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
     [HideInInspector] public EventObserver eo;
-
-    
-
+    [HideInInspector] public Animator animationController;
+    [HideInInspector] public Animator aiStateMachine;
 
     [Header("Detection")]
     public Transform head;
-    public float viewRange;
-    [Range(0, 180)]
-    public float xFOV;
-    [Range(0, 180)]
-    public float yFOV;
+    public float viewRange = 50;
+    [Range(0, 180)] public float xFOV = 60;
+    [Range(0, 180)] public float yFOV = 60;
     public LayerMask viewDetection = ~0;
-    public float pursueRange;
+    public float pursueRange = 60;
     public float pursuePatience = 10;
     float patienceTimer = float.MaxValue;
 
-    public Character target;
-
-    
-
+    [Header("Current target")]
+    public Character currentTarget;
 
     [Header("Self-preservation")]
     public SelfPreservation selfPreservationBehaviour;
@@ -56,20 +32,16 @@ public class AI : MonoBehaviour//, IEventObserver
     public float dodgeCooldown;
     float dodgeCooldownTimer;
 
-
-
-
-
     [Header("Looking at stuff")]
-    public float lookSpeed;
-    public float lookThreshold;
+    public float lookSpeed = 120;
+    public float lookThreshold = 0.2f;
     bool inLookIENumerator;
     Vector3 aimMarker;
-    public float reactionTime;
+    public float reactionTime = 0.5f;
 
-    public virtual void Awake()
+    private void Awake()
     {
-        stateMachine = GetComponent<Animator>();
+        aiStateMachine = GetComponent<Animator>();
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
         characterData = GetComponent<Character>();
@@ -77,66 +49,18 @@ public class AI : MonoBehaviour//, IEventObserver
 
         eo = GetComponent<EventObserver>();
         eo.OnAttack += Dodge;
-        //EventObserver.AddAttackReceiver(Dodge, this);
     }
-
-    /*
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-    */
 
     // Update is called once per frame
     void Update()
     {
         dodgeCooldownTimer += Time.deltaTime;
+        PursueTargetUpdate();
+        UpdateStateMachineVariables();
 
-        #region Check for targets (upgrade this to something snazzier)
-        bool targetAcquired = target != null;
-        if (target == null) // Checks for targets
-        {
-            target = AcquireTarget();
-        }
-        else // if a target has already been acquired
-        {
-            #region Check if out of range and cancel pursuit after a timer
-            // If the AI cannot immediately find their target, count up a timer and continue pursuing until the timer expires
-            if (Vector3.Distance(transform.position, target.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(target.transform.position, head.position, viewDetection) == false)
-            {
-                patienceTimer = 0;
-            }
-
-            patienceTimer += Time.deltaTime;
-
-            if (patienceTimer >= pursuePatience)
-            {
-                print("Target out of range");
-                target = null;
-            }
-            #endregion
-
-            Health h = target.GetComponent<Health>();
-            if (h != null && h.IsAlive() == false)
-            {
-                target = null;
-            }
-        }
-        #endregion
-
-        #region Set state machine variables
-        stateMachine.SetBool("targetAcquired", target != null);
-        if (target != null)
-        {
-            stateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
-        }
-        stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
-        stateMachine.SetInteger("health", hp.health.current);
-        #endregion
     }
 
-    #region Looking at stuff
+    #region Looking around
     public void LookTowards(Vector3 position, float degreesPerSecond)
     {
         Quaternion correctRotation = Quaternion.LookRotation(position, transform.up);
@@ -179,38 +103,48 @@ public class AI : MonoBehaviour//, IEventObserver
 
             Quaternion lookLerp = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
             head.transform.rotation = lookLerp;
-            
+
             yield return new WaitForEndOfFrame();
         }
 
         inLookIENumerator = false;
         print("Agent is now looking at " + position + ".");
     }
+
     #endregion
 
-
-
-
-
-
-    void Dodge(AttackMessage am)
+    #region Seeking targets
+    void PursueTargetUpdate()
     {
-        // If the cooldown has finished after the last dodge
-        // If the AI is willing to dodge attacks
-        // If the AI is not already dodging an attack
-        // If the AI is at risk of being damaged
-        if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
+        if (currentTarget == null) // If the AI has not acquired a target, check for one
         {
-            // Resets timer
-            dodgeCooldownTimer = 0;
-            
-            attackToDodge = am; // Specifies attack to dodge from
-            stateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
+            currentTarget = AcquireTarget();
+        }
+
+        if (currentTarget != null) // If the AI has a target, check if said target is still worth pursuing
+        {
+            // If the AI cannot immediately find their target, count up a timer and continue pursuing until the timer expires
+            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, head.position, viewDetection) == false)
+            {
+                patienceTimer = 0;
+            }
+
+            patienceTimer += Time.deltaTime;
+
+            if (patienceTimer >= pursuePatience)
+            {
+                print("Target out of range");
+                currentTarget = null;
+            }
+
+            Health h = currentTarget.GetComponent<Health>();
+            if (h != null && h.IsAlive() == false)
+            {
+                currentTarget = null;
+            }
         }
     }
 
-
-    #region Target acquisition + checking
     Character AcquireTarget()
     {
         Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, viewRange);
@@ -229,16 +163,34 @@ public class AI : MonoBehaviour//, IEventObserver
 
         return null;
     }
-
-
-    bool CanFindTarget()
-    {
-        return false;
-    }
-
-
     #endregion
 
+    #region Avoiding damage
+    void Dodge(AttackMessage am)
+    {
+        // If the cooldown has finished after the last dodge
+        // If the AI is willing to dodge attacks
+        // If the AI is not already dodging an attack
+        // If the AI is at risk of being damaged
+        if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
+        {
+            // Resets timer
+            dodgeCooldownTimer = 0;
 
+            attackToDodge = am; // Specifies attack to dodge from
+            aiStateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
+        }
+    }
+    #endregion
 
+    public void UpdateStateMachineVariables()
+    {
+        aiStateMachine.SetBool("targetAcquired", currentTarget != null);
+        if (currentTarget != null)
+        {
+            aiStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, currentTarget.transform.position));
+        }
+        aiStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
+        aiStateMachine.SetInteger("health", hp.health.current);
+    }
 }

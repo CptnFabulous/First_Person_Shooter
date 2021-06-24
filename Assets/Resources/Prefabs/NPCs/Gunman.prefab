@@ -583,6 +583,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   pursueRange: 100
+  pursuePatience: 10
   target: {fileID: 0}
   selfPreservationBehaviour: 1
   dodgeCooldown: 1
@@ -601,7 +602,9 @@ MonoBehaviour:
     aimSpeed: 100
     telegraphAimSpeed: 0
     targetThreshold: 0.2
-    aimMarker: {x: 0, y: 0, z: 0}
+    aimDegreesPerSecond: 120
+    telegraphDegreesPerSecond: 0
+    aimAngleThreshold: 0.2
     isAttacking: 0
     attacksPerMinute: 900
     delay: 0.25
