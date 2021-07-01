@@ -26,7 +26,7 @@ public class DodgeDirectionalAttack : AIMovementBehaviour
 
         if (Vector3.Distance(ai.transform.position, dodgeLocation.position) < destinationThreshold) // Checks if the agent has reached its destination, and if so, disables the mustDodge bool to exit the dodge state and resume normal AI
         {
-            ai.stateMachine.SetBool("mustDodgeAttack", false);
+            ai.aiStateMachine.SetBool("mustDodgeAttack", false);
         }
     }
 

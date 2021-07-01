@@ -17,7 +17,7 @@ public class EngageTarget : AIMovementBehaviour
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        targetLocation = ai.target.transform;
+        targetLocation = ai.currentTarget.transform;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

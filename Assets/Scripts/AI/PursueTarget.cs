@@ -10,9 +10,9 @@ public class PursueTarget : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Vector3.Distance(ai.transform.position, ai.target.transform.position) > maxRange)
+        if (Vector3.Distance(ai.transform.position, ai.currentTarget.transform.position) > maxRange)
         {
-            ai.na.SetDestination(ai.target.transform.position);
+            ai.na.SetDestination(ai.currentTarget.transform.position);
         }
     } 
 }

@@ -13,6 +13,7 @@ public abstract class AIAttack : MonoBehaviour
     public float attacksPerMinute = 600;
     public float telegraphLength = 0.5f;
     public float cooldown = 1;
+    float cooldownTimer = float.MaxValue;
 
     [Header("Accuracy stats")]
     // Replace with variable value floats.
@@ -23,6 +24,7 @@ public abstract class AIAttack : MonoBehaviour
     float currentAimDegreesPerSecond; // The speed the enemy is currently aiming at. 
 
     [Header("Attack")]
+    public LayerMask hitDetection = ~0;
     //public GunGeneralStats stats;
     //public Transform projectileOrigin;
 
@@ -32,43 +34,51 @@ public abstract class AIAttack : MonoBehaviour
     public UnityEvent onAttackEnd;
     public UnityEvent onCooldownFinished;
 
-    void Target(Entity e)
+    public void AttackUpdate()
     {
-        // If the enemy has found a target, and is able to attack them
-        if (e != null && AIFunction.SimpleLineOfSightCheck(wielder.transform.position, e.transform.position, wielder.viewDetection))
+        if (wielder.currentAttack == null)
         {
-            Vector3 targetPosition = e.transform.position;
+            cooldownTimer += Time.deltaTime;
+        }
 
+        // If the enemy has found a target, and is able to attack them
+        if (wielder.currentTarget != null && AIFunction.LineOfSight(wielder.head.position, wielder.currentTarget.transform, wielder.viewDetection))
+        {
+            Vector3 targetPosition = wielder.currentTarget.transform.position;
             currentAimDegreesPerSecond = aimDegreesPerSecond;
             wielder.LookTowards(targetPosition, currentAimDegreesPerSecond);
 
-            if (wielder.IsLookingAt(targetPosition, aimAngleThreshold))
+            // If the AI is successfully aiming at the target and their attack is off cooldown
+            if (wielder.IsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
             {
                 ExecuteAttack();
             }
         }
         else
         {
+            // If the enemy is unable to directly attack the target, cancel it
             if (wielder.currentAttack != null)
             {
                 CancelAttack();
             }
+
+            wielder.head.localRotation = Quaternion.Euler(0, 0, 0); // Head position is reset
         }
     }
 
-    public void ExecuteAttack()
+    void ExecuteAttack()
     {
-        
         if (wielder.currentAttack != null)
         {
             return;
         }
-        
+
+        cooldownTimer = 0;
         wielder.currentAttack = AttackSequence();
         StartCoroutine(wielder.currentAttack);
     }
 
-    public IEnumerator AttackSequence()
+    IEnumerator AttackSequence()
     {
         Telegraph();
         

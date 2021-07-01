@@ -48,14 +48,14 @@ MonoBehaviour:
   onHit:
     m_PersistentCalls:
       m_Calls: []
-  velocity: 0
-  gravityMultiplier: 0
-  diameter: 0
+  velocity: 500
+  gravityMultiplier: 0.1
+  diameter: 0.1
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295
   origin: {fileID: 0}
-  damage: 5
+  damage: 3
   knockback: 0
   criticalMultiplier: 1
   friendlyFire: 0

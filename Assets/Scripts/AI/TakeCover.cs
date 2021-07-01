@@ -21,7 +21,7 @@ public class TakeCover : AIMovementBehaviour
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
-        attacker = ai.target.transform; // Placeholder, replace with a better way to detect an attacker
+        attacker = ai.currentTarget.transform; // Placeholder, replace with a better way to detect an attacker
 
         currentCover = FindCover(attacker, ai.na, coverCheckRadius, numberOfChecks, coverCriteria);
     }

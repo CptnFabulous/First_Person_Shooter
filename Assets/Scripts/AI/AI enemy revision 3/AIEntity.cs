@@ -13,6 +13,9 @@ public class AIEntity : MonoBehaviour
     [HideInInspector] public Animator animationController;
     [HideInInspector] public Animator aiStateMachine;
 
+    [Header("Current target")]
+    public Character currentTarget;
+
     [Header("Detection")]
     public Transform head;
     public float viewRange = 50;
@@ -23,13 +26,10 @@ public class AIEntity : MonoBehaviour
     public float pursuePatience = 10;
     float patienceTimer = float.MaxValue;
 
-    [Header("Current target")]
-    public Character currentTarget;
-
     [Header("Self-preservation")]
     public SelfPreservation selfPreservationBehaviour;
     public AttackMessage attackToDodge;
-    public float dodgeCooldown;
+    public float dodgeCooldown = 2;
     float dodgeCooldownTimer;
 
     [Header("Looking at stuff")]
@@ -39,7 +39,7 @@ public class AIEntity : MonoBehaviour
     Vector3 aimMarker;
     public float reactionTime = 0.5f;
 
-    private void Awake()
+    public virtual void Awake()
     {
         aiStateMachine = GetComponent<Animator>();
         hp = GetComponent<NpcHealth>();
@@ -63,13 +63,17 @@ public class AIEntity : MonoBehaviour
     #region Looking around
     public void LookTowards(Vector3 position, float degreesPerSecond)
     {
-        Quaternion correctRotation = Quaternion.LookRotation(position, transform.up);
+        Quaternion correctRotation = Quaternion.LookRotation(position - head.transform.position, transform.up);
         head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
+
+
+        //head.transform.rotation = Quaternion.R
     }
 
     public bool IsLookingAt(Vector3 position, float threshold)
     {
-        if (Vector3.Angle(position - head.transform.position, head.transform.forward) < threshold)
+        Debug.Log("Angle between aim and target = " + Vector3.Angle(position - head.transform.position, head.transform.forward));
+        if (Vector3.Angle(position - head.transform.position, head.transform.forward) <= threshold)
         {
             return true;
         }

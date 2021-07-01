@@ -132,7 +132,6 @@ public class Gun : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Enough ammo");
                     f.magazine.data.current = f.magazine.data.max;
                 }
             }

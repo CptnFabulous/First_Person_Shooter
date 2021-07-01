@@ -8,6 +8,14 @@ public class AICombatant : AIEntity
     public AIAttack[] attacks;
     public IEnumerator currentAttack;
 
+    public override void Awake()
+    {
+        base.Awake();
 
+        foreach(AIAttack a in attacks)
+        {
+            a.wielder = this;
+        }
+    }
 
 }

@@ -17,12 +17,16 @@ public class NullableVector3
 
 public class AIMovementBehaviour : StateMachineBehaviour
 {
-    [HideInInspector] public AI ai;
+    //[HideInInspector] public AI ai;
+    [HideInInspector] public AIEntity ai;
+
     public float movementSpeed = 3.5f;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        ai = animator.GetComponent<AI>();
+        //ai = animator.GetComponent<AI>();
+        ai = animator.GetComponent<AIEntity>();
+
         ai.na.speed = movementSpeed;
     }
 

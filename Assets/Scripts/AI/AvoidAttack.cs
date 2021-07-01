@@ -88,7 +88,8 @@ public class AvoidAttack : AIMovementBehaviour
     void EndDodge()
     {
         ai.attackToDodge = null;
-        ai.stateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
+        //ai.stateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
+        ai.aiStateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
     }
 
 

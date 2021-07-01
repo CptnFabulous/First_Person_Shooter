@@ -73,6 +73,8 @@ public class GunGeneralStats : MonoBehaviour
                 p.OnHit(targetFound);
             }
             #endregion
+
+            effectsOnFire.Invoke();
         }
     }
 }

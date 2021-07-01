@@ -19,5 +19,6 @@ public class AIProjectileAttack : AIAttack
     public override void TheAttackItself()
     {
         base.TheAttackItself();
+        stats.Shoot(wielder.characterData, wielder.head.transform.position, wielder.head.transform.forward, wielder.head.transform.up);
     }
 }
