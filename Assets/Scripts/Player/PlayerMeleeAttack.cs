@@ -1,34 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerMeleeAttack : MonoBehaviour
 {
     public PlayerHandler playerHandler;
 
     public MeleeAttack attack;
-
-
-    public int damage = 10;
-    public float knockback = 5;
     public float cooldown = 1;
     float cooldownTimer = float.MaxValue;
-
-    public float range = 2;
-    public LayerMask hitDetection;
-
-    public AudioClip hitSound;
-    public AudioClip missSound;
-    public DamageType damageType;
 
     // Update is called once per frame
     void Update()
     {
         cooldownTimer += Time.deltaTime;
-        if (Input.GetButtonDown("MeleeAttack") && cooldownTimer >= cooldown)
+        if (Input.GetButtonDown("MeleeAttack") && cooldownTimer >= cooldown + attack.windupDuration + attack.attackDuration)
         {
+            Debug.Log("Attack button pressed");
             cooldownTimer = 0;
-
+            attack.ExecuteAttack(playerHandler);
+            /*
             RaycastHit meleeHit;
             if (Physics.Raycast(transform.position, transform.forward, out meleeHit, range, hitDetection))
             {
@@ -40,6 +32,7 @@ public class PlayerMeleeAttack : MonoBehaviour
             {
                 playerHandler.playerAudio.PlayOneShot(missSound);
             }
+            */
         }
     }
 }

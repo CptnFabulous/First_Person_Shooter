@@ -50,7 +50,7 @@ public class MenuHandler : MonoBehaviour
 
     public void SwitchWindow(MenuWindow newWindow)
     {
-        Debug.Log(newWindow);
+        //Debug.Log(newWindow);
         foreach (MenuWindow w in differentWindows)
         {
             w.gameObject.SetActive(false);

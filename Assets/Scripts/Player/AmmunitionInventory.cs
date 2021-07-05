@@ -66,7 +66,7 @@ public class AmmunitionInventory : MonoBehaviour
     }
     void OnValidate() // Ensure our inventory list always matches the enum in the event of code changes. You could also use a custom editor to maintain this more efficiently.
     {
-        Debug.Log("Resetting ammo inventory values");
+        //Debug.Log("Resetting ammo inventory values");
         var ammoNames = System.Enum.GetNames(typeof(AmmunitionType));
         var inv = new List<Resource>(ammoNames.Length);
         for (int i = 0; i < ammoNames.Length; i++)

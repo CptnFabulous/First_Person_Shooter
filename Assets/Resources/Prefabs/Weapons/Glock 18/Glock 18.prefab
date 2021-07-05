@@ -144,7 +144,7 @@ MonoBehaviour:
     type: 3}
   muzzle: {fileID: 7361818274595612537}
   projectileCount: 1
-  projectileSpread: 2
+  projectileSpread: 1
   range: 300
   recoil: 3
   recoilApplyRate: 12
@@ -240,6 +240,15 @@ MonoBehaviour:
     critical: 0
   roundsReloadedPerCycle: 15
   reloadTime: 0.75
+  onReloadStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onRoundsReloaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onReloadEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7361818273293877350
 GameObject:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class AIEntity : MonoBehaviour
 
     public bool IsLookingAt(Vector3 position, float threshold)
     {
-        Debug.Log("Angle between aim and target = " + Vector3.Angle(position - head.transform.position, head.transform.forward));
+        //Debug.Log("Angle between aim and target = " + Vector3.Angle(position - head.transform.position, head.transform.forward));
         if (Vector3.Angle(position - head.transform.position, head.transform.forward) <= threshold)
         {
             return true;
