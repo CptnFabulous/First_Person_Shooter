@@ -58,39 +58,6 @@ public static class Damage
         }
     }
 
-
-    public static void ShootProjectile(ProjectileStats projectile, float spread, float range, Character origin, Transform aimOrigin, Vector3 muzzle, Vector3 direction)
-    {
-        for (int i = 0; i < projectile.projectileCount; i++)
-        {
-            RaycastHit targetFound;
-            Vector3 processedDirection = Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), Random.Range(-spread, spread)) * direction;
-            if (Physics.Raycast(aimOrigin.position, processedDirection, out targetFound, range, projectile.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
-            {
-                processedDirection = targetFound.point;
-            }
-            else
-            {
-                processedDirection = aimOrigin.position + processedDirection.normalized * range;
-            }
-
-            Projectile p = projectile.NewProjectileClass(origin);
-
-            if (Vector3.Angle(direction, processedDirection - muzzle) < 90) // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
-            {
-                Object.Instantiate(p.gameObject, muzzle, Quaternion.LookRotation(processedDirection - muzzle, aimOrigin.up));
-            }
-            else // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
-            {
-                // Spawn the projectile directly at the location where it is supposed to hit, with the correct rotation, and activate its OnHit function.
-                Object.Instantiate(p.gameObject, processedDirection, Quaternion.LookRotation(processedDirection - aimOrigin.position, aimOrigin.up));
-                p.OnHit(targetFound);
-            }
-        }
-    }
-
-    
-
     public static void PointDamage(Character origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
     {
         DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script

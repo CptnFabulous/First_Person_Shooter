@@ -624,4 +624,24 @@ public class Gun : MonoBehaviour
     }
     #endregion
 
+
+    public void PickUp(PlayerHandler ph)
+    {
+        transform.SetParent(ph.wh.defaultHoldingPosition);
+        GetComponent<Collider>().enabled = false;
+        GetComponent<Rigidbody>().isKinematic = false;
+        playerHolding = ph.wh;
+        enabled = true;
+    }
+
+    public void Drop()
+    {
+        transform.SetParent(null);
+        GetComponent<Collider>().enabled = true;
+        GetComponent<Rigidbody>().isKinematic = false;
+        playerHolding = null;
+        enabled = false;
+    }
+
+
 }

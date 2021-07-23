@@ -23,6 +23,7 @@ public class WeaponHandler : MonoBehaviour
     public int currentWeaponIndex;
     int previousWeaponIndex;
     bool isSwitching = false;
+    public Transform defaultHoldingPosition;
 
     [Header("Switching")]
     public RadialMenu weaponSelector;
@@ -60,6 +61,10 @@ public class WeaponHandler : MonoBehaviour
     {
         ph = GetComponent<PlayerHandler>();
         standingAccuracy.defaultValue = Mathf.Clamp(standingAccuracy.defaultValue, 0, 180);
+
+
+
+        
     }
 
     // Start is called before the first frame update

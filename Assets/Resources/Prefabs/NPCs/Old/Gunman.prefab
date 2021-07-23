@@ -602,9 +602,7 @@ MonoBehaviour:
     aimSpeed: 100
     telegraphAimSpeed: 0
     targetThreshold: 0.2
-    aimDegreesPerSecond: 120
-    telegraphDegreesPerSecond: 0
-    aimAngleThreshold: 0.2
+    aimMarker: {x: 0, y: 0, z: 0}
     isAttacking: 0
     attacksPerMinute: 900
     delay: 0.25
@@ -662,36 +660,9 @@ MonoBehaviour:
           m_CallState: 2
     damageType: 0
     attackCount: 3
-    projectileStats:
-      name: Bullet
-      prefab: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
-        type: 3}
-      muzzle: {fileID: 3607017158537727664}
-      projectileCount: 1
-      velocity: 500
-      diameter: 0.1
-      gravityMultiplier: 0
-      hitDetection:
-        serializedVersion: 2
-        m_Bits: 4294967295
-      damage: 8
-      knockback: 0.01
-      criticalMultiplier: 1
-      directHitMultiplier: 0
-      blastRadius: 0
-      explosionTime: 0
-      damageFalloff:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      knockbackFalloff:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
+    prefab: {fileID: 6304249247287856590, guid: d447f841a978f434db9769ad49a79395,
+      type: 3}
+    count: 1
     projectileOrigin: {fileID: 3607017158537727664}
     spread: 2
   meleeAttacks: []

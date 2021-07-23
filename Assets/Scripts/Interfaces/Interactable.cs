@@ -34,12 +34,16 @@ public class Interactable : MonoBehaviour
     public string inProgressMessage = "In progress";
     public string deniedMessage = "Cannot interact";
 
+    public PlayerHandler PlayerWhoJustInteractedWithThis { get; private set; }
+
     public bool InProgress { get; private set; } = false;
     
     IEnumerator coolingDown;
     
     public virtual void OnInteract(PlayerHandler ph)
     {
+        PlayerWhoJustInteractedWithThis = ph;
+        
         onInteract.Invoke();
         EventObserver.TransmitInteract(ph, this);
         coolingDown = Cooldown(cooldown);

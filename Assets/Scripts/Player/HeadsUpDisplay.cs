@@ -99,7 +99,8 @@ public class HeadsUpDisplay : MonoBehaviour
         Transform playerHead = ph.pc.head.transform;
 
         #region Objectives
-        objectiveList.text = ObjectiveList();
+        //objectiveList.text = ObjectiveList();
+        UpdateObjectiveList();
         #endregion
 
         #region Minimap
@@ -388,13 +389,16 @@ public class HeadsUpDisplay : MonoBehaviour
 
     }
 
-    string ObjectiveList()
-    {
-        string list = "Objectives:";
 
+
+
+    void UpdateObjectiveList()
+    {
         ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
         if (oh != null)
         {
+            string list = "";
+
             bool activeObjectives = false; // Used to check if there are any active objectives to display
 
             foreach (PlayerObjective o in oh.objectives)
@@ -402,7 +406,6 @@ public class HeadsUpDisplay : MonoBehaviour
                 if (o.state == ObjectiveState.Active)
                 {
                     activeObjectives = true;
-                    list += "\n";
 
                     if (o.mandatory == false)
                     {
@@ -410,20 +413,22 @@ public class HeadsUpDisplay : MonoBehaviour
                     }
 
                     list += o.DisplayCriteria();
+
+                    list += "\n";
                 }
             }
 
             if (activeObjectives == false) // If there are no active objectives, list an alternate message
             {
-                list += "\n";
                 list += "All completed";
             }
+
+            objectiveList.gameObject.SetActive(true);
+            objectiveList.text = list;
         }
         else
         {
-            list = "No objectives";
+            objectiveList.gameObject.SetActive(false);
         }
-
-        return list;
     }
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIEntity : MonoBehaviour
+public class AIEntity : MonoBehaviour//, ILogHandler
 {
     [HideInInspector] public NpcHealth hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
     [HideInInspector] public EventObserver eo;
-    [HideInInspector] public Animator animationController;
-    [HideInInspector] public Animator aiStateMachine;
+    public Animator animationController;
+    public Animator aiStateMachine;
 
     [Header("Current target")]
     public Character currentTarget;
@@ -196,5 +196,11 @@ public class AIEntity : MonoBehaviour
         }
         aiStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
         aiStateMachine.SetInteger("health", hp.health.current);
+    }
+
+    public void UpdateAnimatorVariables()
+    {
+        animationController.SetBool("IsMoving", na.velocity.magnitude > 0);
+        animationController.SetFloat("MovementSpeed", na.velocity.magnitude);
     }
 }
