@@ -969,7 +969,7 @@ MonoBehaviour:
   onLand:
     m_PersistentCalls:
       m_Calls: []
-  standHeight: 2
+  standHeight: 1.7
   crouchHeight: 1
   crouchTime: 0.25
   relativeHeadHeight: 0.375
@@ -1193,6 +1193,7 @@ MonoBehaviour:
     origin: {fileID: 0}
   equippedWeapons: []
   currentWeaponIndex: 0
+  defaultHoldingPosition: {fileID: 0}
   weaponSelector: {fileID: 801657994281591209}
 --- !u!114 &7394104395992576403
 MonoBehaviour:
@@ -2207,6 +2208,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2162722691028460543, guid: aa3e84de4feb7314d80e85ed90615eb0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -30.00003
+      objectReference: {fileID: 0}
     - target: {fileID: 2613850025226378161, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
       propertyPath: m_Layer
@@ -2360,7 +2366,7 @@ PrefabInstance:
     - target: {fileID: 8182742341012162145, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8182742341012162145, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
@@ -2390,17 +2396,17 @@ PrefabInstance:
     - target: {fileID: 8182742341012162149, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8182742341012162149, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8182742341012162149, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8182742341012162149, guid: aa3e84de4feb7314d80e85ed90615eb0,
         type: 3}

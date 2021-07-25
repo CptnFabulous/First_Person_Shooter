@@ -17,16 +17,21 @@ public abstract class AIAttack : MonoBehaviour
 
     [Header("Accuracy stats")]
     // Replace with variable value floats.
+    /*
     public float aimDegreesPerSecond = 120;
     public float aimAngleThreshold = 0.2f;
+    
+    float currentAimDegreesPerSecond; // The speed the enemy is currently aiming at.
+    */
+
+    public float aimUnitsPerSecond = 50;
+    public float aimDistanceThreshold = 0.1f;
+    float currentAimUnitsPerSecond;
     public float aimMultiplierWhileTelgraphing = 0;
     public float aimMultiplierWhileAttacking = 0;
-    float currentAimDegreesPerSecond; // The speed the enemy is currently aiming at. 
 
     [Header("Attack")]
     public LayerMask hitDetection = ~0;
-    //public GunGeneralStats stats;
-    //public Transform projectileOrigin;
 
     [Header("Cosmetics")]
     public UnityEvent onTelegraph;
@@ -45,11 +50,15 @@ public abstract class AIAttack : MonoBehaviour
         if (wielder.currentTarget != null && AIFunction.LineOfSight(wielder.head.position, wielder.currentTarget.transform, wielder.viewDetection))
         {
             Vector3 targetPosition = wielder.currentTarget.transform.position;
-            currentAimDegreesPerSecond = aimDegreesPerSecond;
-            wielder.LookTowards(targetPosition, currentAimDegreesPerSecond);
+
+            //currentAimDegreesPerSecond = aimDegreesPerSecond;
+            //wielder.RotateLookTowards(targetPosition, currentAimDegreesPerSecond);
+            currentAimUnitsPerSecond = aimUnitsPerSecond;
+            wielder.TrackLookTowards(targetPosition, currentAimUnitsPerSecond);
 
             // If the AI is successfully aiming at the target and their attack is off cooldown
-            if (wielder.IsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
+            //if (wielder.AngleIsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
+            if (wielder.DistanceIsLookingAt(targetPosition, aimDistanceThreshold) && cooldownTimer >= cooldown)
             {
                 ExecuteAttack();
             }
@@ -62,7 +71,7 @@ public abstract class AIAttack : MonoBehaviour
                 CancelAttack();
             }
 
-            wielder.head.localRotation = Quaternion.Euler(0, 0, 0); // Head position is reset
+            wielder.ResetLookDirection();
         }
     }
 
@@ -81,12 +90,14 @@ public abstract class AIAttack : MonoBehaviour
     IEnumerator AttackSequence()
     {
         Telegraph();
-        
-        currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileTelgraphing;
+
+        //currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileTelgraphing;
+        currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileTelgraphing;
 
         yield return new WaitForSeconds(telegraphLength);
 
-        currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileAttacking;
+        //currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileAttacking;
+        currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileAttacking;
 
         for (int i = 0; i < attacksInBurst; i++)
         {
@@ -109,12 +120,12 @@ public abstract class AIAttack : MonoBehaviour
     public virtual void Telegraph()
     {
         onTelegraph.Invoke();
-        
     }
 
     public void CancelAttack()
     {
-        currentAimDegreesPerSecond = aimDegreesPerSecond;
+        //currentAimDegreesPerSecond = aimDegreesPerSecond;
+        currentAimUnitsPerSecond = aimUnitsPerSecond;
         StopCoroutine(wielder.currentAttack);
         wielder.currentAttack = null;
         onAttackEnd.Invoke();

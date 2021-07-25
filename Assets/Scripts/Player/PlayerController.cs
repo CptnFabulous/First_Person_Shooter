@@ -168,6 +168,9 @@ public class PlayerController : MonoBehaviour
         // Ensure minLookAngle is not larger than maxLookAngle, or the opposite way around.
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
+
+
+        //cc.height = standHeight;
     }
 
     // Use this for initialization

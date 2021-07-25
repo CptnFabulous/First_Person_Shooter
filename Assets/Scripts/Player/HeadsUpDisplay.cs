@@ -203,8 +203,8 @@ public class HeadsUpDisplay : MonoBehaviour
                     Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
                     reticleOffsetPoint = playerHead.position + reticleOffsetPoint * ggs.range;
 
-                    Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
-                    Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * ggs.range, Color.red);
+                    //Debug.DrawLine(playerHead.position, reticleOffsetPoint, Color.blue);
+                    //Debug.DrawLine(playerHead.position, playerHead.position + playerHead.forward * ggs.range, Color.red);
 
                     reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
                     Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;

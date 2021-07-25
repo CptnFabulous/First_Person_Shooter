@@ -58,26 +58,48 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         PursueTargetUpdate();
         UpdateStateMachineVariables();
 
+        if (animationController != null)
+        {
+            UpdateAnimatorVariables();
+        }
     }
 
     #region Looking around
-    public void LookTowards(Vector3 position, float degreesPerSecond)
+
+    public void TrackLookTowards(Vector3 position, float unitsPerSecond)
+    {
+        aimMarker = Vector3.MoveTowards(aimMarker, position, unitsPerSecond * Time.deltaTime);
+        head.transform.LookAt(position, transform.up);
+    }
+
+    public bool DistanceIsLookingAt(Vector3 position, float threshold)
+    {
+        if (Vector3.Distance(aimMarker, position) <= threshold)
+        {
+            return true;
+        }
+        return false;
+    }
+    /*
+    public void RotateLookTowards(Vector3 position, float degreesPerSecond)
     {
         Quaternion correctRotation = Quaternion.LookRotation(position - head.transform.position, transform.up);
         head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
-
-
-        //head.transform.rotation = Quaternion.R
     }
 
-    public bool IsLookingAt(Vector3 position, float threshold)
+    public bool AngleIsLookingAt(Vector3 position, float threshold)
     {
-        //Debug.Log("Angle between aim and target = " + Vector3.Angle(position - head.transform.position, head.transform.forward));
         if (Vector3.Angle(position - head.transform.position, head.transform.forward) <= threshold)
         {
             return true;
         }
         return false;
+    }
+    */
+    public void ResetLookDirection()
+    {
+        aimMarker = Vector3.zero;
+        head.localRotation = Quaternion.Euler(0, 0, 0); // Head position is reset
     }
 
     public bool IsTargetWithinRange(Vector3 position, float threshold)
@@ -114,7 +136,6 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         inLookIENumerator = false;
         print("Agent is now looking at " + position + ".");
     }
-
     #endregion
 
     #region Seeking targets

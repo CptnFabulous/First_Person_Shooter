@@ -283,6 +283,15 @@ MonoBehaviour:
     critical: 2
   roundsReloadedPerCycle: 1
   reloadTime: 0.4
+  onReloadStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onRoundsReloaded:
+    m_PersistentCalls:
+      m_Calls: []
+  onReloadEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8170633854941632650
 GameObject:
   m_ObjectHideFlags: 0
@@ -10305,6 +10314,11 @@ PrefabInstance:
     - target: {fileID: 5460255407757684097, guid: df954a7b6b6645244ad48b02f287b7d6,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5460255407757684099, guid: df954a7b6b6645244ad48b02f287b7d6,
+        type: 3}
+      propertyPath: m_Range
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5460255407757684158, guid: df954a7b6b6645244ad48b02f287b7d6,
