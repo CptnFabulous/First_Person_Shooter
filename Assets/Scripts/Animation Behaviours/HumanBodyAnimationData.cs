@@ -17,6 +17,7 @@ public class HumanBodyAnimationData : MonoBehaviour
     private void LateUpdate()
     {
         SetTorsoRotation();
+        //SetWalkingDirection();
     }
 
 
@@ -33,4 +34,22 @@ public class HumanBodyAnimationData : MonoBehaviour
         Quaternion upperTorsoRotation = Quaternion.LookRotation(ai.head.transform.forward, ai.transform.up);
         upperTorso.transform.rotation = upperTorsoRotation * Quaternion.Euler(torsoEulerAnglesToAccountFor);
     }
+
+
+    /*
+    void SetWalkingDirection()
+    {
+        Vector3 horizontalMoveDirection = Vector3.ProjectOnPlane(ai.na.velocity, ai.transform.up);
+        horizontalMoveDirection.Normalize();
+        Vector3 horizontalLookDirection = Vector3.ProjectOnPlane(ai.head.forward, ai.transform.up);
+        horizontalLookDirection.Normalize();
+
+        float walkAngle = Vector3.SignedAngle(horizontalLookDirection, horizontalMoveDirection, ai.transform.up);
+
+        if (ai.animationController != null)
+        {
+            ai.animationController.SetFloat("Walk Angle", walkAngle);
+        }
+    }
+    */
 }

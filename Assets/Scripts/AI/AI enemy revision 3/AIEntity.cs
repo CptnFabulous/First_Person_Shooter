@@ -36,7 +36,13 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     public float lookSpeed = 120;
     public float lookThreshold = 0.2f;
     bool inLookIENumerator;
-    Vector3 aimMarker;
+
+    public Quaternion LookDirectionValue { get; private set; }
+    public Vector3 AimMarker { get; private set; }
+
+    bool notPresentlyLookingAtSomethingSpecific = true;
+
+
     public float reactionTime = 0.5f;
 
     public virtual void Awake()
@@ -55,7 +61,13 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     void Update()
     {
         dodgeCooldownTimer += Time.deltaTime;
+
+
+
         PursueTargetUpdate();
+
+
+
         UpdateStateMachineVariables();
 
         if (animationController != null)
@@ -68,23 +80,38 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
     public void TrackLookTowards(Vector3 position, float unitsPerSecond)
     {
-        aimMarker = Vector3.MoveTowards(aimMarker, position, unitsPerSecond * Time.deltaTime);
+        if (notPresentlyLookingAtSomethingSpecific)
+        {
+            notPresentlyLookingAtSomethingSpecific = false;
+            AimMarker = head.position;
+            LookDirectionValue = head.rotation;
+        }
+        
+        AimMarker = Vector3.MoveTowards(AimMarker, position, unitsPerSecond * Time.deltaTime);
         head.transform.LookAt(position, transform.up);
     }
 
     public bool DistanceIsLookingAt(Vector3 position, float threshold)
     {
-        if (Vector3.Distance(aimMarker, position) <= threshold)
+        if (Vector3.Distance(AimMarker, position) <= threshold)
         {
             return true;
         }
         return false;
     }
-    /*
+    
     public void RotateLookTowards(Vector3 position, float degreesPerSecond)
     {
+        if (notPresentlyLookingAtSomethingSpecific)
+        {
+            notPresentlyLookingAtSomethingSpecific = false;
+            AimMarker = head.position;
+            LookDirectionValue = head.rotation;
+        }
+
         Quaternion correctRotation = Quaternion.LookRotation(position - head.transform.position, transform.up);
-        head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
+        LookDirectionValue = Quaternion.RotateTowards(LookDirectionValue, correctRotation, degreesPerSecond * Time.deltaTime);
+        head.transform.rotation = LookDirectionValue;
     }
 
     public bool AngleIsLookingAt(Vector3 position, float threshold)
@@ -95,11 +122,13 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         }
         return false;
     }
-    */
+    
     public void ResetLookDirection()
     {
-        aimMarker = Vector3.zero;
-        head.localRotation = Quaternion.Euler(0, 0, 0); // Head position is reset
+        notPresentlyLookingAtSomethingSpecific = true;
+        AimMarker = head.transform.position;
+        LookDirectionValue = Quaternion.Euler(0, 0, 0);
+        head.localRotation = LookDirectionValue; // Head position is reset
     }
 
     public bool IsTargetWithinRange(Vector3 position, float threshold)

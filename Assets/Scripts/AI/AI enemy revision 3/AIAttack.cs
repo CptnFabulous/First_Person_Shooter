@@ -17,16 +17,15 @@ public abstract class AIAttack : MonoBehaviour
 
     [Header("Accuracy stats")]
     // Replace with variable value floats.
-    /*
+    
     public float aimDegreesPerSecond = 120;
     public float aimAngleThreshold = 0.2f;
-    
     float currentAimDegreesPerSecond; // The speed the enemy is currently aiming at.
-    */
-
+    
     public float aimUnitsPerSecond = 50;
     public float aimDistanceThreshold = 0.1f;
     float currentAimUnitsPerSecond;
+
     public float aimMultiplierWhileTelgraphing = 0;
     public float aimMultiplierWhileAttacking = 0;
 
@@ -51,14 +50,20 @@ public abstract class AIAttack : MonoBehaviour
         {
             Vector3 targetPosition = wielder.currentTarget.transform.position;
 
-            //currentAimDegreesPerSecond = aimDegreesPerSecond;
-            //wielder.RotateLookTowards(targetPosition, currentAimDegreesPerSecond);
-            currentAimUnitsPerSecond = aimUnitsPerSecond;
-            wielder.TrackLookTowards(targetPosition, currentAimUnitsPerSecond);
+            currentAimDegreesPerSecond = aimDegreesPerSecond;
+            wielder.RotateLookTowards(targetPosition, currentAimDegreesPerSecond);
+
+            Debug.DrawRay(wielder.head.transform.position, wielder.head.transform.forward * 100, Color.red);
+
+            //Debug.DrawLine(wielder.head.transform.position, wielder.AimMarker, Color.blue);
+
+
+            //currentAimUnitsPerSecond = aimUnitsPerSecond;
+            //wielder.TrackLookTowards(targetPosition, currentAimUnitsPerSecond);
 
             // If the AI is successfully aiming at the target and their attack is off cooldown
-            //if (wielder.AngleIsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
-            if (wielder.DistanceIsLookingAt(targetPosition, aimDistanceThreshold) && cooldownTimer >= cooldown)
+            if (wielder.AngleIsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
+            //if (wielder.DistanceIsLookingAt(targetPosition, aimDistanceThreshold) && cooldownTimer >= cooldown)
             {
                 ExecuteAttack();
             }

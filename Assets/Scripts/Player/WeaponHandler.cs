@@ -22,17 +22,14 @@ public class WeaponHandler : MonoBehaviour
     public Gun[] equippedWeapons;
     public int currentWeaponIndex;
     int previousWeaponIndex;
-    bool isSwitching = false;
+    public bool IsSwitchingWeapon { get; private set; }
     public Transform defaultHoldingPosition;
 
     [Header("Switching")]
     public RadialMenu weaponSelector;
 
     #region Method variables
-    public bool IsSwitchingWeapon
-    {
-        get { return isSwitching; }
-    }
+    
 
     public Gun CurrentWeapon()
     {
@@ -178,7 +175,7 @@ public class WeaponHandler : MonoBehaviour
         // Check if the firing mode is actually different
         if (equippedWeapons[weaponIndex] != equippedWeapons[currentWeaponIndex])
         {
-            isSwitching = true;
+            IsSwitchingWeapon = true;
 
             for (int i = 0; i < equippedWeapons.Length; i++)
             {
@@ -197,7 +194,7 @@ public class WeaponHandler : MonoBehaviour
 
             yield return new WaitUntil(() => equippedWeapons[weaponIndex].isSwitchingWeapon == false);
 
-            isSwitching = false;
+            IsSwitchingWeapon = false;
             //print("Weapon switch finished");
         }
 
@@ -218,7 +215,7 @@ public class WeaponHandler : MonoBehaviour
             yield break;
         }
 
-        isSwitching = true;
+        IsSwitchingWeapon = true;
         index = Mathf.Clamp(index, 0, equippedWeapons.Length - 1);
 
         for (int i = 0; i < equippedWeapons.Length; i++)
@@ -241,7 +238,7 @@ public class WeaponHandler : MonoBehaviour
 
         yield return new WaitUntil(() => equippedWeapons[index].isSwitchingWeapon == false);
 
-        isSwitching = false;
+        IsSwitchingWeapon = false;
     }
 
     void Equip(Gun rw, bool autoSwitch = true)
