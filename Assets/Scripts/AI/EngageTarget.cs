@@ -46,6 +46,7 @@ public class EngageTarget : AIMovementBehaviour
             bool tooFar = distance > maximumMoveRange;
             if (lineOfSightLost || tooClose || tooFar) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
+                Debug.Log("Destination is now nulll");
                 // If one of these are true, the AI cannot engage with the current target. The position is nulled so a new position can be found.
                 currentDestination = null;
             }
@@ -56,6 +57,7 @@ public class EngageTarget : AIMovementBehaviour
         // If there is no position assigned, search for one.
         if (currentDestination == null)
         {
+            Debug.Log("Finding destination normally");
             currentDestination = FindFollowPosition(targetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
         }
         #endregion
@@ -64,6 +66,7 @@ public class EngageTarget : AIMovementBehaviour
         // If a valid position is found the agent must travel to it.
         if (currentDestination != null)
         {
+            //Debug.Log("Assigning destination");
             ai.na.SetDestination(currentDestination.position);
         }
         #endregion
