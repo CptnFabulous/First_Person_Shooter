@@ -76,7 +76,7 @@ public class TakeCover : AIMovementBehaviour
                         if (cover == null || AIFunction.NavMeshPathLength(newPathToTest) < AIFunction.NavMeshPathLength(coverPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
-                            cover = NullableVector3.New(coverCheck.position);
+                            cover = new NullableVector3(coverCheck.position);
                             coverPath = newPathToTest;
                         }
                     }

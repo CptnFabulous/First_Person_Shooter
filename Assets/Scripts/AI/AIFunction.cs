@@ -244,9 +244,12 @@ public static class AIFunction
             // Compares t and the exception object. If they do not match, t is not the target or any exceptions, meaning line of sight is not established.
             if (t != exception)
             {
+                Debug.Log("Exception, " + exception);
                 return false;
             }
         }
+
+        Debug.Log("Nothing detected");
 
         return false; // If the raycast somehow doesn't hit anything, the enemy has disappeared, so it cannot establish line of sight with anything
     }

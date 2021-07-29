@@ -88,7 +88,7 @@ public class DodgeDirectionalAttack : AIMovementBehaviour
         NavMeshHit meshLocation;
         if (NavMesh.SamplePosition(dodgeDirection, out meshLocation, 2 * ai.na.height, NavMesh.AllAreas))
         {
-            return new NullableVector3 { position = meshLocation.position };
+            return new NullableVector3(meshLocation.position);
         }
 
         return null;

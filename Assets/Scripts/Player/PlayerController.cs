@@ -66,9 +66,9 @@ public class PlayerController : MonoBehaviour
     [Header("Crouching")]
     public float standHeight = 2;
     public float crouchHeight = 1;
+    public float standHeadHeight = 1.5f;
+    public float crouchHeadHeight = 0.8f;
     public float crouchTime = 0.25f;
-    [Range(-0.5f, 0.5f)]
-    public float relativeHeadHeight = 0.375f;
     public bool toggleCrouch;
 
     float crouchTimer;
@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour
     bool IsGrounded()
     {
         // Casts a ray to determine if the player is standing on solid ground.
-        Ray r = new Ray(transform.position, -transform.up);
-        if (Physics.SphereCast(r, cc.radius, cc.height / 2 + groundedRayLength, terrainDetection))
+        Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+        if (Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection))
         {
             return true;
         }
@@ -346,13 +346,14 @@ public class PlayerController : MonoBehaviour
     void LerpCrouch(float t)
     {
         cc.height = Mathf.Lerp(standHeight, crouchHeight, t);
+        float colliderCenter = Mathf.Lerp(standHeight * 0.5f, crouchHeight * 0.5f, t);
+        cc.center = new Vector3(0, colliderCenter, 0);
         //crouchSpeedModifier.SetIntensity(t); // Lerps crouch speed multiplier between none and fully active
         crouchSpeedModifier.SetActiveFully(isCrouching);
-        head.transform.localPosition = new Vector3(0, Mathf.Lerp(relativeHeadHeight * standHeight, relativeHeadHeight * crouchHeight, t), 0);
+        float headHeight = Mathf.Lerp(standHeadHeight, crouchHeadHeight, t);
+        head.transform.localPosition = new Vector3(0, headHeight, 0);
     }
     #endregion
-
-    
 
     #region Cosmetics
     void CosmeticUpdate()

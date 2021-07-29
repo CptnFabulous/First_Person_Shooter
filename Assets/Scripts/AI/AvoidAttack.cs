@@ -74,7 +74,7 @@ public class AvoidAttack : AIMovementBehaviour
                         if (distance < maxPathDistance) // If the NPC is willing to travel that distance to the dodge zone, or if this distance is shorter than that of the previous route.
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
-                            newSafeLocation = NullableVector3.New(followCheck.position);
+                            newSafeLocation = new NullableVector3(followCheck.position);
                             maxPathDistance = distance;
                         }
                     }

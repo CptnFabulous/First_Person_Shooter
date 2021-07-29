@@ -8,16 +8,26 @@ public class EngageTarget : AIMovementBehaviour
     Transform targetLocation;
     NullableVector3 currentDestination;
 
-    public float minimumRange = 10;
-    public float maximumRange = 20;
+    [Header("Detection ranges")]
+    public float minimumMoveRange = 15;
+    public float maximumMoveRange = 45;
+    public float minimumDestinationRange = 20;
+    public float maximumDestinationRange = 35;
+
+    [Header("Additional detection stats")]
     public int numberOfChecks = 15;
     public LayerMask coverCriteria = ~0;
+
+    Collider[] collidersToIgnoreWhenPerformingLineOfSightChecks;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
 
+        // Sets the location of the current target
         targetLocation = ai.currentTarget.transform;
+
+        collidersToIgnoreWhenPerformingLineOfSightChecks = ai.GetComponentsInChildren<Collider>();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -25,11 +35,18 @@ public class EngageTarget : AIMovementBehaviour
         #region Check validity of destination, and return null if no longer valid
         if (currentDestination != null)
         {
-           // Checks if the agent's position is still ideal or not.
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
-            if (AIFunction.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false || distance < minimumRange || distance > maximumRange) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
+
+            //bool lineOfSightLost = AIFunction.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false;
+            
+
+            // Checks if the enemy loses line of sight, is too close or too far
+            bool lineOfSightLost = AIFunction.SimpleLineOfSightCheck(targetLocation.position, currentDestination.position, coverCriteria, collidersToIgnoreWhenPerformingLineOfSightChecks);
+            bool tooClose = distance < minimumMoveRange;
+            bool tooFar = distance > maximumMoveRange;
+            if (lineOfSightLost || tooClose || tooFar) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
-                // If not, position is nulled so a new position can be found.
+                // If one of these are true, the AI cannot engage with the current target. The position is nulled so a new position can be found.
                 currentDestination = null;
             }
         }
@@ -39,7 +56,7 @@ public class EngageTarget : AIMovementBehaviour
         // If there is no position assigned, search for one.
         if (currentDestination == null)
         {
-            currentDestination = FindFollowPosition(targetLocation, minimumRange, maximumRange, numberOfChecks);
+            currentDestination = FindFollowPosition(targetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
         }
         #endregion
 
@@ -76,13 +93,15 @@ public class EngageTarget : AIMovementBehaviour
                         if (newFollowPosition == null || AIFunction.NavMeshPathLength(nmp) < AIFunction.NavMeshPathLength(followPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
-                            newFollowPosition = NullableVector3.New(followCheck.position);
+                            newFollowPosition = new NullableVector3(followCheck.position);
                             followPath = nmp;
                         }
                     }
                 }
             }
         }
+
+        Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
 
         return newFollowPosition;
     }

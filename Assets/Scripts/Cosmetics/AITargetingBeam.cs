@@ -21,7 +21,7 @@ public class AITargetingBeam : MonoBehaviour
 
     public void SetBeam()
     {
-        Debug.Log("Setting beam length");
+        //Debug.Log("Setting beam length");
         
         float beamLength = distance;
 

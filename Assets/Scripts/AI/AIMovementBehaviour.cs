@@ -8,10 +8,19 @@ using UnityEngine.AI;
 public class NullableVector3
 {
     public Vector3 position;
-
-    public static NullableVector3 New(Vector3 position)
+    
+    public NullableVector3(float x, float y, float z)
     {
-        return new NullableVector3 { position = position };
+        position.x = x;
+        position.y = y;
+        position.z = z;
+    }
+
+    public NullableVector3(Vector3 vector)
+    {
+        position.x = vector.x;
+        position.y = vector.y;
+        position.z = vector.z;
     }
 }
 

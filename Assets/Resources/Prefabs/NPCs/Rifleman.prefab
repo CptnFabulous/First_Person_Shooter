@@ -102,6 +102,8 @@ MonoBehaviour:
   cooldown: 0.5
   aimDegreesPerSecond: 120
   aimAngleThreshold: 0.1
+  aimUnitsPerSecond: 50
+  aimDistanceThreshold: 0.1
   aimMultiplierWhileTelgraphing: 0
   aimMultiplierWhileAttacking: 0
   hitDetection:
@@ -1593,7 +1595,7 @@ MonoBehaviour:
   audioOutput: {fileID: 0}
   eo: {fileID: 0}
   animationController: {fileID: 0}
-  aiStateMachine: {fileID: 0}
+  aiStateMachine: {fileID: 2725180527220701420}
   currentTarget: {fileID: 0}
   head: {fileID: 2725180527285329144}
   viewRange: 50
