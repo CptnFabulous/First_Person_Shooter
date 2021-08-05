@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Health))]
 public class Character : Entity
 {
     public Faction faction;
+    public Health HealthData { get; private set; }
+
+    public virtual void Awake()
+    {
+        HealthData = GetComponent<Health>();
+    }
+
 
     public static Character FromObject(GameObject g)
     {

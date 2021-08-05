@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 2477036015384432997, guid: fd5f71911ac46df42a45a40eda5d0a31,
         type: 3}
       propertyPath: m_Name
-      value: Bullet
+      value: Rifleman_bullets
       objectReference: {fileID: 0}
     - target: {fileID: 2483134584432345369, guid: fd5f71911ac46df42a45a40eda5d0a31,
         type: 3}
@@ -66,6 +66,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
+        type: 3}
+      propertyPath: damage
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd5f71911ac46df42a45a40eda5d0a31, type: 3}

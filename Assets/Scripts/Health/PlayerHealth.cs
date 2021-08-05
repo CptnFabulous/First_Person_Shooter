@@ -8,11 +8,12 @@ public class PlayerHealth : Health
     
     [HideInInspector] public PlayerHandler ph;
 
-
+    public float wackyTestVariable;
     
 
-    public void Awake()
+    public override void Awake()
     {
+        base.Awake();
         ph = GetComponent<PlayerHandler>();
     }
 

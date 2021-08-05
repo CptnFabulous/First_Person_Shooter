@@ -41,7 +41,7 @@ public class EngageTarget : AIMovementBehaviour
             
 
             // Checks if the enemy loses line of sight, is too close or too far
-            bool lineOfSightLost = AIFunction.SimpleLineOfSightCheck(targetLocation.position, currentDestination.position, coverCriteria, collidersToIgnoreWhenPerformingLineOfSightChecks);
+            bool lineOfSightLost = AIFunction.LineOfSightCheckWithExceptions(targetLocation.position, currentDestination.position, coverCriteria, collidersToIgnoreWhenPerformingLineOfSightChecks);
             bool tooClose = distance < minimumMoveRange;
             bool tooFar = distance > maximumMoveRange;
             if (lineOfSightLost || tooClose || tooFar) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
@@ -57,7 +57,7 @@ public class EngageTarget : AIMovementBehaviour
         // If there is no position assigned, search for one.
         if (currentDestination == null)
         {
-            Debug.Log("Finding destination normally");
+            //Debug.Log("Finding destination normally");
             currentDestination = FindFollowPosition(targetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
         }
         #endregion
@@ -75,29 +75,35 @@ public class EngageTarget : AIMovementBehaviour
     public NullableVector3 FindFollowPosition(Transform target, float minimumRange, float maximumRange, int numberOfChecks)
     {
         NullableVector3 newFollowPosition = null;
-        NavMeshPath followPath = null;
+        float currentPathLength = float.MaxValue;
 
         for (int i = 0; i < numberOfChecks; i++)
         {
-            Vector3 randomPosition = target.position + Random.insideUnitSphere.normalized * Random.Range(minimumRange, maximumRange); // Samples a random position around the target, outside minimumRange and inside maximumRange.
-            // Normalising the Random.insideUnitSphere ensures the magnitude (and therefore distance value) is always 1, and the distance is calculated correctly.
+            // Samples a random position around the target, outside minimumRange and inside maximumRange.
+            // Normalising the Random.insideUnitSphere magnitude then multiplying it again by another random value allows me to ensure that the distance of the point is random but still within certain distance requirements.
+            Vector3 randomPosition = target.position + Random.insideUnitSphere.normalized * Random.Range(minimumRange, maximumRange);
 
             NavMeshHit followCheck;
             // Checks if there is an actual point on the navmesh close to the randomly selected position
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
-                if (AIFunction.LineOfSight(followCheck.position, target, coverCriteria)) // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
+                // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
+                if (AIFunction.LineOfSight(followCheck.position, target, coverCriteria))
                 {
                     // Ensures that the agent can actually move to the cover position.
                     NavMeshPath nmp = new NavMeshPath();
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
-                        // Checks if the new cover position is easier to get to than the old one.
-                        if (newFollowPosition == null || AIFunction.NavMeshPathLength(nmp) < AIFunction.NavMeshPathLength(followPath)) // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
+                        // Checks if the new cover position is a shorter route to get to than the old one.
+                        // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
+                        float length = AIFunction.NavMeshPathLength(nmp);
+                        if (newFollowPosition == null || length < currentPathLength)
                         {
                             // If so, new cover position is established, and navmesh path is stored for next comparison
                             newFollowPosition = new NullableVector3(followCheck.position);
-                            followPath = nmp;
+                            currentPathLength = length;
+
+                            Debug.DrawLine(randomPosition, followCheck.position, Color.yellow, 1f);
                         }
                     }
                 }

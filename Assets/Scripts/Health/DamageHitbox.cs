@@ -9,6 +9,13 @@ public class DamageHitbox : MonoBehaviour
     public float damageMultiplier = 1;
     public bool critical;
     // public bool ricochetsBullets; This currently does not do anything
+    public Collider Collider { get; private set; }
+
+    private void Awake()
+    {
+        Collider = GetComponent<Collider>();
+        Collider.isTrigger = false;
+    }
 
     public void Damage(int damage, Character origin, DamageType damageSource, bool isSevere)
     {

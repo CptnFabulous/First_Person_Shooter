@@ -190,7 +190,7 @@ public class AttackMessage
                     if (Vector3.Angle(direction, positionChecked - origin) < coneAngle)
                     {
                         // If inside line of sight
-                        if (AIFunction.SimpleLineOfSightCheck(positionChecked, origin, hitDetection, characterColliders))
+                        if (AIFunction.LineOfSightCheckWithExceptions(positionChecked, origin, hitDetection, characterColliders))
                         {
                             return true;
                         }

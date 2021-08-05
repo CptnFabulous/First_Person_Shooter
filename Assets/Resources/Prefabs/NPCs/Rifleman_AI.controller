@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bb50aa675a3a29469b784bb28ff4b66, type: 3}
   m_Name: 
@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02469ff699de3cb4593da221ad8e8aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Engage Target
   ai: {fileID: 0}
   movementSpeed: 5
   minimumMoveRange: 15
@@ -100,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af56bcf095c3eb4fb27a9af7d61050b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Dodge
   ai: {fileID: 0}
   movementSpeed: 5
   destinationThreshold: 0.1
@@ -121,6 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bffe978b2922ef45adee1b7ca536ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Idle
   ai: {fileID: 0}
   movementSpeed: 0
 --- !u!1101 &1101436976154309650

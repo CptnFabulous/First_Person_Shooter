@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PlayerHandler : Character
 {
+    //public new PlayerHealth HealthData { get; private set; }
+    
+    
     [HideInInspector] public PlayerHealth ph;
     [HideInInspector] public PlayerController pc;
     [HideInInspector] public WeaponHandler wh;
@@ -15,8 +18,28 @@ public class PlayerHandler : Character
 
     
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
+        /*
+        HealthData = GetComponent<PlayerHealth>();
+
+        HealthData.wackyTestVariable = 5;
+
+        PlayerHandler pHandler = GetComponent<PlayerHandler>();
+
+        Character c = pHandler;
+        Debug.Log(c.HealthData.ToString());
+
+        pHandler.HealthData.wackyTestVariable = 42069f;
+
+        Character ch = GetComponent<Character>();
+        ch.HealthData.wack
+        */
+
+
+
+
         ph = GetComponent<PlayerHealth>();
         pc = GetComponent<PlayerController>();
         wh = GetComponent<WeaponHandler>();

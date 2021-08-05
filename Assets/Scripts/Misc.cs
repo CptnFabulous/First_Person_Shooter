@@ -242,4 +242,6 @@ public static class Misc
         return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
     }
     #endregion
+
+    
 }

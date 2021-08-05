@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Health : MonoBehaviour
 {
     public Resource health = new Resource { max = 100, current = 100, critical = 20 };
@@ -27,6 +29,7 @@ public class Health : MonoBehaviour
             dh.healthScript = this;
         }
     }
+
 
     // Update is called once per frame
     public virtual void Update()

@@ -8,7 +8,7 @@ public class Entity : MonoBehaviour
     public string description;
     public bool isUniquelyNamed;
 
-
+    
 
 
 

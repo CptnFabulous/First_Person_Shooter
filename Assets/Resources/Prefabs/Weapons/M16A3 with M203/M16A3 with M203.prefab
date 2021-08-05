@@ -6877,7 +6877,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ed032775bb4f240be3fdc01af9024f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: 
+  description: An M16A3 rifle customised for longer-range combat. This model possesses
+    an extended barrel for improved accuracy, an accurate optical sight for sniping,
+    and an underbarrel grenade launcher to flush out and mop up clusters of enemies.
   firingModes:
   - name: Full-Auto
     description: Fires a continuous stream of bullets.
@@ -6908,7 +6910,7 @@ MonoBehaviour:
     hudIcon: {fileID: 21300004, guid: 701153d343461b443b9fcc0eb0fef647, type: 3}
     switchSpeed: 0.25
   firingModeIndex: 0
-  switchSpeed: 0.5
+  switchSpeed: 0.8
   holsterPosition: {fileID: 9134199385161882659}
   animator: {fileID: 0}
   weaponModel: {fileID: 3422296976112288468}

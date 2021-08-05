@@ -169,7 +169,8 @@ public class PlayerController : MonoBehaviour
         minLookAngle = Mathf.Clamp(minLookAngle, -90, maxLookAngle);
         maxLookAngle = Mathf.Clamp(maxLookAngle, minLookAngle, 90);
 
-
+        cc = GetComponent<CapsuleCollider>();
+        InstantCrouch(isCrouching);
         //cc.height = standHeight;
     }
 
