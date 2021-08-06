@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wielder: {fileID: 0}
   attackIndex: 0
+  currentMovementBehaviour: {fileID: 114008942467583302}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -310,7 +311,7 @@ AnimatorState:
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
-  m_TimeParameter: 
+  m_TimeParameter: targetDistance
 --- !u!1107 &1107176902215585020
 AnimatorStateMachine:
   serializedVersion: 5

@@ -110,15 +110,18 @@ public class PlayerController : MonoBehaviour
 
     #region Info on player movement
     // Is the player standing on solid ground, or are they airborne?
-    bool IsGrounded()
+    bool IsGrounded
     {
-        // Casts a ray to determine if the player is standing on solid ground.
-        Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        if (Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection))
+        get
         {
-            return true;
+            // Casts a ray to determine if the player is standing on solid ground.
+            Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+            if (Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection))
+            {
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     // In what direction is the player intending to move?
@@ -220,7 +223,7 @@ public class PlayerController : MonoBehaviour
 
             #region Jumping
             jumpTimer += Time.deltaTime;
-            if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && IsGrounded() == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
+            if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && IsGrounded == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
             {
                 if (isCrouching == true)
                 {
@@ -364,7 +367,7 @@ public class PlayerController : MonoBehaviour
 
         #region Bobbing and footsteps
         Vector2 moveInputValue = moveInput;
-        if (moveInputValue.magnitude > 0 && IsGrounded())
+        if (moveInputValue.magnitude > 0 && IsGrounded)
         {
             float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
             float time = bobLoopTime / speedMagnitude;

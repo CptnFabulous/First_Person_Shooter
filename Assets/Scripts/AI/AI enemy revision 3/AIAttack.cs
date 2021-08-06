@@ -8,38 +8,50 @@ public abstract class AIAttack : MonoBehaviour
 {
     public AICombatant wielder;
 
-    [Header("Attack timings")]
+    [Header("Timings")]
     public int attacksInBurst = 3;
     public float attacksPerMinute = 600;
     public float telegraphLength = 0.5f;
     public float cooldown = 1;
     float cooldownTimer = float.MaxValue;
 
-    [Header("Accuracy stats")]
-    // Replace with variable value floats.
-    
+    [Header("Accuracy")] // Some of these variables might need to be replaced with variable value floats.
     public float aimDegreesPerSecond = 120;
     public float aimAngleThreshold = 0.2f;
     float currentAimDegreesPerSecond; // The speed the enemy is currently aiming at.
-    
-    public float aimUnitsPerSecond = 50;
-    public float aimDistanceThreshold = 0.1f;
-    float currentAimUnitsPerSecond;
-
     public float aimMultiplierWhileTelgraphing = 0;
     public float aimMultiplierWhileAttacking = 0;
+    public bool lockOntoTargetWorldPosition = true;
+    Vector3 targetPosition;
 
-    [Header("Attack")]
-    public LayerMask hitDetection = ~0;
+    List<DamageHitbox> wielderAndTargetHitboxes;
+
+    [Header("Movement")]
+    public float movementMultiplierWhileTelegraphing = 0.5f;
+    public float movementMultiplierWhileAttacking = 0.5f;
+    [HideInInspector] public AIMovementBehaviour currentMovementBehaviour;
 
     [Header("Cosmetics")]
     public UnityEvent onTelegraph;
-    public UnityEvent onAttack;
     public UnityEvent onAttackEnd;
     public UnityEvent onCooldownFinished;
 
+    [Header("Attack")]
+    public UnityEvent onAttack;
+    public LayerMask hitDetection = ~0;
+
+    public void StateStart()
+    {
+        wielderAndTargetHitboxes = new List<DamageHitbox>(wielder.hp.hitboxes);
+        wielderAndTargetHitboxes.AddRange(new List<DamageHitbox>(wielder.currentTarget.HealthData.hitboxes));
+
+        currentAimDegreesPerSecond = aimDegreesPerSecond;
+        wielder.na.speed = currentMovementBehaviour.movementSpeed;
+    }
+
     public void AttackUpdate()
     {
+        // If the attack has ended, cool down
         if (wielder.currentAttack == null)
         {
             cooldownTimer += Time.deltaTime;
@@ -50,36 +62,23 @@ public abstract class AIAttack : MonoBehaviour
         // If the AI has an assigned target
         if (wielder.currentTarget != null)
         {
-            // Determine the correct position for the AI to be aiming at
-            Vector3 targetPosition = DetermineEnemyPosition();
+            // If the AI has not started telegraphing yet, or it is but has not locked a specific position to aim at
+            if (wielder.currentAttack == null || lockOntoTargetWorldPosition == false)
+            {
+                targetPosition = DetermineEnemyPosition(); // Determine the correct position for the AI to be aiming at
+            }
 
             // Perform a line of sight check, making sure to ignore the AI and target's hitboxes since those obviously aren't obstacles
-            List<DamageHitbox> wielderAndTargetHitboxes = new List<DamageHitbox>(wielder.hp.hitboxes);
-            wielderAndTargetHitboxes.AddRange(new List<DamageHitbox>(wielder.currentTarget.HealthData.hitboxes));
-            lineOfSight = AIFunction.LineOfSightCheckWithExceptions(targetPosition, wielder.head.position, wielder.viewDetection, wielderAndTargetHitboxes.ToArray());
+            lineOfSight = AIFunction.LineOfSightCheckWithExceptions(targetPosition, wielder.LookOrigin, wielder.viewDetection, wielderAndTargetHitboxes.ToArray());
             if (lineOfSight)
             {
-                Debug.Log("aiming");
                 // Aim for player
-                currentAimDegreesPerSecond = aimDegreesPerSecond;
                 wielder.RotateLookTowards(targetPosition, currentAimDegreesPerSecond);
                 // If the AI is successfully aiming at the target and their attack is off cooldown
-                if (wielder.AngleIsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
+                if (wielder.IsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
                 {
                     ExecuteAttack();
                 }
-
-                /*
-                currentAimUnitsPerSecond = aimUnitsPerSecond;
-                wielder.TrackLookTowards(targetPosition, currentAimUnitsPerSecond);
-                // If the AI is successfully aiming at the target and their attack is off cooldown
-                if (wielder.DistanceIsLookingAt(targetPosition, aimDistanceThreshold) && cooldownTimer >= cooldown)
-                {
-                    ExecuteAttack();
-                }
-                */
-
-                Debug.DrawLine(wielder.head.transform.position, targetPosition, Color.magenta);
             }
         }
 
@@ -89,39 +88,8 @@ public abstract class AIAttack : MonoBehaviour
             {
                 CancelAttack();
             }
-
-            wielder.ResetLookDirection();
+            wielder.ReturnToNeutralLookPosition();
         }
-
-        /*
-        // If the enemy has found a target, and is able to attack them
-        //if (wielder.currentTarget != null && AIFunction.LineOfSight(wielder.head.position, wielder.currentTarget.transform, wielder.viewDetection))
-        bool lineOfSight = AIFunction.LineOfSightCheckWithExceptions(wielder.currentTarget.transform.position, wielder.head.position, wielder.viewDetection, wielder.hp.hitboxes);
-        Debug.Log("Line of sight = " + lineOfSight);
-        if (wielder.currentTarget != null && lineOfSight)
-        {
-            Vector3 targetPosition = DetermineEnemyPosition();
-
-            currentAimDegreesPerSecond = aimDegreesPerSecond;
-            wielder.RotateLookTowards(targetPosition, currentAimDegreesPerSecond);
-            // If the AI is successfully aiming at the target and their attack is off cooldown
-            if (wielder.AngleIsLookingAt(targetPosition, aimAngleThreshold) && cooldownTimer >= cooldown)
-            {
-                ExecuteAttack();
-            }
-        }
-        else
-        {
-            //Debug.Log(wielder.name + " is cancelling their attack on " + wielder.currentTarget.name + " on frame " + Time.frameCount);
-            // If the enemy is unable to directly attack the target, cancel it
-            if (wielder.currentAttack != null)
-            {
-                CancelAttack();
-            }
-
-            wielder.ResetLookDirection();
-        }
-        */
     }
 
     public virtual Vector3 DetermineEnemyPosition()
@@ -145,13 +113,15 @@ public abstract class AIAttack : MonoBehaviour
     {
         Telegraph();
 
-        //currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileTelgraphing;
-        currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileTelgraphing;
+        //currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileTelgraphing;
+        currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileTelgraphing;
+        wielder.na.speed = currentMovementBehaviour.movementSpeed * movementMultiplierWhileTelegraphing;
 
         yield return new WaitForSeconds(telegraphLength);
 
-        //currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileAttacking;
-        currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileAttacking;
+        //currentAimUnitsPerSecond = aimUnitsPerSecond * aimMultiplierWhileAttacking;
+        currentAimDegreesPerSecond = aimDegreesPerSecond * aimMultiplierWhileAttacking;
+        wielder.na.speed = currentMovementBehaviour.movementSpeed * movementMultiplierWhileAttacking;
 
         for (int i = 0; i < attacksInBurst; i++)
         {
@@ -178,8 +148,10 @@ public abstract class AIAttack : MonoBehaviour
 
     public void CancelAttack()
     {
-        //currentAimDegreesPerSecond = aimDegreesPerSecond;
-        currentAimUnitsPerSecond = aimUnitsPerSecond;
+
+        //currentAimUnitsPerSecond = aimUnitsPerSecond;
+        currentAimDegreesPerSecond = aimDegreesPerSecond;
+        wielder.na.speed = currentMovementBehaviour.movementSpeed;
         StopCoroutine(wielder.currentAttack);
         wielder.currentAttack = null;
         onAttackEnd.Invoke();

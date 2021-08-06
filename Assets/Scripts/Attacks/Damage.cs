@@ -15,6 +15,18 @@ public enum DamageType
 
 public static class Damage
 {
+    /// <summary>
+    /// Deprecated! Use GunGeneralStats.Shoot() instead.
+    /// </summary>
+    /// <param name="prefab"></param>
+    /// <param name="count"></param>
+    /// <param name="spread"></param>
+    /// <param name="range"></param>
+    /// <param name="origin"></param>
+    /// <param name="aimOrigin"></param>
+    /// <param name="forward"></param>
+    /// <param name="up"></param>
+    /// <param name="muzzle"></param>
     public static void ShootProjectile(Projectile prefab, int count, float spread, float range, Character origin, Vector3 aimOrigin, Vector3 forward, Vector3 up, Vector3 muzzle)
     {
         for (int i = 0; i < count; i++)
@@ -55,6 +67,8 @@ public static class Damage
                 p.OnHit(targetFound);
             }
             #endregion
+
+            Debug.DrawLine(aimOrigin, direction, Color.magenta, 1f);
         }
     }
 

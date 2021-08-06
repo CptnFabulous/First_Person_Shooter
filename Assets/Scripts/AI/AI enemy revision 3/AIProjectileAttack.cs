@@ -11,14 +11,15 @@ public class AIProjectileAttack : AIAttack
     public override void Telegraph()
     {
         base.Telegraph();
-        Vector3 direction = wielder.currentTarget.transform.position - wielder.transform.position;
-        AttackMessage m = AttackMessage.Ranged(wielder.characterData, wielder.head.position, direction, stats.range, stats.projectilePrefab.diameter, stats.projectileSpread, stats.projectilePrefab.velocity, stats.projectilePrefab.hitDetection);
+        
+        Vector3 direction = wielder.currentTarget.transform.position - wielder.LookOrigin;
+        AttackMessage m = AttackMessage.Ranged(wielder.characterData, wielder.LookOrigin, direction, stats.range, stats.projectilePrefab.diameter, stats.projectileSpread, stats.projectilePrefab.velocity, stats.projectilePrefab.hitDetection);
         EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
     }
 
     public override void TheAttackItself()
     {
         base.TheAttackItself();
-        stats.Shoot(wielder.characterData, wielder.head.transform.position, wielder.head.transform.forward, wielder.head.transform.up);
+        stats.Shoot(wielder.characterData, wielder.LookOrigin, wielder.LookDirection, wielder.LookUp);
     }
 }

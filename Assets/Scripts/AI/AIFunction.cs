@@ -90,7 +90,7 @@ public static class AIFunction
             return SimpleLineOfSightCheck(lookingFor, viewOrigin, viewable);
         }
 
-        Debug.DrawRay(viewOrigin, lookingFor - viewOrigin, Color.yellow);
+        //Debug.DrawRay(viewOrigin, lookingFor - viewOrigin, Color.yellow);
 
 
         RaycastHit[] hits = Physics.RaycastAll(viewOrigin, lookingFor - viewOrigin, Vector3.Distance(viewOrigin, lookingFor), viewable);
@@ -114,7 +114,7 @@ public static class AIFunction
             if (hitAnException == false)
             {
                 // Line of sight has been broken by an actual obstacle, return false
-                Debug.Log("Returned false due to hitting " + rh.collider.name);
+                //Debug.Log("Returned false due to hitting " + rh.collider.name);
                 return false;
             }
         }
@@ -150,7 +150,7 @@ public static class AIFunction
             return SimpleLineOfSightCheck(lookingFor, viewOrigin, viewable);
         }
 
-        Debug.DrawRay(viewOrigin, lookingFor - viewOrigin, Color.yellow);
+        //Debug.DrawRay(viewOrigin, lookingFor - viewOrigin, Color.yellow);
 
 
         RaycastHit[] hits = Physics.RaycastAll(viewOrigin, lookingFor - viewOrigin, Vector3.Distance(viewOrigin, lookingFor), viewable);
@@ -174,7 +174,7 @@ public static class AIFunction
             if (hitAnException == false)
             {
                 // Line of sight has been broken by an actual obstacle, return false
-                Debug.Log("Returned false due to hitting " + rh.collider.name);
+                //Debug.Log("Returned false due to hitting " + rh.collider.name);
                 return false;
             }
         }
@@ -524,7 +524,9 @@ public static class AIFunction
         {
             // Gets the length between the current node and the previous one, and adds it to the final length;
             pathLength += Vector3.Distance(path.corners[r - 1], path.corners[r]);
-            Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, (1 / (path.corners.Length - 1)) * (r - 1)), 5);
+            //Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, 1 * ((r - 1) / (path.corners.Length - 1))), 5);
+            Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, (float)(r - 1) / (path.corners.Length - 1)), 5);
+
         }
 
         return pathLength;

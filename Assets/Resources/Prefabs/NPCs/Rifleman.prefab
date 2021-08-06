@@ -104,11 +104,12 @@ MonoBehaviour:
   aimAngleThreshold: 0.1
   aimUnitsPerSecond: 50
   aimDistanceThreshold: 0.1
-  aimMultiplierWhileTelgraphing: 0
-  aimMultiplierWhileAttacking: 0
-  hitDetection:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  aimMultiplierWhileTelgraphing: 1
+  aimMultiplierWhileAttacking: 1
+  lockOntoTargetWorldPosition: 1
+  movementMultiplierWhileTelegraphing: 0.5
+  movementMultiplierWhileAttacking: 0.5
+  currentMovementBehaviour: {fileID: 0}
   onTelegraph:
     m_PersistentCalls:
       m_Calls:
@@ -123,6 +124,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  onAttackEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  onCooldownFinished:
+    m_PersistentCalls:
+      m_Calls: []
   onAttack:
     m_PersistentCalls:
       m_Calls:
@@ -137,12 +144,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onAttackEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  onCooldownFinished:
-    m_PersistentCalls:
-      m_Calls: []
+  hitDetection:
+    serializedVersion: 2
+    m_Bits: 4294967295
   stats: {fileID: 2725180526298965280}
 --- !u!114 &2725180526298965280
 MonoBehaviour:
@@ -1608,7 +1612,7 @@ MonoBehaviour:
   pursuePatience: 10
   selfPreservationBehaviour: 1
   dodgeCooldown: 2
-  lookSpeed: 120
+  defaultLookDegreesPerSecond: 30
   lookThreshold: 0.2
   reactionTime: 0.5
   attacks:

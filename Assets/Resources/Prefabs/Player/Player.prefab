@@ -1200,6 +1200,7 @@ MonoBehaviour:
   hitboxes:
   - {fileID: 7394104395992576365}
   ph: {fileID: 0}
+  wackyTestVariable: 0
 --- !u!114 &7394104395992576365
 MonoBehaviour:
   m_ObjectHideFlags: 0

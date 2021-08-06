@@ -26,12 +26,12 @@ public class AITargetingBeam : MonoBehaviour
         float beamLength = distance;
 
         RaycastHit rh;
-        if (Physics.Raycast(ai.head.transform.position, ai.head.transform.forward, out rh, distance, hitDetection))
+        if (Physics.Raycast(ai.LookOrigin, ai.LookDirection, out rh, distance, hitDetection))
         {
-            beamLength = Vector3.Distance(ai.head.transform.position, rh.point);
+            beamLength = Vector3.Distance(ai.LookOrigin, rh.point);
         }
 
-        aimPosition = ai.head.transform.position + ai.head.transform.forward * beamLength;
+        aimPosition = ai.LookOrigin + ai.LookDirection * beamLength;
     }
 
     private void Update()

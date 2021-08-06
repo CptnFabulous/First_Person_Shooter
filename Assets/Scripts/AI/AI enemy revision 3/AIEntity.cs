@@ -19,36 +19,50 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     [Header("Detection")]
     public Transform head;
     public float viewRange = 50;
-    [Range(0, 180)] public float xFOV = 60;
-    [Range(0, 180)] public float yFOV = 60;
+    //[Range(0, 180)] public float xFOV = 60;
+    //[Range(0, 180)] public float yFOV = 60;
     public LayerMask viewDetection = ~0;
     public float pursueRange = 60;
     public float pursuePatience = 10;
     float patienceTimer = float.MaxValue;
 
     [Header("Self-preservation")]
+    public float reactionTime = 0.5f;
     public SelfPreservation selfPreservationBehaviour;
-    public AttackMessage attackToDodge;
     public float dodgeCooldown = 2;
     float dodgeCooldownTimer;
+    public AttackMessage attackToDodge;
 
     [Header("Looking at stuff")]
-    public float lookSpeed = 120;
+    public float defaultLookDegreesPerSecond = 30;
     public float lookThreshold = 0.2f;
     bool inLookIENumerator;
-
-    public Quaternion LookDirectionValue { get; private set; }
-    public Vector3 AimMarker { get; private set; }
-
-    public Vector3 AimDirection { get; private set; }
-
-    bool notPresentlyLookingAtSomethingSpecific = true;
-
-
-    public float reactionTime = 0.5f;
+    Quaternion lookDirectionQuaternion; // Represents the current direction the AI is looking in.
+    public Vector3 LookOrigin // The point in space the AI looks and aims from.
+    {
+        get
+        {
+            return head.transform.position;
+        }
+    }
+    public Vector3 LookDirection // The direction the AI is looking in, converted into an easy Vector3 value.
+    {
+        get
+        {
+            return lookDirectionQuaternion * Vector3.forward;
+        }
+    }
+    public Vector3 LookUp // A direction directly up perpendicular to the direction the AI is looking.
+    {
+        get
+        {
+            return lookDirectionQuaternion * Vector3.up;
+        }
+    }
 
     public virtual void Awake()
     {
+        lookDirectionQuaternion = head.transform.rotation;
         aiStateMachine = GetComponent<Animator>();
         hp = GetComponent<NpcHealth>();
         na = GetComponent<NavMeshAgent>();
@@ -66,6 +80,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
         Debug.DrawRay(na.destination, Vector3.up * 10, Color.blue, 2);
         Debug.DrawLine(transform.position, na.destination, Color.cyan);
+        
 
         PursueTargetUpdate();
 
@@ -80,98 +95,45 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     }
 
     #region Looking around
-
-    public void TrackLookTowards(Vector3 position, float unitsPerSecond)
+    // Continuously rotates AI aim over time to look at position value, at a speed of degreesPerSecond
+    public void RotateLookTowards(Vector3 position, float degreesPerSecond) 
     {
-        /*
-        if (notPresentlyLookingAtSomethingSpecific)
-        {
-            notPresentlyLookingAtSomethingSpecific = false;
-            AimMarker = head.position;
-            LookDirectionValue = head.rotation;
-        }
-        */
-        AimMarker = Vector3.MoveTowards(AimMarker, position, unitsPerSecond * Time.deltaTime);
-        head.transform.LookAt(position, transform.up);
+        Quaternion correctRotation = Quaternion.LookRotation(position - LookOrigin, transform.up);
+        lookDirectionQuaternion = Quaternion.RotateTowards(lookDirectionQuaternion, correctRotation, degreesPerSecond * Time.deltaTime);
+        Debug.DrawRay(LookOrigin, LookDirection * 99, Color.grey);
     }
 
-    public bool DistanceIsLookingAt(Vector3 position, float threshold)
+    // Is the AI looking close enough to the position to meet the angle threshold?
+    public bool IsLookingAt(Vector3 position, float threshold)
     {
-        if (Vector3.Distance(AimMarker, position) <= threshold)
-        {
-            return true;
-        }
-        return false;
-    }
-    
-    public void RotateLookTowards(Vector3 position, float degreesPerSecond)
-    {
-        /*
-        if (notPresentlyLookingAtSomethingSpecific)
-        {
-            notPresentlyLookingAtSomethingSpecific = false;
-            AimMarker = head.position;
-            LookDirectionValue = head.rotation;
-        }
-        */
-        //Vector3 v = Vector3.RotateTowards(head.transform.forward, position - head.transform.position, degreesPerSecond * Time.deltaTime);
-        Quaternion correctRotation = Quaternion.LookRotation(position - head.transform.position, transform.up);
-        LookDirectionValue = Quaternion.RotateTowards(head.transform.rotation, correctRotation, degreesPerSecond * Time.deltaTime);
-        head.transform.rotation = LookDirectionValue;
-
-
-
-
-
-        //head.transform.forward = Vector3.RotateTowards(head.transform.forward, position - head.transform.position, degreesPerSecond * Time.deltaTime, 0);
-    }
-
-    public bool AngleIsLookingAt(Vector3 position, float threshold)
-    {
-        if (Vector3.Angle(position - head.transform.position, head.transform.forward) <= threshold)
-        {
-            return true;
-        }
-        return false;
-    }
-    
-    public void ResetLookDirection()
-    {
-        //notPresentlyLookingAtSomethingSpecific = true;
-        //AimMarker = head.transform.position;
-        LookDirectionValue = Quaternion.Euler(0, 0, 0);
-        head.localRotation = LookDirectionValue; // Head position is reset
-        //head.localRotation = Quaternion.Euler(0, 0, 0);
-    }
-
-    public bool IsTargetWithinRange(Vector3 position, float threshold)
-    {
-        // Calculates distance between entity and target
-        float distanceToTarget = Vector3.Distance(head.transform.position, position);
-        // Calculates a position that's the same distance out as the target, but in the direction the AI is currently aiming.
-        Vector3 positionInAimDirectionButCloseToTarget = (position - head.transform.position).normalized * distanceToTarget;
-        if (Vector3.Distance(position, positionInAimDirectionButCloseToTarget) <= threshold)
+        if (Vector3.Angle(position - LookOrigin, LookDirection) <= threshold)
         {
             return true;
         }
         return false;
     }
 
+    // Continuously rotates AI aim to return to looking in the direction it is moving.
+    public void ReturnToNeutralLookPosition()
+    {
+        RotateLookTowards(LookOrigin + transform.forward, defaultLookDegreesPerSecond);
+    }
+
+    // Rotates AI aim to look at something, in a specified time.
     public IEnumerator LookAtThing(Vector3 position, float lookTime, float threshold, AnimationCurve lookCurve)
     {
         inLookIENumerator = true;
 
         float timer = 0;
 
-        Quaternion originalRotation = head.transform.rotation;
+        Quaternion originalRotation = lookDirectionQuaternion;
 
         while (timer < 1)
         {
             timer += Time.deltaTime / lookTime;
 
-            Quaternion lookLerp = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
-            head.transform.rotation = lookLerp;
-
+            lookDirectionQuaternion = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
+            
             yield return new WaitForEndOfFrame();
         }
 
@@ -191,7 +153,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         if (currentTarget != null) // If the AI has a target, check if said target is still worth pursuing
         {
             // If the AI cannot immediately find their target, count up a timer and continue pursuing until the timer expires
-            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, head.position, viewDetection) == false)
+            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, LookOrigin, viewDetection) == false)
             {
                 patienceTimer = 0;
             }
@@ -214,10 +176,10 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
     Character AcquireTarget()
     {
-        Collider[] thingsInEnvironment = Physics.OverlapSphere(head.transform.position, viewRange);
+        Collider[] thingsInEnvironment = Physics.OverlapSphere(LookOrigin, viewRange);
         foreach (Collider thing in thingsInEnvironment)
         {
-            if (AIFunction.LineOfSight(head.position, thing.transform, viewDetection))
+            if (AIFunction.LineOfSight(LookOrigin, thing.transform, viewDetection))
             {
                 //print("Line of sight established between agent and " + thing.name);
                 Character targetCharacter = thing.transform.root.GetComponent<Character>();
@@ -230,6 +192,21 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
         return null;
     }
+
+    /*
+    public bool IsTargetWithinRange(Vector3 position, float threshold)
+    {
+        // Calculates distance between entity and target
+        float distanceToTarget = Vector3.Distance(LookOrigin, position);
+        // Calculates a position that's the same distance out as the target, but in the direction the AI is currently aiming.
+        Vector3 positionInAimDirectionButCloseToTarget = (position - LookOrigin).normalized * distanceToTarget;
+        if (Vector3.Distance(position, positionInAimDirectionButCloseToTarget) <= threshold)
+        {
+            return true;
+        }
+        return false;
+    }
+    */
     #endregion
 
     #region Avoiding damage
@@ -239,15 +216,9 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack
         // If the AI is at risk of being damaged
-
-        //Debug.Log(name + "dodge check criteria: " + (dodgeCooldownTimer >= dodgeCooldown) + ", " + (selfPreservationBehaviour != SelfPreservation.Suicidal) + ", " + attackToDodge == null + ", " + am.AtRisk(characterData));
-
         if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
         {
-            Debug.Log(name + " is in danger!");
-            // Resets timer
-            dodgeCooldownTimer = 0;
-
+            dodgeCooldownTimer = 0; // Resets timer
             attackToDodge = am; // Specifies attack to dodge from
             aiStateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
@@ -269,5 +240,10 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         animationController.SetBool("IsMoving", na.velocity.magnitude > 0);
         animationController.SetFloat("MovementSpeed", na.velocity.magnitude);
+    }
+
+    private void LateUpdate()
+    {
+        head.transform.LookAt(LookOrigin + LookDirection, transform.up);
     }
 }

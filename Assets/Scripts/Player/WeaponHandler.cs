@@ -80,11 +80,11 @@ public class WeaponHandler : MonoBehaviour
         #region Weapon selector
         weaponSelector.WheelHandler();
 
-        ph.pc.canLook = !weaponSelector.MenuIsActive();
+        ph.pc.canLook = !weaponSelector.MenuIsActive;
 
-        if (weaponSelector.MenuIsActive())
+        if (weaponSelector.MenuIsActive)
         {
-            int wheelIndex = weaponSelector.ReturnIndex();
+            int wheelIndex = weaponSelector.ReturnIndex;
 
             int weaponIndex = 0;
             int firingModeIndex = 0;
@@ -158,7 +158,7 @@ public class WeaponHandler : MonoBehaviour
         }
         #endregion
 
-        weaponSelector.RefreshWheel(numberOfOptions, icons);
+        weaponSelector.RefreshWheel(icons);
     }
 
     IEnumerator SwitchWeaponAndFiringMode(int weaponIndex, int firingModeIndex)

@@ -18,7 +18,7 @@ public class RadialMenu : MonoBehaviour
     public AudioClip scrollFeedback;
     int slots;
     int selectedIndex;
-    Image[] wheelIcons = new Image[1];
+    Image[] wheelIcons = new Image[0];
     bool isActive;
 
     [Header("Input")]
@@ -28,19 +28,25 @@ public class RadialMenu : MonoBehaviour
     Vector3 relativeInputPosition;
 
     #region Variables
-    public int ReturnIndex() // Gets the radial menu's current index
+    public int ReturnIndex // Gets the radial menu's current index
     {
-        return Mathf.Clamp(selectedIndex, 0, slots - 1);
+        get
+        {
+            return Mathf.Clamp(selectedIndex, 0, slots - 1);
+        }
     }
 
-    public bool MenuIsActive() // Is the menu active and functioning?
+    public bool MenuIsActive // Is the menu active and functioning?
     {
-        return gameObject.activeSelf;
+        get
+        {
+            return gameObject.activeSelf;
+        }
     }
 
     public bool SelectionMade() // Returns true on the frame that the player exits the radial menu. Used to determine when to switch.
     {
-        if (isActive == false && MenuIsActive() == true)
+        if (isActive == false && MenuIsActive == true)
         {
             //print(Cursor.lockState);
             gameObject.SetActive(false);
@@ -134,32 +140,47 @@ public class RadialMenu : MonoBehaviour
         }
     }
 
-    public void RefreshWheel(int slotCount, Sprite[] icons)
+    public void RefreshWheel(Sprite[] icons)
     {
-        slots = slotCount;
+        slots = icons.Length;
         if (wheelIcons.Length != slots)
         {
-            foreach (Image i in wheelIcons)
+            // Make a new array of icons
+            Image[] newWheelIcons = new Image[slots];
+            // Go through both the new and old icons. I used Mathf.Max to ensure it runs enough times to go through whichever is larger.
+            for (int i = 0; i < Mathf.Max(wheelIcons.Length, newWheelIcons.Length); i++)
             {
-                if (i != null)
+                if (i >= newWheelIcons.Length)
                 {
-                    Destroy(i.gameObject);
+                    // If i has exceeded the length of the new array, there are too many icons. Start destroying them
+                    if (wheelIcons[i] != null)
+                    {
+                        Destroy(wheelIcons[i].gameObject);
+                    }
+                }
+                else if (i >= wheelIcons.Length)
+                {
+                    // If i exceeds the length of the old one, there are not enough. Start creating new ones
+                    newWheelIcons[i] = Instantiate(iconPrefab, transform);
+                }
+                else
+                {
+                    // Assign an existing icon to the new array to save unnecessary destruction and garbage collection
+                    newWheelIcons[i] = wheelIcons[i];
                 }
             }
-            wheelIcons = new Image[slots];
-            for (int i = 0; i < wheelIcons.Length; i++) // Put all icons from wheelIcons into newWheelIcons, then instantiate new icons until there is an icon for every item
-            {
-                Image icon = Instantiate(iconPrefab, Vector3.zero, Quaternion.identity, transform);
-                wheelIcons[i] = icon;
+            // Overwrite old array with new one
+            wheelIcons = newWheelIcons;
 
+            // Set the positions of each icon
+            for (int i = 0; i < wheelIcons.Length; i++)
+            {
                 float segmentSize = 360 / slots;
                 float segmentAngle = (segmentSize * i) + rotationOffset;
-                //float wheelRadius = Vector3.Distance(cursorAxis.position, radiusMarker.position);
                 Vector3 iconPosition = Quaternion.Euler(0, 0, -segmentAngle) * new Vector3(0, wheelRadius, 0);
-
-
-
-                wheelIcons[i].rectTransform.anchoredPosition = iconPosition;
+                wheelIcons[i] = Instantiate(iconPrefab, transform);
+                wheelIcons[i].transform.localPosition = iconPosition;
+                wheelIcons[i].transform.localRotation = Quaternion.identity;
             }
         }
         

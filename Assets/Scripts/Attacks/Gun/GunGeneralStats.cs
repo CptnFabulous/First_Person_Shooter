@@ -37,28 +37,24 @@ public class GunGeneralStats : MonoBehaviour
     {
         for (int i = 0; i < projectileCount; i++)
         {
-            #region Calculate initial variables
-            // Declare RaycastHit
-            RaycastHit targetFound;
+            RaycastHit targetFound; // Declare RaycastHit
             // Declare direction in which to fire projectile
             Vector3 direction = new Vector3(Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread), Random.Range(-projectileSpread, projectileSpread));
             direction = Misc.AngledDirection(direction, forward, up);
-            #endregion
-
-            #region Launch raycast to determine where to shoot projectile
-            if (Physics.Raycast(aimOrigin, direction, out targetFound, range, projectilePrefab.hitDetection)) // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+            // To reduce the amount of superfluous variables, I re-used the 'target' Vector3 in the same function as it is now unneeded for its original purpose
+            if (Physics.Raycast(aimOrigin, direction, out targetFound, range, projectilePrefab.hitDetection))
             {
+                // If the raycast hits, store the point where it hit.
                 direction = targetFound.point;
+                Debug.DrawLine(aimOrigin, direction, Color.green, 2f);
             }
             else
             {
+                // If the raycast didn't hit, store the point at the raycast's maximum reach.
                 direction = aimOrigin + direction.normalized * range;
             }
-            #endregion
 
-            #region Instantiate projectile
             Projectile p = projectilePrefab;
-
             p.origin = origin;
 
             // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
@@ -72,9 +68,8 @@ public class GunGeneralStats : MonoBehaviour
                 Instantiate(p, direction, Quaternion.LookRotation(direction - aimOrigin, up));
                 p.OnHit(targetFound);
             }
-            #endregion
-
-            effectsOnFire.Invoke();
         }
+
+        effectsOnFire.Invoke();
     }
 }

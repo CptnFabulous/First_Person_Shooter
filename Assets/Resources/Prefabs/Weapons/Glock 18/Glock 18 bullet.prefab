@@ -90,7 +90,7 @@ PrefabInstance:
     - target: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
         type: 3}
       propertyPath: criticalMultiplier
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4662434428516752633, guid: fd5f71911ac46df42a45a40eda5d0a31,
         type: 3}

@@ -164,7 +164,7 @@ public class Gun : MonoBehaviour
         attackMessageLimitTimer += Time.deltaTime;
 
         // If the player is not switching weapons or fire modes, and is therefore able to operate the weapon
-        if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive() == false)
+        if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive == false)
         {
             #region Firing mode controls
             float scrollInput = Input.GetAxis("Mouse ScrollWheel");
@@ -227,12 +227,8 @@ public class Gun : MonoBehaviour
                     aimDirection = Quaternion.Euler(Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy)) * aimDirection;
                 }
 
-                Damage.ShootProjectile(general.projectilePrefab, general.projectileCount, general.projectileSpread, general.range, playerHolding.ph, head.position, aimDirection, head.up, general.muzzle.position);
-                #endregion
-
-                #region Play firing animations
-                //animator.SetTrigger("Fire_" + firingModes[firingModeIndex].name);
-                general.effectsOnFire.Invoke();
+                //Damage.ShootProjectile(general.projectilePrefab, general.projectileCount, general.projectileSpread, general.range, playerHolding.ph, head.position, aimDirection, head.up, general.muzzle.position);
+                general.Shoot(playerHolding.ph, head.position, aimDirection, head.up);
                 #endregion
 
                 #region Send attack message if the timer is right
