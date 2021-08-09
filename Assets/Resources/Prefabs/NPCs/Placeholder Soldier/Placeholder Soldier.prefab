@@ -215,13 +215,12 @@ MonoBehaviour:
   cooldown: 0.5
   aimDegreesPerSecond: 120
   aimAngleThreshold: 0.1
-  aimUnitsPerSecond: 50
-  aimDistanceThreshold: 0.1
   aimMultiplierWhileTelgraphing: 0
   aimMultiplierWhileAttacking: 0
-  hitDetection:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  lockOntoTargetWorldPosition: 1
+  movementMultiplierWhileTelegraphing: 0.5
+  movementMultiplierWhileAttacking: 0.5
+  currentMovementBehaviour: {fileID: 0}
   onTelegraph:
     m_PersistentCalls:
       m_Calls:
@@ -247,6 +246,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  onAttackEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  onCooldownFinished:
+    m_PersistentCalls:
+      m_Calls: []
   onAttack:
     m_PersistentCalls:
       m_Calls:
@@ -261,12 +266,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onAttackEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  onCooldownFinished:
-    m_PersistentCalls:
-      m_Calls: []
+  hitDetection:
+    serializedVersion: 2
+    m_Bits: 4294967295
   stats: {fileID: 64653635350643711}
 --- !u!114 &64653635350643711
 MonoBehaviour:
@@ -1248,18 +1250,16 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   head: {fileID: 64653636146870823}
   viewRange: 50
-  xFOV: 60
-  yFOV: 60
   viewDetection:
     serializedVersion: 2
     m_Bits: 4294967295
   pursueRange: 60
   pursuePatience: 10
+  reactionTime: 0.5
   selfPreservationBehaviour: 1
   dodgeCooldown: 2
-  lookSpeed: 120
+  defaultLookDegreesPerSecond: 30
   lookThreshold: 0.2
-  reactionTime: 0.5
   attacks:
   - {fileID: 64653635350643704}
 --- !u!1 &64653636146870822
@@ -2445,7 +2445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7736141782681639618
 Transform:
   m_ObjectHideFlags: 0
