@@ -16,6 +16,57 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     [Header("Current target")]
     public Character currentTarget;
 
+    public DamageHitbox[] AgentAndTargetHitboxes
+    {
+        get
+        {
+            int length = characterData.HealthData.hitboxes.Length;
+            if (currentTarget != null)
+            {
+                length += currentTarget.HealthData.hitboxes.Length;
+            }
+            DamageHitbox[] hitboxes = new DamageHitbox[length];
+            for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
+            {
+                hitboxes[i] = characterData.HealthData.hitboxes[i];
+            }
+            for (int i = 0; i < currentTarget.HealthData.hitboxes.Length; i++)
+            {
+                hitboxes[characterData.HealthData.hitboxes.Length + i] = currentTarget.HealthData.hitboxes[i];
+            }
+
+            return hitboxes;
+        }
+    }
+
+    /*
+    public DamageHitbox[] AgentAndTargetHitboxes
+    {
+        get
+        {
+            int length = characterData.HealthData.hitboxes.Length;
+            if (currentTarget != null)
+            {
+                length += currentTarget.HealthData.hitboxes.Length;
+            }
+            DamageHitbox[] hitboxes = new DamageHitbox[length];
+            for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
+            {
+                hitboxes[i] = characterData.HealthData.hitboxes[i];
+            }
+            for (int i = 0; i < currentTarget.HealthData.hitboxes.Length; i++)
+            {
+                hitboxes[characterData.HealthData.hitboxes.Length + i] = currentTarget.HealthData.hitboxes[i];
+            }
+
+            return hitboxes;
+
+            
+        }
+
+    }
+    */
+
     [Header("Detection")]
     public Transform head;
     public float viewRange = 50;
@@ -152,9 +203,11 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
         if (currentTarget != null) // If the AI has a target, check if said target is still worth pursuing
         {
-            // If the AI cannot immediately find their target, count up a timer and continue pursuing until the timer expires
-            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, LookOrigin, viewDetection) == false)
+            // If the AI cannot find their target (out of range or line of sight broken)
+            //if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, LookOrigin, viewDetection) == false)
+            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || !AIFunction.LineOfSightCheckWithExceptions(currentTarget.transform.position, LookOrigin, viewDetection, AgentAndTargetHitboxes))
             {
+                // Count up a timer and continue pursuing until the timer expires
                 patienceTimer = 0;
             }
 

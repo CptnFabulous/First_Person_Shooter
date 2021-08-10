@@ -114,33 +114,14 @@ public static class AIFunction
             if (hitAnException == false)
             {
                 // Line of sight has been broken by an actual obstacle, return false
-                //Debug.Log("Returned false due to hitting " + rh.collider.name);
+                Debug.Log("Returned false due to hitting " + rh.collider.name);
                 return false;
             }
+
+            Debug.Log("Noticed " + rh.collider.name + ", but it was an exception");
         }
 
         return true;
-
-        /*
-        if (exceptions == null || exceptions.Length <= 0) // Returns a simpler and less performant check if there are no exceptions. This is for situations where there may or may not need to be exceptions
-        {
-            return SimpleLineOfSightCheck(lookingFor, viewOrigin, viewable);
-        }
-
-        RaycastHit[] hits = Physics.RaycastAll(viewOrigin, lookingFor - viewOrigin, Vector3.Distance(viewOrigin, lookingFor), viewable);
-        foreach (RaycastHit rh in hits)
-        {
-            foreach (Collider c in exceptions)
-            {
-                if (rh.collider != c)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-        */
     }
 
     public static bool LineOfSightCheckWithExceptions(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable, DamageHitbox[] exceptions = null)

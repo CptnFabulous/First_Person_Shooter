@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KillRadius : MonoBehaviour
 {
-    public float radius = 9999;
+    public float radius = 999;
     public float delayBetweenChecks = 5;
     float checkTimer;
     

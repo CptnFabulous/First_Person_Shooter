@@ -37,16 +37,16 @@ public class EngageTarget : AIMovementBehaviour
         {
             float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
 
-            //bool lineOfSightLost = AIFunction.LineOfSight(currentDestination.position, targetLocation, ai.transform, coverCriteria) == false;
-            
+            Debug.DrawLine(targetLocation.position, currentDestination.position, new Color(1, 0.5f, 0));
 
-            // Checks if the enemy loses line of sight, is too close or too far
-            bool lineOfSightLost = AIFunction.LineOfSightCheckWithExceptions(targetLocation.position, currentDestination.position, coverCriteria, collidersToIgnoreWhenPerformingLineOfSightChecks);
+            // Checks if the AI can no longer see the target from their desired position, or if they are too close or too far
+            bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(targetLocation.position, currentDestination.position, coverCriteria, ai.AgentAndTargetHitboxes);
             bool tooClose = distance < minimumMoveRange;
             bool tooFar = distance > maximumMoveRange;
+            //Debug.Log(ai.name + " pathfinding status: " + lineOfSightLost + ", " + tooClose + ", " + tooFar);
             if (lineOfSightLost || tooClose || tooFar) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
             {
-                Debug.Log("Agent " + name + "cannot find " + ai.currentTarget + "!");
+                Debug.Log("Agent " + name + " cannot find " + ai.currentTarget + " on frame " + Time.frameCount + " because " + lineOfSightLost + ", " + tooClose + ", " + tooFar);
                 // If one of these are true, the AI cannot engage with the current target. The position is nulled so a new position can be found.
                 currentDestination = null;
             }
@@ -88,7 +88,8 @@ public class EngageTarget : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
                 // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
-                if (AIFunction.LineOfSight(followCheck.position, target, coverCriteria))
+                //if (AIFunction.LineOfSight(followCheck.position, target, coverCriteria))
+                if (AIFunction.LineOfSightCheckWithExceptions(target.position, followCheck.position, coverCriteria, ai.AgentAndTargetHitboxes))
                 {
                     // Ensures that the agent can actually move to the cover position.
                     NavMeshPath nmp = new NavMeshPath();
@@ -105,12 +106,35 @@ public class EngageTarget : AIMovementBehaviour
 
                             //Debug.DrawLine(randomPosition, followCheck.position, Color.yellow, 1f);
                         }
+                        else
+                        {
+                            Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Path is less efficient to get to than the previous one!");
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Path not sampled, agent cannot reach destination!");
                     }
                 }
+                else
+                {
+                    Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Line of sight not established!");
+                }
+            }
+            else
+            {
+                Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Position could not be sampled!");
             }
         }
 
-        //Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
+        if (newFollowPosition != null)
+        {
+            Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
+        }
+        else
+        {
+            Debug.Log(ai.name + " could not find a new position on frame " + Time.frameCount + "!");
+        }
 
         return newFollowPosition;
     }

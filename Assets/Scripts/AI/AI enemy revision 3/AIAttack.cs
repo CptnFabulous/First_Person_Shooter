@@ -24,7 +24,6 @@ public abstract class AIAttack : MonoBehaviour
     public bool lockOntoTargetWorldPosition = true;
     Vector3 targetPosition;
 
-    List<DamageHitbox> wielderAndTargetHitboxes;
 
     [Header("Movement")]
     public float movementMultiplierWhileTelegraphing = 0.5f;
@@ -42,9 +41,6 @@ public abstract class AIAttack : MonoBehaviour
 
     public void StateStart()
     {
-        wielderAndTargetHitboxes = new List<DamageHitbox>(wielder.hp.hitboxes);
-        wielderAndTargetHitboxes.AddRange(new List<DamageHitbox>(wielder.currentTarget.HealthData.hitboxes));
-
         currentAimDegreesPerSecond = aimDegreesPerSecond;
         wielder.na.speed = currentMovementBehaviour.movementSpeed;
     }
@@ -69,7 +65,7 @@ public abstract class AIAttack : MonoBehaviour
             }
 
             // Perform a line of sight check, making sure to ignore the AI and target's hitboxes since those obviously aren't obstacles
-            lineOfSight = AIFunction.LineOfSightCheckWithExceptions(targetPosition, wielder.LookOrigin, wielder.viewDetection, wielderAndTargetHitboxes.ToArray());
+            lineOfSight = AIFunction.LineOfSightCheckWithExceptions(targetPosition, wielder.LookOrigin, wielder.viewDetection, wielder.AgentAndTargetHitboxes);
             if (lineOfSight)
             {
                 // Aim for player
