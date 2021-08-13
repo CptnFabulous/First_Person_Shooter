@@ -36,6 +36,7 @@ public class AvoidAttack : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Debug.Log("Setting destination for " + ai.name + " from EngageTarget behaviour");
         ai.na.SetDestination(safeLocation.position);
         // If the agent has reached the destination, run EndDodge().
         if (ai.na.remainingDistance < destinationThreshold)

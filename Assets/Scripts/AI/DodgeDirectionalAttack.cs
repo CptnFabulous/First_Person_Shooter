@@ -22,6 +22,7 @@ public class DodgeDirectionalAttack : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Debug.Log("Setting destination for " + ai.name + " from DodgeDirectionalAttack behaviour");
         ai.na.SetDestination(dodgeLocation.position);
 
         if (Vector3.Distance(ai.transform.position, dodgeLocation.position) < destinationThreshold) // Checks if the agent has reached its destination, and if so, disables the mustDodge bool to exit the dodge state and resume normal AI

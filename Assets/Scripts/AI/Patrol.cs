@@ -21,6 +21,8 @@ public class Patrol : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
+        Debug.Log("Setting destination for " + ai.name + " from Patrol behaviour");
+
         ai.na.SetDestination(waypoints[index].position); // Agent moves towards waypoint
         if (Vector3.Distance(ai.transform.position, ai.na.destination) <= waypointReachedDistance) // If the agent has reached the waypoint
         {

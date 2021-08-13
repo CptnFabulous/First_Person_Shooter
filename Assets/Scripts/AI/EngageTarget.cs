@@ -18,7 +18,6 @@ public class EngageTarget : AIMovementBehaviour
     public int numberOfChecks = 15;
     public LayerMask coverCriteria = ~0;
 
-    Collider[] collidersToIgnoreWhenPerformingLineOfSightChecks;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -26,8 +25,6 @@ public class EngageTarget : AIMovementBehaviour
 
         // Sets the location of the current target
         targetLocation = ai.currentTarget.transform;
-
-        collidersToIgnoreWhenPerformingLineOfSightChecks = ai.GetComponentsInChildren<Collider>();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -43,13 +40,12 @@ public class EngageTarget : AIMovementBehaviour
             bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(targetLocation.position, currentDestination.position, coverCriteria, ai.AgentAndTargetHitboxes);
             bool tooClose = distance < minimumMoveRange;
             bool tooFar = distance > maximumMoveRange;
-            //Debug.Log(ai.name + " pathfinding status: " + lineOfSightLost + ", " + tooClose + ", " + tooFar);
-            if (lineOfSightLost || tooClose || tooFar) // Checks if agent can no longer see or attack the target from the position, if target is too close to the position, or if target is too far away from the position
+            if (lineOfSightLost || tooClose || tooFar)
             {
-                Debug.Log("Agent " + name + " cannot find " + ai.currentTarget + " on frame " + Time.frameCount + " because " + lineOfSightLost + ", " + tooClose + ", " + tooFar);
-                // If one of these are true, the AI cannot engage with the current target. The position is nulled so a new position can be found.
+                // The AI cannot engage with the current target, position is nulled.
                 currentDestination = null;
             }
+            //Debug.Log(ai.name + " pathfinding status: " + lineOfSightLost + ", " + tooClose + ", " + tooFar);
         }
         #endregion
 
@@ -59,6 +55,9 @@ public class EngageTarget : AIMovementBehaviour
         {
             //Debug.Log("Finding destination normally");
             currentDestination = FindFollowPosition(targetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
+
+            //Debug.Log("Current destination = " + currentDestination);
+            
         }
         #endregion
 
@@ -66,8 +65,9 @@ public class EngageTarget : AIMovementBehaviour
         // If a valid position is found the agent must travel to it.
         if (currentDestination != null)
         {
-            //Debug.Log("Assigning destination");
+            Debug.DrawLine(ai.transform.position, currentDestination.position, Color.magenta);
             ai.na.SetDestination(currentDestination.position);
+            Debug.DrawLine(currentDestination.position, ai.na.destination, new Color(1, 0.75f, 0), 1);
         }
         #endregion
     }
@@ -88,13 +88,17 @@ public class EngageTarget : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
                 // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
-                //if (AIFunction.LineOfSight(followCheck.position, target, coverCriteria))
                 if (AIFunction.LineOfSightCheckWithExceptions(target.position, followCheck.position, coverCriteria, ai.AgentAndTargetHitboxes))
                 {
                     // Ensures that the agent can actually move to the cover position.
                     NavMeshPath nmp = new NavMeshPath();
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
+                        if (nmp.status == NavMeshPathStatus.PathComplete)
+                        {
+
+                        }
+                        
                         // Checks if the new cover position is a shorter route to get to than the old one.
                         // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
                         float length = AIFunction.NavMeshPathLength(nmp);
@@ -105,42 +109,43 @@ public class EngageTarget : AIMovementBehaviour
                             currentPathLength = length;
 
                             //Debug.DrawLine(randomPosition, followCheck.position, Color.yellow, 1f);
+                            //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path is the best one so far!");
                         }
                         else
                         {
-                            Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Path is less efficient to get to than the previous one!");
+                            //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path is less efficient to get to than the previous one!");
                         }
                     }
                     else
                     {
-                        Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Path not sampled, agent cannot reach destination!");
+                        //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path not sampled, agent cannot reach destination!");
                     }
                 }
                 else
                 {
-                    Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Line of sight not established!");
+                    //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Line of sight not established!");
                 }
             }
             else
             {
-                Debug.Log("Frame " + Time.frameCount + ", check " + (i - 1) + ": Position could not be sampled!");
+                //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Position could not be sampled!");
             }
         }
 
         if (newFollowPosition != null)
         {
-            Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
+            //Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
         }
         else
         {
-            Debug.Log(ai.name + " could not find a new position on frame " + Time.frameCount + "!");
+            //Debug.Log(ai.name + " could not find a new position on frame " + Time.frameCount + "!");
         }
 
         return newFollowPosition;
     }
 
 
-
+    
 
 
 

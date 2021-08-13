@@ -20,52 +20,29 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         get
         {
-            int length = characterData.HealthData.hitboxes.Length;
-            if (currentTarget != null)
+            // If there is no target, you don't need to add anything, just return the AI's hitboxes
+            if (currentTarget == null)
             {
-                length += currentTarget.HealthData.hitboxes.Length;
+                return currentTarget.HealthData.hitboxes;
             }
+
+            // Create an array with a length equal to the combined lengths of the AI and target hitbox arrays
+            int length = characterData.HealthData.hitboxes.Length + currentTarget.HealthData.hitboxes.Length;
             DamageHitbox[] hitboxes = new DamageHitbox[length];
             for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
             {
+                // Add each variable in the old array to the same place in the new one
                 hitboxes[i] = characterData.HealthData.hitboxes[i];
             }
             for (int i = 0; i < currentTarget.HealthData.hitboxes.Length; i++)
             {
+                // Add i to the length of the first array, so in the final array it doesn't overwrite any previous values
                 hitboxes[characterData.HealthData.hitboxes.Length + i] = currentTarget.HealthData.hitboxes[i];
             }
 
             return hitboxes;
         }
     }
-
-    /*
-    public DamageHitbox[] AgentAndTargetHitboxes
-    {
-        get
-        {
-            int length = characterData.HealthData.hitboxes.Length;
-            if (currentTarget != null)
-            {
-                length += currentTarget.HealthData.hitboxes.Length;
-            }
-            DamageHitbox[] hitboxes = new DamageHitbox[length];
-            for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
-            {
-                hitboxes[i] = characterData.HealthData.hitboxes[i];
-            }
-            for (int i = 0; i < currentTarget.HealthData.hitboxes.Length; i++)
-            {
-                hitboxes[characterData.HealthData.hitboxes.Length + i] = currentTarget.HealthData.hitboxes[i];
-            }
-
-            return hitboxes;
-
-            
-        }
-
-    }
-    */
 
     [Header("Detection")]
     public Transform head;
@@ -78,7 +55,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     float patienceTimer = float.MaxValue;
 
     [Header("Self-preservation")]
-    public float reactionTime = 0.5f;
+    //public float reactionTime = 0.5f;
     public SelfPreservation selfPreservationBehaviour;
     public float dodgeCooldown = 2;
     float dodgeCooldownTimer;
@@ -111,6 +88,8 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         }
     }
 
+
+
     public virtual void Awake()
     {
         lookDirectionQuaternion = head.transform.rotation;
@@ -130,8 +109,9 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         dodgeCooldownTimer += Time.deltaTime;
 
         Debug.DrawRay(na.destination, Vector3.up * 10, Color.blue, 2);
-        Debug.DrawLine(transform.position, na.destination, Color.cyan);
-        
+        //Debug.Log(name + "'s destination on frame " + Time.frameCount + " is " + na.destination);
+        Debug.DrawLine(transform.position + Vector3.up, na.destination, Color.cyan);
+        //Debug.Log(name + "'s current destination is " + na.destination);
 
         PursueTargetUpdate();
 

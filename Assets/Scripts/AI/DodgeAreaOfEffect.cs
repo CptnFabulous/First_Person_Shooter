@@ -35,6 +35,7 @@ public class DodgeAreaOfEffect : AIMovementBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        Debug.Log("Setting destination for " + ai.name + " from DodgeAreaOfEffect behaviour");
         ai.na.SetDestination(dodgeLocation.position);
     }
 

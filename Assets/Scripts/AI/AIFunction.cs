@@ -505,8 +505,7 @@ public static class AIFunction
         {
             // Gets the length between the current node and the previous one, and adds it to the final length;
             pathLength += Vector3.Distance(path.corners[r - 1], path.corners[r]);
-            //Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, 1 * ((r - 1) / (path.corners.Length - 1))), 5);
-            Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, (float)(r - 1) / (path.corners.Length - 1)), 5);
+            //Debug.DrawLine(path.corners[r - 1], path.corners[r], Color.Lerp(Color.red, Color.green, (float)(r - 1) / (path.corners.Length - 1)), 5);
 
         }
 

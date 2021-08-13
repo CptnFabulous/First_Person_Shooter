@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class NullableVector3
 {
     public Vector3 position;
-    
+
     public NullableVector3(float x, float y, float z)
     {
         position.x = x;

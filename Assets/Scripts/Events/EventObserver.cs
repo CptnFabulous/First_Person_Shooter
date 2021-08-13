@@ -32,7 +32,7 @@ public class EventObserver : MonoBehaviour
             if (eventHandler == null) // If one couldn't be found
             {
                 // Instantiate object with an EventHandler
-                GameObject manager = Instantiate(new GameObject("EventHandler"), Vector3.zero, Quaternion.identity);
+                GameObject manager = new GameObject("EventHandler");
                 manager.AddComponent<EventHandler>();
                 eventHandler = manager.GetComponent<EventHandler>(); // Search for the now created EventHandler
             }
@@ -62,9 +62,13 @@ public class EventObserver : MonoBehaviour
         EventHandler eh = FindObjectOfType<EventHandler>(); // Search for an EventHandler
         if (eh != null) // If one is found
         {
+            // Refresh the list by removing all null entries, so no errors occur
+            eh.eventObservers.RemoveAll(e => e == null);
+            
             foreach (EventObserver eo in eh.eventObservers)
             {
-                if (eo.gameObject.activeSelf == true && eo.OnAttack != null) // If the gameobject is active and the delegate has any functions waiting to be ran, run it
+                // If the gameobject is active and the delegate has any functions waiting to be ran, run it
+                if (eo.gameObject.activeSelf == true && eo.OnAttack != null)
                 {
                     eo.OnAttack(m);
                 }

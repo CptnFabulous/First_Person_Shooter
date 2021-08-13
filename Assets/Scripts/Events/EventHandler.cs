@@ -14,10 +14,141 @@ public class EventHandler : MonoBehaviour
     public List<EventObserver> eventObservers = new List<EventObserver>();
     // Add more delegates, functions, etc. if I need to add new game events in the future
 
-    /*
-    public void BroadcastDamage(DamageMessage dm)
-    {
 
+
+
+
+
+    // Interface based (does not work properly)
+    /*
+    // Implement the interface IEventReceiver on all scripts that need to reference it
+    // When transmitting a message, find every MonoBehaviour in the scene that uses IEventReceiver and is enabled
+    // Invoke the appropriate function on every receiver
+    // This requires a processor-efficient way to update the receiver list. Interfaces can't have anything like Awake() or OnDestroy() so they can't automatically add and remove themselves
+    static List<IEventReceiver> internalReceiversReference;
+    public static List<IEventReceiver> ReceiverList
+    {
+        get
+        {
+            if (internalReceiversReference == null) // If internal reference does not exist
+            {
+                //IEventReceiver[] r = FindObjectsOfType<IEventReceiver>();
+                //internalReceiversReference = new List<IEventReceiver>(r);
+            }
+
+            
+
+
+            // Update list to remove everything that's null
+            internalReceiversReference.RemoveAll(r => r == null);
+
+            // Obtain the internal reference
+            return internalReceiversReference;
+        }
+    }
+
+    public static IEventReceiver[] GetReceiversInScene()
+    {
+        // Create a list of receivers to add to, and an array of all objects in the scene
+        List<IEventReceiver> newList = new List<IEventReceiver>();
+        GameObject[] objects = FindObjectsOfType<GameObject>();
+        for (int i = 0; i < objects.Length; i++) // Check every object in the scene
+        {
+            // Get IEventReceivers in each object in the scene and add it to the list
+            IEventReceiver[] receiversInObject = objects[i].GetComponents<IEventReceiver>();
+            newList.AddRange(receiversInObject);
+        }
+
+        return newList.ToArray();
+    }
+
+    public static void TransmitAttack(AttackMessage message)
+    {
+        foreach(IEventReceiver receiver in ReceiverList)
+        {
+            receiver.OnAttack(message);
+        }
+    }
+    public static void TransmitDamage(DamageMessage message)
+    {
+        foreach (IEventReceiver receiver in ReceiverList)
+        {
+            receiver.OnDamage(message);
+        }
+    }
+    public static void TransmitKill(KillMessage message)
+    {
+        foreach (IEventReceiver receiver in ReceiverList)
+        {
+            receiver.OnKill(message);
+        }
+    }
+    public static void TransmitInteraction(InteractMessage message)
+    {
+        foreach (IEventReceiver receiver in ReceiverList)
+        {
+            receiver.OnInteract(message);
+        }
+    }
+    public static void TransmitSpawning(SpawnMessage message)
+    {
+        foreach (IEventReceiver receiver in ReceiverList)
+        {
+            receiver.OnSpawn(message);
+        }
+    }
+    */
+
+    // Delegate based
+    /*
+    public event System.Action<AttackMessage> OnAttack;
+    public event System.Action<DamageMessage> OnDamage;
+    public event System.Action<KillMessage> OnKill;
+    public event System.Action<InteractMessage> OnInteract;
+    public event System.Action<SpawnMessage> OnSpawn;
+
+    static EventHandler internalReference;
+    public static EventHandler Current
+    {
+        get
+        {
+            if (internalReference == null) // If internal reference does not exist
+            {
+                // Assign an EventHandler that already exists
+                internalReference = FindObjectOfType<EventHandler>();
+
+                if (internalReference == null) // If it's still null because one was not found
+                {
+                    // Make a new one and record it
+                    GameObject manager = new GameObject("EventHandler");
+                    internalReference = manager.AddComponent<EventHandler>();
+                }
+            }
+
+            // Obtain the internal reference
+            return internalReference;
+        }
+    }
+
+    public static void TransmitAttack(AttackMessage message)
+    {
+        Current.OnAttack(message);
+    }
+    public static void TransmitDamage(DamageMessage message)
+    {
+        Current.OnDamage(message);
+    }
+    public static void TransmitKill(KillMessage message)
+    {
+        Current.OnKill(message);
+    }
+    public static void TransmitInteraction(InteractMessage message)
+    {
+        Current.OnInteract(message);
+    }
+    public static void TransmitSpawning(SpawnMessage message)
+    {
+        Current.OnSpawn(message);
     }
     */
 }

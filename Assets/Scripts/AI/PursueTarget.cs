@@ -12,6 +12,8 @@ public class PursueTarget : AIMovementBehaviour
     {
         if (Vector3.Distance(ai.transform.position, ai.currentTarget.transform.position) > maxRange)
         {
+            Debug.Log("Setting destination for " + ai.name + " from PursueTarget behaviour");
+
             ai.na.SetDestination(ai.currentTarget.transform.position);
         }
     } 

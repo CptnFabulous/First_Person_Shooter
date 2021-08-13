@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IEventTransmitterSystem
+public interface IEventReceiver
 {
     void OnAttack(AttackMessage message);
 

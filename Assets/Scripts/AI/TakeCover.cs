@@ -48,6 +48,7 @@ public class TakeCover : AIMovementBehaviour
 
         if (currentCover != null)
         {
+            Debug.Log("Setting destination for " + ai.name + " from TakeCover behaviour");
             ai.na.SetDestination(currentCover.position);
         }
     }
