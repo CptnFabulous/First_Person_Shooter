@@ -40,9 +40,23 @@ public static class Colours
     {
         get
         {
+            return new Color(0, 0.5f, 0);
+        }
+    }
+
+    public static Color teal
+    {
+        get
+        {
             return new Color(0, 0.5f, 0.5f);
         }
     }
 
-    
+    public static Color turquoise
+    {
+        get
+        {
+            return new Color(0, 1, 0.5f);
+        }
+    }
 }

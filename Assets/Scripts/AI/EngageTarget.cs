@@ -77,6 +77,12 @@ public class EngageTarget : AIMovementBehaviour
         NullableVector3 newFollowPosition = null;
         float currentPathLength = float.MaxValue;
 
+        int noValidPosition = 0;
+        int noLineOfSight = 0;
+        int noValidPath = 0;
+        int incompletePath = 0;
+        int inefficient = 0;
+
         for (int i = 0; i < numberOfChecks; i++)
         {
             // Samples a random position around the target, outside minimumRange and inside maximumRange.
@@ -87,59 +93,54 @@ public class EngageTarget : AIMovementBehaviour
             // Checks if there is an actual point on the navmesh close to the randomly selected position
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
+                Debug.DrawLine(randomPosition, followCheck.position, Colours.darkGreen);
+                
                 // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
                 if (AIFunction.LineOfSightCheckWithExceptions(target.position, followCheck.position, coverCriteria, ai.AgentAndTargetHitboxes))
                 {
-                    // Ensures that the agent can actually move to the cover position.
+                    // Ensures that a path can be sampled to the destination.
                     NavMeshPath nmp = new NavMeshPath();
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
+                        // Checks to make sure a whole path can be found.
                         if (nmp.status == NavMeshPathStatus.PathComplete)
                         {
-
-                        }
-                        
-                        // Checks if the new cover position is a shorter route to get to than the old one.
-                        // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
-                        float length = AIFunction.NavMeshPathLength(nmp);
-                        if (newFollowPosition == null || length < currentPathLength)
-                        {
-                            // If so, new cover position is established, and navmesh path is stored for next comparison
-                            newFollowPosition = new NullableVector3(followCheck.position);
-                            currentPathLength = length;
-
-                            //Debug.DrawLine(randomPosition, followCheck.position, Color.yellow, 1f);
-                            //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path is the best one so far!");
+                            // Checks if the new cover position is a shorter route to get to than the old one.
+                            // Use OR statement, and check navmesh path cost between transform.position and the cover point currently being checked.
+                            float length = AIFunction.NavMeshPathLength(nmp);
+                            if (newFollowPosition == null || length < currentPathLength)
+                            {
+                                // If so, new cover position is established, and navmesh path is stored for next comparison
+                                newFollowPosition = new NullableVector3(followCheck.position);
+                                currentPathLength = length;
+                            }
+                            else
+                            {
+                                inefficient++;
+                            }
                         }
                         else
                         {
-                            //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path is less efficient to get to than the previous one!");
+                            incompletePath++;
                         }
                     }
                     else
                     {
-                        //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Path not sampled, agent cannot reach destination!");
+                        noValidPath++;
                     }
                 }
                 else
                 {
-                    //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Line of sight not established!");
+                    noLineOfSight++;
                 }
             }
             else
             {
-                //Debug.Log("Frame " + Time.frameCount + ", check " + (i + 1) + ": Position could not be sampled!");
+                noValidPosition++;
             }
         }
 
-        if (newFollowPosition != null)
-        {
-            //Debug.Log("Assigning new position, " + newFollowPosition.position + ", on frame " + Time.frameCount);
-        }
-        else
-        {
-            //Debug.Log(ai.name + " could not find a new position on frame " + Time.frameCount + "!");
-        }
+        Debug.Log("Path result - " + (newFollowPosition != null).ToString() + ", " + noValidPosition + " sampling errors, " + noLineOfSight + " line of sight fails, " + noValidPath + " pathing fails, " + incompletePath + " incomplete paths, and " + inefficient + " inefficient paths.");
 
         return newFollowPosition;
     }

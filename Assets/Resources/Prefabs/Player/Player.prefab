@@ -904,7 +904,7 @@ MonoBehaviour:
     defaultValue: 0
     influencingPercentages: []
   movementSpeed:
-    defaultValue: 10
+    defaultValue: 7.5
     influencingPercentages: []
   crouchSpeedModifier:
     percentageValue: 50

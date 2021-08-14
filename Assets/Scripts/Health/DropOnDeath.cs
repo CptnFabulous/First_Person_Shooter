@@ -14,7 +14,8 @@ public class DropOnDeath : MonoBehaviour
     }
 
     public List<ItemStack> droppedItems;
-    public Vector3 dropZone;
+    public Vector3 zoneLocalCenter = Vector3.one;
+    public Vector3 zoneExtents = new Vector3(0.5f, 1f, 0.5f);
 
     Health h;
 
@@ -32,8 +33,9 @@ public class DropOnDeath : MonoBehaviour
             {
                 for(int i = 0; i < s.quantity; i++)
                 {
-                    Vector3 dropArea = new Vector3(Random.Range(-dropZone.x / 2, dropZone.x / 2), Random.Range(-dropZone.y / 2, dropZone.y / 2), Random.Range(-dropZone.y / 2, dropZone.y / 2));
-                    Instantiate(s.item, transform.position + dropArea, Quaternion.identity);
+                    Vector3 randomPosition = new Vector3(Random.Range(-zoneExtents.x, zoneExtents.x), Random.Range(-zoneExtents.y, zoneExtents.y), Random.Range(-zoneExtents.z, zoneExtents.z));
+                    Vector3 relativeToTransform = transform.rotation * (zoneLocalCenter + randomPosition);
+                    Instantiate(s.item, transform.position + relativeToTransform, Quaternion.identity);
                 }
             }
 

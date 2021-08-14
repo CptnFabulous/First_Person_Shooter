@@ -211,7 +211,7 @@ MonoBehaviour:
   wielder: {fileID: 0}
   attacksInBurst: 3
   attacksPerMinute: 900
-  telegraphLength: 0.5
+  telegraphLength: 0.25
   cooldown: 0.5
   aimDegreesPerSecond: 120
   aimAngleThreshold: 0.1
@@ -348,7 +348,7 @@ Transform:
   m_GameObject: {fileID: 64653635353412409}
   m_LocalRotation: {x: 0.00000013411044, y: -0.000000014901159, z: -0, w: 1}
   m_LocalPosition: {x: -0.013, y: 0.09, z: 0.72}
-  m_LocalScale: {x: 0.0033586493, y: 0.0067172963, z: 0.025189865}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 64653637326527380}
   - {fileID: 64653635744440032}
@@ -1195,7 +1195,8 @@ MonoBehaviour:
     quantity: 1
   - item: {fileID: 8604143335854015636, guid: a4130bde53fac2b44a619cebe5da85cc, type: 3}
     quantity: 1
-  dropZone: {x: 1, y: 2, z: 1}
+  zoneLocalCenter: {x: 1, y: 1, z: 1}
+  zoneExtents: {x: 0.5, y: 1, z: 0.5}
 --- !u!95 &64653636073086515
 Animator:
   serializedVersion: 3
@@ -1255,7 +1256,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   pursueRange: 60
   pursuePatience: 10
-  reactionTime: 0.5
   selfPreservationBehaviour: 1
   dodgeCooldown: 2
   defaultLookDegreesPerSecond: 30
@@ -2498,6 +2498,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 199d6c2a0360ce44686089f0b2df675b, type: 2}
+    - target: {fileID: 13700000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: acb20196ad39f6f47ac5f21b95aa8f75, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
 --- !u!1 &7736141782610061100 stripped
