@@ -21,9 +21,9 @@ public class CurrentPlayerSettings
 
     void ApplySettings(PlayerHandler ph)
     {
-        ph.pc.fieldOfView.defaultValue = playerFieldOfView;
-        ph.pc.sensitivityX = sensitivityX;
-        ph.pc.sensitivityY = sensitivityY;
+        ph.movement.fieldOfView.defaultValue = playerFieldOfView;
+        ph.movement.sensitivityX = sensitivityX;
+        ph.movement.sensitivityY = sensitivityY;
 
 
     }

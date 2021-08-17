@@ -4,93 +4,41 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+[System.Serializable]
 public class Timer
 {
-    public float delay;
-    float timer;
+    public float delay; // How long the timer lasts, in seconds
+    public bool unscaled; // Does the timer ignore the time scale?
+    float startTime; // The recorded time of reset. Subtracted from current time for time passed
 
-    // Update is called once per frame
-    public void Update()
+    public float Progress
     {
-        timer += Time.deltaTime / delay;
-        if (timer > 1)
+        get
         {
-            // Perform task a number of times equal to the whole number value of the float, and minus 1 each time
-            while(timer > 1)
+            // Gets the amount of real time that has passed since the recorded time on reset
+            float progress = Time.time - startTime;
+            if (unscaled == false)
             {
-                // Do action
-                //Action();
-                timer -= 1;
+                // If timer is scaled, multiply progress by the current time scale
+                progress *= Time.timeScale;
             }
+
+            // Divides time by the delay to get a value between 0 or 1 (or more than one if over time)
+            return progress / delay;
         }
     }
 
-    public void Sandwich(float f)
+    public bool IsReady
     {
-        Debug.Log("Sandwich");
-    }
-
-    public bool IsReady()
-    {
-        if (timer > 1)
+        get
         {
-            return true;
-        }
-
-        timer += Time.deltaTime / delay;
-
-        //Action actionToPerform = Sandwich;
-        //PerformAction(actionToPerform(5));
-
-
-        //Action a = Sandwich;
-        //PerformAction<Sandwich>(Sandwich());
-
-
-        //a.Invoke();
-
-        return false;
-
-        //PerformAction<Upda>
-
-        
-
-    }
-
-    public void PerformAction(Action a)
-    {
-        while (timer > 1)
-        {
-            a.Invoke();
-            timer -= 1;
+            // Checks if enough time has elapsed
+            return Progress >= 1;
         }
     }
-
-    public void PerformAction<T>(T myFunction)
-    {
-        while (timer > 1)
-        {
-
-            //Action a = myFunction;
-            //a.Invoke();
-            timer -= 1;
-        }
-    }
-
-    /*
-    public void Action(Function F)
-    {
-        while (timer > 1)
-        {
-            // Do action
-            F();
-            timer -= 1;
-        }
-    }
-    */
 
     public void Reset()
     {
-        timer = 0;
+        startTime = Time.time;
     }
 }

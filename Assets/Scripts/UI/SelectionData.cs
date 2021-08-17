@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof (Selectable))]
+//[RequireComponent(typeof (Selectable))]
 public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Text label;

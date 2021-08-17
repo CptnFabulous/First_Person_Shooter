@@ -9,7 +9,7 @@ public class PlayerHandler : Character
     
     
     [HideInInspector] public PlayerHealth ph;
-    [HideInInspector] public PlayerController pc;
+    [HideInInspector] public PlayerController movement;
     [HideInInspector] public WeaponHandler wh;
     [HideInInspector] public AmmunitionInventory a;
     [HideInInspector] public HeadsUpDisplay hud;
@@ -41,7 +41,7 @@ public class PlayerHandler : Character
 
 
         ph = GetComponent<PlayerHealth>();
-        pc = GetComponent<PlayerController>();
+        movement = GetComponent<PlayerController>();
         wh = GetComponent<WeaponHandler>();
         a = GetComponent<AmmunitionInventory>();
         hud = GetComponent<HeadsUpDisplay>();
@@ -63,8 +63,8 @@ public class PlayerHandler : Character
     public void Die()
     {
         ph.health.current = 0;
-        pc.rb.constraints = RigidbodyConstraints.None;
-        pc.enabled = false;
+        movement.rb.constraints = RigidbodyConstraints.None;
+        movement.enabled = false;
         wh.CurrentWeapon().enabled = false;
         wh.enabled = false;
         gsh.FailGame();
@@ -76,8 +76,8 @@ public class PlayerHandler : Character
         transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
         transform.position = position;
 
-        pc.rb.constraints = RigidbodyConstraints.FreezeRotation; 
-        pc.enabled = true;
+        movement.rb.constraints = RigidbodyConstraints.FreezeRotation;
+        movement.enabled = true;
         wh.CurrentWeapon().enabled = true;
         wh.enabled = true;
         gsh.ResumeGame();

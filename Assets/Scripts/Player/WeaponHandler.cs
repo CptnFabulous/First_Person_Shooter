@@ -80,7 +80,7 @@ public class WeaponHandler : MonoBehaviour
         #region Weapon selector
         weaponSelector.WheelHandler();
 
-        ph.pc.canLook = !weaponSelector.MenuIsActive;
+        ph.movement.canLook = !weaponSelector.MenuIsActive;
 
         if (weaponSelector.MenuIsActive)
         {
@@ -114,8 +114,8 @@ public class WeaponHandler : MonoBehaviour
         #endregion
 
 
-        crouchModifier.SetActiveFully(ph.pc.isCrouching);
-        runModifier.SetIntensity(ph.pc.MoveDirection().magnitude);
+        crouchModifier.SetActiveFully(ph.movement.isCrouching);
+        runModifier.SetIntensity(ph.movement.MoveDirection.magnitude);
     }
 
     public void RefreshWeapons(int index)
@@ -250,7 +250,7 @@ public class WeaponHandler : MonoBehaviour
         rb.isKinematic = true;
 
         // Parent weapon to player
-        rw.transform.SetParent(ph.pc.torso, true);
+        rw.transform.SetParent(ph.movement.torso, true);
         rw.playerHolding = this;
 
         // Set position
@@ -291,7 +291,7 @@ public class WeaponHandler : MonoBehaviour
 
         // Toss away
         droppedWeapon.gameObject.SetActive(true);
-        rb.AddForce(ph.pc.head.forward * dropForce);
+        rb.AddForce(ph.movement.head.forward * dropForce);
 
         RefreshWeapons(0);
     }

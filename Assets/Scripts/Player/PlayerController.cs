@@ -125,43 +125,54 @@ public class PlayerController : MonoBehaviour
     }
 
     // In what direction is the player intending to move?
-    public Vector2 MoveDirection()
+    public Vector2 MoveDirection
     {
-        return moveInput;
+        get
+        {
+            return moveInput;
+        }
+        
     }
 
     // Figure out how far the player has moved since the last frame, and in what direction
-    Vector3 DeltaMoveDistance()
+    Vector3 DeltaMoveDistance
     {
-        // Gets a vector3 of the direction the player has moved in since the last frame. It then also changes the magnitude to equal the full distance the player has moved.
-        Vector3 v = (transform.position - positionLastFrame).normalized;
-        v *= Vector3.Distance(transform.position, positionLastFrame);
-        return v;
+        get
+        {
+            // Gets a vector3 of the direction the player has moved in since the last frame. It then also changes the magnitude to equal the full distance the player has moved.
+            Vector3 v = (transform.position - positionLastFrame).normalized;
+            v *= Vector3.Distance(transform.position, positionLastFrame);
+            return v;
+        }
     }
 
     // Figure out how far the player's rotation has changed since the last frame, and in what direction
-    float DeltaRotateDistance()
+    float DeltaRotateDistance
     {
-        //Debug.Log("Old: " + headDirectionLastFrame + " New: " + head.transform.forward);
-        return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
+        get
+        {
+            //Debug.Log("Old: " + headDirectionLastFrame + " New: " + head.transform.forward);
+            return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
+        }
     }
 
     // In what direction is the player turning?
-    public Vector2 DeltaRotateDirection()
+    public Vector2 DeltaRotateDirection
     {
-        Vector3 outOld = headDirectionLastFrame.normalized;
-        Vector3 outNew = head.transform.forward.normalized;
+        get
+        {
+            Vector3 outOld = headDirectionLastFrame.normalized;
+            Vector3 outNew = head.transform.forward.normalized;
 
-        // Obtains the 'direction' the player looks in.
-        Vector3 direction = (outNew - outOld).normalized;
+            // Obtains the 'direction' the player looks in.
+            Vector3 direction = (outNew - outOld).normalized;
 
-        // Converts the direction from world to local space.
-        direction = transform.InverseTransformDirection(direction);
+            // Converts the direction from world to local space.
+            direction = transform.InverseTransformDirection(direction);
 
-        return new Vector2(direction.x, direction.y).normalized;
-
-
-        // Now I have a direction value. I just need to convert it to be relative to the transform's head.
+            return new Vector2(direction.x, direction.y).normalized;
+            // Now I have a direction value. I just need to convert it to be relative to the transform's head.
+        }
     }
     #endregion
 
@@ -406,8 +417,8 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         #region Sway
-        float intensity = Mathf.Clamp01(DeltaRotateDistance() / speedForMaxSway);
-        Vector3 swayAxes = new Vector3(DeltaRotateDirection().y, -DeltaRotateDirection().x, 0);
+        float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
+        Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
         swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
         torsoRotationAxes += swayAxes;
         #endregion

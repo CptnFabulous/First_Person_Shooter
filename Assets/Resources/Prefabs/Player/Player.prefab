@@ -869,7 +869,7 @@ MonoBehaviour:
   isUniquelyNamed: 0
   faction: {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}
   ph: {fileID: 0}
-  pc: {fileID: 0}
+  movement: {fileID: 0}
   wh: {fileID: 0}
   a: {fileID: 0}
   hud: {fileID: 0}

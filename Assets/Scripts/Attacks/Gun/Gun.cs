@@ -143,9 +143,9 @@ public class Gun : MonoBehaviour
         playerHolding = GetComponentInParent<WeaponHandler>();
 
         sensitivityWhileAiming = new PercentageModifier(0, true, false);
-        playerHolding.ph.pc.sensitivityModifier.Add(sensitivityWhileAiming, this);
+        playerHolding.ph.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
         speedWhileAiming = new PercentageModifier();
-        playerHolding.ph.pc.movementSpeed.Add(speedWhileAiming, this);
+        playerHolding.ph.movement.movementSpeed.Add(speedWhileAiming, this);
 
         AssignFiringModes(firingModeIndex);
 
@@ -219,7 +219,7 @@ public class Gun : MonoBehaviour
                 #endregion
 
                 #region Calculate and fire shot
-                Transform head = playerHolding.ph.pc.head;
+                Transform head = playerHolding.ph.movement.head;
                 Vector3 aimDirection = head.forward;
                 if (optics == null || isAiming == false)
                 {
@@ -369,7 +369,7 @@ public class Gun : MonoBehaviour
             {
                 rd.Normalize();
             }
-            playerHolding.ph.pc.LookAngle(r * rd); // Add recoil
+            playerHolding.ph.movement.LookAngle(r * rd); // Add recoil
             recoilToApply -= r;
         }
         else if (!Input.GetButton("Fire")) // Return recoil using recoil recovery float
@@ -422,7 +422,7 @@ public class Gun : MonoBehaviour
         LerpADS(adsTimer);
 
         // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
-        Debug.Log("Player camera sensitivity = " + playerHolding.ph.pc.sensitivityModifier.Calculate());
+        Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
     }
 
     void LerpADS(float timer)
@@ -432,7 +432,7 @@ public class Gun : MonoBehaviour
             return;
         }
         
-        PlayerController pc = playerHolding.ph.pc;
+        PlayerController pc = playerHolding.ph.movement;
 
         // Change FOV for zoom (update later to use variablevaluefloat)
         float defaultFOV = pc.fieldOfView.defaultValue;

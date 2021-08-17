@@ -96,7 +96,7 @@ public class HeadsUpDisplay : MonoBehaviour
     void Update()
     {
         RectTransform rt = hudCanvas.GetComponent<RectTransform>();
-        Transform playerHead = ph.pc.head.transform;
+        Transform playerHead = ph.movement.head.transform;
 
         #region Objectives
         //objectiveList.text = ObjectiveList();
