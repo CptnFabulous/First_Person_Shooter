@@ -123,7 +123,7 @@ public class HeadsUpDisplay : MonoBehaviour
         #region Health HUD
         healthCounter.text = ph.ph.health.current.ToString();
         FillMeter(healthBar, ph.ph.health.current, ph.ph.health.max);
-        if (ph.ph.health.IsCritical())
+        if (ph.ph.health.IsCritical)
         {
             healthCounter.color = resourceCriticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings

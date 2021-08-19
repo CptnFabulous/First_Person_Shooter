@@ -68,7 +68,7 @@ public class HUD : MonoBehaviour
         }
         prevHealthValue = current;
 
-        if (ph.ph.health.IsCritical())
+        if (ph.ph.health.IsCritical)
         {
             onHealthCritical.Invoke();
         }

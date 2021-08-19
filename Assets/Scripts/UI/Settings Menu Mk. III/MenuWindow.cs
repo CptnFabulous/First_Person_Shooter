@@ -11,6 +11,7 @@ public class MenuWindow : MonoBehaviour
     MenuHandler menuHandler;
 
     [Header("Scene elements")]
+    public Selectable firstSelectedOption;
     public ScrollRect selections;
     public Text flavourText;
     public Image selectionGraphic;
@@ -23,10 +24,8 @@ public class MenuWindow : MonoBehaviour
 
     public void ReturnToPreviousWindow()
     {
-        //Debug.Log(menuHandler);
-        //Debug.Log(parent);
-        //menuHandler.SwitchWindow(parent);
-        GetComponentInParent<MenuHandler>().SwitchWindow(parent);
+        menuHandler.SwitchWindow(parent);
+        //GetComponentInParent<MenuHandler>().SwitchWindow(parent);
     }
 
     public virtual void OnEnable()

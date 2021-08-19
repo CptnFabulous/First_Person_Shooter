@@ -15,8 +15,7 @@ public class EventHandler : MonoBehaviour
     // Add more delegates, functions, etc. if I need to add new game events in the future
 
 
-
-
+    
 
 
     // Interface based (does not work properly)

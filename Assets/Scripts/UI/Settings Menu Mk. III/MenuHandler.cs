@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Reflection;
+using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(EventSystem), typeof(StandaloneInputModule))]
 public class MenuHandler : MonoBehaviour
 {
     /*
@@ -17,13 +19,17 @@ public class MenuHandler : MonoBehaviour
 
     public MenuAndChildren hierarchy;
     */
+    EventSystem eventSystem;
+    StandaloneInputModule menuInputHandler;
+
+
     public MenuWindow rootWindow;
 
     
 
 
     [HideInInspector] public MenuWindow[] differentWindows;
-    [HideInInspector] public MenuWindow currentWindow;
+    public MenuWindow CurrentWindow { get; private set; }
 
 
 
@@ -39,6 +45,9 @@ public class MenuHandler : MonoBehaviour
 
     private void Awake()
     {
+        eventSystem = GetComponent<EventSystem>();
+        menuInputHandler = GetComponent<StandaloneInputModule>();
+        
         differentWindows = GetComponentsInChildren<MenuWindow>(true);
         //SortMenus();
     }
@@ -50,13 +59,13 @@ public class MenuHandler : MonoBehaviour
 
     public void SwitchWindow(MenuWindow newWindow)
     {
-        //Debug.Log(newWindow);
         foreach (MenuWindow w in differentWindows)
         {
             w.gameObject.SetActive(false);
         }
         newWindow.gameObject.SetActive(true);
-        currentWindow = newWindow;
+        CurrentWindow = newWindow;
+        eventSystem.firstSelectedGameObject = CurrentWindow.firstSelectedOption.gameObject;
     }
 
 

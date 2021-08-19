@@ -6,15 +6,22 @@ using UnityEngine.UI;
 
 public class VideoSettingsMenu : SettingsMenu
 {
+    PlayerHandler playerToUpdate;
+
     [Header("Interactables for settings")]
     public Dropdown fullscreen;
+
     public Dropdown graphicalQualityPreset;
+
     public bool applyExpensiveQualityPresetChanges = true;
+    public Dropdown monitor;
+
+
     public Dropdown resolution;
     public Dropdown refreshRate;
+    Resolution[][] table;
+
     
-
-
     /// <summary>
     /// Gets all the Resolution structs from Screen.resolutions, and organises them into a handy array of arrays, compartmentalising based on both dimensions and refresh rate.
     /// Each resolution has its own sub-array, with each value in it being a different refresh rate.
@@ -23,108 +30,132 @@ public class VideoSettingsMenu : SettingsMenu
     {
         get
         {
-            // Create an array of arrays, with a length equal to the number of resolution structs.
-            // Stores the maximum necessary length for the main array (for each distinct resolution
-            // Creates a list of maximum required lengths for each sub array
+            // Creates an array of arrays for resolution structs
             Resolution[][] rough = new Resolution[Screen.resolutions.Length][];
-            int rowLength = 1;
+            // Specifies the number of necessary columns
+            int numberOfColumns = 0;
+            // Specifies the length for each column. numberOfColumns is used to match the column length to the column in the array.
             int[] columnLengths = new int[Screen.resolutions.Length];
-            // Making the array lengths equal to the total number of entries ensures that even if every entry has a different resolution or framerate, there will be space to hold them all.
-            // This is necessary because array lengths cannot be adjusted, so after getting the required lengths I'll put the values into a shorter array.
-            // For some reason when declaring the length of the array of arrays, you put the length of the main array in the first set of braces when you'd expect it to be the second.
-            // But when referencing a variable in the main array, you put the index for the main array in the first, then the sub array in the second
+            // The extra large arrays and separate length variables are because array lengths can't be changed and we don't know the lengths yet.
+            // We make the lengths large enough to account for any 'dimension'
+            // Then, once we find the real sizes, transfer the values to an appropriately sized array.
+
+            /*
+            string listMessage = "All values:\n";
+            for (int r = 0; r < Screen.resolutions.Length; r++)
+            {
+                listMessage += Screen.resolutions[r] + "\n";
+            }
+            listMessage += "End of table.";
+            Debug.Log(listMessage);
+            */
 
             // Goes through every struct in the normal Screen.resolutions array, and sorts it into an appropriate place
             for (int i = 0; i < Screen.resolutions.Length; i++)
             {
-                // Get currently checked resolution struct
-                Resolution currentChecking = Screen.resolutions[i];
+                Resolution checking = Screen.resolutions[i];
 
-                #region Check resolution against others recorded in the array. If already present, see if its refresh rate is new for that resolution.
-                // xLength equals the number of separate required arrays for resolutions, even if the main array is larger.
-                // All arrays beyond the length of xLength are unassigned
+                #region Add resolution if new. If not, add the refresh rate to its column if it is new for that resolution.
+
                 bool resolutionIsNew = true;
-                // Check the current struct against all distinct resolutions currently recorded in the table
-                for (int resolutionIndex = 0; resolutionIndex < rowLength; resolutionIndex++)
+                // Checks the first struct in each column with a resolution already recorded
+                for (int x = 0; x < numberOfColumns; x++)
                 {
-                    Resolution fromRow = rough[resolutionIndex][0];
-                    // If a struct being currently checked has the same dimensions as the one in the table
-                    if (currentChecking.width == fromRow.width && currentChecking.height == fromRow.height)
+                    Resolution assignedToSlot = rough[x][0];
+                    // If an identical resolution appears in a column
+                    if (checking.width == assignedToSlot.width && checking.height == assignedToSlot.height)
                     {
-                        // Resolution is already recorded, mark as false so it doesn't get added in a separate array.
+                        //Debug.Log("Resolution already exists in column " + x + " out of " + numberOfColumns);
+                        // Mark it so it isn't added to a new one
                         resolutionIsNew = false;
-                        // Proceed to checking if struct has a different refresh rate
 
-                        #region Since resolution is not new, check refresh rates in current column
-                        // yLengthForCurrentColumn equals the number of recorded refresh rates for the currently checked resolution, even if the array is larger.
-                        // All refresh rates in a particular resolution's array beyond the length of yLengthForCurrentColumn are unassigned for this resolution
+                        #region Check refresh rates in current column in case that's new
+
                         bool refreshRateIsNew = true;
-                        // Check the current struct against all distinct refresh rates currently recorded in the column
-                        for (int refreshRateIndex = 0; refreshRateIndex < columnLengths[resolutionIndex]; refreshRateIndex++)
+                        //Debug.Log("Checking refresh rate");
+                        // Checks each struct in the current column that has a refresh rate assigned
+                        for (int y = 0; y < columnLengths[x]; y++)
                         {
-                            Resolution fromColumn = rough[resolutionIndex][refreshRateIndex];
-                            // If the refresh rate of the struct currently being checked is the same as one in the current column
-                            if (currentChecking.refreshRate == fromColumn.refreshRate)
+                            //Debug.Log("Checking assigned refresh rate " + (y + 1) + " out of " + columnLengths[x] + " in column " + (x + 1) + " out of " + numberOfColumns);
+                            assignedToSlot = rough[x][y];
+                            // If an identical refresh rate appears
+                            if (checking.refreshRate == assignedToSlot.refreshRate)
                             {
-                                // Trip refreshRateIsNew to false and end the loop prematurely
-                                refreshRateIsNew = false;
-                                refreshRateIndex = columnLengths[resolutionIndex];
+                                refreshRateIsNew = false; // Mark it so it isn't added again
+                                y = columnLengths[x]; // End loop prematurely because we already know the refresh rate is a duplicate
                             }
                         }
-                        #endregion
 
-                        #region Add refresh rate to top of column if new
-                        // If the refresh rate bool was not tripped false, the refresh rate is new even if the resolution is not
-                        if (refreshRateIsNew)
+                        // If check was not tripped to false, refresh rate is new.
+                        if (refreshRateIsNew == true)
                         {
-                            // Expand the current column by one, and add the new struct since it has a different refresh rate.
-                            columnLengths[resolutionIndex] += 1;
-                            rough[resolutionIndex][columnLengths[resolutionIndex] - 1] = currentChecking;
+                            columnLengths[x] += 1; // 'Increase' column length by one
+                            //Debug.Log("Column " + x + " is " + columnLengths);
+
+
+                            rough[x][columnLengths[x] - 1] = checking; // Add struct to latest value
                         }
+
                         #endregion
 
-                        // End resolution checking loop prematurely, no more checking needed for resolution dimensions
-                        resolutionIndex = rowLength;
+                        x = numberOfColumns; // End loop prematurely because we already know the resolution is a duplicate
                     }
                 }
-                #endregion
 
-                #region Add resolution to table if new
-                // If the bool was not tripped false earlier, this means the current resolution is different from all the previously documented ones.
-                if (resolutionIsNew)
+                // If check was not tripped to false, resolution is new.
+                if (resolutionIsNew == true)
                 {
-                    // If the loop went through enough times to equal xLength without tripping the bool to false,
-                    // that means the table needs to be expanded by 1 to accomodate the new, different resolution.
-                    rowLength += 1;
-
-                    // Creates a new array of more than adequate length to store every framerate for a particular resolution
-                    rough[rowLength - 1] = new Resolution[Screen.resolutions.Length];
-                    // Assigns the first new resolution as the first value in the newest array
-                    rough[rowLength - 1][0] = currentChecking;
-                    // Since xLength is the amount of entries and the index always starts at 0, the maximum entry is xLength - 1.
-                    // I could have just set the array value before increasing xLength to save the - 1 calculation, but this is less confusing.
-
-                    // Set the max length variable for the current column to one 
-                    columnLengths[rowLength - 1] = 1;
+                    // 'Increase' the array by one
+                    numberOfColumns += 1;
+                    // Make the newest column in the array not null, so values can be assigned
+                    rough[numberOfColumns - 1] = new Resolution[Screen.resolutions.Length];
+                    // Populate the first entry of the latest column with the new resolution
+                    rough[numberOfColumns - 1][0] = checking;
+                    // Manually set the length for the current column to 1, since the first option was manually added as well.
+                    columnLengths[numberOfColumns - 1] = 1;
                 }
+
                 #endregion
+
+                //Debug.Log("Finishing check " + (i + 1) + " out of " + Screen.resolutions.Length);
             }
 
-            // Make a final array, with an appropriate length
-            Resolution[][] final = new Resolution[rowLength][];
-            // For each sub array within the main array
+            // Make a final array with an appropriate number of columns
+            Resolution[][] final = new Resolution[numberOfColumns][];
+
+            // For each column
+            for (int x = 0; x < final.Length; x++)
+            {
+                // Use index x to match the length variable in columnLengths to the appropriate column
+                final[x] = new Resolution[columnLengths[x]];
+                // For each value in the current column
+                for (int y = 0; y < final[x].Length; y++)
+                {
+                    // Use integer x to get the appropriate column from rough, and y to get the appropriate value from said column.
+                    // Assign it to the new table.
+                    final[x][y] = rough[x][y];
+                }
+            }
+
+            /*
+            string message = "Assembled resolutions and framerates:\n";
+            Debug.Log(final.Length);
             for (int r = 0; r < final.Length; r++)
             {
-                // Set the length of the sub array to equal its recorded length, matched by the correct index
-                final[r] = new Resolution[columnLengths[r]];
-                // For every value in the sub array
-                for (int c = 0; c < final[r].Length; r++)
+                Resolution[] current = final[r];
+                //Debug.Log("column Length = " + (current.Length));
+                
+                Resolution text = current[0];
+                message += text.width + " X " + text.height + ": ";
+                for (int c = 0; c < current.Length - 1; c++)
                 {
-                    // Set the resolution struct in this value in the sub array to the appropriate one in the old overly large array
-                    final[r][c] = rough[r][c];
+                    message += current[c].refreshRate + "Hz, ";
                 }
+                message += current[current.Length - 1].refreshRate + "Hz\n";
             }
-
+            message += "End of table.";
+            Debug.Log(message);
+            */
             return final;
         }
     }
@@ -182,24 +213,51 @@ public class VideoSettingsMenu : SettingsMenu
     public override void RefreshSettings()
     {
         base.RefreshSettings();
-
         Debug.Log("Refreshing options in video settings menu");
+        playerToUpdate = GetComponentInParent<PlayerHandler>();
         // Updates interactable options to represent the current settings
 
         #region Refresh fullscreen option
         // Refreshes fullscreen options dropdown to reflect available graphical options
         string[] fullScreenOptions = System.Enum.GetNames(typeof(FullScreenMode));
+        fullscreen.ClearOptions();
         fullscreen.AddOptions(new List<string>(fullScreenOptions));
         fullscreen.value = (int)Screen.fullScreenMode;
+        fullscreen.RefreshShownValue();
         #endregion
 
         #region Refresh graphical quality options
+        graphicalQualityPreset.ClearOptions();
         graphicalQualityPreset.AddOptions(new List<string>(QualitySettings.names));
         graphicalQualityPreset.value = QualitySettings.GetQualityLevel();
+        graphicalQualityPreset.RefreshShownValue();
         #endregion
 
+        /*
+        #region Refresh monitor options
+        string[] monitorListings = new string[Display.displays.Length];
+        for (int i = 0; i < Display.displays.Length; i++)
+        {
+            monitorListings[i] = "Display " + (i + 1) + " (" + Display.displays[i].systemWidth + " X " + Display.displays[i].systemHeight + "): ";
+            float f = Display.displays[i].
+
+            if (Display.displays[i].active == true)
+            {
+                monitorListings[i] += "Active";
+            }
+            else
+            {
+                monitorListings[i] += "Inactive";
+            }
+        }
+        monitor.ClearOptions();
+        monitor.AddOptions(new List<string>(monitorListings));
+        Debug.Log(Display.main + ", " + playerToUpdate.movement.playerCamera.targetDisplay + ", " + playerToUpdate.hud.hudCamera.targetDisplay);
+        #endregion
+        */
+
         #region Refresh resolution and framerate options
-        Resolution[][] table = ResolutionAndRefreshRateTable;
+        table = ResolutionAndRefreshRateTable;
         Resolution current = Screen.currentResolution;
 
         #region Resolution
@@ -214,6 +272,7 @@ public class VideoSettingsMenu : SettingsMenu
         resolution.ClearOptions();
         resolution.AddOptions(new List<string>(resolutionOptions));
         resolution.value = GetResolutionAsTableIndex(current, table);
+        resolution.RefreshShownValue();
         #endregion
 
         #region Refresh rate
@@ -224,11 +283,14 @@ public class VideoSettingsMenu : SettingsMenu
         {
             // Turns each value in the array into a neatly formatted string of the refresh rate, with "Hz" on the end for readability
             refreshRateOptions[i] = table[resolution.value][i].refreshRate + "Hz";
+            Debug.Log(refreshRateOptions[i]);
         }
         // Refreshes options to show available refresh rate, then sets the dropdown's value to the actual current refresh rate
         refreshRate.ClearOptions();
         refreshRate.AddOptions(new List<string>(refreshRateOptions));
-        resolution.value = GetRefreshRateAsTableIndex(current, table);
+        refreshRate.value = GetRefreshRateAsTableIndex(current, table);
+        refreshRate.RefreshShownValue();
+        
         #endregion
         #endregion
     }
@@ -238,10 +300,11 @@ public class VideoSettingsMenu : SettingsMenu
         // One, having a saving function means the player is not locked into any experimental decisions they make.
         // Two, I don't have to make a new function and add it as a listener for each option.
 
-        //Screen.fullScreenMode = (FullScreenMode)fullscreen.value;
         QualitySettings.SetQualityLevel(graphicalQualityPreset.value, applyExpensiveQualityPresetChanges);
-        Resolution newResolution = ResolutionAndRefreshRateTable[resolution.value][refreshRate.value];
+        Resolution newResolution = table[resolution.value][refreshRate.value];
         Screen.SetResolution(newResolution.width, newResolution.height, (FullScreenMode)fullscreen.value, newResolution.refreshRate);
+        
+        
 
         base.SaveSettings();
     }

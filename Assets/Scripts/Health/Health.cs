@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public Resource health = new Resource { max = 100, current = 100, critical = 20 };
+    public Resource health = new Resource(100, 100, 20);
 
     DamageType lastDamageSource;
     Entity lastAttacker;

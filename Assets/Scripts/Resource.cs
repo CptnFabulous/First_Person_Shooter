@@ -16,20 +16,46 @@ public class Resource
     [Tooltip("The level where the current value is considered critically low.")]
     public int critical;
 
-
-    public float PercentageFull()
+    public Resource(string name)
     {
-        return current / max;
+        refName = name;
     }
 
-
-    public bool IsCritical()
+    public Resource(int _max, int _current, int _critical)
     {
-        if (current <= critical)
+        max = _max;
+        current = _current;
+        critical = _critical;
+
+    }
+
+    public Resource(string name, int _max, int _current, int _critical)
+    {
+        refName = name;
+        max = _max;
+        current = _current;
+        critical = _critical;
+
+    }
+
+    public float PercentageFull
+    {
+        get
         {
-            return true;
+            return current / max;
         }
-        return false;
+    }
+
+    public bool IsCritical
+    {
+        get
+        {
+            if (current <= critical)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
 }

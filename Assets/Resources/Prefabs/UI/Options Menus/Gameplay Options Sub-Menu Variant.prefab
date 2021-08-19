@@ -15,7 +15,6 @@ MonoBehaviour:
   applyChanges: {fileID: 6118666907398189173}
   revertToPrevious: {fileID: 5755877763611143682}
   revertToDefault: {fileID: 5762349743635132841}
-  playerToUpdate: {fileID: 0}
   fieldOfView: {fileID: 2817815554542658433}
   fieldOfViewDefault: 60
   cameraSensitivityX: {fileID: 5946328393544580424}
@@ -340,6 +339,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 94069960454864838, guid: 89ef24009bf9652499be05187a9bb3a2,
+        type: 3}
+      propertyPath: firstSelectedOption
+      value: 
+      objectReference: {fileID: 2817815554542658433}
     - target: {fileID: 2915662475216489243, guid: 89ef24009bf9652499be05187a9bb3a2,
         type: 3}
       propertyPath: m_LocalPosition.x
