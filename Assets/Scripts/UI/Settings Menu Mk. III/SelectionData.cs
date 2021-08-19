@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 //[RequireComponent(typeof (Selectable))]
-public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IPointerExitHandler
+public class SelectionData : MonoBehaviour, /*ISelectHandler, */IPointerEnterHandler, IPointerExitHandler
 {
     public Text label;
     public Sprite graphic;
@@ -21,6 +21,8 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
             label.text = name;
         }
     }
+
+    
 
     
     // Start is called before the first frame update
@@ -40,47 +42,24 @@ public class SelectionData : MonoBehaviour, ISelectHandler, IPointerEnterHandler
     }
     */
 
+    /*
     void ISelectHandler.OnSelect(BaseEventData eventData)
     {
-        /*
-        if (graphic != null && m.selectionGraphic != null)
-        {
-            m.selectionGraphic.sprite = graphic;
-        }
-
-        if (m.flavourText != null)
-        {
-            m.flavourText.text = flavourText;
-        }
-        */
+        m.PopulateSelectionInformation(flavourText, graphic);
         //throw new System.NotImplementedException();
     }
+    */
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
-        if (graphic != null && m.selectionGraphic != null)
-        {
-            m.selectionGraphic.sprite = graphic;
-        }
-
-        if (m.flavourText != null)
-        {
-            m.flavourText.text = flavourText;
-        }
+        m.PopulateSelectionInformation(flavourText, graphic);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
-        if ( m.selectionGraphic != null)
-        {
-            m.selectionGraphic.sprite = null;
-        }
 
-        if (m.flavourText != null)
-        {
-            m.flavourText.text = "";
-        }
+        m.PopulateSelectionInformation("", null);
     }
 }

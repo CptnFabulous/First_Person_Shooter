@@ -32,17 +32,19 @@ public class MenuWindow : MonoBehaviour
     public virtual void OnEnable()
     {
         // Reset window for next time
+        PopulateSelectionInformation("", null);
+    }
 
-
+    public void PopulateSelectionInformation(string description, Sprite graphic)
+    {
         if (flavourText != null)
         {
-            flavourText.text = null;
+            flavourText.text = description;
         }
 
         if (selectionGraphic != null)
         {
-            selectionGraphic.sprite = null;
+            selectionGraphic.sprite = graphic;
         }
-        
     }
 }
