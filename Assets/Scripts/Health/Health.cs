@@ -1,23 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 
 public class Health : MonoBehaviour
 {
-    public Resource health = new Resource(100, 100, 20);
+    public Resource values = new Resource(100, 100, 20);
+    public UnityEvent onDamage;
+    public UnityEvent onDeath;
+    public UnityEvent onHeal;
+    public DamageHitbox[] hitboxes;
+
+
+    public bool IsDead { get; private set; }
 
     DamageType lastDamageSource;
     Entity lastAttacker;
-    bool isDead;
-    public DamageHitbox[] hitboxes;
 
 #if UNITY_EDITOR
     void Reset() { OnValidate(); }
     void OnValidate()
     {
-        health.current = Mathf.Clamp(health.current, 0, health.max);
+        values.current = Mathf.Clamp(values.current, 0, values.max);
     }
 #endif
 
@@ -30,65 +36,116 @@ public class Health : MonoBehaviour
         }
     }
 
-
+    /*
     // Update is called once per frame
     public virtual void Update()
     {
-        if (health.current <= 0)
-        {
-            Die(lastDamageSource, lastAttacker); // Die function runs multiple times when it must only run once, this needs fixing
-        }
+        
     }
-    
+    */
 
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public virtual void TakeDamage(int damageAmount, Entity origin, DamageType damageSource)
+    public virtual void Damage(int damageAmount, Entity origin, DamageType damageSource)
     {
-        health.current -= damageAmount;
+        values.current -= damageAmount;
         lastAttacker = origin;
         lastDamageSource = damageSource;
-    }
 
-    public virtual void Die(DamageType causeOfDeath, Entity lastAttacker)
-    {
-        if (isDead == false)
+        // Play appropriate event
+        if (damageAmount >= 0)
         {
-            //print(name + " has died");
-            isDead = true;
-            EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+            onDamage.Invoke();
         }
         else
         {
-            //print(name + "is already dead");
+            onHeal.Invoke();
+        }
+
+        if (values.current <= 0)
+        {
+            Die(lastDamageSource, lastAttacker);
         }
     }
 
-    public virtual bool IsAlive()
+
+    public virtual void Die(DamageType causeOfDeath, Entity lastAttacker)
     {
-        if (health.current > 0)
+        if (IsDead)
         {
-            return true;
+            return; // Character is already dead, no need to do anything
         }
-        return false;
+
+        IsDead = true;
+        EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+
+    }
+
+    string DeathMessage(Entity sourceOfDeath, DamageType causeOfDeath)
+    {
+        string deathMessage = name + " was ";
+
+        switch (causeOfDeath)
+        {
+            case DamageType.Shot:
+                deathMessage += "shot to death";
+                break;
+            case DamageType.CriticalShot:
+                deathMessage += "shot in the head";
+                break;
+            case DamageType.BlownUp:
+                deathMessage += "blown up";
+                break;
+            case DamageType.Gibbed:
+                deathMessage += "splattered to giblets";
+                break;
+            case DamageType.Burned:
+                deathMessage += "burned to a crisp";
+                break;
+            case DamageType.Bludgeoned:
+                deathMessage += "bludgeoned to a pulp";
+                break;
+            default:
+                deathMessage += "killed";
+                break;
+        }
+
+        deathMessage += " by ";
+
+
+        if (sourceOfDeath == null)
+        {
+            deathMessage += " unknown circumstances!";
+            return deathMessage;
+        }
+
+        if (sourceOfDeath.isUniquelyNamed == false)
+        {
+            string[] vowels = new string[]
+            {
+                "A", "E", "I", "O", "U", "a", "e", "i", "o", "u"
+            };
+            // Checks if the first letter of the name is a vowel
+            bool startsWithVowel = false;
+            for (int i = 0; i < vowels.Length; i++)
+            {
+                if (sourceOfDeath.name.StartsWith(vowels[i]))
+                {
+                    startsWithVowel = true;
+                }
+            }
+
+            // Changes 
+            if (startsWithVowel)
+            {
+                deathMessage += "an ";
+            }
+            else
+            {
+                deathMessage += "a ";
+            }
+        }
+
+        deathMessage += sourceOfDeath.name + "!";
+
+        return deathMessage;
     }
 }

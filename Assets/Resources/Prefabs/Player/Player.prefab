@@ -1174,14 +1174,10 @@ MonoBehaviour:
     max: 120
     current: 120
     critical: 30
-  - refName: FullMetalJacket
-    max: 100
-    current: 100
-    critical: 20
   - refName: Grenade
     max: 4
     current: 4
-    critical: 2
+    critical: 1
   - refName: TaserCharges
     max: 3
     current: 3
@@ -1198,11 +1194,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f883defa86230488f4fa951ddc4d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health:
+  values:
     refName: 
     max: 100
     current: 100
     critical: 20
+  onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onHeal:
+    m_PersistentCalls:
+      m_Calls: []
   hitboxes:
   - {fileID: 7394104395992576365}
   ph: {fileID: 0}

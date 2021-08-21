@@ -140,7 +140,7 @@ public class EngageTarget : AIMovementBehaviour
             }
         }
 
-        Debug.Log("Path result - " + (newFollowPosition != null).ToString() + ", " + noValidPosition + " sampling errors, " + noLineOfSight + " line of sight fails, " + noValidPath + " pathing fails, " + incompletePath + " incomplete paths, and " + inefficient + " inefficient paths.");
+        //Debug.Log("Path result - " + (newFollowPosition != null).ToString() + ", " + noValidPosition + " sampling errors, " + noLineOfSight + " line of sight fails, " + noValidPath + " pathing fails, " + incompletePath + " incomplete paths, and " + inefficient + " inefficient paths.");
 
         return newFollowPosition;
     }

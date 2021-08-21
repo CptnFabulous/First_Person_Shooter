@@ -10,7 +10,7 @@ public class HealthPickup : ItemPickup
         PlayerHealth h = ph.ph;
         if (h != null)
         {
-            int healthToReplenish = h.health.max - h.health.current;
+            int healthToReplenish = h.values.max - h.values.current;
             if (healthToReplenish > 0)
             {
                 if (healthToReplenish >= value)
@@ -18,7 +18,7 @@ public class HealthPickup : ItemPickup
                     healthToReplenish = value;
                 }
 
-                h.health.current += healthToReplenish;
+                h.values.current += healthToReplenish;
                 value -= healthToReplenish;
 
                 base.Pickup(ph);

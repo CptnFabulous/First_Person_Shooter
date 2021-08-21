@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wielder: {fileID: 0}
   attackIndex: 0
+  currentMovementBehaviour: {fileID: 114008942467583302}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -78,10 +79,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02469ff699de3cb4593da221ad8e8aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Insert state name here for debugging purposes
   ai: {fileID: 0}
   movementSpeed: 5
-  minimumRange: 40
-  maximumRange: 80
+  minimumMoveRange: 15
+  maximumMoveRange: 45
+  minimumDestinationRange: 20
+  maximumDestinationRange: 35
   numberOfChecks: 15
   coverCriteria:
     serializedVersion: 2
@@ -98,6 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af56bcf095c3eb4fb27a9af7d61050b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Insert state name here for debugging purposes
   ai: {fileID: 0}
   movementSpeed: 5
   destinationThreshold: 0.1
@@ -119,6 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bffe978b2922ef45adee1b7ca536ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateName: Insert state name here for debugging purposes
   ai: {fileID: 0}
   movementSpeed: 0
 --- !u!1101 &1101436976154309650
@@ -284,7 +290,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Engage with gun
+  m_Name: Engage with machine gun
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

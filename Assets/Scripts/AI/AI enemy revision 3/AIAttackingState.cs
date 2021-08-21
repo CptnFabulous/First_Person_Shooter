@@ -13,6 +13,8 @@ public class AIAttackingState : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo animatorStateInfo, int layerIndex)
     {
+        
+        
         wielder = animator.GetComponent<AICombatant>();
         currentAttack = wielder.attacks[attackIndex];
         currentAttack.currentMovementBehaviour = currentMovementBehaviour;

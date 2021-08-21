@@ -89,7 +89,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     }
 
 
-
+    
     public virtual void Awake()
     {
         lookDirectionQuaternion = head.transform.rotation;
@@ -199,8 +199,9 @@ public class AIEntity : MonoBehaviour//, ILogHandler
                 currentTarget = null;
             }
 
+
             Health h = currentTarget.GetComponent<Health>();
-            if (h != null && h.IsAlive() == false)
+            if (h != null && h.IsDead)
             {
                 currentTarget = null;
             }
@@ -249,11 +250,17 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack
         // If the AI is at risk of being damaged
-        if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am.AtRisk(characterData))
+
+        if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am != null && am.AtRisk(characterData))
         {
+            Debug.Log(name + " is evading attack");
             dodgeCooldownTimer = 0; // Resets timer
             attackToDodge = am; // Specifies attack to dodge from
             aiStateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
+        }
+        else
+        {
+            Debug.Log(name + " did not evade attack because " + (dodgeCooldownTimer >= dodgeCooldown) + ", " + (selfPreservationBehaviour != SelfPreservation.Suicidal) + ", " + (attackToDodge == null) + ", " + (am != null) + ", " + am.AtRisk(characterData));
         }
     }
     #endregion
@@ -266,7 +273,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
             aiStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, currentTarget.transform.position));
         }
         aiStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
-        aiStateMachine.SetInteger("health", hp.health.current);
+        aiStateMachine.SetInteger("health", hp.values.current);
     }
 
     public void UpdateAnimatorVariables()

@@ -42,7 +42,7 @@ public class AIMovementBehaviour : StateMachineBehaviour
 
         
 
-        Debug.Log(ai.name + " is entering " + stateName + " state on frame " + Time.frameCount + ".");
+        //Debug.Log(ai.name + " is entering " + stateName + " state on frame " + Time.frameCount + ".");
     }
 
 
@@ -56,7 +56,7 @@ public class AIMovementBehaviour : StateMachineBehaviour
     
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log(ai.name + " is exiting " + stateName + " state on frame " + Time.frameCount + ".");
+        //Debug.Log(ai.name + " is exiting " + stateName + " state on frame " + Time.frameCount + ".");
     }
     
 

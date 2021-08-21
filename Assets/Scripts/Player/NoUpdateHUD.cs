@@ -52,8 +52,8 @@ public class HUD : MonoBehaviour
             return;
         }
         
-        int current = ph.ph.health.current;
-        int max = ph.ph.health.max;
+        int current = ph.ph.values.current;
+        int max = ph.ph.values.max;
 
         healthCounter.text = current.ToString();
         FillMeter(healthBar, current, max);
@@ -68,7 +68,7 @@ public class HUD : MonoBehaviour
         }
         prevHealthValue = current;
 
-        if (ph.ph.health.IsCritical)
+        if (ph.ph.values.IsCritical)
         {
             onHealthCritical.Invoke();
         }

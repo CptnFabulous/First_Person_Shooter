@@ -121,9 +121,9 @@ public class HeadsUpDisplay : MonoBehaviour
         #endregion
 
         #region Health HUD
-        healthCounter.text = ph.ph.health.current.ToString();
-        FillMeter(healthBar, ph.ph.health.current, ph.ph.health.max);
-        if (ph.ph.health.IsCritical)
+        healthCounter.text = ph.ph.values.current.ToString();
+        FillMeter(healthBar, ph.ph.values.current, ph.ph.values.max);
+        if (ph.ph.values.IsCritical)
         {
             healthCounter.color = resourceCriticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
@@ -228,6 +228,22 @@ public class HeadsUpDisplay : MonoBehaviour
                 
                 GunMagazineStats m = rw.firingModes[rw.firingModeIndex].magazine;
 
+                /*
+                switch(ggs.consumesAmmo == false, m == null)
+                {
+                    case (true, true):
+                        // Infinite ammo, meter is always full
+                        ammoBar.fillAmount = 1;
+                        break;
+                    case (false, true):
+                        float percentage
+                        ammoBar.fillAmount = ph.a.ammoTypes[()]
+                        break;
+                    default:
+                        ammoBar.fillAmount = m.data.PercentageFull;
+                        break;
+                }
+                */
                 if (ggs.consumesAmmo == false)
                 {
                     if (m == null)

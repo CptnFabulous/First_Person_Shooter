@@ -12,7 +12,8 @@ public class AIProjectileAttack : AIAttack
     {
         base.Telegraph();
         
-        Vector3 direction = wielder.currentTarget.transform.position - wielder.LookOrigin;
+        //Vector3 direction = wielder.currentTarget.transform.position - wielder.LookOrigin;
+        Vector3 direction = DetermineEnemyPosition() - wielder.LookOrigin;
         AttackMessage m = AttackMessage.Ranged(wielder.characterData, wielder.LookOrigin, direction, stats.range, stats.projectilePrefab.diameter, stats.projectileSpread, stats.projectilePrefab.velocity, stats.projectilePrefab.hitDetection);
         EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
     }

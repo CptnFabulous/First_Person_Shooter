@@ -118,7 +118,7 @@ public class AI : MonoBehaviour//, IEventObserver
             #endregion
 
             Health h = target.GetComponent<Health>();
-            if (h != null && h.IsAlive() == false)
+            if (h != null && h.IsDead)
             {
                 target = null;
             }
@@ -132,7 +132,7 @@ public class AI : MonoBehaviour//, IEventObserver
             stateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, target.transform.position));
         }
         stateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
-        stateMachine.SetInteger("health", hp.health.current);
+        stateMachine.SetInteger("health", hp.values.current);
         #endregion
     }
 

@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: Dodge
   ai: {fileID: 0}
-  movementSpeed: 5
+  movementSpeed: 30
   destinationThreshold: 0.1
   checkRadius: 10
   maxMoveDistance: 20
@@ -290,7 +290,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Engage with gun
+  m_Name: Engage with rifle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:

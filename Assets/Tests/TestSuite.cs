@@ -58,12 +58,12 @@ namespace Tests
             // Creates 'attacked' gameObject and adds health script
             GameObject g = Object.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cube), Vector3.zero, Quaternion.identity);
             Health h = g.AddComponent<Health>();
-            int currentHealth = h.health.current; // Saves attacked gameObject's current health
+            int currentHealth = h.values.current; // Saves attacked gameObject's current health
             // Adds DamageHitbox script to object, and links it to health script
             DamageHitbox dh = g.AddComponent<DamageHitbox>();
             dh.healthScript = h;
 
-            Debug.Log(h.health.current);
+            Debug.Log(h.values.current);
             Debug.Log(currentHealth);
 
             yield return new WaitForEndOfFrame();
@@ -78,11 +78,11 @@ namespace Tests
             yield return new WaitForEndOfFrame();
 
             Debug.Log("hashbrown");
-            Debug.Log(h.health.current);
+            Debug.Log(h.values.current);
             Debug.Log(currentHealth);
 
             // Checks if attacked object's health has changed
-            Assert.IsTrue(h.health.current != currentHealth);
+            Assert.IsTrue(h.values.current != currentHealth);
         }
 
         [UnityTest]

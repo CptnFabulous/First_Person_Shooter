@@ -63,6 +63,9 @@ public abstract class AIAttack : MonoBehaviour
             {
                 targetPosition = DetermineEnemyPosition(); // Determine the correct position for the AI to be aiming at
             }
+            //Debug.DrawLine(wielder.LookOrigin, targetPosition, Color.black);
+            Debug.DrawRay(targetPosition, Vector3.up * 5, Color.black);
+            Debug.DrawRay(wielder.LookOrigin, wielder.LookDirection * Vector3.Distance(targetPosition, wielder.LookOrigin), Color.black);
 
             // Perform a line of sight check, making sure to ignore the AI and target's hitboxes since those obviously aren't obstacles
             lineOfSight = AIFunction.LineOfSightCheckWithExceptions(targetPosition, wielder.LookOrigin, wielder.viewDetection, wielder.AgentAndTargetHitboxes);

@@ -163,10 +163,12 @@ public class AttackMessage
         ExplosiveRanged,
     }
 
+    public float timeInitiated;
+    
     public Character attacker; // The entity performing the attack
     public AttackType type;
     public LayerMask hitDetection = ~0;
-    public LayerMask damageableThings = (1 << 9);
+    static LayerMask damageableThings = (1 << 9);
 
     Character[] charactersAtRisk;
 
@@ -193,8 +195,12 @@ public class AttackMessage
     public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
     {
         AttackMessage m = new AttackMessage();
+
+
+
         m.attacker = attacker;
         m.type = AttackType.Ranged;
+        m.timeInitiated = Time.time;
         m.origin = origin;
         m.direction = direction;
         m.maxRange = maxRange;
@@ -203,7 +209,42 @@ public class AttackMessage
         m.velocity = velocity;
         m.hitDetection = hitDetection;
 
-        m.charactersAtRisk = m.GetCharactersAtRisk(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
+        #region Get characters at risk
+
+        
+
+
+        List<Character> list = new List<Character>();
+        // Perform a vision cone check
+        RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
+
+        string debugString = "Characters at risk from " + m.attacker.name + " on frame " + Time.frameCount + ":";
+        if (thingsInLineOfFire.Length < 1)
+        {
+            debugString = "Attack from " + m.attacker.name + " at time " + m.timeInitiated + " will not hit anything.";
+            //Misc.PauseForDebuggingPurposes();
+        }
+
+        for (int i = 0; i < thingsInLineOfFire.Length; i++)
+        {
+            // Check raycasthit collider to see if it is a character with a faction
+            Character c = Character.FromObject(thingsInLineOfFire[i].collider.gameObject);
+            // If there is a character class
+            // If the character class is not already in the list
+            // If the character class is considered an enemy of the attacker
+            if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
+            {
+                // If so, the character is in the attack's danger zone
+                //Debug.Log(c.name + " is in the line of fire of " + attacker.name + "'s attack");
+                list.Add(c);
+                debugString += "\n" + c.name;
+            }
+        }
+
+        Debug.Log(debugString);
+
+        m.charactersAtRisk = list.ToArray(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
+        #endregion
 
         return m;
     }
@@ -225,76 +266,15 @@ public class AttackMessage
     }
     #endregion
 
-    // Obtains a list of all characters in the path of the attack. This is performed once and then referred to later, to reduce unnecessary calculations
-    Character[] GetCharactersAtRisk()
-    {
-        List<Character> list = new List<Character>();
-
-        switch (type)
-        {
-            case AttackType.Ranged:
-                
-                // Perform a vision cone check
-                RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
-                foreach(RaycastHit rh in thingsInLineOfFire)
-                {
-                    // Check raycasthit collider to see if it is a character with a faction
-                    Character c = Character.FromObject(rh.collider.gameObject);
-
-                    // If there is a character class
-                    // If the character class is not already in the list
-                    // If the character class is considered an enemy of the attacker
-                    if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
-                    {
-                        // If so, the character is added to the list of at risk characters
-                        list.Add(c);
-                    }
-                }
-
-                break;
-
-            case AttackType.Melee:
-
-
-
-
-
-                break;
-
-            case AttackType.AreaOfEffect:
-
-
-
-
-
-
-
-                break;
-
-            case AttackType.ExplosiveRanged:
-
-
-
-
-
-
-
-
-                break;
-
-            default:
-
-                break;
-        }
-
-        return list.ToArray();
-    }
+    
 
     // Checks if a character is in the line of fire
     public bool AtRisk(Character c)
     {
+        //Debug.Log(charactersAtRisk.Length);
         foreach(Character ch in charactersAtRisk)
         {
+            //Debug.Log(ch.name);
             if (ch == c)
             {
                 return true;
@@ -305,7 +285,7 @@ public class AttackMessage
     }
 
     // Checks if a position is in the line of fire
-    public bool AtRisk(Vector3 positionChecked, Collider[] characterColliders)
+    public bool IsPositionSafe(Vector3 position, Collider[] characterColliders)
     {
         switch(type)
         {
@@ -314,13 +294,13 @@ public class AttackMessage
                 // Check if the character is inside the cone of fire
 
                 // If inside range
-                if (Vector3.Distance(origin, positionChecked) < maxRange)
+                if (Vector3.Distance(origin, position) < maxRange)
                 {
                     // If inside angle
-                    if (Vector3.Angle(direction, positionChecked - origin) < coneAngle)
+                    if (Vector3.Angle(direction, position - origin) < coneAngle)
                     {
                         // If inside line of sight
-                        if (AIFunction.LineOfSightCheckWithExceptions(positionChecked, origin, hitDetection, characterColliders))
+                        if (AIFunction.LineOfSightCheckWithExceptions(position, origin, hitDetection, characterColliders))
                         {
                             return true;
                         }

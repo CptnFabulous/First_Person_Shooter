@@ -20,7 +20,7 @@ public class PlayerHandler : Character
 
     public override void Awake()
     {
-        base.Awake();
+        
         /*
         HealthData = GetComponent<PlayerHealth>();
 
@@ -48,6 +48,8 @@ public class PlayerHandler : Character
         gsh = GetComponent<GameStateHandler>();
 
         playerAudio = GetComponent<AudioSource>();
+
+        base.Awake();
     }
 
     public GameState PlayerState()
@@ -62,7 +64,7 @@ public class PlayerHandler : Character
 
     public void Die()
     {
-        ph.health.current = 0;
+        ph.values.current = 0;
         movement.rb.constraints = RigidbodyConstraints.None;
         movement.enabled = false;
         wh.CurrentWeapon().enabled = false;
@@ -72,7 +74,7 @@ public class PlayerHandler : Character
 
     public void Respawn(int health, Vector3 position)
     {
-        ph.health.current = health;
+        ph.values.current = health;
         transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
         transform.position = position;
 

@@ -10,7 +10,21 @@ public enum DamageType
     Bludgeoned,
     FallDamage,
     BlownUp,
-    Gibbed
+    Gibbed,
+
+    Piercing, // e.g. gunshots and stabs
+    Slashing, // e.g. shallow sword cuts
+    Severing, // e.g. body part removal
+    Bludgeoning, // e.g. blunt force attacks
+    Impact, // e.g. slamming into a wall or floor
+    Explosive,
+    Burning,
+    Freezing,
+    Electric,
+    Corrosive,
+    Poison,
+    Asphyxiation,
+    DeletionByGame // e.g. falling out of the level or similar non-diegetic game process
 }
 
 public static class Damage
@@ -89,6 +103,9 @@ public static class Damage
             hitbox.Damage(damage, origin, cause, isSevere);
         }
     }
+
+
+
 
     public static void Knockback(GameObject attackedObject, float force, Vector3 direction)
     {

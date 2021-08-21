@@ -81,8 +81,14 @@ public static class AIFunction
 
         return true;
     }
-
-    // Simply checks line of sight, but allows a list of colliders that should be ignored
+    /// <summary>
+    /// Checks line of sight, but allows a list of colliders that should be ignored
+    /// </summary>
+    /// <param name="lookingFor"></param>
+    /// <param name="viewOrigin"></param>
+    /// <param name="viewable"></param>
+    /// <param name="exceptions"></param>
+    /// <returns></returns>
     public static bool LineOfSightCheckWithExceptions(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable, Collider[] exceptions = null)
     {
         if (exceptions == null || exceptions.Length <= 0) // Returns a simpler and less performant check if there are no exceptions. This is for situations where there may or may not need to be exceptions
@@ -123,7 +129,14 @@ public static class AIFunction
 
         return true;
     }
-
+    /// <summary>
+    /// Checks line of sight, but allows a list of colliders that should be ignored. This overload allows directly inputting damage hitboxes rather than extracting their collider data.
+    /// </summary>
+    /// <param name="lookingFor"></param>
+    /// <param name="viewOrigin"></param>
+    /// <param name="viewable"></param>
+    /// <param name="exceptions"></param>
+    /// <returns></returns>
     public static bool LineOfSightCheckWithExceptions(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable, DamageHitbox[] exceptions = null)
     {
         if (exceptions == null || exceptions.Length <= 0) // Returns a simpler and less performant check if there are no exceptions. This is for situations where there may or may not need to be exceptions
@@ -164,6 +177,168 @@ public static class AIFunction
     }
 
 
+
+
+    public static bool LineOfSightCheckForVisionCone(Collider c, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
+    {
+        //float debugTime = 0.5f;
+        
+        #region Create raycast grid data
+        // Finds the largest of the bounds' 3 size axes and produces a value that always exceeds that distance, regardless of the shape and angle.
+        float maxBoundsSize = Mathf.Max(Mathf.Max(c.bounds.size.x, c.bounds.size.y), c.bounds.size.z) * 2;
+
+        Vector3 originUp = Misc.PerpendicularUp(forward, worldUp);
+        Vector3 originRight = Misc.PerpendicularRight(forward, worldUp);
+
+        // Use Bounds.ClosestPoint four times, with points to the left, right, up and down of the bounding box (relative to the cone centre). Then use Vector3.Distance to calculate the distances and produce a rectangle of certain dimensions.
+        Vector3 upPoint = c.bounds.center + originUp * maxBoundsSize;
+        Vector3 downPoint = c.bounds.center + -originUp * maxBoundsSize;
+        Vector3 leftPoint = c.bounds.center + -originRight * maxBoundsSize;
+        Vector3 rightPoint = c.bounds.center + originRight * maxBoundsSize;
+        upPoint = c.bounds.ClosestPoint(upPoint);
+        downPoint = c.bounds.ClosestPoint(downPoint);
+        leftPoint = c.bounds.ClosestPoint(leftPoint);
+        rightPoint = c.bounds.ClosestPoint(rightPoint);
+
+        // Produces dimensions for a rectangular area to sweep with raycasts
+        float scanAreaY = Vector3.Distance(upPoint, downPoint);
+        float scanAreaX = Vector3.Distance(leftPoint, rightPoint);
+
+        // Figures out actual diameter of the area that needs to be covered
+        float distanceToCollider = Vector3.Distance(origin, c.bounds.center);
+        Vector3 l = origin + Misc.AngledDirection(new Vector3(0, -angle, 0), forward, worldUp).normalized * distanceToCollider;
+        Vector3 r = origin + Misc.AngledDirection(new Vector3(0, angle, 0), forward, worldUp).normalized * distanceToCollider;
+        /*
+        #region Debugging cone
+        Vector3 u = origin + Misc.AngledDirection(new Vector3(-angle, 0, 0), forward, worldUp).normalized * distanceToCollider;
+        Vector3 d = origin + Misc.AngledDirection(new Vector3(angle, 0, 0), forward, worldUp).normalized * distanceToCollider;
+        Vector3[] debugConePositions = new Vector3[]
+        {
+            origin, l, c.bounds.center, r, origin, u, c.bounds.center, d, origin
+        };
+        Misc.DrawMultipleDebugLines(debugConePositions, Colours.darkGreen, debugTime);
+        #endregion
+        */
+        // Diameter of cone at required distance
+        float coneDiameterAtDistance = Vector3.Distance(l, r);
+        // Minimum spacing between raycasts so that there is always one inside the cone
+        float maxSpacingWhileCoveringDiameter = (Vector2.one * coneDiameterAtDistance).x;
+        // If the maximum allowed spacing is smaller than raycastSpacing, use that instead.
+        // If the original value is smaller, keep it to have more precise scans for bigger objects
+        raycastSpacing = Mathf.Min(maxSpacingWhileCoveringDiameter * 0.75f, raycastSpacing);
+        // If the collider is close to the origin, area to cover can be smaller than default raycast spacing
+        // Therefore it's possible for no raycasts to hit
+        // The 1.2f variable is just for extra padding
+
+        // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
+        int raycastArrayLength = Mathf.CeilToInt(scanAreaX / raycastSpacing);
+        int raycastArrayHeight = Mathf.CeilToInt(scanAreaY / raycastSpacing);
+
+        // Creates variables to determine how far apart to space the raycasts on each axis
+        float spacingX = scanAreaX / raycastArrayLength;
+        float spacingY = scanAreaY / raycastArrayHeight;
+
+        // Creates axes along which to align the raycasts
+        Vector3 raycastGridAxisX = (rightPoint - c.bounds.center).normalized;
+        Vector3 raycastGridAxisY = (upPoint - c.bounds.center).normalized;
+
+        /*
+        Vector3[] gridSquare = new Vector3[]
+        {
+            c.bounds.center + (raycastGridAxisX * (spacingX * 0 - scanAreaX / 2)) + (raycastGridAxisY * (spacingY * 0 - scanAreaY / 2)),
+            c.bounds.center + (raycastGridAxisX * (spacingX * 0 - scanAreaX / 2)) + (raycastGridAxisY * (spacingY * 1 - scanAreaY / 2)),
+            c.bounds.center + (raycastGridAxisX * (spacingX * 1 - scanAreaX / 2)) + (raycastGridAxisY * (spacingY * 1 - scanAreaY / 2)),
+            c.bounds.center + (raycastGridAxisX * (spacingX * 1 - scanAreaX / 2)) + (raycastGridAxisY * (spacingY * 0 - scanAreaY / 2))
+        };
+        Misc.DrawMultipleDebugLines(gridSquare, Color.yellow, debugTime, true);
+        */
+        #endregion
+
+        
+
+        #region Perform raycast command batch processing
+        // Creates a list of Vector3 directions
+        List<Vector3> directions = new List<Vector3>();
+        // Cast an array of rays to 'sweep' the square for line of sight.
+        for (int y = 0; y < raycastArrayHeight; y++)
+        {
+            for (int x = 0; x < raycastArrayLength; x++)
+            {
+                // Creates coordinates along the sweep area for the raycast. 0,0 would be the centre, so for each axis I am taking away a value equivalent to half of that axis dimension, so I can use the bottom-left corner as 0,0
+                float distanceX = spacingX * x - scanAreaX / 2;
+                float distanceY = spacingY * y - scanAreaY / 2;
+
+                // Starts with c.bounds.centre, then adds direction values multiplied by the appropriate distance value for each axis, to create the point that you want the raycast to hit.
+                Vector3 raycastAimPoint = c.bounds.center + (raycastGridAxisX * distanceX) + (raycastGridAxisY * distanceY);
+
+                // From that point, it creates a direction value for the raycast to aim in.
+                Vector3 raycastAimDirection = raycastAimPoint - origin;
+
+                // Checks if the raycast is still detecting a point that is actually inside the cone
+                if (Vector3.Angle(forward, raycastAimDirection) < angle)
+                {
+                    //Debug.DrawLine(origin, raycastAimPoint, Color.white, debugTime);
+
+                    directions.Add(raycastAimDirection);
+                }
+                else
+                {
+                    //Debug.DrawLine(origin, raycastAimPoint, Colours.scarlet, debugTime);
+                }
+            }
+        }
+
+        // Create RaycastCommand
+        var results = new NativeArray<RaycastHit>(directions.Count, Allocator.TempJob);
+        var commands = new NativeArray<RaycastCommand>(directions.Count, Allocator.TempJob);
+
+        // Assign directions to each RaycastCommand
+        for (int i = 0; i < commands.Length; i++)
+        {
+            commands[i] = new RaycastCommand(origin, directions[i], range, viewable);
+        }
+
+        // Schedule the batch of raycasts, and wait for the batch processing job to complete
+        JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 1);
+        handle.Complete();
+
+        // Converts the NativeArray of results to a regular array
+        RaycastHit[] hits = results.ToArray();
+        //Debug.Log("Results length = " + hits.Length);
+
+        // Dispose the buffers
+        results.Dispose();
+        commands.Dispose();
+        #endregion
+
+        #region Evaluate results and determine true or false
+
+        // Look through each result in the list of raycast hits
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Debug.DrawLine(origin, hits[i].point, Colours.turquoise, 10);
+            // If a RaycastHit is found that matches the collider being checked for, store it and return true
+            if (hits[i].collider == c)
+            {
+                checkInfo = hits[i];
+                return true;
+            }
+        }
+
+        // In the event that no results were found, tokenly assign a redundant RaycastHit so the function completes properly
+        if (Physics.Raycast(origin, forward, out checkInfo, range, viewable))
+        {
+
+        }
+
+        return false;
+        #endregion
+    }
+
+
+
+
+    /*
     // Uses raycast grids and bound checks to scan for partially concealed colliders
     public static bool LineOfSightCheckForVisionCone(Collider c, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
     {
@@ -188,6 +363,9 @@ public static class AIFunction
         float scanAreaY = Vector3.Distance(upPoint, downPoint);
         float scanAreaX = Vector3.Distance(leftPoint, rightPoint);
 
+
+        
+
         // Divide the rectangle dimensions by the sphereCastDiameter to obtain the amount of spherecasts necessary to cover the area.
         int raycastArrayLength = Mathf.CeilToInt(scanAreaX / raycastSpacing);
         int raycastArrayHeight = Mathf.CeilToInt(scanAreaY / raycastSpacing);
@@ -196,15 +374,62 @@ public static class AIFunction
         float spacingX = scanAreaX / raycastArrayLength;
         float spacingY = scanAreaY / raycastArrayHeight;
 
+        
+
+        #region Check that the gap between raycasts is not too small for the attack zone itself
+        float distance = Vector3.Distance(origin, c.bounds.center);
+        Vector3 l = Misc.AngledDirection(new Vector3(0, -angle, 0), forward, worldUp);
+        Vector3 r = Misc.AngledDirection(new Vector3(0, angle, 0), forward, worldUp);
+        l = origin + l.normalized * distance;
+        r = origin + r.normalized * distance;
+        // Obtains the actual size of the area that needs to be covered
+        float maxDistanceToCover = Vector3.Distance(l, r);
+
+        Debug.Log("Spacing = " + raycastSpacing + ", adjusted = " + spacingX + ", " + spacingY + ", cover = " + maxDistanceToCover);
+
+
+        float diagonalSpaceBetweenRaycasts = Vector2.Distance(Vector2.zero, new Vector2(spacingX, spacingY));
+        if (diagonalSpaceBetweenRaycasts > maxDistanceToCover) // If the gap between spaces is bigger than the distance
+        {
+            // This means it's possible for none of the raycasts to land inside the actual hit zone, and are all excluded.
+            // Reverse the code used to get maxGapBetweenRaycasts from spacingX and spacingY, replacing with maxDistanceToCover
+            // This should produce an appropriate grid spacing small enough to actually cover the cone of fire.
+            Vector2 correctedDiagonal = new Vector2(spacingX, spacingY).normalized * maxDistanceToCover;
+            spacingX = correctedDiagonal.x;
+            spacingY = correctedDiagonal.y;
+        }
+
+        Debug.Log("Spacing = " + raycastSpacing + ", adjusted = " + spacingX + ", " + spacingY + ", cover = " + maxDistanceToCover);
+
+
+        Vector3 u = Misc.AngledDirection(new Vector3(-angle, 0, 0), forward, worldUp);
+        Vector3 d = Misc.AngledDirection(new Vector3(angle, 0, 0), forward, worldUp);
+        u = origin + u.normalized * distance;
+        d = origin + d.normalized * distance;
+        Debug.DrawLine(origin, l, Colours.darkGreen, 10);
+        Debug.DrawLine(origin, r, Colours.darkGreen, 10);
+        Debug.DrawLine(origin, u, Colours.darkGreen, 10);
+        Debug.DrawLine(origin, d, Colours.darkGreen, 10);
+        Debug.DrawLine(l, c.bounds.center, Colours.darkGreen, 10);
+        Debug.DrawLine(r, c.bounds.center, Colours.darkGreen, 10);
+        Debug.DrawLine(u, c.bounds.center, Colours.darkGreen, 10);
+        Debug.DrawLine(d, c.bounds.center, Colours.darkGreen, 10);
+
+        #endregion
+
+
+
+
+
         // Creates axes along which to align the raycasts
         Vector3 raycastGridAxisX = (rightPoint - c.bounds.center).normalized;
         Vector3 raycastGridAxisY = (upPoint - c.bounds.center).normalized;
         #endregion
 
         #region Perform raycast command batch processing
-
         // Creates a list of Vector3 directions
         List<Vector3> directions = new List<Vector3>();
+
 
         // Cast an array of rays to 'sweep' the square for line of sight.
         for (int y = 0; y < raycastArrayHeight; y++)
@@ -217,17 +442,25 @@ public static class AIFunction
 
                 // Starts with c.bounds.centre, then adds direction values multiplied by the appropriate distance value for each axis, to create the point that you want the raycast to hit.
                 Vector3 raycastAimPoint = c.bounds.center + (raycastGridAxisX * distanceX) + (raycastGridAxisY * distanceY);
-
+                
                 // From that point, it creates a direction value for the raycast to aim in.
                 Vector3 raycastAimDirection = raycastAimPoint - origin;
 
                 // Checks if the raycast is still detecting a point that is actually inside the cone
                 if (Vector3.Angle(forward, raycastAimDirection) < angle)
                 {
+                    Debug.DrawLine(origin, raycastAimPoint, Color.white, 10);
+
                     directions.Add(raycastAimDirection);
+                }
+                else
+                {
+                    Debug.DrawLine(origin, raycastAimPoint, Colours.scarlet, 10);
                 }
             }
         }
+
+        Debug.Log("Direction count = " + directions.Count);
 
         // Create RaycastCommand
         var results = new NativeArray<RaycastHit>(directions.Count, Allocator.TempJob);
@@ -245,6 +478,7 @@ public static class AIFunction
 
         // Converts the NativeArray of results to a regular array
         RaycastHit[] hits = results.ToArray();
+        Debug.Log("Results length = " + hits.Length);
 
         // Dispose the buffers
         results.Dispose();
@@ -256,6 +490,7 @@ public static class AIFunction
         // Look through each result in the list of raycast hits
         for (int i = 0; i < hits.Length; i++)
         {
+            Debug.DrawLine(origin, hits[i].point, Colours.turquoise, 10);
             // If a RaycastHit is found that matches the collider being checked for, store it and return true
             if (hits[i].collider == c)
             {
@@ -273,7 +508,7 @@ public static class AIFunction
         return false;
         #endregion
     }
-
+    */
 
     #region Deprecated but replacing them with the newer ones made things stop working and I'm not sure why
     
@@ -308,11 +543,43 @@ public static class AIFunction
     }
     #endregion
 
-
-
     #endregion
 
     #region Vision cones
+
+    /*
+    public static void VisionCone(Vector3 origin, float range, LayerMask hitDetection, Type[] componentsToLookFor)
+    {
+        Collider[] objects = Physics.OverlapSphere(origin, range, hitDetection);
+        foreach(Collider c in objects)
+        {
+            bool hasComponentWorthLookingFor = false;
+            for (int tci = 0; tci < componentsToLookFor.Length; tci++)
+            {
+                Component desired = c.GetComponent(componentsToLookFor[tci]);
+                if (desired != null)
+                {
+                    hasComponentWorthLookingFor = true;
+                    tci = componentsToLookFor.Length;
+                }
+            }
+
+            // If the collider contains a component indicating it's worth checking
+            // If the angle of that point is inside the cone, perform a raycast check
+            if (hasComponentWorthLookingFor && ComplexColliderAngle(c, origin, forward) < angle)
+            {
+                // Should I have a first, simpler check to improve performance?
+
+                // Perform a more complex line of sight check
+                RaycastHit lineOfSightCheck;
+                if (LineOfSightCheckForVisionCone(c, origin, forward, worldUp, angle, out lineOfSightCheck, range, viewable, raycastSpacing))
+                {
+                    hits.Add(lineOfSightCheck); // Records hit
+                }
+            }
+        }
+    }
+    */
 
     // A full featured vision cone that detects and stores everything inside certain parameters
     public static RaycastHit[] VisionCone(Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, float range, LayerMask checkingFor, LayerMask viewable, float raycastSpacing = 0.2f)
@@ -341,6 +608,7 @@ public static class AIFunction
         return hits.ToArray();
     }
 
+    /*
     // Checks if a specific set of objects is inside a vision cone
     public static bool VisionConeColliderCheck(Collider[] colliderSet, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, float range, LayerMask viewable, float raycastSpacing = 0.2f)
     {
@@ -380,6 +648,7 @@ public static class AIFunction
 
         return false;
     }
+    */
 
     /*
     public static RaycastHit[] VisionConeOld(Transform origin, float angle, float range, LayerMask viewable, float raycastSpacing = 0.2f)

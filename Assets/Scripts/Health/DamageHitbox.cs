@@ -24,7 +24,7 @@ public class DamageHitbox : MonoBehaviour
         {
             if (healthScript != null)
             {
-                healthScript.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
+                healthScript.Damage(Mathf.RoundToInt(damage * damageMultiplier), origin, damageSource);
             }
 
             PlayerHandler ph = origin.GetComponent<PlayerHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player
@@ -50,7 +50,7 @@ public class DamageHitbox : MonoBehaviour
                     d *= criticalMultiplier;
                     dt = criticalType;
                 }
-                healthScript.TakeDamage(Mathf.RoundToInt(d), origin, dt);
+                healthScript.Damage(Mathf.RoundToInt(d), origin, dt);
             }
 
             PlayerHandler ph = origin.GetComponent<PlayerHandler>(); // Checks for WeaponHandler script i.e. if the thing that shot the projectile was a player

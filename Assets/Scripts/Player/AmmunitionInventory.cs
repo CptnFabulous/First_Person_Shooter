@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public enum AmmunitionType
 {
@@ -16,6 +17,8 @@ public class AmmunitionInventory : MonoBehaviour
 {
     public Resource[] ammoTypes;
 
+
+    
     public int GetStock(AmmunitionType type) // Since our enum is "really" an integer, we can use it as an index to jump straight to the entry we want.
     {
         return ammoTypes[(int)type].current;
@@ -70,6 +73,27 @@ public class AmmunitionInventory : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// (WARNING: UNTESTED) Obtains a list of UI icons representing each ammo type
+    /// </summary>
+    public static Sprite[] Icons
+    {
+        get
+        {
+            string[] names = System.Enum.GetNames(typeof(AmmunitionType));
+            Sprite[] icons = new Sprite[names.Length];
+            for (int i = 0; i < icons.Length; i++)
+            {
+                icons[i] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/UI/Icons/AmmoIcon_" + names[i]);
+            }
+            return icons;
+        }
+    }
+    public static Sprite GetIcon(AmmunitionType type)
+    {
+        return Icons[(int)type];
+    }
+    
 
     void Reset()
     {

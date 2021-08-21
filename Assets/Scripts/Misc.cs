@@ -243,5 +243,66 @@ public static class Misc
     }
     #endregion
 
-    
+
+    public static float DistanceBetweenDiagonals(Vector2 dimensions)
+    {
+        return Vector2.Distance(Vector2.zero, dimensions);
+    }
+    public static float DistanceBetweenDiagonals(float x, float y)
+    {
+        return DistanceBetweenDiagonals(new Vector2(x, y));
+    }
+    public static float DistanceBetweenDiagonals(float size)
+    {
+        return DistanceBetweenDiagonals(size, size);
+    }
+
+    public static void DrawMultipleDebugLines(Vector3[] positions, Color colour, bool looping = false)
+    {
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Debug.DrawLine(positions[i - 1], positions[i], colour);
+        }
+        if (looping)
+        {
+            Debug.DrawLine(positions[positions.Length - 1], positions[0], colour);
+        }
+    }
+    public static void DrawMultipleDebugLines(Vector3[] positions, Color colour, float duration, bool looping = false)
+    {
+        for (int i = 1; i < positions.Length; i++)
+        {
+            Debug.DrawLine(positions[i - 1], positions[i], colour, duration);
+        }
+        if (looping)
+        {
+            Debug.DrawLine(positions[positions.Length - 1], positions[0], colour);
+        }
+    }
+    public static string DebugMultipleBools(bool[] bools, string name)
+    {
+        if (bools.Length < 1)
+        {
+            return "No bools to check";
+        }
+        
+        string log = name + " values:\n";
+        for (int i = 0; i < bools.Length; i++)
+        {
+            log += bools[i] +  "\n";
+        }
+        log += "End of log.";
+        Debug.Log(log);
+        return log;
+    }
+
+    public static void PauseForDebuggingPurposes()
+    {
+        UnityEditor.EditorApplication.isPaused = true;
+    }
+
+    public static void DrawDebugTextBox(string text, Vector3 position, Color colour, float duration)
+    {
+
+    }
 }

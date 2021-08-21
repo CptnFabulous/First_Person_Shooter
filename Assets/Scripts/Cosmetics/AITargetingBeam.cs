@@ -17,6 +17,8 @@ public class AITargetingBeam : MonoBehaviour
     {
         beam = GetComponent<LineRenderer>();
         ai = GetComponentInParent<AICombatant>();
+        Debug.Log(ai);
+        beam.enabled = false;
     }
 
     public void SetBeam()
@@ -32,6 +34,7 @@ public class AITargetingBeam : MonoBehaviour
         }
 
         aimPosition = ai.LookOrigin + ai.LookDirection * beamLength;
+        enabled = true;
     }
 
     private void Update()
