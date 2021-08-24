@@ -1746,7 +1746,7 @@ PrefabInstance:
     - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.9709642
+      value: 13.36
       objectReference: {fileID: 0}
     - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
         type: 3}
@@ -1756,7 +1756,7 @@ PrefabInstance:
     - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 49.23838
+      value: 35.67
       objectReference: {fileID: 0}
     - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
         type: 3}
@@ -14249,7 +14249,12 @@ PrefabInstance:
     - target: {fileID: 2084788015384213856, guid: c273f58ffff2ef946af61c0725cfc9de,
         type: 3}
       propertyPath: m_Name
-      value: Gunner
+      value: Placeholder Gunnner
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084788015384213856, guid: c273f58ffff2ef946af61c0725cfc9de,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2084788015384213859, guid: c273f58ffff2ef946af61c0725cfc9de,
         type: 3}
