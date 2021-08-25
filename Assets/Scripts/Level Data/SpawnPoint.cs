@@ -6,24 +6,19 @@ public class SpawnPoint : MonoBehaviour
 {
     public PlayerHandler playerPrefab;
 
-    // Start is called before the first frame update
-    void Start()
+    public void SpawnInPlayerForFirstTime()
     {
         PlayerHandler ph = FindObjectOfType<PlayerHandler>();
         if (ph == null)
         {
-            ph = Instantiate(playerPrefab, transform.position, Quaternion.identity);
+            ph = Instantiate(playerPrefab);
         }
 
-
-        //ph.pc.SetToTransform(transform);
-
-
+        Spawn(playerPrefab);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Spawn(PlayerHandler playerToSpawn)
     {
-
+        
     }
 }

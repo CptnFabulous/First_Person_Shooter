@@ -86,6 +86,18 @@ public class AvoidAttack : AIMovementBehaviour
         return newSafeLocation;
     }
 
+
+    
+
+
+
+
+
+
+
+
+
+
     void EndDodge()
     {
         ai.attackToDodge = null;
@@ -98,8 +110,4 @@ public class AvoidAttack : AIMovementBehaviour
     {
         base.OnStateExit(animator, stateInfo, layerIndex);
     }
-
-
-
-    
 }

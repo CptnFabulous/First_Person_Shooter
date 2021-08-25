@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public static class Misc
 {
@@ -242,6 +243,26 @@ public static class Misc
         return (1 - (curve.Evaluate(t) - curveMin) / range) * range + curveMin;
     }
     #endregion
+
+
+    public static Mesh MeshFromNavMesh()
+    {
+        var navMesh = NavMesh.CalculateTriangulation();
+        Vector3[] vertices = navMesh.vertices;
+        int[] polygons = navMesh.indices;
+        //navMesh.
+
+        List<Vector3> verts = new List<Vector3>(vertices);
+
+        Mesh mapMesh = new Mesh();
+        mapMesh.SetVertices(verts);
+        mapMesh.SetIndices(polygons, MeshTopology.Triangles, 0);
+        mapMesh.RecalculateNormals();
+        mapMesh.RecalculateTangents();
+        mapMesh.RecalculateBounds();
+
+        return mapMesh;
+    }
 
 
     public static float DistanceBetweenDiagonals(Vector2 dimensions)

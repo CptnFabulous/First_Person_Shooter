@@ -82,24 +82,40 @@ public class MenuHandler : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    // UNTESTED
+    /// <summary>
+    /// UNTESTED: Loads a scene over a period of time, using a loading screen
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <param name="loadingScreen"></param>
+    /// <returns></returns>
     public IEnumerator LoadSceneWithLoadingScreen(string sceneName, string loadingScreen)
     {
         // Pause time to prevent time from passing in the new scene
         Time.timeScale = 0;
 
-        // Reference current scene
+        // Unload current scene
         Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.UnloadSceneAsync(currentScene);
 
         // Load a separate loading screen scene to mask things
         SceneManager.LoadScene(loadingScreen);
 
         // Load new scene in the background
-        AsyncOperation levelLoading = SceneManager.LoadSceneAsync(sceneName);
+        AsyncOperation levelLoading = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        Scene newScene = SceneManager.GetSceneByName(sceneName);
+        
         yield return new WaitWhile(() => levelLoading.progress < 1);
 
-        // Once the actual scene is finished loading, unload the loading screen and resume normal time flow
-        SceneManager.UnloadSceneAsync(currentScene);
+        // Wait until a key is pressed
+        WaitForEndOfFrame loop = new WaitForEndOfFrame();
+        while(Input.anyKeyDown == false)
+        {
+            yield return loop;
+        }
+
+        // Once the actual scene is finished loading and the player has responded, unload the loading screen and resume normal time flow
+        SceneManager.UnloadSceneAsync(loadingScreen);
+        SceneManager.SetActiveScene(newScene);
         Time.timeScale = 1;
     }
 
