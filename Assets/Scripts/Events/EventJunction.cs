@@ -13,23 +13,24 @@ public static class EventJunction
 
     public static void TransmitAttack(AttackMessage message)
     {
-        OnAttack(message);
+        //OnAttack(message);
+        OnAttack.Invoke(message);
     }
     public static void TransmitDamage(DamageMessage message)
     {
-        OnDamage(message);
+        OnDamage.Invoke(message);
     }
     public static void TransmitKill(KillMessage message)
     {
-        OnKill(message);
+        OnKill.Invoke(message);
     }
     public static void TransmitInteraction(InteractMessage message)
     {
-        OnInteract(message);
+        OnInteract.Invoke(message);
     }
     public static void TransmitSpawning(SpawnMessage message)
     {
-        OnSpawn(message);
+        OnSpawn.Invoke(message);
     }
 
     public static void UpdateAttackReceiver(System.Action<AttackMessage> function, bool isAdding)

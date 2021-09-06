@@ -38,25 +38,4 @@ public class DropOnDeath : MonoBehaviour
         }
         //enabled = false;
     }
-
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        if (h.IsDead == false && droppedItems.Count > 0)
-        {
-            foreach(ItemStack s in droppedItems)
-            {
-                for(int i = 0; i < s.quantity; i++)
-                {
-                    Vector3 randomPosition = new Vector3(Random.Range(-zoneExtents.x, zoneExtents.x), Random.Range(-zoneExtents.y, zoneExtents.y), Random.Range(-zoneExtents.z, zoneExtents.z));
-                    Vector3 relativeToTransform = transform.rotation * (zoneLocalCenter + randomPosition);
-                    Instantiate(s.item, transform.position + relativeToTransform, Quaternion.identity);
-                }
-            }
-
-            
-        }
-    }
-    */
 }

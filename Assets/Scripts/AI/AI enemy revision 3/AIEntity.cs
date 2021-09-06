@@ -23,12 +23,15 @@ public class AIEntity : MonoBehaviour//, ILogHandler
             // If there is no target, you don't need to add anything, just return the AI's hitboxes
             if (currentTarget == null)
             {
-                return currentTarget.HealthData.hitboxes;
+                return characterData.HealthData.hitboxes;
             }
 
             // Create an array with a length equal to the combined lengths of the AI and target hitbox arrays
             int length = characterData.HealthData.hitboxes.Length + currentTarget.HealthData.hitboxes.Length;
             DamageHitbox[] hitboxes = new DamageHitbox[length];
+
+
+            //hitboxes = new DamageHitbox[length];
             for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
             {
                 // Add each variable in the old array to the same place in the new one
@@ -89,7 +92,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     }
 
 
-    
+    #region Normal function loops
     public virtual void Awake()
     {
         lookDirectionQuaternion = head.transform.rotation;
@@ -108,9 +111,9 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         dodgeCooldownTimer += Time.deltaTime;
 
-        Debug.DrawRay(na.destination, Vector3.up * 10, Color.blue, 2);
+        //Debug.DrawRay(na.destination, Vector3.up * 10, Color.blue, 2);
         //Debug.Log(name + "'s destination on frame " + Time.frameCount + " is " + na.destination);
-        Debug.DrawLine(transform.position + Vector3.up, na.destination, Color.cyan);
+        //Debug.DrawLine(transform.position + Vector3.up, na.destination, Color.cyan);
         //Debug.Log(name + "'s current destination is " + na.destination);
 
         PursueTargetUpdate();
@@ -124,6 +127,29 @@ public class AIEntity : MonoBehaviour//, ILogHandler
             UpdateAnimatorVariables();
         }
     }
+
+    void UpdateStateMachineVariables()
+    {
+        aiStateMachine.SetBool("targetAcquired", currentTarget != null);
+        if (currentTarget != null)
+        {
+            aiStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, currentTarget.transform.position));
+        }
+        aiStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
+        aiStateMachine.SetInteger("health", hp.values.current);
+    }
+
+    void UpdateAnimatorVariables()
+    {
+        animationController.SetBool("IsMoving", na.velocity.magnitude > 0);
+        animationController.SetFloat("MovementSpeed", na.velocity.magnitude);
+    }
+
+    private void LateUpdate()
+    {
+        head.transform.LookAt(LookOrigin + LookDirection, transform.up);
+    }
+    #endregion
 
     #region Looking around
     // Continuously rotates AI aim over time to look at position value, at a speed of degreesPerSecond
@@ -151,7 +177,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     }
 
     // Rotates AI aim to look at something, in a specified time.
-    public IEnumerator LookAtThing(Vector3 position, float lookTime, float threshold, AnimationCurve lookCurve)
+    public IEnumerator LookAtThing(Vector3 position, float lookTime, AnimationCurve lookCurve)
     {
         inLookIENumerator = true;
 
@@ -165,7 +191,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
             lookDirectionQuaternion = Quaternion.Lerp(originalRotation, Quaternion.LookRotation(position, transform.up), lookCurve.Evaluate(timer));
             
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         inLookIENumerator = false;
@@ -253,37 +279,33 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
         if (dodgeCooldownTimer >= dodgeCooldown && selfPreservationBehaviour != SelfPreservation.Suicidal && attackToDodge == null && am != null && am.AtRisk(characterData))
         {
-            Debug.Log(name + " is evading attack");
+            //Debug.Log(name + " is evading attack");
             dodgeCooldownTimer = 0; // Resets timer
             attackToDodge = am; // Specifies attack to dodge from
             aiStateMachine.SetBool("mustDodgeAttack", true); // Sets trigger so agent can dodge attack
         }
+        /*
         else
         {
             Debug.Log(name + " did not evade attack because " + (dodgeCooldownTimer >= dodgeCooldown) + ", " + (selfPreservationBehaviour != SelfPreservation.Suicidal) + ", " + (attackToDodge == null) + ", " + (am != null) + ", " + am.AtRisk(characterData));
         }
+        */
     }
     #endregion
 
-    public void UpdateStateMachineVariables()
+
+    public void Die()
     {
-        aiStateMachine.SetBool("targetAcquired", currentTarget != null);
-        if (currentTarget != null)
-        {
-            aiStateMachine.SetFloat("targetDistance", Vector3.Distance(transform.position, currentTarget.transform.position));
-        }
-        aiStateMachine.SetFloat("targetNavMeshDistance", na.remainingDistance);
-        aiStateMachine.SetInteger("health", hp.values.current);
+        na.enabled = false;
+        audioOutput.enabled = false;
+        aiStateMachine.enabled = false;
+        animationController.enabled = false;
+        enabled = false;
+        // disable human body animation handler
+        // enable ragdoll
     }
 
-    public void UpdateAnimatorVariables()
-    {
-        animationController.SetBool("IsMoving", na.velocity.magnitude > 0);
-        animationController.SetFloat("MovementSpeed", na.velocity.magnitude);
-    }
 
-    private void LateUpdate()
-    {
-        head.transform.LookAt(LookOrigin + LookDirection, transform.up);
-    }
+
+    
 }

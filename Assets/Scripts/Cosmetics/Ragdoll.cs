@@ -7,10 +7,8 @@ public class Ragdoll : MonoBehaviour
     CharacterJoint[] joints;
     Collider[] colliders;
     Rigidbody[] rigidbodies;
-    public bool startActive;
+    //Matrix4x4[] defaultTransformValues;
     public bool disableCollidersWhenDisabled;
-
-
 
     private void Awake()
     {
@@ -21,20 +19,33 @@ public class Ragdoll : MonoBehaviour
         for (int i = 0; i < joints.Length; i++)
         {
             joints[i].enableCollision = false;
+            joints[i].autoConfigureConnectedAnchor = true;
             joints[i].connectedBody = joints[i].transform.parent.GetComponentInParent<Rigidbody>();
-            Debug.Log("Setting rigidbody of " + joints[i].name + " to " + joints[i].connectedBody);
+            //Debug.Log("Setting rigidbody of " + joints[i].name + " to " + joints[i].connectedBody);
         }
+        /*
+        defaultTransformValues = new Matrix4x4[rigidbodies.Length];
+        for (int i = 0; i < defaultTransformValues.Length; i++)
+        {
+            defaultTransformValues[i] = rigidbodies[i].transform.worldToLocalMatrix;
+            rigidbodies[i].set
+        }
+        */
         SetActive(enabled);
+    }
+
+    private void OnEnable()
+    {
+        SetActive(true);
+    }
+    private void OnDisable()
+    {
+        SetActive(false);
     }
 
     void SetActive(bool active)
     {
-        /*
-        for (int i = 0; i < joints.Length; i++)
-        {
-            //joints[i].en
-        }
-        */
+        Debug.Log("Setting ragdoll state to " + active);
         for (int i = 0; i < colliders.Length; i++)
         {
             // If the ragdoll is activated, or if it's deactivated but disableCollidersWhenDisabled is false, activate the collider.
@@ -45,15 +56,11 @@ public class Ragdoll : MonoBehaviour
         {
             rigidbodies[i].isKinematic = !active;
         }
-    }
-
-    private void OnEnable()
-    {
-        SetActive(true);
-    }
-
-    private void OnDisable()
-    {
-        SetActive(false);
+        /*
+        for (int i = 0; i < joints.Length; i++)
+        {
+            //joints[i].en
+        }
+        */
     }
 }

@@ -75,6 +75,7 @@ public class Health : MonoBehaviour
         }
 
         IsDead = true;
+        onDeath.Invoke();
         EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
 
     }

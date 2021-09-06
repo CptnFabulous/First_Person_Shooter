@@ -217,14 +217,14 @@ public class AttackMessage
         List<Character> list = new List<Character>();
         // Perform a vision cone check
         RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
-
+        /*
         string debugString = "Characters at risk from " + m.attacker.name + " on frame " + Time.frameCount + ":";
         if (thingsInLineOfFire.Length < 1)
         {
             debugString = "Attack from " + m.attacker.name + " at time " + m.timeInitiated + " will not hit anything.";
             //Misc.PauseForDebuggingPurposes();
         }
-
+        */
         for (int i = 0; i < thingsInLineOfFire.Length; i++)
         {
             // Check raycasthit collider to see if it is a character with a faction
@@ -237,11 +237,10 @@ public class AttackMessage
                 // If so, the character is in the attack's danger zone
                 //Debug.Log(c.name + " is in the line of fire of " + attacker.name + "'s attack");
                 list.Add(c);
-                debugString += "\n" + c.name;
+                //debugString += "\n" + c.name;
             }
         }
-
-        Debug.Log(debugString);
+        //Debug.Log(debugString);
 
         m.charactersAtRisk = list.ToArray(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
         #endregion

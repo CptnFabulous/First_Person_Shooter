@@ -18,9 +18,11 @@ public class NpcHealth : Health
     }
     */
 
+    /*
     public override void Die(DamageType causeOfDeath, Entity lastAttacker)
     {
         base.Die(causeOfDeath, lastAttacker);
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
+    */
 }

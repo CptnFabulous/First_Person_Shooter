@@ -623,16 +623,19 @@ public class Gun : MonoBehaviour
 
     public void PickUp(PlayerHandler ph)
     {
-        transform.SetParent(ph.wh.defaultHoldingPosition);
+        playerHolding = ph.wh;
+        transform.SetParent(playerHolding.defaultHoldingPosition);
         GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = false;
-        playerHolding = ph.wh;
+        //weaponModel.SetPositionAndRotation()
         enabled = true;
     }
 
     public void Drop()
     {
         transform.SetParent(null);
+        weaponModel.localPosition = Vector3.zero;
+        weaponModel.localRotation = Quaternion.identity;
         GetComponent<Collider>().enabled = true;
         GetComponent<Rigidbody>().isKinematic = false;
         playerHolding = null;
