@@ -15,7 +15,36 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
     [Header("Current target")]
     public Character currentTarget;
+    Character previousTarget;
+    DamageHitbox[] combinedHitboxArray;
+    public DamageHitbox[] AgentAndTargetHitboxes
+    {
+        get
+        {
+            // If target has not changed, return previously assigned hitboxes
+            if (currentTarget == previousTarget)
+            {
+                return combinedHitboxArray;
+            }
 
+            previousTarget = currentTarget;
+            
+            if (currentTarget != null)
+            {
+                int length = characterData.HealthData.hitboxes.Length + currentTarget.HealthData.hitboxes.Length;
+                combinedHitboxArray = new DamageHitbox[length];
+                characterData.HealthData.hitboxes.CopyTo(combinedHitboxArray, 0);
+                currentTarget.HealthData.hitboxes.CopyTo(combinedHitboxArray, characterData.HealthData.hitboxes.Length);
+            }
+            else
+            {
+                combinedHitboxArray = characterData.HealthData.hitboxes;
+            }
+
+            return combinedHitboxArray;
+        }
+    }
+    /*
     public DamageHitbox[] AgentAndTargetHitboxes
     {
         get
@@ -46,7 +75,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
             return hitboxes;
         }
     }
-
+    */
     [Header("Detection")]
     public Transform head;
     public float viewRange = 50;
@@ -236,9 +265,17 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
     Character AcquireTarget()
     {
+        // Use Physics.OverlapSphere
+        
         Collider[] thingsInEnvironment = Physics.OverlapSphere(LookOrigin, viewRange);
         foreach (Collider thing in thingsInEnvironment)
         {
+            /*
+            if (AIFunction.LineOfSightCheckWithExceptions(LookOrigin, thing.transform.position, viewDetection, characterData.HealthData.hitboxes, thing))
+            {
+
+            }
+            */
             if (AIFunction.LineOfSight(LookOrigin, thing.transform, viewDetection))
             {
                 //print("Line of sight established between agent and " + thing.name);

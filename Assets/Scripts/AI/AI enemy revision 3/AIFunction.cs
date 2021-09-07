@@ -81,8 +81,10 @@ public static class AIFunction
 
         return true;
     }
+
+    
     /// <summary>
-    /// Checks line of sight, but allows a list of colliders that should be ignored
+    /// Checks line of sight, but allows a list of colliders that should be ignored.
     /// </summary>
     /// <param name="lookingFor"></param>
     /// <param name="viewOrigin"></param>
@@ -175,8 +177,70 @@ public static class AIFunction
 
         return true;
     }
+    
 
+    public static bool LineOfSightCheckWithExceptions(Vector3 from, Vector3 to, LayerMask viewable, Collider[] fromColliders, Collider[] toColliders)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(from, to - from, Vector3.Distance(from, to), viewable);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            for (int t = 0; t < toColliders.Length; t++)
+            {
+                if (hits[i].collider == toColliders[t])
+                {
+                    return true;
+                }
+            }
 
+            bool isException = false;
+            for (int f = 0; f < fromColliders.Length; f++)
+            {
+                if (hits[i].collider == fromColliders[f])
+                {
+                    isException = true;
+                    break;
+                }
+            }
+
+            if (isException == true)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public static bool LineOfSightCheckWithExceptions(Vector3 from, Vector3 to, LayerMask viewable, DamageHitbox[] fromColliders, DamageHitbox[] toColliders)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(from, to - from, Vector3.Distance(from, to), viewable);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            for (int t = 0; t < toColliders.Length; t++)
+            {
+                if (hits[i].collider == toColliders[t].Collider)
+                {
+                    return true;
+                }
+            }
+
+            bool isException = false;
+            for (int f = 0; f < fromColliders.Length; f++)
+            {
+                if (hits[i].collider == fromColliders[f].Collider)
+                {
+                    isException = true;
+                    break;
+                }
+            }
+
+            if (isException == true)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 
     public static bool LineOfSightCheckForVisionCone(Collider c, Vector3 origin, Vector3 forward, Vector3 worldUp, float angle, out RaycastHit checkInfo, float range, LayerMask viewable, float raycastSpacing = 0.2f)
@@ -530,7 +594,7 @@ public static class AIFunction
                     {
                         return true;
                     }
-                }
+                }   
             }
 
             if (t == target)
