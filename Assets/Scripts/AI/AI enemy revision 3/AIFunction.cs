@@ -82,55 +82,7 @@ public static class AIFunction
         return true;
     }
 
-    
-    /// <summary>
-    /// Checks line of sight, but allows a list of colliders that should be ignored.
-    /// </summary>
-    /// <param name="lookingFor"></param>
-    /// <param name="viewOrigin"></param>
-    /// <param name="viewable"></param>
-    /// <param name="exceptions"></param>
-    /// <returns></returns>
-    public static bool LineOfSightCheckWithExceptions(Vector3 lookingFor, Vector3 viewOrigin, LayerMask viewable, Collider[] exceptions = null)
-    {
-        if (exceptions == null || exceptions.Length <= 0) // Returns a simpler and less performant check if there are no exceptions. This is for situations where there may or may not need to be exceptions
-        {
-            return SimpleLineOfSightCheck(lookingFor, viewOrigin, viewable);
-        }
-
-        //Debug.DrawRay(viewOrigin, lookingFor - viewOrigin, Color.yellow);
-
-
-        RaycastHit[] hits = Physics.RaycastAll(viewOrigin, lookingFor - viewOrigin, Vector3.Distance(viewOrigin, lookingFor), viewable);
-        foreach (RaycastHit rh in hits)
-        {
-            bool hitAnException = false;
-
-            // Checks the collider in the RaycastHit against the list of exception colliders
-            for (int i = 0; i < exceptions.Length; i++)
-            {
-                // If the collider in the raycast hit matches one of the exception colliders
-                if (rh.collider == exceptions[i])
-                {
-                    // Dismiss this collider as an exception, end the exception check loop prematurely and move onto checking the next RaycastHit
-                    hitAnException = true;
-                    i = exceptions.Length;
-                }
-            }
-
-            // If the collider did not match any of the exceptions and was not dismissed
-            if (hitAnException == false)
-            {
-                // Line of sight has been broken by an actual obstacle, return false
-                Debug.Log("Returned false due to hitting " + rh.collider.name);
-                return false;
-            }
-
-            Debug.Log("Noticed " + rh.collider.name + ", but it was an exception");
-        }
-
-        return true;
-    }
+    /*
     /// <summary>
     /// Checks line of sight, but allows a list of colliders that should be ignored. This overload allows directly inputting damage hitboxes rather than extracting their collider data.
     /// </summary>
@@ -177,44 +129,19 @@ public static class AIFunction
 
         return true;
     }
-    
-
-    public static bool LineOfSightCheckWithExceptions(Vector3 from, Vector3 to, LayerMask viewable, Collider[] fromColliders, Collider[] toColliders)
+    */
+    //public static List<RaycastHit> hits = new List<RaycastHit>();
+    public static bool LineOfSightCheckWithExceptions(Vector3 from, Vector3 to, LayerMask viewable, DamageHitbox[] fromColliders = null, DamageHitbox[] toColliders = null)
     {
+        //hits.Clear();
+        //hits.AddRange(Physics.RaycastAll(from, to - from, Vector3.Distance(from, to), viewable));
+        //Comparison<RaycastHit> distanceCheck = (one, two) => Vector3.Distance(from, one.point) < Vector3.Distance(from, two.point));
+        //hits.Sort(distanceCheck);
+
         RaycastHit[] hits = Physics.RaycastAll(from, to - from, Vector3.Distance(from, to), viewable);
         for (int i = 0; i < hits.Length; i++)
         {
-            for (int t = 0; t < toColliders.Length; t++)
-            {
-                if (hits[i].collider == toColliders[t])
-                {
-                    return true;
-                }
-            }
-
-            bool isException = false;
-            for (int f = 0; f < fromColliders.Length; f++)
-            {
-                if (hits[i].collider == fromColliders[f])
-                {
-                    isException = true;
-                    break;
-                }
-            }
-
-            if (isException == true)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    public static bool LineOfSightCheckWithExceptions(Vector3 from, Vector3 to, LayerMask viewable, DamageHitbox[] fromColliders, DamageHitbox[] toColliders)
-    {
-        RaycastHit[] hits = Physics.RaycastAll(from, to - from, Vector3.Distance(from, to), viewable);
-        for (int i = 0; i < hits.Length; i++)
-        {
+            // If the raycast hit is one of the colliders belonging to the target object, return true
             for (int t = 0; t < toColliders.Length; t++)
             {
                 if (hits[i].collider == toColliders[t].Collider)
@@ -223,6 +150,7 @@ public static class AIFunction
                 }
             }
 
+            // If the raycast hit a collider belonging to the object the raycast launched from, keep checking
             bool isException = false;
             for (int f = 0; f < fromColliders.Length; f++)
             {
@@ -233,12 +161,14 @@ public static class AIFunction
                 }
             }
 
+            // If the raycast hit an object that isn't in either of the exception arrays, line of sight is blocked
             if (isException == true)
             {
                 return false;
             }
         }
 
+        // Nothing is present between the two points
         return true;
     }
 

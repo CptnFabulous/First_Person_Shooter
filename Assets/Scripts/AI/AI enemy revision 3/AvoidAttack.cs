@@ -12,7 +12,8 @@ public class AvoidAttack : AIMovementBehaviour
 
     public float destinationThreshold = 0.1f;
 
-    public float checkRadius;
+    public float minCheckRadius = 2;
+    public float maxCheckRadius;
     public float maxMoveDistance;
     public int numberOfChecks = 15;
     public LayerMask coverCriteria;
@@ -47,14 +48,14 @@ public class AvoidAttack : AIMovementBehaviour
 
     public NullableVector3 FindAvoidPosition() // Should I have separate versions for dodging vs. taking cover? I might need this based on whether the enemy is aggressive or skittish
     {
-        Collider[] characterColliders = ai.GetComponentsInChildren<Collider>();
         NullableVector3 newSafeLocation = null;
         float maxPathDistance = maxMoveDistance;
 
         for (int i = 0; i < numberOfChecks; i++)
         {
-            // Samples a random position around the target, inside checkRadius.
-            Vector3 randomPosition = ai.transform.position + Random.insideUnitSphere * checkRadius;
+            // Samples a random position around the target, normalises it, and randomises the magnitude to a point in betwen the min and max radii.
+            // If I simply multiply by the max check radius, the position may be too close.
+            Vector3 randomPosition = ai.transform.position + Random.insideUnitSphere.normalized * Random.Range(minCheckRadius, maxCheckRadius);
             // Normalising the Random.insideUnitSphere ensures the magnitude (and therefore distance value) is always 1, and the distance is calculated correctly.
 
             NavMeshHit followCheck;
@@ -62,13 +63,12 @@ public class AvoidAttack : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
                 // Checks if the location is safe from the attack
-                if (attackToDodge.IsPositionSafe(followCheck.position, characterColliders) == false)
+                if (attackToDodge.IsPositionSafe(followCheck.position, ai.characterData.HealthData.hitboxes) == false)
                 {
                     // Creates a new path for reference
                     NavMeshPath nmp = new NavMeshPath();
-
                     // If the agent can actually move to the location
-                    if (ai.na.CalculatePath(followCheck.position, nmp))
+                    if (ai.na.CalculatePath(followCheck.position, nmp) && nmp.status == NavMeshPathStatus.PathComplete)
                     {
                         float distance = AIFunction.NavMeshPathLength(nmp); // Check navmesh path cost between transform.position and the cover point currently being checked.
 

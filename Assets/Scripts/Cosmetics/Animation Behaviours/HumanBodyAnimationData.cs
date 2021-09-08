@@ -5,6 +5,8 @@ using UnityEngine;
 public class HumanBodyAnimationData : MonoBehaviour
 {
     public AIEntity ai;
+    //public Animator animationController;
+    //public Ragdoll ragdollData;
 
     public Transform pelvis;
     public Vector3 pelvisEulerAnglesToAccountFor;
@@ -22,7 +24,7 @@ public class HumanBodyAnimationData : MonoBehaviour
 
 
 
-    public void SetTorsoRotation()
+    void SetTorsoRotation()
     {
         // Rotates the character model to face in the same horizontal direction the AI is looking in, accounting for the weird rotations of the model
         Vector3 horizontalDirectionCharacterIsFacing = Vector3.ProjectOnPlane(ai.LookDirection, ai.transform.up);
@@ -50,6 +52,14 @@ public class HumanBodyAnimationData : MonoBehaviour
         {
             ai.animationController.SetFloat("Walk Angle", walkAngle);
         }
+    }
+    */
+    /*
+    public void Die()
+    {
+        animationController.enabled = false;
+        ragdollData.enabled = true;
+        enabled = false;
     }
     */
 }

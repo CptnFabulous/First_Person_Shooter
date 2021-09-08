@@ -284,7 +284,7 @@ public class AttackMessage
     }
 
     // Checks if a position is in the line of fire
-    public bool IsPositionSafe(Vector3 position, Collider[] characterColliders)
+    public bool IsPositionSafe(Vector3 position, DamageHitbox[] characterColliders)
     {
         switch(type)
         {

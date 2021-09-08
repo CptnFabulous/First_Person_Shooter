@@ -15,67 +15,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
     [Header("Current target")]
     public Character currentTarget;
-    Character previousTarget;
-    DamageHitbox[] combinedHitboxArray;
-    public DamageHitbox[] AgentAndTargetHitboxes
-    {
-        get
-        {
-            // If target has not changed, return previously assigned hitboxes
-            if (currentTarget == previousTarget)
-            {
-                return combinedHitboxArray;
-            }
 
-            previousTarget = currentTarget;
-            
-            if (currentTarget != null)
-            {
-                int length = characterData.HealthData.hitboxes.Length + currentTarget.HealthData.hitboxes.Length;
-                combinedHitboxArray = new DamageHitbox[length];
-                characterData.HealthData.hitboxes.CopyTo(combinedHitboxArray, 0);
-                currentTarget.HealthData.hitboxes.CopyTo(combinedHitboxArray, characterData.HealthData.hitboxes.Length);
-            }
-            else
-            {
-                combinedHitboxArray = characterData.HealthData.hitboxes;
-            }
-
-            return combinedHitboxArray;
-        }
-    }
-    /*
-    public DamageHitbox[] AgentAndTargetHitboxes
-    {
-        get
-        {
-            // If there is no target, you don't need to add anything, just return the AI's hitboxes
-            if (currentTarget == null)
-            {
-                return characterData.HealthData.hitboxes;
-            }
-
-            // Create an array with a length equal to the combined lengths of the AI and target hitbox arrays
-            int length = characterData.HealthData.hitboxes.Length + currentTarget.HealthData.hitboxes.Length;
-            DamageHitbox[] hitboxes = new DamageHitbox[length];
-
-
-            //hitboxes = new DamageHitbox[length];
-            for (int i = 0; i < characterData.HealthData.hitboxes.Length; i++)
-            {
-                // Add each variable in the old array to the same place in the new one
-                hitboxes[i] = characterData.HealthData.hitboxes[i];
-            }
-            for (int i = 0; i < currentTarget.HealthData.hitboxes.Length; i++)
-            {
-                // Add i to the length of the first array, so in the final array it doesn't overwrite any previous values
-                hitboxes[characterData.HealthData.hitboxes.Length + i] = currentTarget.HealthData.hitboxes[i];
-            }
-
-            return hitboxes;
-        }
-    }
-    */
     [Header("Detection")]
     public Transform head;
     public float viewRange = 50;
@@ -140,11 +80,6 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         dodgeCooldownTimer += Time.deltaTime;
 
-        //Debug.DrawRay(na.destination, Vector3.up * 10, Color.blue, 2);
-        //Debug.Log(name + "'s destination on frame " + Time.frameCount + " is " + na.destination);
-        //Debug.DrawLine(transform.position + Vector3.up, na.destination, Color.cyan);
-        //Debug.Log(name + "'s current destination is " + na.destination);
-
         PursueTargetUpdate();
 
 
@@ -172,6 +107,15 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         animationController.SetBool("IsMoving", na.velocity.magnitude > 0);
         animationController.SetFloat("MovementSpeed", na.velocity.magnitude);
+        /*
+        // Flattens the look direction and movement direction to the same horizontal plane as the agent's transform, and gets the angle between them.
+        float angle = Vector3.Angle(Vector3.ProjectOnPlane(LookDirection, transform.up), Vector3.ProjectOnPlane(na.velocity, transform.up));
+        // Obtains the current velocity value and lerps it between itself and minus itself based on how large the angle is.
+        float reverseAccountedMovementSpeed = na.velocity.magnitude * Mathf.Lerp(1, -1, angle / 180);
+        animationController.SetFloat("MovementSpeed", reverseAccountedMovementSpeed);
+        animationController.SetBool("IsMoving", reverseAccountedMovementSpeed != 0);
+        */
+        
     }
 
     private void LateUpdate()
@@ -240,7 +184,9 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         {
             // If the AI cannot find their target (out of range or line of sight broken)
             //if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, LookOrigin, viewDetection) == false)
-            if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || !AIFunction.LineOfSightCheckWithExceptions(currentTarget.transform.position, LookOrigin, viewDetection, AgentAndTargetHitboxes))
+            bool lineOfSightBroken = !AIFunction.LineOfSightCheckWithExceptions(currentTarget.transform.position, LookOrigin, viewDetection, characterData.HealthData.hitboxes, currentTarget.HealthData.hitboxes);
+            bool outOfRange = Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange;
+            if (outOfRange || lineOfSightBroken)
             {
                 // Count up a timer and continue pursuing until the timer expires
                 patienceTimer = 0;

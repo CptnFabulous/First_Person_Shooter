@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class EngageTarget : AIMovementBehaviour
 {
-    Transform targetLocation;
     NullableVector3 currentDestination;
 
     [Header("Detection ranges")]
@@ -19,12 +18,17 @@ public class EngageTarget : AIMovementBehaviour
     public LayerMask coverCriteria = ~0;
 
 
+    Vector3 TargetLocation
+    {
+        get
+        {
+            return ai.currentTarget.transform.position;
+        }
+    }
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-
-        // Sets the location of the current target
-        targetLocation = ai.currentTarget.transform;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -32,12 +36,12 @@ public class EngageTarget : AIMovementBehaviour
         #region Check validity of destination, and return null if no longer valid
         if (currentDestination != null)
         {
-            float distance = Vector3.Distance(currentDestination.position, targetLocation.position); // Obtains distance between agent and target
+            float distance = Vector3.Distance(currentDestination.position, TargetLocation); // Obtains distance between agent and target
 
-            Debug.DrawLine(targetLocation.position, currentDestination.position, new Color(1, 0.5f, 0));
+            Debug.DrawLine(TargetLocation, currentDestination.position, new Color(1, 0.5f, 0));
 
             // Checks if the AI can no longer see the target from their desired position, or if they are too close or too far
-            bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(targetLocation.position, currentDestination.position, coverCriteria, ai.AgentAndTargetHitboxes);
+            bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(TargetLocation, currentDestination.position, coverCriteria, ai.characterData.HealthData.hitboxes, ai.currentTarget.HealthData.hitboxes);
             bool tooClose = distance < minimumMoveRange;
             bool tooFar = distance > maximumMoveRange;
             if (lineOfSightLost || tooClose || tooFar)
@@ -54,7 +58,7 @@ public class EngageTarget : AIMovementBehaviour
         if (currentDestination == null)
         {
             //Debug.Log("Finding destination normally");
-            currentDestination = FindFollowPosition(targetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
+            currentDestination = FindFollowPosition(TargetLocation, minimumDestinationRange, maximumDestinationRange, numberOfChecks);
 
             //Debug.Log("Current destination = " + currentDestination);
             
@@ -72,22 +76,22 @@ public class EngageTarget : AIMovementBehaviour
         #endregion
     }
 
-    public NullableVector3 FindFollowPosition(Transform target, float minimumRange, float maximumRange, int numberOfChecks)
+    public NullableVector3 FindFollowPosition(Vector3 targetPosition, float minimumRange, float maximumRange, int numberOfChecks)
     {
         NullableVector3 newFollowPosition = null;
         float currentPathLength = float.MaxValue;
-
+        /*
         int noValidPosition = 0;
         int noLineOfSight = 0;
         int noValidPath = 0;
         int incompletePath = 0;
         int inefficient = 0;
-
+        */
         for (int i = 0; i < numberOfChecks; i++)
         {
             // Samples a random position around the target, outside minimumRange and inside maximumRange.
             // Normalising the Random.insideUnitSphere magnitude then multiplying it again by another random value allows me to ensure that the distance of the point is random but still within certain distance requirements.
-            Vector3 randomPosition = target.position + Random.insideUnitSphere.normalized * Random.Range(minimumRange, maximumRange);
+            Vector3 randomPosition = targetPosition + Random.insideUnitSphere.normalized * Random.Range(minimumRange, maximumRange);
 
             NavMeshHit followCheck;
             // Checks if there is an actual point on the navmesh close to the randomly selected position
@@ -96,13 +100,14 @@ public class EngageTarget : AIMovementBehaviour
                 Debug.DrawLine(randomPosition, followCheck.position, Colours.darkGreen);
                 
                 // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
-                if (AIFunction.LineOfSightCheckWithExceptions(target.position, followCheck.position, coverCriteria, ai.AgentAndTargetHitboxes))
+                if (AIFunction.LineOfSightCheckWithExceptions(targetPosition, followCheck.position, coverCriteria, ai.characterData.HealthData.hitboxes, ai.currentTarget.HealthData.hitboxes))
                 {
                     // Ensures that a path can be sampled to the destination.
                     NavMeshPath nmp = new NavMeshPath();
                     if (ai.na.CalculatePath(followCheck.position, nmp))
                     {
                         // Checks to make sure a whole path can be found.
+                        // This if statement could probably be added to the previous one with the && operator
                         if (nmp.status == NavMeshPathStatus.PathComplete)
                         {
                             // Checks if the new cover position is a shorter route to get to than the old one.
@@ -114,30 +119,40 @@ public class EngageTarget : AIMovementBehaviour
                                 newFollowPosition = new NullableVector3(followCheck.position);
                                 currentPathLength = length;
                             }
+                            /*
                             else
                             {
                                 inefficient++;
                             }
+                            */
                         }
+                        /*
                         else
                         {
                             incompletePath++;
                         }
+                        */
                     }
+                    /*
                     else
                     {
                         noValidPath++;
                     }
+                    */
                 }
+                /*
                 else
                 {
                     noLineOfSight++;
                 }
+                */
             }
+            /*
             else
             {
                 noValidPosition++;
             }
+            */
         }
 
         //Debug.Log("Path result - " + (newFollowPosition != null).ToString() + ", " + noValidPosition + " sampling errors, " + noLineOfSight + " line of sight fails, " + noValidPath + " pathing fails, " + incompletePath + " incomplete paths, and " + inefficient + " inefficient paths.");
