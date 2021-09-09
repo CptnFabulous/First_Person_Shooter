@@ -53,6 +53,9 @@ public class AvoidAttack : AIMovementBehaviour
         NullableVector3 newSafeLocation = null;
         float maxPathDistance = maxMoveDistance;
 
+
+        Vector3[] test = AIFunction.PositionsAroundPointInSpiral(ai.transform.position + ai.transform.up, ai.transform.up, minCheckRadius, maxCheckRadius, 3, 15);
+
         for (int i = 0; i < numberOfChecks; i++)
         {
             // Samples a random position around the target, normalises it, and randomises the magnitude to a point in betwen the min and max radii.
