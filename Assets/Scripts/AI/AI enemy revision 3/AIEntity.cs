@@ -194,16 +194,11 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
             patienceTimer += Time.deltaTime;
 
-            if (patienceTimer >= pursuePatience)
-            {
-                print("Target out of range");
-                currentTarget = null;
-            }
+            
 
-
-            Health h = currentTarget.GetComponent<Health>();
-            if (h != null && h.IsDead)
+            if (patienceTimer >= pursuePatience || currentTarget.HealthData == null || currentTarget.HealthData.IsDead)
             {
+                print("Target out of range, cannot be attacked or is dead");
                 currentTarget = null;
             }
         }

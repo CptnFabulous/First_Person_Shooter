@@ -6,8 +6,6 @@ using UnityEngine.AI;
 
 public class AvoidAttack : AIMovementBehaviour
 {
-    AttackMessage attackToDodge;
-    Transform targetLocation;
     NullableVector3 safeLocation;
 
     public float destinationThreshold = 0.1f;
@@ -26,7 +24,6 @@ public class AvoidAttack : AIMovementBehaviour
 
         Debug.Log(ai.name + " is entering dodge state");
 
-        attackToDodge = ai.attackToDodge;
         safeLocation = FindAvoidPosition();
         // If the NPC cannot find a safe location, end the state machine behaviour. The NPC will be forced to tank the attack, as there is nowhere for it to dodge to.
         if (safeLocation == null)
@@ -38,10 +35,15 @@ public class AvoidAttack : AIMovementBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         Debug.Log("Setting destination for " + ai.name + " from EngageTarget behaviour");
-        ai.na.SetDestination(safeLocation.position);
-        // If the agent has reached the destination, run EndDodge().
-        if (ai.na.remainingDistance < destinationThreshold)
+
+        // If a destination was found but has not been reached yet, go towards the destination
+        if (safeLocation != null && ai.na.remainingDistance > destinationThreshold)
         {
+            ai.na.SetDestination(safeLocation.position);
+        }
+        else
+        {
+            // Otherwise, end the dodge state
             EndDodge();
         }
     }
@@ -50,6 +52,9 @@ public class AvoidAttack : AIMovementBehaviour
     {
         NullableVector3 newSafeLocation = null;
         float maxPathDistance = maxMoveDistance;
+
+
+        Vector3[] test = AIFunction.PositionsAroundPointInSpiral(ai.transform.position + ai.transform.up, ai.transform.up, minCheckRadius, maxCheckRadius, 3, 15);
 
         for (int i = 0; i < numberOfChecks; i++)
         {
@@ -63,7 +68,7 @@ public class AvoidAttack : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
                 // Checks if the location is safe from the attack
-                if (attackToDodge.IsPositionSafe(followCheck.position, ai.characterData.HealthData.hitboxes) == false)
+                if (ai.attackToDodge.IsPositionSafe(followCheck.position, ai.characterData.HealthData.hitboxes) == false)
                 {
                     // Creates a new path for reference
                     NavMeshPath nmp = new NavMeshPath();
@@ -101,7 +106,6 @@ public class AvoidAttack : AIMovementBehaviour
     void EndDodge()
     {
         ai.attackToDodge = null;
-        //ai.stateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
         ai.aiStateMachine.SetBool("mustDodgeAttack", false); // Disables state machine bool for dodging attack, so the agent moves back to its normal routine
     }
 

@@ -773,5 +773,81 @@ public static class AIFunction
         return pathLength;
     }
 
+    public static Vector3[] PositionsAroundPointInBox(Vector3 origin, Quaternion rotation, float minRadius, float maxRadius, float raycastSpacing)
+    {
+        // Calculate points in a grid around the player
+        
+        /*
+        for (float x = -maxRadius; x < maxRadius; x += raycastSpacing)
+        {
+            for (float z = -maxRadius; z < maxRadius; z += raycastSpacing)
+            {
+                Vector3 position = new Vector3(x, 0, z);
+                if ()
+            }
+        }
+
+
+
+
+        Bounds extents = new Bounds(origin, new Vector3(maxRadius, maxRadius, maxRadius));
+        
+        for (float x = extents.min.x; x < extents.max.x; x += raycastSpacing)
+        {
+            for (float z = extents.min.z; z < extents.max.z; z += raycastSpacing)
+            {
+                
+                
+                
+                
+                // Creates positions to launch a raycast down onto the navmesh
+                Vector3 rayOrigin = rotation * new Vector3(x, extents.max.y, z);
+                rayOrigin += extents.center;
+                Vector3 rayDirection = rotation * Vector3.down;
+
+                // Find positions on the NavMesh, and for each one 
+                //Physics.Ov
+
+                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, meshBounds.extents.y * 2, terrainDetection);
+
+
+
+            }
+        }
+        */
+
+
+        return null;
+    }
+
+    /// <summary>
+    /// Creates a ring of positions around the origin, in a spiral pattern
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="axis"></param>
+    /// <param name="minRadius"></param>
+    /// <param name="maxRadius"></param>
+    /// <param name="loops"></param>
+    /// <param name="numberOfChecks"></param>
+    /// <returns></returns>
+    public static Vector3[] PositionsAroundPointInSpiral(Vector3 origin, Vector3 axis, float minRadius, float maxRadius, float loops, int numberOfChecks)
+    {
+        Vector3[] positions = new Vector3[numberOfChecks];
+        for (int i = 0; i < numberOfChecks; i++)
+        {
+            float percentage = (float)i / (numberOfChecks - 1);
+            float distance = Mathf.Lerp(minRadius, maxRadius, percentage);
+            float angle = Mathf.Lerp(0, 360 * loops, percentage);
+            Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+            positions[i] = origin + (rotation * Vector3.forward * (minRadius + distance));
+
+            //Color c = Color.Lerp(Color.green, Color.red, percentage);
+            //Debug.DrawLine(origin, positions[i], Color.cyan, 10);
+        }
+
+        return positions;
+    }
+
+
     #endregion
 }
