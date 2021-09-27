@@ -9,7 +9,7 @@ public class ColourTransitionEffect : TimedVisualEffect
     public Gradient gradient;
     [HideInInspector] public Image graphic;
 
-    private void Awake()
+    public override void Awake()
     {
         graphic = GetComponent<Image>();
     }

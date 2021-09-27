@@ -10,7 +10,7 @@ public class MuzzleFlashEffect : TimedVisualEffect
 
     Light l;
 
-    private void Awake()
+    public override void Awake()
     {
         l = GetComponent<Light>();
     }

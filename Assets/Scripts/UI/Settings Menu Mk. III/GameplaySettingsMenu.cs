@@ -57,7 +57,7 @@ public class GameplaySettingsMenu : SettingsMenu
         cameraSensitivityX.value = playerToUpdate.movement.sensitivityX;
         cameraSensitivityY.value = playerToUpdate.movement.sensitivityY;
         toggleCrouch.isOn = playerToUpdate.movement.toggleCrouch;
-        toggleADS.isOn = playerToUpdate.wh.toggleAim;
+        toggleADS.isOn = playerToUpdate.weapons.toggleAim;
     }
     public override void SaveSettings()
     {
@@ -69,7 +69,7 @@ public class GameplaySettingsMenu : SettingsMenu
         playerToUpdate.movement.sensitivityX = cameraSensitivityX.value;
         playerToUpdate.movement.sensitivityY = cameraSensitivityY.value;
         playerToUpdate.movement.toggleCrouch = toggleCrouch.isOn;
-        playerToUpdate.wh.toggleAim = toggleADS.isOn;
+        playerToUpdate.weapons.toggleAim = toggleADS.isOn;
         //Debug.Log("Left handed set to " + enableLeftHandedness.isOn + ", but this function doesn't do anything yet.");
         //playerToUpdate.hud.reticleDefaultColour = 
         base.SaveSettings();
@@ -81,7 +81,7 @@ public class GameplaySettingsMenu : SettingsMenu
         playerToUpdate.movement.sensitivityX = cameraSensitivityXDefault;
         playerToUpdate.movement.sensitivityY = cameraSensitivityYDefault;
         playerToUpdate.movement.toggleCrouch = toggleCrouchDefault;
-        playerToUpdate.wh.toggleAim = toggleADSDefault;
+        playerToUpdate.weapons.toggleAim = toggleADSDefault;
         //Debug.Log("Left handed set to " + enableLeftHandednessDefault + ", but this function doesn't do anything yet.");
         //playerToUpdate.hud.reticleDefaultColour = reticleColourDefault;
         base.RevertToDefaultSettings();

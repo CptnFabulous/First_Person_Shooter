@@ -8,7 +8,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(PlayerHandler))]
 public class HeadsUpDisplay : MonoBehaviour
 {
-    [HideInInspector] public PlayerHandler ph;
+    [HideInInspector] public PlayerHandler player;
 
     public Canvas hudCanvas;
     public Camera hudCamera;
@@ -83,7 +83,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
     private void Awake()
     {
-        ph = GetComponent<PlayerHandler>();
+        player = GetComponent<PlayerHandler>();
     }
 
     // Use this for initialization
@@ -96,7 +96,7 @@ public class HeadsUpDisplay : MonoBehaviour
     void Update()
     {
         RectTransform rt = hudCanvas.GetComponent<RectTransform>();
-        Transform playerHead = ph.movement.head.transform;
+        Transform playerHead = player.movement.head.transform;
 
         #region Objectives
         //objectiveList.text = ObjectiveList();
@@ -121,9 +121,9 @@ public class HeadsUpDisplay : MonoBehaviour
         #endregion
 
         #region Health HUD
-        healthCounter.text = ph.ph.values.current.ToString();
-        FillMeter(healthBar, ph.ph.values.current, ph.ph.values.max);
-        if (ph.ph.values.IsCritical)
+        healthCounter.text = player.health.values.current.ToString();
+        FillMeter(healthBar, player.health.values.current, player.health.values.max);
+        if (player.health.values.IsCritical)
         {
             healthCounter.color = resourceCriticalColour;
             // Do other stuff for critical health e.g. greyscale screen, warnings
@@ -141,7 +141,7 @@ public class HeadsUpDisplay : MonoBehaviour
             Character c = Character.FromObject(lookingAt.collider.gameObject);
             if (c != null)
             {
-                if (ph.HostileTowards(c))
+                if (player.HostileTowards(c))
                 {
                     ColourReticle(enemyColour);
                 }
@@ -169,14 +169,14 @@ public class HeadsUpDisplay : MonoBehaviour
 
         opticsOverlay.gameObject.SetActive(opticsOverlay.graphic.sprite != null);
 
-        Gun rw = ph.wh.CurrentWeapon();
+        Gun rw = player.weapons.CurrentWeapon();
         if (rw != null)
         {
             GunGeneralStats ggs = rw.firingModes[rw.firingModeIndex].general;
             GunOpticsStats gos = rw.firingModes[rw.firingModeIndex].optics;
             
             
-            bool activeWeapon = !ph.wh.IsSwitchingWeapon;
+            bool activeWeapon = !player.weapons.IsSwitchingWeapon;
             bool noIronsights = gos == null || gos.disableReticle == false;
             reticleCentre.gameObject.SetActive(!activeWeapon || noIronsights);
             reticleUp.gameObject.SetActive(activeWeapon && noIronsights);
@@ -198,7 +198,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 {
                     #region Calculate reticle width
                     
-                    float spread = ph.wh.standingAccuracy.Calculate() + ggs.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
+                    float spread = player.weapons.standingAccuracy.Calculate() + ggs.projectileSpread; // Combines the player's accuracy stat with the spread of their current weapon
 
                     Vector3 reticleOffsetPoint = Quaternion.AngleAxis(spread, playerHead.right) * playerHead.forward;
                     reticleOffsetPoint = playerHead.position + reticleOffsetPoint * ggs.range;
@@ -259,7 +259,7 @@ public class HeadsUpDisplay : MonoBehaviour
                 {
                     if (m == null)
                     {
-                        FillMeter(ammoBar, ph.a.GetStock(ggs.ammoType), ph.a.GetMax(ggs.ammoType));
+                        FillMeter(ammoBar, player.ammo.GetStock(ggs.ammoType), player.ammo.GetMax(ggs.ammoType));
                     }
                     else
                     {
@@ -284,7 +284,7 @@ public class HeadsUpDisplay : MonoBehaviour
             interactButtonPrompt.sprite = inProgress;
 
         }
-        else if (i.CanPlayerInteract(ph) == false)
+        else if (i.CanPlayerInteract(player) == false)
         {
             interactInstruction.text = i.deniedMessage;
             interactButtonPrompt.sprite = denied;
@@ -323,11 +323,11 @@ public class HeadsUpDisplay : MonoBehaviour
         {
             if (m == null)
             {
-                s = ph.a.GetStock(ggs.ammoType).ToString();
+                s = player.ammo.GetStock(ggs.ammoType).ToString();
             }
             else
             {
-                s = m.data.current + "/" + (ph.a.GetStock(ggs.ammoType) - m.data.current);
+                s = m.data.current + "/" + (player.ammo.GetStock(ggs.ammoType) - m.data.current);
             }
         }
 

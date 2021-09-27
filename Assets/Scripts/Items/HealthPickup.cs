@@ -7,7 +7,7 @@ public class HealthPickup : ItemPickup
     public int value;
     public override void Pickup(PlayerHandler ph)
     {
-        PlayerHealth h = ph.ph;
+        PlayerHealth h = ph.health;
         if (h != null)
         {
             int healthToReplenish = h.values.max - h.values.current;

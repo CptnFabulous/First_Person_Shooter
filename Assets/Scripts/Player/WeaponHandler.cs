@@ -8,7 +8,7 @@ using UnityEngine;
 public class WeaponHandler : MonoBehaviour
 {
 
-    [HideInInspector] public PlayerHandler ph;
+    [HideInInspector] public PlayerHandler handler;
 
     [Header("Stats")]
     public bool toggleAim;
@@ -56,7 +56,7 @@ public class WeaponHandler : MonoBehaviour
 
     private void Awake()
     {
-        ph = GetComponent<PlayerHandler>();
+        handler = GetComponent<PlayerHandler>();
         standingAccuracy.defaultValue = Mathf.Clamp(standingAccuracy.defaultValue, 0, 180);
 
 
@@ -80,7 +80,7 @@ public class WeaponHandler : MonoBehaviour
         #region Weapon selector
         weaponSelector.WheelHandler();
 
-        ph.movement.canLook = !weaponSelector.MenuIsActive;
+        handler.movement.canLook = !weaponSelector.MenuIsActive;
 
         if (weaponSelector.MenuIsActive)
         {
@@ -103,7 +103,7 @@ public class WeaponHandler : MonoBehaviour
                 }
             }
 
-            ph.hud.PopulateWeaponWheel(equippedWeapons[weaponIndex], firingModeIndex);
+            handler.hud.PopulateWeaponWheel(equippedWeapons[weaponIndex], firingModeIndex);
 
             if (weaponSelector.SelectionMade()) // If player has made a selection and exited the weapon wheel
             {
@@ -114,8 +114,8 @@ public class WeaponHandler : MonoBehaviour
         #endregion
 
 
-        crouchModifier.SetActiveFully(ph.movement.isCrouching);
-        runModifier.SetIntensity(ph.movement.MoveDirection.magnitude);
+        crouchModifier.SetActiveFully(handler.movement.isCrouching);
+        runModifier.SetIntensity(handler.movement.MoveDirection.magnitude);
     }
 
     public void RefreshWeapons(int index)
@@ -250,7 +250,7 @@ public class WeaponHandler : MonoBehaviour
         rb.isKinematic = true;
 
         // Parent weapon to player
-        rw.transform.SetParent(ph.movement.torso, true);
+        rw.transform.SetParent(handler.movement.torso, true);
         rw.playerHolding = this;
 
         // Set position
@@ -291,7 +291,7 @@ public class WeaponHandler : MonoBehaviour
 
         // Toss away
         droppedWeapon.gameObject.SetActive(true);
-        rb.AddForce(ph.movement.head.forward * dropForce);
+        rb.AddForce(handler.movement.head.forward * dropForce);
 
         RefreshWeapons(0);
     }

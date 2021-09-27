@@ -8,13 +8,13 @@ public class PlayerHandler : Character
     //public new PlayerHealth HealthData { get; private set; }
     
     
-    [HideInInspector] public PlayerHealth ph;
+    [HideInInspector] public PlayerHealth health;
     [HideInInspector] public PlayerController movement;
-    [HideInInspector] public WeaponHandler wh;
-    [HideInInspector] public AmmunitionInventory a;
+    [HideInInspector] public WeaponHandler weapons;
+    [HideInInspector] public AmmunitionInventory ammo;
     [HideInInspector] public HeadsUpDisplay hud;
-    [HideInInspector] public GameStateHandler gsh;
-    [HideInInspector] public AudioSource playerAudio;
+    [HideInInspector] public GameStateHandler stateHandler;
+    [HideInInspector] public AudioSource audio;
 
     
 
@@ -40,21 +40,21 @@ public class PlayerHandler : Character
 
 
 
-        ph = GetComponent<PlayerHealth>();
+        health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerController>();
-        wh = GetComponent<WeaponHandler>();
-        a = GetComponent<AmmunitionInventory>();
+        weapons = GetComponent<WeaponHandler>();
+        ammo = GetComponent<AmmunitionInventory>();
         hud = GetComponent<HeadsUpDisplay>();
-        gsh = GetComponent<GameStateHandler>();
+        stateHandler = GetComponent<GameStateHandler>();
 
-        playerAudio = GetComponent<AudioSource>();
+        audio = GetComponent<AudioSource>();
 
         base.Awake();
     }
 
     public GameState PlayerState()
     {
-        return gsh.CurrentState();
+        return stateHandler.CurrentState();
     }
 
     public override void Destroy()
@@ -64,25 +64,25 @@ public class PlayerHandler : Character
 
     public void Die()
     {
-        ph.values.current = 0;
+        health.values.current = 0;
         movement.rb.constraints = RigidbodyConstraints.None;
         movement.enabled = false;
-        wh.CurrentWeapon().enabled = false;
-        wh.enabled = false;
-        gsh.FailGame();
+        weapons.CurrentWeapon().enabled = false;
+        weapons.enabled = false;
+        stateHandler.FailGame();
     }
 
-    public void Respawn(int health, Vector3 position)
+    public void Respawn(int newHealth, Vector3 position)
     {
-        ph.values.current = health;
+        health.values.current = newHealth;
         transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
         transform.position = position;
 
         movement.rb.constraints = RigidbodyConstraints.FreezeRotation;
         movement.enabled = true;
-        wh.CurrentWeapon().enabled = true;
-        wh.enabled = true;
-        gsh.ResumeGame();
+        weapons.CurrentWeapon().enabled = true;
+        weapons.enabled = true;
+        stateHandler.ResumeGame();
     }
     
 }

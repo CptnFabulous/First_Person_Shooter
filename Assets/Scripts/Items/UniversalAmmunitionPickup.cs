@@ -8,7 +8,7 @@ public class UniversalAmmunitionPickup : ItemPickup
 
     public override void Pickup(PlayerHandler ph)
     {
-        AmmunitionInventory ai = ph.a;
+        AmmunitionInventory ai = ph.ammo;
         if (ai != null)
         {
             bool hasBeenConsumed = false;

@@ -51,8 +51,8 @@ public class Gun : MonoBehaviour
     [HideInInspector] public bool isAiming;
     [HideInInspector] public float zoomVariable;
     [HideInInspector] public float zoomTimer;
-    [HideInInspector] public PercentageModifier sensitivityWhileAiming;
-    [HideInInspector] public PercentageModifier speedWhileAiming;
+    [HideInInspector] public PercentageModifier sensitivityWhileAiming = new PercentageModifier(0, true, false);
+    [HideInInspector] public PercentageModifier speedWhileAiming = new PercentageModifier();
     float adsTimer;
 
     // Additional recoil stats
@@ -126,9 +126,9 @@ public class Gun : MonoBehaviour
                 {
                     f.magazine.data.current = 0;
                 }
-                else if (playerHolding.ph.a.GetStock(f.general.ammoType) < f.magazine.data.max)
+                else if (playerHolding.handler.ammo.GetStock(f.general.ammoType) < f.magazine.data.max)
                 {
-                    f.magazine.data.current = playerHolding.ph.a.GetStock(f.general.ammoType);
+                    f.magazine.data.current = playerHolding.handler.ammo.GetStock(f.general.ammoType);
                 }
                 else
                 {
@@ -142,10 +142,8 @@ public class Gun : MonoBehaviour
     {
         playerHolding = GetComponentInParent<WeaponHandler>();
 
-        sensitivityWhileAiming = new PercentageModifier(0, true, false);
-        playerHolding.ph.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
-        speedWhileAiming = new PercentageModifier();
-        playerHolding.ph.movement.movementSpeed.Add(speedWhileAiming, this);
+        playerHolding.handler.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
+        playerHolding.handler.movement.movementSpeed.Add(speedWhileAiming, this);
 
         AssignFiringModes(firingModeIndex);
 
@@ -186,40 +184,32 @@ public class Gun : MonoBehaviour
             // If burst count has not exceeded the limit OR there is no burst limit
             // If ammo is available OR not required
             // If magazine is not empty OR null
-            if (playerHolding.ph.PlayerState() == GameState.Active
+            if (playerHolding.handler.PlayerState() == GameState.Active
                 && Input.GetButton("Fire")
                 && fireControls.fireTimer >= 60 / fireControls.roundsPerMinute
                 && (fireControls.burstCounter < fireControls.maxBurst || fireControls.maxBurst <= 0)
-                && (general.consumesAmmo == false || (playerHolding.ph.a.GetStock(general.ammoType) >= general.ammoPerShot))
+                && (general.consumesAmmo == false || (playerHolding.handler.ammo.GetStock(general.ammoType) >= general.ammoPerShot))
                 && (magazine == null || (magazine.data.current >= general.ammoPerShot && reloading == null)))
             {
                 CancelReloadSequence();
 
-                #region Adjust fire control variables
                 fireControls.fireTimer = 0; // Reset fire timer to count up to next shot
                 fireControls.burstCounter += 1;
-                #endregion
 
-                #region Consume ammo
                 if (general.consumesAmmo == true)
                 {
-                    playerHolding.ph.a.Spend(general.ammoType, general.ammoPerShot);
+                    playerHolding.handler.ammo.Spend(general.ammoType, general.ammoPerShot);
                 }
-                #endregion
 
-                #region Deplete magazine if present
                 if (magazine != null)
                 {
                     magazine.data.current -= general.ammoPerShot;
                 }
-                #endregion
 
-                #region Apply recoil
                 recoilToApply += general.recoil;
-                #endregion
 
                 #region Calculate and fire shot
-                Transform head = playerHolding.ph.movement.head;
+                Transform head = playerHolding.handler.movement.head;
                 Vector3 aimDirection = head.forward;
                 if (optics == null || isAiming == false)
                 {
@@ -227,14 +217,13 @@ public class Gun : MonoBehaviour
                     aimDirection = Quaternion.Euler(Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy), Random.Range(-accuracy, accuracy)) * aimDirection;
                 }
 
-                //Damage.ShootProjectile(general.projectilePrefab, general.projectileCount, general.projectileSpread, general.range, playerHolding.ph, head.position, aimDirection, head.up, general.muzzle.position);
-                general.Shoot(playerHolding.ph, head.position, aimDirection, head.up);
+                general.Shoot(playerHolding.handler, head.position, aimDirection, head.up);
                 #endregion
 
                 #region Send attack message if the timer is right
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
-                    AttackMessage am = AttackMessage.Ranged(playerHolding.ph, transform.position, transform.forward, general.range, general.projectilePrefab.diameter, playerHolding.standingAccuracy.Calculate() + general.projectileSpread, general.projectilePrefab.velocity, general.projectilePrefab.hitDetection);
+                    AttackMessage am = AttackMessage.Ranged(playerHolding.handler, transform.position, transform.forward, general.range, general.projectilePrefab.diameter, playerHolding.standingAccuracy.Calculate() + general.projectileSpread, general.projectilePrefab.velocity, general.projectilePrefab.hitDetection);
                     EventObserver.TransmitAttack(am);
                     attackMessageLimitTimer = 0;
                 }
@@ -299,7 +288,6 @@ public class Gun : MonoBehaviour
 
         isSwitchingFireMode = false;
     }
-
     public IEnumerator Draw()
     {
         isSwitchingWeapon = true;
@@ -321,7 +309,6 @@ public class Gun : MonoBehaviour
         // End sequence
         isSwitchingWeapon = false;
     }
-
     public IEnumerator Holster()
     {
         isSwitchingWeapon = true;
@@ -349,7 +336,6 @@ public class Gun : MonoBehaviour
         gameObject.SetActive(false);
         isSwitchingWeapon = false;
     }
-
     void AssignFiringModes(int index)
     {
         general = firingModes[index].general;
@@ -369,7 +355,7 @@ public class Gun : MonoBehaviour
             {
                 rd.Normalize();
             }
-            playerHolding.ph.movement.LookAngle(r * rd); // Add recoil
+            playerHolding.handler.movement.LookAngle(r * rd); // Add recoil
             recoilToApply -= r;
         }
         else if (!Input.GetButton("Fire")) // Return recoil using recoil recovery float
@@ -390,39 +376,30 @@ public class Gun : MonoBehaviour
             return;
         }
 
-        if (playerHolding.toggleAim == true)
+        if (playerHolding.toggleAim == true && Input.GetButtonDown("MouseRight"))
         {
-            if (Input.GetButtonDown("MouseRight"))
-            {
-                isAiming = !isAiming;
-            }
+            isAiming = !isAiming;
         }
         else
         {
-            if (Input.GetButton("MouseRight"))
-            {
-                isAiming = true;
-            }
-            else
-            {
-                isAiming = false;
-            }
+            isAiming = Input.GetButton("MouseRight");
         }
 
         if (isAiming)
         {
             adsTimer += Time.deltaTime / optics.transitionTime;
+
+
         }
         else
         {
             adsTimer -= Time.deltaTime / optics.transitionTime;
         }
         adsTimer = Mathf.Clamp01(adsTimer);
-
         LerpADS(adsTimer);
 
         // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
-        Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
+       // Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
     }
 
     void LerpADS(float timer)
@@ -432,7 +409,7 @@ public class Gun : MonoBehaviour
             return;
         }
         
-        PlayerController pc = playerHolding.ph.movement;
+        PlayerController pc = playerHolding.handler.movement;
 
         // Change FOV for zoom (update later to use variablevaluefloat)
         float defaultFOV = pc.fieldOfView.defaultValue;
@@ -451,7 +428,7 @@ public class Gun : MonoBehaviour
         wmt.rotation = Quaternion.Lerp(general.heldPosition.rotation, relativeRotation, timer);
 
         // Toggle overlay
-        playerHolding.ph.hud.ADSTransition(timer, optics.scopeGraphic);
+        playerHolding.handler.hud.ADSTransition(timer, optics.scopeGraphic);
     }
 
     void CancelADSInstantly()
@@ -463,42 +440,6 @@ public class Gun : MonoBehaviour
         LerpADS(0);
     }
 
-    IEnumerator CancelADS()
-    {
-        float timer = 1;
-        while (timer > 0)
-        {
-            timer -= Time.deltaTime / optics.transitionTime;
-
-            LerpADS(timer);
-
-            yield return new WaitForEndOfFrame();
-        }
-
-
-    }
-    
-
-
-    IEnumerator EnableOrDisableADS(bool enabled)
-    {
-        float timer = 0;
-
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / optics.transitionTime;
-
-            float t = timer;
-            if (enabled == false)
-            {
-                t = 1 / timer;
-            }
-
-            LerpADS(t);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
 
 
     #endregion
@@ -561,7 +502,7 @@ public class Gun : MonoBehaviour
 
     int RemainingAmmo()
     {
-        return playerHolding.ph.a.GetStock(general.ammoType) - magazine.data.current;
+        return playerHolding.handler.ammo.GetStock(general.ammoType) - magazine.data.current;
     }
     #endregion
 
@@ -623,7 +564,7 @@ public class Gun : MonoBehaviour
 
     public void PickUp(PlayerHandler ph)
     {
-        playerHolding = ph.wh;
+        playerHolding = ph.weapons;
         transform.SetParent(playerHolding.defaultHoldingPosition);
         GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = false;

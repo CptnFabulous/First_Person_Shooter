@@ -15,13 +15,13 @@ public class AmmunitionRefillInteractable : Interactable
     {
         base.OnInteract(ph);
 
-        ph.a.Collect(ammoData.ammoType, ammoData.amount);
+        ph.ammo.Collect(ammoData.ammoType, ammoData.amount);
     }
 
     // Checks if the player is capable of carrying this ammunition, and that they have empty space to carry it.
     public override bool CanPlayerInteract(PlayerHandler ph)
     {
-        AmmunitionInventory ai = ph.a;
+        AmmunitionInventory ai = ph.ammo;
         if (ai != null && ai.GetStock(ammoData.ammoType) < ai.GetMax(ammoData.ammoType))
         {
             return true;

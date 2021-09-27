@@ -45,7 +45,7 @@ public class Ragdoll : MonoBehaviour
 
     void SetActive(bool active)
     {
-        Debug.Log("Setting ragdoll state to " + active);
+        //Debug.Log("Setting ragdoll state to " + active);
         for (int i = 0; i < colliders.Length; i++)
         {
             // If the ragdoll is activated, or if it's deactivated but disableCollidersWhenDisabled is false, activate the collider.

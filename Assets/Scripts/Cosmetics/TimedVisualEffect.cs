@@ -10,11 +10,20 @@ public abstract class TimedVisualEffect : MonoBehaviour
     public bool directControl;
     public bool playOnEnable;
     
-
+    [Range(0, 1)]
     public float timer = 0;
     bool isPaused = true;
-    
-    
+    /*
+    private void OnValidate()
+    {
+        Effect();
+    }
+    */
+    public virtual void Awake()
+    {
+
+    }
+
     // Update is called once per frame
     public void Update()
     {

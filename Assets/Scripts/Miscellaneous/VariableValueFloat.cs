@@ -140,6 +140,8 @@ public class VariableValueFloat
 
     public void Add(PercentageModifier pm, MonoBehaviour origin)
     {
+        
+        
         pm.origin = origin;
         influencingPercentages.Add(pm);
     }

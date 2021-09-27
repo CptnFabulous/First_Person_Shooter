@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [Header("General")]
     public Transform head;
     public Transform torso;
+    public Transform lookDirectionTransform;
+    public Transform aimDirectionTransform;
     public Camera playerCamera;
     [HideInInspector] public Rigidbody rb;
     CapsuleCollider cc;
@@ -131,7 +133,6 @@ public class PlayerController : MonoBehaviour
         {
             return moveInput;
         }
-        
     }
 
     // Figure out how far the player has moved since the last frame, and in what direction
@@ -263,7 +264,77 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CosmeticUpdate();
+        Vector3 torsoPosition = Vector3.zero;
+        Vector3 torsoRotationAxes = Vector3.zero;
+
+        #region Bobbing and footsteps
+        Vector2 moveInputValue = moveInput;
+        if (moveInputValue.magnitude > 0 && IsGrounded) // If player is walking
+        {
+            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
+            float time = bobLoopTime / speedMagnitude;
+
+
+            bobTimer += Time.deltaTime / time;
+            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
+
+            //if (bobTimer >= )
+
+            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
+
+            Vector3 bodyPosition = new Vector3(bobX, bobY, 0);
+            torsoPosition += bodyPosition;
+
+
+        }
+        else
+        {
+            bobTimer = 0;
+        }
+        #endregion
+
+        #region Drag
+        //Vector3 velocity = DeltaMoveDistance();
+        //float speed = velocity.magnitude / Time.deltaTime;
+        Vector3 velocity = rb.velocity;
+        float speed = velocity.magnitude;
+        float dragIntensity = Mathf.Clamp01(speed / speedForMaxDrag);
+        Vector3 direction = transform.InverseTransformDirection(velocity);
+        Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
+        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
+        torsoPosition += dragValue;
+
+        #endregion
+
+        #region Sway
+        float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
+        Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
+        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
+        torsoRotationAxes += swayAxes;
+        #endregion
+
+        #region Update position
+        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
+        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
+        #endregion
+
+        #region Update rotation
+
+        //Vector3 v = new Vector3(torso.lo)
+
+        Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
+
+        //Vector3 torsoCurrentAngles = torso.localEulerAngles;
+
+
+        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
+        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
+        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
+        #endregion
+
+
+
 
         positionLastFrame = transform.position;
         headDirectionLastFrame = head.transform.forward;
@@ -371,77 +442,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Cosmetics
-    void CosmeticUpdate()
-    {
-        Vector3 torsoPosition = Vector3.zero;
-        Vector3 torsoRotationAxes = Vector3.zero;
-
-        #region Bobbing and footsteps
-        Vector2 moveInputValue = moveInput;
-        if (moveInputValue.magnitude > 0 && IsGrounded)
-        {
-            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
-            float time = bobLoopTime / speedMagnitude;
-
-
-            bobTimer += Time.deltaTime / time;
-            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
-
-            //if (bobTimer >= )
-
-            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-
-            Vector3 bodyPosition = new Vector3(bobX, bobY, 0);
-            torsoPosition += bodyPosition;
-
-            
-        }
-        else
-        {
-            bobTimer = 0;
-        }
-        #endregion
-
-        #region Drag
-        //Vector3 velocity = DeltaMoveDistance();
-        //float speed = velocity.magnitude / Time.deltaTime;
-        Vector3 velocity = rb.velocity;
-        float speed = velocity.magnitude;
-        float dragIntensity = Mathf.Clamp01(speed / speedForMaxDrag);
-        Vector3 direction = transform.InverseTransformDirection(velocity);
-        Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
-        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
-        torsoPosition += dragValue;
-
-        #endregion
-
-        #region Sway
-        float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
-        Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
-        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
-        torsoRotationAxes += swayAxes;
-        #endregion
-
-        #region Update position
-        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
-        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
-        #endregion
-
-        #region Update rotation
-
-        //Vector3 v = new Vector3(torso.lo)
-
-        Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
-
-        //Vector3 torsoCurrentAngles = torso.localEulerAngles;
-
-
-        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
-        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
-        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
-        #endregion
-    }
+    
 
     /* // A guy named Willis on Discord gave me this code. It doesn't do the exact thing I want but it might be helpful anyway.
 
