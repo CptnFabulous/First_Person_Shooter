@@ -47,8 +47,18 @@ public class PlayerController : MonoBehaviour
     public PercentageModifier crouchSpeedModifier;
     Vector2 moveInput;
     Vector3 movementValue;
-
     Vector3 positionLastFrame;
+
+    // Cosmetics
+    public Vector2 bobExtents;
+    public AnimationCurve bobCurveX;
+    public AnimationCurve bobCurveY;
+    public float stepCycleTime = 1;
+    public int stepsPerCycle = 2;
+    public UnityEvent onStep;
+    float walkCycleTimer;
+    float stepTimer;
+
     #endregion
 
     #region Jumping
@@ -56,10 +66,11 @@ public class PlayerController : MonoBehaviour
     public float forceJump = 5;
     public float jumpDelay = 0.1f;
     public float groundedRayLength = 0.01f;
-
     bool willJump;
     float jumpTimer = float.MaxValue;
     LayerMask terrainDetection;
+
+    // Cosmetics
     public UnityEvent onJump;
     public UnityEvent onLand;
     #endregion
@@ -72,70 +83,49 @@ public class PlayerController : MonoBehaviour
     public float crouchHeadHeight = 0.8f;
     public float crouchTime = 0.25f;
     public bool toggleCrouch;
-
     float crouchTimer;
     [HideInInspector] public bool isCrouching;
+
+    // Cosmetics
     public UnityEvent onCrouch;
     public UnityEvent onStand;
     #endregion
 
     #region Cosmetics
 
-    [Header("Cosmetics - General")]
-
-    public float torsoTranslateSpeed = 1;
-    public float torsoTranslateTime = 1;
-    public float torsoRotateSpeed = 1;
-    public float torsoRotateTime = -0.1f;
-
-
-    [Header("Cosmetics - Walking")]
-    // Head bobbing while walking
-    public float bobLoopTime;
-    public Vector2 bobExtents;
-    public AnimationCurve bobCurveX;
-    public AnimationCurve bobCurveY;
-    float bobTimer;
-    public int numberOfLegsForSteps = 2;
-    public UnityEvent onStep;
-
-    [Header("Cosmetics - Torso Drag")]
+    [Header("Cosmetics - Drag and Sway")]
+    
     // Torso lingering/dragging when moving
     public float upperBodyDragDistance;
     public float speedForMaxDrag;
 
-    [Header("Cosmetics - Torso Sway")]
+
     // Torso swaying/dragging when looking around
     public float lookSwayDegrees;
     public float speedForMaxSway;
+
+    [Header("Cosmetics - Return to default position and rotation")]
+    public float torsoResetPositionSpeed = 1;
+    //public float torsoResetPositionTime = 1;
+    public float torsoResetRotationSpeed = 1;
+    //public float torsoResetRotationTime = -0.1f;
+    
+    Vector3 torsoPosition;
+    Vector3 torsoRotationAxes;
+
     #endregion
 
     #region Info on player movement
-    // Is the player standing on solid ground, or are they airborne?
-    bool IsGrounded
-    {
-        get
-        {
-            // Casts a ray to determine if the player is standing on solid ground.
-            Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-            if (Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection))
-            {
-                return true;
-            }
-            return false;
-        }
-    }
+    
 
-    // In what direction is the player intending to move?
+
     public Vector2 MoveDirection
     {
         get
         {
             return moveInput;
         }
-    }
-
-    // Figure out how far the player has moved since the last frame, and in what direction
+    } // In what direction is the player intending to move?
     Vector3 DeltaMoveDistance
     {
         get
@@ -145,9 +135,7 @@ public class PlayerController : MonoBehaviour
             v *= Vector3.Distance(transform.position, positionLastFrame);
             return v;
         }
-    }
-
-    // Figure out how far the player's rotation has changed since the last frame, and in what direction
+    } // Figure out how far the player has moved since the last frame, and in what direction
     float DeltaRotateDistance
     {
         get
@@ -155,9 +143,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Old: " + headDirectionLastFrame + " New: " + head.transform.forward);
             return Vector3.Angle(headDirectionLastFrame, head.transform.forward);
         }
-    }
-
-    // In what direction is the player turning?
+    } // Figure out how far the player's rotation has changed since the last frame, and in what direction
     public Vector2 DeltaRotateDirection
     {
         get
@@ -174,7 +160,33 @@ public class PlayerController : MonoBehaviour
             return new Vector2(direction.x, direction.y).normalized;
             // Now I have a direction value. I just need to convert it to be relative to the transform's head.
         }
+    } // In what direction is the player turning?
+
+    // Is the player standing on solid ground, or are they airborne?
+    void CheckGrounding()
+    {
+        // Casts a ray to determine if the player is standing on solid ground.
+        Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+        isGrounded = Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection);
+
+        // If there is a mismatch, this means the player's grounded state has changed.
+        if (wasGrounded != isGrounded)
+        {
+            if (wasGrounded == true) // Player has left the ground
+            {
+
+            }
+            else // Player has landed
+            {
+                onLand.Invoke();
+            }
+
+            wasGrounded = isGrounded;
+        }
     }
+    bool isGrounded;
+    bool wasGrounded;
+
     #endregion
 
     void OnValidate()
@@ -205,47 +217,51 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canMove == true)
+        CheckGrounding();
+        
+        if (canMove == false)
         {
-            #region Camera
-            if (canLook == true)
-            {
-                float cameraInputX = Input.GetAxis("MouseX") * sensitivityModifier.Calculate() * sensitivityX * Time.deltaTime;
-                float cameraInputY = Input.GetAxis("MouseY") * sensitivityModifier.Calculate() * sensitivityY * Time.deltaTime;
-                LookAngle(new Vector2(cameraInputX, cameraInputY));
-            }
-            #endregion
-
-            #region Crouching
-            CrouchHandler();
-            #endregion
-
-            #region Movement
-            moveInput.x = Input.GetAxis("Horizontal"); // Set to AD keys or analog stick.
-            moveInput.y = Input.GetAxis("Vertical"); // Set to WS keys or analog stick.
-            if (moveInput.magnitude > 1)
-            {
-                moveInput.Normalize(); // Prevent movement input from going past 1. This ensures that players cannot go faster than the normal movement speed.
-            }
-
-            float speed = movementSpeed.Calculate();
-            movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed);
-            movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
-            #endregion
-
-            #region Jumping
-            jumpTimer += Time.deltaTime;
-            if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && IsGrounded == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
-            {
-                if (isCrouching == true)
-                {
-                    isCrouching = false;
-                }
-                
-                willJump = true;
-            }
-            #endregion
+            return;
         }
+
+        #region Camera
+        if (canLook == true)
+        {
+            float cameraInputX = Input.GetAxis("MouseX") * sensitivityX;
+            float cameraInputY = Input.GetAxis("MouseY") * sensitivityY;
+            LookAngle(new Vector2(cameraInputX, cameraInputY) * sensitivityModifier.Calculate() * Time.deltaTime);
+        }
+        #endregion
+
+        #region Crouching
+        CrouchHandler();
+        #endregion
+
+        #region Movement
+        moveInput.x = Input.GetAxis("Horizontal"); // Set to AD keys or analog stick.
+        moveInput.y = Input.GetAxis("Vertical"); // Set to WS keys or analog stick.
+        if (moveInput.magnitude > 1)
+        {
+            moveInput.Normalize(); // Prevent movement input from going past 1. This ensures that players cannot go faster than the normal movement speed.
+        }
+
+        float speed = movementSpeed.Calculate();
+        movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed);
+        movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
+        #endregion
+
+        #region Jumping
+        jumpTimer += Time.deltaTime;
+        if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && isGrounded == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
+        {
+            if (isCrouching == true)
+            {
+                isCrouching = false;
+            }
+
+            willJump = true;
+        }
+        #endregion
     }
 
     void FixedUpdate()
@@ -257,88 +273,13 @@ public class PlayerController : MonoBehaviour
             rb.velocity += transform.up * forceJump;
             willJump = false;
             jumpTimer = 0;
+            onJump.Invoke();
         }
 
         //rb.AddForce(Physics.gravity * rb.mass);
     }
 
-    private void LateUpdate()
-    {
-        Vector3 torsoPosition = Vector3.zero;
-        Vector3 torsoRotationAxes = Vector3.zero;
-
-        #region Bobbing and footsteps
-        Vector2 moveInputValue = moveInput;
-        if (moveInputValue.magnitude > 0 && IsGrounded) // If player is walking
-        {
-            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
-            float time = bobLoopTime / speedMagnitude;
-
-
-            bobTimer += Time.deltaTime / time;
-            bobTimer = Misc.InverseClamp(bobTimer, 0, 1);
-
-            //if (bobTimer >= )
-
-            float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-            float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(bobTimer)) * moveInputValue.magnitude * speedMagnitude;
-
-            Vector3 bodyPosition = new Vector3(bobX, bobY, 0);
-            torsoPosition += bodyPosition;
-
-
-        }
-        else
-        {
-            bobTimer = 0;
-        }
-        #endregion
-
-        #region Drag
-        //Vector3 velocity = DeltaMoveDistance();
-        //float speed = velocity.magnitude / Time.deltaTime;
-        Vector3 velocity = rb.velocity;
-        float speed = velocity.magnitude;
-        float dragIntensity = Mathf.Clamp01(speed / speedForMaxDrag);
-        Vector3 direction = transform.InverseTransformDirection(velocity);
-        Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
-        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
-        torsoPosition += dragValue;
-
-        #endregion
-
-        #region Sway
-        float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
-        Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
-        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
-        torsoRotationAxes += swayAxes;
-        #endregion
-
-        #region Update position
-        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
-        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
-        #endregion
-
-        #region Update rotation
-
-        //Vector3 v = new Vector3(torso.lo)
-
-        Vector3 torsoCurrentAngles = new Vector3(torso.localRotation.x, torso.localRotation.y, torso.localRotation.z);
-
-        //Vector3 torsoCurrentAngles = torso.localEulerAngles;
-
-
-        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
-        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
-        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
-        #endregion
-
-
-
-
-        positionLastFrame = transform.position;
-        headDirectionLastFrame = head.transform.forward;
-    }
+    
 
     #region Camera control functions
     public void LookAngle(Vector2 cameraInput) // This variable is public so it can be altered by other sources such as gun recoil
@@ -442,7 +383,117 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Cosmetics
-    
+    private void LateUpdate()
+    {
+        torsoPosition = Vector3.zero;
+        torsoRotationAxes = Vector3.zero;
+
+        WalkCycle();
+        TorsoDrag();
+        TorsoSway();
+
+        #region Update position and rotation of torso to match drag and sway values
+
+
+        if (torsoPosition.magnitude > 0)
+        {
+            torso.localPosition = torsoPosition;
+        }
+        else
+        {
+            torso.localPosition = Vector3.MoveTowards(torso.localPosition, torsoPosition, torsoResetPositionSpeed * Time.deltaTime);
+        }
+
+        Quaternion torsoRotation = Quaternion.Euler(torsoRotationAxes);
+        if (Quaternion.Angle(Quaternion.identity, torsoRotation) > 0)
+        {
+            torso.localRotation = torsoRotation;
+        }
+        else
+        {
+            torso.localRotation = Quaternion.RotateTowards(torso.localRotation, torsoRotation, torsoResetRotationSpeed * Time.deltaTime);
+        }
+
+        
+        
+        //Debug.Log(torsoRotationAxes + ", " + torso.localEulerAngles);
+
+        /*
+        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
+        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
+
+        Vector3 torsoCurrentAngles = torso.localEulerAngles;
+        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
+        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
+        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
+        */
+        #endregion
+
+        positionLastFrame = transform.position;
+        headDirectionLastFrame = head.transform.forward;
+    }
+
+
+
+
+    void WalkCycle()
+    {
+        Vector2 moveInputValue = moveInput;
+        if (moveInputValue.magnitude > 0 && isGrounded) // If player is walking
+        {
+            // Calculate timer for step cycle and bobbing animation
+            float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
+            float timeToAdd = Time.deltaTime / (stepCycleTime / speedMagnitude);
+            
+
+            walkCycleTimer += timeToAdd; // Counts up bobTimer with a value based on walk cycle time and current movement speed
+            walkCycleTimer = Misc.InverseClamp(walkCycleTimer, 0, 1); // If timer exceeds one, revert to zero
+
+            // Calculate bob axis values (unclamped lerp is used so values return as -1 to 1)
+            //float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(walkCycleTimer));
+            //float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(walkCycleTimer));
+            float bobX = bobCurveX.Evaluate(walkCycleTimer) * bobExtents.x;
+            float bobY = bobCurveY.Evaluate(walkCycleTimer) * bobExtents.y;
+            Vector3 bodyPosition = new Vector3(bobX, bobY, 0) * moveInputValue.magnitude * speedMagnitude;
+            torsoPosition += bodyPosition;
+
+
+            // Separate timer for counting up individual steps
+            stepTimer += timeToAdd;
+            if (stepTimer >= 1f / stepsPerCycle)
+            {
+                stepTimer = 0;
+                onStep.Invoke();
+            }
+        }
+        else if (isCrouching == false)
+        {
+            // If the player is standing normally but has stopped moving, reset walk and step timers.
+            walkCycleTimer = 0;
+            stepTimer = 0;
+        }
+    }
+    void TorsoDrag()
+    {
+        Vector3 velocity = rb.velocity;
+        float speed = velocity.magnitude;
+        float dragIntensity = Mathf.Clamp01(speed / speedForMaxDrag);
+        Vector3 direction = transform.InverseTransformDirection(velocity);
+        Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
+        Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
+        torsoPosition += dragValue;
+    }
+    void TorsoSway()
+    {
+        float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
+        Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
+        swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
+        torsoRotationAxes += swayAxes;
+    }
+
+
+
+
 
     /* // A guy named Willis on Discord gave me this code. It doesn't do the exact thing I want but it might be helpful anyway.
 

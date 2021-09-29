@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(AmmunitionInventory))]
@@ -27,6 +28,8 @@ public class WeaponHandler : MonoBehaviour
 
     [Header("Switching")]
     public RadialMenu weaponSelector;
+    public UnityEvent onHolsterWeapon;
+    public UnityEvent onDrawWeapon;
 
     #region Method variables
     
@@ -58,10 +61,6 @@ public class WeaponHandler : MonoBehaviour
     {
         handler = GetComponent<PlayerHandler>();
         standingAccuracy.defaultValue = Mathf.Clamp(standingAccuracy.defaultValue, 0, 180);
-
-
-
-        
     }
 
     // Start is called before the first frame update
@@ -84,7 +83,7 @@ public class WeaponHandler : MonoBehaviour
 
         if (weaponSelector.MenuIsActive)
         {
-            int wheelIndex = weaponSelector.ReturnIndex;
+            int wheelIndex = weaponSelector.CurrentlySelected;
 
             int weaponIndex = 0;
             int firingModeIndex = 0;
@@ -167,43 +166,41 @@ public class WeaponHandler : MonoBehaviour
         {
             yield break;
         }
-
+        
         // Clamp indexes to ensure they always switch to a proper weapon and firing mode
         weaponIndex = Mathf.Clamp(weaponIndex, 0, equippedWeapons.Length - 1);
         firingModeIndex = Mathf.Clamp(firingModeIndex, 0, equippedWeapons[weaponIndex].firingModes.Length);
 
-        // Check if the firing mode is actually different
+        // If the new weapon is different from the old one, switch
         if (equippedWeapons[weaponIndex] != equippedWeapons[currentWeaponIndex])
         {
             IsSwitchingWeapon = true;
 
+            // Holster all currently active weapons (in case for some reason there are multiple active)
             for (int i = 0; i < equippedWeapons.Length; i++)
             {
-                Gun rw = equippedWeapons[i];
-
                 if (equippedWeapons[i].gameObject.activeSelf == true)
                 {
-                    StartCoroutine(rw.Holster());
+                    StartCoroutine(equippedWeapons[i].Holster());
                 }
             }
+            onHolsterWeapon.Invoke();
 
             yield return new WaitUntil(() => AllOtherWeaponsHolstered());
 
             StartCoroutine(equippedWeapons[weaponIndex].Draw());
             currentWeaponIndex = weaponIndex;
+            onDrawWeapon.Invoke();
 
             yield return new WaitUntil(() => equippedWeapons[weaponIndex].isSwitchingWeapon == false);
 
             IsSwitchingWeapon = false;
-            //print("Weapon switch finished");
         }
 
         if (equippedWeapons[weaponIndex].firingModeIndex != firingModeIndex)
         {
             StartCoroutine(equippedWeapons[weaponIndex].SwitchMode(firingModeIndex));
         }
-
-
     }
 
     IEnumerator SwitchWeapon(int index)

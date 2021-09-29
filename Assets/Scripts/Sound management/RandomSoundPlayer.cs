@@ -12,10 +12,34 @@ public class RandomSoundPlayer : ScriptableObject
     public float maxPitchVariance = 1;
     public float delay;
 
-    public void Play(AudioSource source)
+    WaitForSeconds delayYield;
+
+    public void PlayWithoutDelay(AudioSource source)
     {
         source.pitch = Random.Range(minPitchVariance, maxPitchVariance);
-        source.clip = sounds[Random.Range(0, sounds.Length - 1)];
-        source.PlayDelayed(delay);
+        int index = Random.Range(0, sounds.Length - 1);
+        //Debug.Log("Playing sound clip " + sounds[index].name);
+        source.PlayOneShot(sounds[index]);
+    }
+
+    public void PlayWithDelay(AudioSource source)
+    {
+
+        //source.clip = sounds[index];
+        //source.PlayDelayed(delay);
+        MonoBehaviour behaviourToRunFrom = source.GetComponent<MonoBehaviour>();
+        behaviourToRunFrom.StartCoroutine(DelayPlay(source));
+    }
+
+    public IEnumerator DelayPlay(AudioSource source)
+    {
+        if (delayYield == null)
+        {
+            delayYield = new WaitForSeconds(delay);
+        }
+        yield return delayYield;
+
+
+        PlayWithoutDelay(source);
     }
 }

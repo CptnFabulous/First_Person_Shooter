@@ -5,6 +5,14 @@ using UnityEngine.UI;
 
 public class RadialMenu : MonoBehaviour
 {
+    [Header("Input")]
+    public string buttonName;
+    public bool toggleInput;
+    public float mouseThreshold;
+    public Dropdown.DropdownEvent onValueChanged;
+    public Dropdown.DropdownEvent onValueConfirmed;
+    Vector3 relativeInputPosition;
+
     [Header("GUI")]
     public Image iconPrefab;
     public Transform cursorAxis;
@@ -21,14 +29,10 @@ public class RadialMenu : MonoBehaviour
     Image[] wheelIcons = new Image[0];
     bool isActive;
 
-    [Header("Input")]
-    public string buttonName;
-    public bool toggleInput;
-    public float mouseThreshold;
-    Vector3 relativeInputPosition;
+    
 
     #region Variables
-    public int ReturnIndex // Gets the radial menu's current index
+    public int CurrentlySelected // Gets the radial menu's current index
     {
         get
         {

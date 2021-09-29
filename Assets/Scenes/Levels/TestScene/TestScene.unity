@@ -2342,21 +2342,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1175758759164977600, guid: 6a725b69059f11b43978995fbc004e4a,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a725b69059f11b43978995fbc004e4a, type: 3}
 --- !u!4 &397173177 stripped
@@ -8663,6 +8648,7 @@ MonoBehaviour:
   magnification: 4
   transitionTime: 0.25
   moveSpeedReductionPercentage: -40
+  aimSwaySpeed: 1
   aimPosition: {fileID: 9134199385696851038}
   sightLine: {fileID: 1825637512}
   scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
@@ -35230,6 +35216,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7394104395992576404, guid: 35eecb15e9bff8a43a236341dcd99101,
+        type: 3}
+      propertyPath: torsoResetRotationSpeed
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7394104395992576405, guid: 35eecb15e9bff8a43a236341dcd99101,
         type: 3}
