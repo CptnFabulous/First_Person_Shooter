@@ -36,23 +36,15 @@ public class InteractFunction : MonoBehaviour
     void Update()
     {
         Interactable i = LookingAt();
+        // Update the tooltip window based off if the player is looking at something interactable
+        playerHandler.hud.PopulateInteractionMenu(i);
 
-        // If the player is looking at something interactable, display the tooltip window.
-        if (i != null)
+        // If the player presses the interact button
+        // If the player can currently interact with the object
+        // If the object is not cooling down or in the middle of performing an action
+        if (i != null && Input.GetButtonDown("Interact") && i.CanPlayerInteract(playerHandler) == true && i.InProgress == false)
         {
-            playerHandler.hud.PopulateInteractionMenu(i);
-
-            // If the player presses the interact button
-            // If the player can currently interact with the object
-            // If the object is not cooling down or in the middle of performing an action
-            if (Input.GetButtonDown("Interact") && i.CanPlayerInteract(playerHandler) == true && i.InProgress == false)
-            {
-                i.OnInteract(playerHandler);
-            }
-        }
-        else
-        {
-            playerHandler.hud.HideInteractionMenu();
+            i.OnInteract(playerHandler);
         }
     }
 }

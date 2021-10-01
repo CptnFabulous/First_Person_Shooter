@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AIEntity : MonoBehaviour//, ILogHandler
 {
-    [HideInInspector] public NpcHealth hp;
+    [HideInInspector] public Health hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
@@ -66,7 +66,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     {
         lookDirectionQuaternion = head.transform.rotation;
         aiStateMachine = GetComponent<Animator>();
-        hp = GetComponent<NpcHealth>();
+        hp = GetComponent<Health>();
         na = GetComponent<NavMeshAgent>();
         characterData = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();
@@ -184,7 +184,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         {
             // If the AI cannot find their target (out of range or line of sight broken)
             //if (Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange || AIFunction.SimpleLineOfSightCheck(currentTarget.transform.position, LookOrigin, viewDetection) == false)
-            bool lineOfSightBroken = !AIFunction.LineOfSightCheckWithExceptions(currentTarget.transform.position, LookOrigin, viewDetection, characterData.HealthData.hitboxes, currentTarget.HealthData.hitboxes);
+            bool lineOfSightBroken = !AIFunction.LineOfSightCheckWithExceptions(currentTarget.transform.position, LookOrigin, viewDetection, characterData.health.hitboxes, currentTarget.health.hitboxes);
             bool outOfRange = Vector3.Distance(transform.position, currentTarget.transform.position) > pursueRange;
             if (outOfRange || lineOfSightBroken)
             {
@@ -196,7 +196,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
 
             
 
-            if (patienceTimer >= pursuePatience || currentTarget.HealthData == null || currentTarget.HealthData.IsDead)
+            if (patienceTimer >= pursuePatience || currentTarget.health == null || currentTarget.health.IsDead)
             {
                 print("Target out of range, cannot be attacked or is dead");
                 currentTarget = null;

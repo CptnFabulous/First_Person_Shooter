@@ -68,7 +68,7 @@ public class AvoidAttack : AIMovementBehaviour
             if (NavMesh.SamplePosition(randomPosition, out followCheck, ai.na.height * 2, NavMesh.AllAreas))
             {
                 // Checks if the location is safe from the attack
-                if (ai.attackToDodge.IsPositionSafe(followCheck.position, ai.characterData.HealthData.hitboxes) == false)
+                if (ai.attackToDodge.IsPositionSafe(followCheck.position, ai.characterData.health.hitboxes) == false)
                 {
                     // Creates a new path for reference
                     NavMeshPath nmp = new NavMeshPath();

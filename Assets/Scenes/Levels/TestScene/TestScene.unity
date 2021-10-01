@@ -35217,11 +35217,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7394104395992576404, guid: 35eecb15e9bff8a43a236341dcd99101,
-        type: 3}
-      propertyPath: torsoResetRotationSpeed
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 7394104395992576405, guid: 35eecb15e9bff8a43a236341dcd99101,
         type: 3}
       propertyPath: m_Enabled

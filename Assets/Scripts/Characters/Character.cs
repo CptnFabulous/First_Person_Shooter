@@ -6,11 +6,11 @@ using UnityEngine;
 public class Character : Entity
 {
     public Faction faction;
-    public Health HealthData { get; private set; }
+    public Health health { get; private set; }
 
     public virtual void Awake()
     {
-        HealthData = GetComponent<Health>();
+        health = GetComponent<Health>();
     }
 
 

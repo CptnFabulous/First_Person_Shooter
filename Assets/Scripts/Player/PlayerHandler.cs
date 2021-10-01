@@ -7,16 +7,15 @@ public class PlayerHandler : Character
 {
     //public new PlayerHealth HealthData { get; private set; }
     
-    
-    [HideInInspector] public PlayerHealth health;
     [HideInInspector] public PlayerController movement;
     [HideInInspector] public WeaponHandler weapons;
     [HideInInspector] public AmmunitionInventory ammo;
-    [HideInInspector] public HeadsUpDisplay hud;
     [HideInInspector] public GameStateHandler stateHandler;
     [HideInInspector] public AudioSource audio;
+    [Header("Player-specific scripts")]
+    public HeadsUpDisplay hud;
 
-    
+
 
     public override void Awake()
     {
@@ -40,14 +39,15 @@ public class PlayerHandler : Character
 
 
 
-        health = GetComponent<PlayerHealth>();
         movement = GetComponent<PlayerController>();
         weapons = GetComponent<WeaponHandler>();
         ammo = GetComponent<AmmunitionInventory>();
-        hud = GetComponent<HeadsUpDisplay>();
         stateHandler = GetComponent<GameStateHandler>();
 
         audio = GetComponent<AudioSource>();
+
+
+        hud.player = this;
 
         base.Awake();
     }

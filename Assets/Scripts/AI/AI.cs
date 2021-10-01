@@ -24,7 +24,7 @@ public class AI : MonoBehaviour//, IEventObserver
 {
     [Header("References")]
     [HideInInspector] public Animator stateMachine;
-    [HideInInspector] public NpcHealth hp;
+    [HideInInspector] public Health hp;
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
@@ -70,7 +70,7 @@ public class AI : MonoBehaviour//, IEventObserver
     public virtual void Awake()
     {
         stateMachine = GetComponent<Animator>();
-        hp = GetComponent<NpcHealth>();
+        hp = GetComponent<Health>();
         na = GetComponent<NavMeshAgent>();
         characterData = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();

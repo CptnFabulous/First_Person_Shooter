@@ -4,23 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-[RequireComponent(typeof(PlayerHandler))]
 public class HeadsUpDisplay : MonoBehaviour
 {
-    [HideInInspector] public PlayerHandler player;
-
-    public Canvas hudCanvas;
+    public PlayerHandler player;
     public Camera hudCamera;
+    Canvas hudCanvas;
 
     [Header("General elements")]
     public Color resourceNormalColour;
     public Color resourceCriticalColour;
-
-    public LayerMask lookDetection;
-    public float lookRange;
-    public float interactRange;
-
+    
     [Header("Objectives")]
     public Text objectiveList;
 
@@ -47,6 +42,10 @@ public class HeadsUpDisplay : MonoBehaviour
     public ColourTransitionEffect damageFlash;
     public AudioClip damageNoise;
 
+    [Header("Movement elements")]
+    public UnityEvent effectsOnCrouch;
+    public UnityEvent effectsOnStand;
+
     [Header("Reticle/Aiming")]
     public Image reticleCentre;
     public Image reticleUp;
@@ -56,9 +55,8 @@ public class HeadsUpDisplay : MonoBehaviour
     public Color reticleDefaultColour = Color.white;
     public Color allyColour = Color.green;
     public Color enemyColour = Color.red;
-
-    public ColourTransitionEffect opticsOverlay;
-    public ColourTransitionEffect opticsTransition;
+    public LayerMask lookDetection;
+    public float lookRange = 100;
 
     [Header("Weapon stats")]
     public GameObject ammoDisplay;
@@ -75,6 +73,10 @@ public class HeadsUpDisplay : MonoBehaviour
     public ColourTransitionEffect damagePing;
     public ColourTransitionEffect criticalPing;
 
+    [Header("Weapon optics")]
+    public ColourTransitionEffect opticsOverlay;
+    public ColourTransitionEffect opticsTransition;
+
     [Header("Weapon selector")]
     public Text selectorWeaponName;
     public Text selectorWeaponFiringMode;
@@ -83,15 +85,17 @@ public class HeadsUpDisplay : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<PlayerHandler>();
+        //player = GetComponent<PlayerHandler>();
+        hudCanvas = GetComponent<Canvas>();
     }
 
     // Use this for initialization
     void Start()
     {
-
+        SetCrouchVisualEffects(false);
+        PopulateInteractionMenu(null);
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -272,8 +276,27 @@ public class HeadsUpDisplay : MonoBehaviour
         #endregion
     }
 
+    public void SetCrouchVisualEffects(bool isCrouching)
+    {
+        if (isCrouching)
+        {
+            effectsOnCrouch.Invoke();
+        }
+        else
+        {
+            effectsOnStand.Invoke();
+        }
+    }
+
     public void PopulateInteractionMenu(Interactable i)
     {
+        // If this is run with i set to null, this means there is nothing to interact with.
+        if (i == null)
+        {
+            interactWindow.gameObject.SetActive(false);
+            return;
+        }
+        
         interactWindow.gameObject.SetActive(true);
 
         interactObjectName.text = i.name;
@@ -296,10 +319,6 @@ public class HeadsUpDisplay : MonoBehaviour
         }
     }
 
-    public void HideInteractionMenu()
-    {
-        interactWindow.gameObject.SetActive(false);
-    }
 
     string AmmoInfo(Gun rw, int firingModeIndex)
     {

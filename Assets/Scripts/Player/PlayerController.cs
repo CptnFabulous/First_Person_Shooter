@@ -93,25 +93,35 @@ public class PlayerController : MonoBehaviour
 
     #region Cosmetics
 
-    [Header("Cosmetics - Drag and Sway")]
+    [Header("Cosmetics - idle sway")]
+    public float idleCycleTime = 4;
+    public Vector2 idleSwayExtents;
+    public AnimationCurve idleCurveX;
+    public AnimationCurve idleCurveY;
+
+    [Header("Cosmetics - Drag, Tilt and Sway")]
     
     // Torso lingering/dragging when moving
-    public float upperBodyDragDistance;
-    public float speedForMaxDrag;
+    public float upperBodyDragDistance = 0.2f;
+    public float speedForMaxDrag = 20;
 
+    // Torso leaning/tilting when moving
+    public float upperBodyTiltAngle = 10;
+    public float speedForMaxTilt = 20;
 
     // Torso swaying/dragging when looking around
-    public float lookSwayDegrees;
-    public float speedForMaxSway;
+    public float lookSwayDegrees = 5;
+    public float speedForMaxSway = 10;
 
-    [Header("Cosmetics - Return to default position and rotation")]
-    public float torsoResetPositionSpeed = 1;
-    //public float torsoResetPositionTime = 1;
-    public float torsoResetRotationSpeed = 1;
-    //public float torsoResetRotationTime = -0.1f;
+    // Return to default position and rotation
+    public float torsoPositionUpdateTime = 0.1f;
+    public float torsoRotationUpdateTime = 0.1f;
     
     Vector3 torsoPosition;
-    Vector3 torsoRotationAxes;
+    Vector3 torsoRotation;
+
+    Vector3 torsoMovementVelocity;
+    float torsoAngularVelocityTimer;
 
     #endregion
 
@@ -126,14 +136,12 @@ public class PlayerController : MonoBehaviour
             return moveInput;
         }
     } // In what direction is the player intending to move?
-    Vector3 DeltaMoveDistance
+    Vector3 Velocity
     {
         get
         {
-            // Gets a vector3 of the direction the player has moved in since the last frame. It then also changes the magnitude to equal the full distance the player has moved.
-            Vector3 v = (transform.position - positionLastFrame).normalized;
-            v *= Vector3.Distance(transform.position, positionLastFrame);
-            return v;
+            // Gets the delta movement from last frame, and divides by delta time to produce the distance it would have travelled in a second
+            return (transform.position - positionLastFrame) / Time.deltaTime;
         }
     } // Figure out how far the player has moved since the last frame, and in what direction
     float DeltaRotateDistance
@@ -162,30 +170,36 @@ public class PlayerController : MonoBehaviour
         }
     } // In what direction is the player turning?
 
-    // Is the player standing on solid ground, or are they airborne?
+    // Info on what the player is currently standing on
+    RaycastHit floorData;
     void CheckGrounding()
     {
         // Casts a ray to determine if the player is standing on solid ground.
         Ray r = new Ray(transform.position + transform.up * 0.5f, -transform.up);
-        isGrounded = Physics.SphereCast(r, cc.radius, 0.5f + groundedRayLength, terrainDetection);
-
-        // If there is a mismatch, this means the player's grounded state has changed.
-        if (wasGrounded != isGrounded)
+        if (Physics.SphereCast(r, cc.radius, out RaycastHit floorDataThisFrame, 0.5f + groundedRayLength, terrainDetection))
         {
-            if (wasGrounded == true) // Player has left the ground
+            // Player is hitting solid ground
+            if (IsGrounded == false) // If player was airborne last frame
             {
-
-            }
-            else // Player has landed
-            {
+                // Player has landed on the ground
                 onLand.Invoke();
             }
+        }
+        else if (IsGrounded) // If current check was false, but was true last frame
+        {
+            // Player has left the ground (either by jumping or falling off a ledge)
+        }
 
-            wasGrounded = isGrounded;
+        // Saves new data for whatever the player is currently standing on
+        floorData = floorDataThisFrame;
+    }
+    bool IsGrounded
+    {
+        get
+        {
+            return floorData.collider != null;
         }
     }
-    bool isGrounded;
-    bool wasGrounded;
 
     #endregion
 
@@ -245,14 +259,13 @@ public class PlayerController : MonoBehaviour
             moveInput.Normalize(); // Prevent movement input from going past 1. This ensures that players cannot go faster than the normal movement speed.
         }
 
-        float speed = movementSpeed.Calculate();
-        movementValue = new Vector3(moveInput.x * speed, 0, moveInput.y * speed);
+        movementValue = new Vector3(moveInput.x, 0, moveInput.y) * movementSpeed.Calculate();
         movementValue = transform.rotation * movementValue; // movementValue is multiplied by transform.rotation so moveInput occurs in the direction the character is facing.
         #endregion
 
         #region Jumping
         jumpTimer += Time.deltaTime;
-        if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && isGrounded == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
+        if (Input.GetButtonDown("Jump") && jumpTimer >= jumpDelay && IsGrounded == true) //Raycast isGrounded is cast to detect if there is a surface underneath the player. If so, canJump boolean is enabled to allow the player to jump off the surface, and disabled if false, i.e. if the player is in midair.
         {
             if (isCrouching == true)
             {
@@ -307,47 +320,31 @@ public class PlayerController : MonoBehaviour
     void CrouchHandler()
     {
         #region Determine whether the player is crouching or not
-        if (toggleCrouch == true)
+
+        bool pressedDown = Input.GetButtonDown("Crouch");
+        if (pressedDown && !isCrouching)
         {
-            if (Input.GetButtonDown("Crouch"))
-            {
-                isCrouching = !isCrouching;
-            }
+            // If pressed down and not crouching, crouch
+            isCrouching = true;
+            onCrouch.Invoke();
         }
-        else
+        else if (pressedDown || (Input.GetButtonUp("Crouch") && toggleCrouch == false))
         {
-            if (Input.GetButton("Crouch"))
-            {
-                isCrouching = true;
-            }
-            else
-            {
-                isCrouching = false;
-            }
+            // If crouching but pressed down, or released while toggleCrouch set to false
+            isCrouching = false;
+            onStand.Invoke();
         }
 
-        float t;
-        if (isCrouching)
-        {
-            t = 1;
-        }
-        else
-        {
-            t = -1;
-        }
         #endregion
 
+
         #region Actual crouching code happens
-        /*
-        // If current crouch state does not match isCrouching, or if the crouchTimer is not 1 or 0 (indicating that crouching is in progress)
-        if (crouchTimer == 1 && isCrouching == false || crouchTimer == 0 && isCrouching == true || (crouchTimer != 1 && crouchTimer != 0))
+        float t = crouchTime;
+        if (!isCrouching)
         {
-            crouchTimer += Time.deltaTime / crouchTime * t;
-            crouchTimer = Mathf.Clamp01(crouchTimer);
-            LerpCrouch(crouchTimer);
+            t = -t;
         }
-        */
-        crouchTimer += Time.deltaTime / crouchTime * t;
+        crouchTimer += Time.deltaTime / t;
         crouchTimer = Mathf.Clamp01(crouchTimer);
         LerpCrouch(crouchTimer);
         #endregion
@@ -386,60 +383,27 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         torsoPosition = Vector3.zero;
-        torsoRotationAxes = Vector3.zero;
+        torsoRotation = Vector3.zero;
 
         WalkCycle();
         TorsoDrag();
+        TorsoTilt();
         TorsoSway();
 
         #region Update position and rotation of torso to match drag and sway values
-
-
-        if (torsoPosition.magnitude > 0)
-        {
-            torso.localPosition = torsoPosition;
-        }
-        else
-        {
-            torso.localPosition = Vector3.MoveTowards(torso.localPosition, torsoPosition, torsoResetPositionSpeed * Time.deltaTime);
-        }
-
-        Quaternion torsoRotation = Quaternion.Euler(torsoRotationAxes);
-        if (Quaternion.Angle(Quaternion.identity, torsoRotation) > 0)
-        {
-            torso.localRotation = torsoRotation;
-        }
-        else
-        {
-            torso.localRotation = Quaternion.RotateTowards(torso.localRotation, torsoRotation, torsoResetRotationSpeed * Time.deltaTime);
-        }
-
-        
-        
-        //Debug.Log(torsoRotationAxes + ", " + torso.localEulerAngles);
-
-        /*
-        Vector3 torsoAnimateVelocity = (torsoPosition - torso.transform.localPosition).normalized * torsoTranslateSpeed;
-        torso.transform.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoAnimateVelocity, torsoTranslateTime);
-
-        Vector3 torsoCurrentAngles = torso.localEulerAngles;
-        Vector3 torsoAnimateAngleVelocity = (torsoRotationAxes - torsoCurrentAngles).normalized * torsoRotateSpeed;
-        Vector3 dampedTorsoRotationAxes = Vector3.SmoothDamp(torsoCurrentAngles, torsoRotationAxes, ref torsoAnimateAngleVelocity, torsoRotateTime);
-        torso.transform.localRotation = Quaternion.Euler(dampedTorsoRotationAxes);
-        */
+        torso.localPosition = Vector3.SmoothDamp(torso.transform.localPosition, torsoPosition, ref torsoMovementVelocity, torsoPositionUpdateTime);
+        float timer = Mathf.SmoothDamp(0f, 1f, ref torsoAngularVelocityTimer, torsoRotationUpdateTime);
+        torso.localRotation = Quaternion.Slerp(torso.localRotation, Quaternion.Euler(torsoRotation), timer);
         #endregion
 
         positionLastFrame = transform.position;
         headDirectionLastFrame = head.transform.forward;
     }
 
-
-
-
     void WalkCycle()
     {
         Vector2 moveInputValue = moveInput;
-        if (moveInputValue.magnitude > 0 && isGrounded) // If player is walking
+        if (moveInputValue.magnitude > 0 && IsGrounded) // If player is walking
         {
             // Calculate timer for step cycle and bobbing animation
             float speedMagnitude = movementSpeed.Calculate() / movementSpeed.defaultValue;
@@ -450,8 +414,6 @@ public class PlayerController : MonoBehaviour
             walkCycleTimer = Misc.InverseClamp(walkCycleTimer, 0, 1); // If timer exceeds one, revert to zero
 
             // Calculate bob axis values (unclamped lerp is used so values return as -1 to 1)
-            //float bobX = Mathf.LerpUnclamped(0, bobExtents.x, bobCurveX.Evaluate(walkCycleTimer));
-            //float bobY = Mathf.LerpUnclamped(0, bobExtents.y, bobCurveY.Evaluate(walkCycleTimer));
             float bobX = bobCurveX.Evaluate(walkCycleTimer) * bobExtents.x;
             float bobY = bobCurveY.Evaluate(walkCycleTimer) * bobExtents.y;
             Vector3 bodyPosition = new Vector3(bobX, bobY, 0) * moveInputValue.magnitude * speedMagnitude;
@@ -466,29 +428,45 @@ public class PlayerController : MonoBehaviour
                 onStep.Invoke();
             }
         }
-        else if (isCrouching == false)
+        else 
         {
             // If the player is standing normally but has stopped moving, reset walk and step timers.
-            walkCycleTimer = 0;
-            stepTimer = 0;
+            if (isCrouching == false)
+            {
+                walkCycleTimer = 0;
+                stepTimer = 0;
+            }
+
+            float idleTimer = (Time.time / idleCycleTime) % 1f;
+            float idleX = idleCurveX.Evaluate(idleTimer) * idleSwayExtents.x;
+            float idleY = idleCurveY.Evaluate(idleTimer) * idleSwayExtents.y;
+            torsoPosition += new Vector3(idleX, idleY, 0);
         }
     }
     void TorsoDrag()
     {
-        Vector3 velocity = rb.velocity;
-        float speed = velocity.magnitude;
-        float dragIntensity = Mathf.Clamp01(speed / speedForMaxDrag);
-        Vector3 direction = transform.InverseTransformDirection(velocity);
+        Vector3 totalVelocity = rb.velocity + movementValue;
+        float dragIntensity = Mathf.Clamp01(totalVelocity.magnitude / speedForMaxDrag);
+        Vector3 direction = transform.InverseTransformDirection(totalVelocity);
         Vector3 dragMax = direction.normalized * -upperBodyDragDistance;
         Vector3 dragValue = Vector3.Lerp(Vector3.zero, dragMax, dragIntensity);
         torsoPosition += dragValue;
+    }
+    void TorsoTilt()
+    {
+        Vector3 totalVelocity = rb.velocity + movementValue;
+        float tiltIntensity = Mathf.Clamp01(totalVelocity.magnitude / speedForMaxTilt);
+        float tiltAngle = Mathf.Lerp(0, upperBodyTiltAngle, tiltIntensity);
+        Vector3 newTiltDirection = Vector3.RotateTowards(transform.up, totalVelocity, tiltAngle * Mathf.Deg2Rad, 0);
+        newTiltDirection = transform.InverseTransformDirection(newTiltDirection);
+        torsoRotation += Quaternion.FromToRotation(Vector3.up, newTiltDirection).eulerAngles;
     }
     void TorsoSway()
     {
         float intensity = Mathf.Clamp01(DeltaRotateDistance / speedForMaxSway);
         Vector3 swayAxes = new Vector3(DeltaRotateDirection.y, -DeltaRotateDirection.x, 0);
         swayAxes = Vector3.Lerp(Vector3.zero, swayAxes.normalized * lookSwayDegrees, intensity);
-        torsoRotationAxes += swayAxes;
+        torsoRotation += swayAxes;
     }
 
 

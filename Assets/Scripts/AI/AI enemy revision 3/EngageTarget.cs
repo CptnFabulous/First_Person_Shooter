@@ -41,7 +41,7 @@ public class EngageTarget : AIMovementBehaviour
             Debug.DrawLine(TargetLocation, currentDestination.position, new Color(1, 0.5f, 0));
 
             // Checks if the AI can no longer see the target from their desired position, or if they are too close or too far
-            bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(TargetLocation, currentDestination.position, coverCriteria, ai.characterData.HealthData.hitboxes, ai.currentTarget.HealthData.hitboxes);
+            bool lineOfSightLost = !AIFunction.LineOfSightCheckWithExceptions(TargetLocation, currentDestination.position, coverCriteria, ai.characterData.health.hitboxes, ai.currentTarget.health.hitboxes);
             bool tooClose = distance < minimumMoveRange;
             bool tooFar = distance > maximumMoveRange;
             if (lineOfSightLost || tooClose || tooFar)
@@ -100,7 +100,7 @@ public class EngageTarget : AIMovementBehaviour
                 Debug.DrawLine(randomPosition, followCheck.position, Colours.darkGreen);
                 
                 // Checks if line of sight is established between the new position and target. The agent is still pursuing and attacking the target, but they are just staying cautious.
-                if (AIFunction.LineOfSightCheckWithExceptions(targetPosition, followCheck.position, coverCriteria, ai.characterData.HealthData.hitboxes, ai.currentTarget.HealthData.hitboxes))
+                if (AIFunction.LineOfSightCheckWithExceptions(targetPosition, followCheck.position, coverCriteria, ai.characterData.health.hitboxes, ai.currentTarget.health.hitboxes))
                 {
                     // Ensures that a path can be sampled to the destination.
                     NavMeshPath nmp = new NavMeshPath();
