@@ -22,11 +22,13 @@ public class RandomSoundPlayer : ScriptableObject
         source.PlayOneShot(sounds[index]);
     }
 
-    public void PlayWithDelay(AudioSource source)
+    public void Play(AudioSource source)
     {
-
-        //source.clip = sounds[index];
-        //source.PlayDelayed(delay);
+        if (delay <= 0)
+        {
+            PlayWithoutDelay(source);
+            return;
+        }
         MonoBehaviour behaviourToRunFrom = source.GetComponent<MonoBehaviour>();
         behaviourToRunFrom.StartCoroutine(DelayPlay(source));
     }

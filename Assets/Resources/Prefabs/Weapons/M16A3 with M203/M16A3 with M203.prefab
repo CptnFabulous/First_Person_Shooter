@@ -174,12 +174,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnification: 4
-  transitionTime: 0.25
+  transitionTime: 0.4
   moveSpeedReductionPercentage: -40
+  disableReticle: 0
   aimPosition: {fileID: 9134199384871096071}
   sightLine: {fileID: 7937066653885127638}
   scopeGraphic: {fileID: 21300000, guid: b148597df89e7a94094792a35333e894, type: 3}
-  disableReticle: 0
 --- !u!1 &5609149696465677590
 GameObject:
   m_ObjectHideFlags: 0
@@ -6913,13 +6913,13 @@ MonoBehaviour:
   switchSpeed: 0.8
   holsterPosition: {fileID: 9134199385161882659}
   animator: {fileID: 0}
-  weaponModel: {fileID: 3422296976112288468}
+  weaponVisual: {fileID: 9134199386419182426}
+  weaponVisualTransform: {fileID: 3422296976112288468}
   weaponSoundSource: {fileID: 6092026058370136131}
   weaponSelectorIcon: {fileID: 21300000, guid: 310af71e42eb28348b0d348396d999bf, type: 3}
   attackMessageLimitDelay: 1
   isAiming: 0
   zoomVariable: 0
-  zoomTimer: 0
   sensitivityWhileAiming:
     percentageValue: 0
     multiplicative: 1

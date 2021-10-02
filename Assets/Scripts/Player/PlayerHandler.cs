@@ -19,26 +19,6 @@ public class PlayerHandler : Character
 
     public override void Awake()
     {
-        
-        /*
-        HealthData = GetComponent<PlayerHealth>();
-
-        HealthData.wackyTestVariable = 5;
-
-        PlayerHandler pHandler = GetComponent<PlayerHandler>();
-
-        Character c = pHandler;
-        Debug.Log(c.HealthData.ToString());
-
-        pHandler.HealthData.wackyTestVariable = 42069f;
-
-        Character ch = GetComponent<Character>();
-        ch.HealthData.wack
-        */
-
-
-
-
         movement = GetComponent<PlayerController>();
         weapons = GetComponent<WeaponHandler>();
         ammo = GetComponent<AmmunitionInventory>();

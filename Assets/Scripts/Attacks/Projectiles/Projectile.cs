@@ -18,6 +18,9 @@ public class Projectile : MonoBehaviour
     Vector3 desiredVelocity; // Intended direction the projectile is meant to travel in, this is set at the start of the projectile's lifetime
     Vector3 ballisticDirection; // The direction the projectile will actualy go in
     Vector3 gravityModifier; // An increasing Vector3 value to slowly drag the projectile down with gravity
+
+    RaycastHit hit;
+
     float timerLifetime;
 
     [HideInInspector] public Character origin;
@@ -33,13 +36,12 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         float raycastLength = Vector3.Distance(transform.position, ballisticDirection);
-        RaycastHit projectileHit;
-        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out projectileHit, raycastLength, hitDetection))
+        if (Physics.SphereCast(transform.position, diameter / 2, transform.forward, out hit, raycastLength, hitDetection))
         {
-            OnHit(projectileHit);
+            OnHit(hit);
         }
 
-        MoveBullet();
+        Move();
 
         timerLifetime += Time.deltaTime;
         if (timerLifetime >= projectileLifetime)
@@ -54,7 +56,7 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void MoveBullet()
+    void Move()
     {
         transform.position = ballisticDirection; // Moves bullet forwards according to ballisticDirection
         ballisticDirection = transform.position + (desiredVelocity * Time.deltaTime); // Updates ballisticDirection to be relative to bullet's new position
@@ -72,25 +74,22 @@ public class Projectile : MonoBehaviour
         // Reduce velocity (multiplicative or additive? Should I put velocity dampener in projectile itself or set it based on the physics material?)
     }
 
-    
-    
-    public void InstantiateOnImpact(RaycastHit rh, GameObject prefab, bool alignWithSurface, bool makeChild)
-    {
-        GameObject g;
-        if (alignWithSurface == true)
-        {
-            Quaternion normalDirection = Quaternion.FromToRotation(Vector3.forward, rh.normal);
-            g = Instantiate(prefab, rh.point + normalDirection * Vector3.forward * 0.1f, normalDirection);
-        }
-        else
-        {
-            g = Instantiate(prefab, rh.point, Quaternion.identity);
-        }
 
-        if (makeChild == true)
-        {
-            g.transform.SetParent(rh.collider.transform);
-        }
+    public void SpawnObjectAtPoint(GameObject prefab)
+    {
+        Instantiate(prefab, hit.point, Quaternion.identity);
     }
-    
+
+    public void SpawnObjectOnSurface(GameObject prefab)
+    {
+        GameObject newObject = Instantiate(prefab);
+        AttachObjectToHitSurface(newObject.transform, hit, Vector3.up, 0);
+    }
+
+    public static void AttachObjectToHitSurface(Transform objectTransform, RaycastHit hit, Vector3 rotationAxis, float distanceOffSurface)
+    {
+        objectTransform.position = hit.point + (hit.normal * distanceOffSurface);
+        objectTransform.rotation = Quaternion.FromToRotation(rotationAxis, hit.normal);
+        objectTransform.parent = hit.transform;
+    }
 }

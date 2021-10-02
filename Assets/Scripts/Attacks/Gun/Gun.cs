@@ -7,8 +7,8 @@ using UnityEngine.Events;
 [System.Serializable]
 public class GunFiringMode
 {
-    public string name = "Placeholder";
-    public string description = "Placeholder, insert description here";
+    public string name = "New Firing Mode";
+    public string description = "A distinct mode of operation for this gun.";
 
     [Header("Stats")]
     public GunGeneralStats general;
@@ -19,6 +19,8 @@ public class GunFiringMode
     [Header("Other")]
     public Sprite hudIcon;
     public float switchSpeed;
+
+    Gun attachedGun;
 }
 
 public class Gun : MonoBehaviour
@@ -34,7 +36,8 @@ public class Gun : MonoBehaviour
 
     [Header("Cosmetics")]
     public Animator animator;
-    public Transform weaponModel;
+    public Renderer weaponVisual;
+    public Transform weaponVisualTransform;
     public AudioSource weaponSoundSource;
     public Sprite weaponSelectorIcon;
 
@@ -42,15 +45,45 @@ public class Gun : MonoBehaviour
     public float attackMessageLimitDelay = 1;
 
     #region Additional variables for weapon function
-    GunGeneralStats general;
-    GunFireControlStats fireControls;
-    GunMagazineStats magazine;
-    GunOpticsStats optics;
+    public GunFiringMode currentMode
+    {
+        get
+        {
+            return firingModes[firingModeIndex];
+        }
+    }
+    GunGeneralStats general
+    {
+        get
+        {
+            return currentMode.general;
+        }
+    }
+    GunFireControlStats fireControls
+    {
+        get
+        {
+            return currentMode.fireControls;
+        }
+    }
+    GunMagazineStats magazine
+    {
+        get
+        {
+            return currentMode.magazine;
+        }
+    }
+    GunOpticsStats optics
+    {
+        get
+        {
+            return currentMode.optics;
+        }
+    }
 
     // Additional optics stats
     [HideInInspector] public bool isAiming;
     [HideInInspector] public float zoomVariable;
-    [HideInInspector] public float zoomTimer;
     [HideInInspector] public PercentageModifier sensitivityWhileAiming = new PercentageModifier(0, true, false);
     [HideInInspector] public PercentageModifier speedWhileAiming = new PercentageModifier();
     float adsTimer;
@@ -145,8 +178,6 @@ public class Gun : MonoBehaviour
         playerHolding.handler.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
         playerHolding.handler.movement.movementSpeed.Add(speedWhileAiming, this);
 
-        AssignFiringModes(firingModeIndex);
-
         OnEnable();
     }
 
@@ -237,6 +268,13 @@ public class Gun : MonoBehaviour
 
             #region ADS and reload controls
             ADSHandler();
+
+            /*
+            if (optics != null)
+            {
+                optics.ADSHandler(this, currentMode);
+            }
+            */
             ReloadHandler();
             #endregion
         }
@@ -284,7 +322,6 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(newMode.switchSpeed);
 
         firingModeIndex = index;
-        AssignFiringModes(firingModeIndex);
 
         isSwitchingFireMode = false;
     }
@@ -292,12 +329,10 @@ public class Gun : MonoBehaviour
     {
         isSwitchingWeapon = true;
 
-        // Reassigns firing modes
-        AssignFiringModes(firingModeIndex);
 
         gameObject.SetActive(true);
         // Draw weapon animation
-        weaponModel.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
+        weaponVisualTransform.transform.SetPositionAndRotation(holsterPosition.position, holsterPosition.rotation);
 
         // Animate weapon model moving from holstered to drawn position
         Transform newMoveTransform = general.heldPosition;
@@ -326,7 +361,7 @@ public class Gun : MonoBehaviour
         }
 
         // Animate weapon model moving from drawn to holstered position
-        weaponModel.transform.SetPositionAndRotation(general.heldPosition.position, general.heldPosition.rotation);
+        weaponVisualTransform.transform.SetPositionAndRotation(general.heldPosition.position, general.heldPosition.rotation);
         ChangeWeaponModelPosition(holsterPosition.localPosition, holsterPosition.localRotation, switchSpeed);
 
         // Waits until animation has completed
@@ -336,13 +371,7 @@ public class Gun : MonoBehaviour
         gameObject.SetActive(false);
         isSwitchingWeapon = false;
     }
-    void AssignFiringModes(int index)
-    {
-        general = firingModes[index].general;
-        fireControls = firingModes[index].fireControls;
-        magazine = firingModes[index].magazine;
-        optics = firingModes[index].optics;
-    }
+    
     #endregion
     
     public void RecoilHandler(float recoilApplyRate, WeaponHandler playerHolding)
@@ -385,21 +414,38 @@ public class Gun : MonoBehaviour
             isAiming = Input.GetButton("MouseRight");
         }
 
+
+        float timeToAdd = -Time.deltaTime / optics.transitionTime;
         if (isAiming)
         {
-            adsTimer += Time.deltaTime / optics.transitionTime;
+            timeToAdd = -timeToAdd;
+        }
+        adsTimer += timeToAdd;
+        adsTimer = Mathf.Clamp01(adsTimer);
 
+        LerpADS(adsTimer);
 
+        if (isAiming)
+        {
+            /*
+            // Produces two varying noise values for the two axes (these will be between zero and one).
+            float swayX = Mathf.PerlinNoise(Time.time * aimSwaySpeed, 0);
+            float swayY = Mathf.PerlinNoise(0, Time.time * aimSwaySpeed);
+            Vector2 sway = new Vector2(swayX, swayY); // Combine into a Vector2
+            sway = (sway - Vector2.one * 0.5f) * 2; // Subtract 0.5 then multiply by 2 so the values are between -1 and 1
+            sway = sway.normalized * gun.playerHolding.standingAccuracy.Calculate(); // Normalise and multiply by player's current accuracy
+            
+            Quaternion swayedAimDirection = Quaternion.Euler(sway.y, sway.x, 0);
+            gun.playerHolding.handler.movement.aimDirectionTransform.localRotation = swayedAimDirection;
+            */
         }
         else
         {
-            adsTimer -= Time.deltaTime / optics.transitionTime;
+            //gun.playerHolding.handler.movement.aimDirectionTransform.localRotation = Quaternion.identity;
         }
-        adsTimer = Mathf.Clamp01(adsTimer);
-        LerpADS(adsTimer);
 
         // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
-       // Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
+        // Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
     }
 
     void LerpADS(float timer)
@@ -419,8 +465,10 @@ public class Gun : MonoBehaviour
         sensitivityWhileAiming.SetIntensity(timer);
         speedWhileAiming.SetIntensity(timer);
 
+
+
         // Lerp weapon model between hip position and ADS position. Should I make this work with the MoveWeaponModel function?
-        Transform wmt = weaponModel;
+        Transform wmt = weaponVisualTransform;
         
         Vector3 relativePosition = Misc.PositionWhereChildIsAtSamePositionAsAnotherTransform(wmt.position, optics.sightLine.position, pc.head.position);
         Quaternion relativeRotation = Misc.RotationWhereChildIsAtSameRotationAsAnotherTransform(wmt.rotation, optics.sightLine.rotation, pc.head.rotation);
@@ -429,15 +477,15 @@ public class Gun : MonoBehaviour
 
         // Toggle overlay
         playerHolding.handler.hud.ADSTransition(timer, optics.scopeGraphic);
+
+        weaponVisual.enabled = (timer < optics.whenToDisableWeaponVisual);
     }
 
     void CancelADSInstantly()
     {
-        zoomTimer = 0;
-        
-        isAiming = false;
         adsTimer = 0;
         LerpADS(0);
+        isAiming = false;
     }
 
 
@@ -531,24 +579,24 @@ public class Gun : MonoBehaviour
         {
             curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         }
-        Vector3 oldPosition = weaponModel.localPosition;
-        Quaternion oldRotation = weaponModel.localRotation;
+        Vector3 oldPosition = weaponVisualTransform.localPosition;
+        Quaternion oldRotation = weaponVisualTransform.localRotation;
         float timer = 0;
 
         while (timer < 1)
         {
             float percentage = curve.Evaluate(timer);
 
-            weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
-            weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
+            weaponVisualTransform.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, percentage);
+            weaponVisualTransform.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, percentage);
 
             timer += Time.deltaTime / time;
             yield return new WaitForEndOfFrame();
         }
 
         float final = curve.Evaluate(1);
-        weaponModel.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, final);
-        weaponModel.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, final);
+        weaponVisualTransform.localPosition = Vector3.Lerp(oldPosition, newLocalPosition, final);
+        weaponVisualTransform.localRotation = Quaternion.Lerp(oldRotation, newLocalRotation, final);
     }
 
     void CancelMoveWeaponModel()
@@ -568,15 +616,15 @@ public class Gun : MonoBehaviour
         transform.SetParent(playerHolding.defaultHoldingPosition);
         GetComponent<Collider>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = false;
-        //weaponModel.SetPositionAndRotation()
+        //weaponVisualTransform.SetPositionAndRotation()
         enabled = true;
     }
 
     public void Drop()
     {
         transform.SetParent(null);
-        weaponModel.localPosition = Vector3.zero;
-        weaponModel.localRotation = Quaternion.identity;
+        weaponVisualTransform.localPosition = Vector3.zero;
+        weaponVisualTransform.localRotation = Quaternion.identity;
         GetComponent<Collider>().enabled = true;
         GetComponent<Rigidbody>().isKinematic = false;
         playerHolding = null;

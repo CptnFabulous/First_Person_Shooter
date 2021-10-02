@@ -755,13 +755,13 @@ MonoBehaviour:
   switchSpeed: 0.2
   holsterPosition: {fileID: 7361818275031449477}
   animator: {fileID: 0}
-  weaponModel: {fileID: 7361818273333844223}
+  weaponVisual: {fileID: 7361818273333844220}
+  weaponVisualTransform: {fileID: 7361818273333844223}
   weaponSoundSource: {fileID: 7361818273333844221}
   weaponSelectorIcon: {fileID: 21300000, guid: 887db615a0bcb7649a995ed68e6ad5c3, type: 3}
   attackMessageLimitDelay: 1
   isAiming: 0
   zoomVariable: 0
-  zoomTimer: 0
   sensitivityWhileAiming:
     percentageValue: 0
     multiplicative: 0

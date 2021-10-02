@@ -8,27 +8,39 @@ public class Bullet : Projectile
     public int damage;
     public float knockback;
     public float criticalMultiplier;
-    public bool friendlyFire = false;
+    public DamageType type = DamageType.Piercing;
+    public bool allowSelfDamage;
+    public bool allowFriendlyFire;
 
-    [Header("Other")]
-    public bool passThroughFriendlies = true;
-    public ParticleSystem bulletDecal;
-    
     public override void OnHit(RaycastHit rh)
     {
-        Character c = Character.FromObject(rh.collider.gameObject);
-
-        if (c != null && (origin.HostileTowards(c) || friendlyFire == true))
+        if (origin.CanDamage(Character.FromObject(rh.collider.gameObject), allowFriendlyFire, allowSelfDamage))
         {
-            GameObject o = rh.collider.gameObject;
-            Damage.PointDamage(origin, o, damage, criticalMultiplier, DamageType.Shot, DamageType.CriticalShot);
-            Damage.Knockback(o, knockback, transform.forward);
-        }
+            // If the target has health, damage it
+            DamageHitbox hitbox = rh.collider.GetComponent<DamageHitbox>();
+            if (hitbox != null)
+            {
+                // Calculate damage
+                int damageToDeal = damage;
+                if (hitbox.critical)
+                {
+                    damageToDeal = Mathf.CeilToInt(damageToDeal * criticalMultiplier);
+                }
+                hitbox.Damage(damageToDeal, origin, type);
+                // Play damage effects
+            }
 
-        if (c == null || (origin.HostileTowards(c) == false && passThroughFriendlies == false))
-        {
-            InstantiateOnImpact(rh, bulletDecal.gameObject, true, true);
+            // If the target has physics, knock it around
+            Rigidbody rb = rh.collider.GetComponentInParent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddForceAtPosition(transform.forward * knockback, rh.point, ForceMode.Impulse);
+                // Play knockback effects
+            }
+
             base.OnHit(rh);
         }
+
+        // Otherwise, ignore and resume normal operation
     }
 }

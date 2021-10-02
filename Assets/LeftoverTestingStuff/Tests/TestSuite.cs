@@ -71,7 +71,7 @@ namespace Tests
             Debug.Log("schlep");
 
             // Deals damage to attacked gameObject's hitbox
-            Damage.PointDamage(c, dh.gameObject, 5, DamageType.Shot, false);
+            dh.Damage(5, c, DamageType.Shot);
 
             Debug.Log("frank");
 

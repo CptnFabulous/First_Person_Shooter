@@ -86,23 +86,6 @@ public static class Damage
         }
     }
 
-    public static void PointDamage(Character origin, GameObject attackedObject, int damage, float criticalMultiplier, DamageType normalCause, DamageType criticalCause)
-    {
-        DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
-        if (hitbox != null)
-        {
-            hitbox.Damage(damage, criticalMultiplier, origin, normalCause, criticalCause);
-        }
-    }
-
-    public static void PointDamage(Character origin, GameObject attackedObject, int damage, DamageType cause, bool isSevere)
-    {
-        DamageHitbox hitbox = attackedObject.GetComponent<DamageHitbox>(); // Checks collider gameObject for a damageHitbox script
-        if (hitbox != null)
-        {
-            hitbox.Damage(damage, origin, cause, isSevere);
-        }
-    }
 
 
 

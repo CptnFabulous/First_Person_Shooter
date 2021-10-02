@@ -5,6 +5,20 @@ using UnityEngine.Analytics;
 using UnityEngine.Events;
 public class ObjectiveHandler : MonoBehaviour
 {
+    static ObjectiveHandler current;
+    public static ObjectiveHandler Current
+    {
+        get
+        {
+            if (current == null)
+            {
+                current = FindObjectOfType<ObjectiveHandler>();
+            }
+            return current;
+        }
+    }
+    
+    
     EventObserver eo;
 
     public PlayerObjective[] objectives;

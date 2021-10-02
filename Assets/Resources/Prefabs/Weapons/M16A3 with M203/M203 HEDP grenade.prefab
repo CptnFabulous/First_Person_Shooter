@@ -19,8 +19,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
-      propertyPath: velocity
-      value: 100
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
@@ -144,18 +144,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
-      propertyPath: knockback
-      value: 10
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
-      propertyPath: gravityMultiplier
-      value: 0.01
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
-      propertyPath: diameter
-      value: 0.5
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 3441580320547347982}
+    - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
+        type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: set_name
+      objectReference: {fileID: 0}
+    - target: {fileID: 8522233913276414410, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
+        type: 3}
+      propertyPath: onHit.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8522233913276414411, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
         type: 3}
@@ -219,3 +229,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54f925bf5e0b7ec45bd48568801aa8f0, type: 3}
+--- !u!1 &3441580320547347982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8522233913276414411, guid: 54f925bf5e0b7ec45bd48568801aa8f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 6451403744768927685}
+  m_PrefabAsset: {fileID: 0}

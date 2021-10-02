@@ -25,13 +25,25 @@ public class Character : Entity
         return g.GetComponentInParent<Character>();
     }
 
+    /// <summary>
+    /// Returns true if this character is hostile towards the target character, or if the target is not a character
+    /// </summary>
+    /// <param name="c"></param>
+    /// <returns></returns>
     public bool HostileTowards(Character c)
     {
-        return faction.HostileTowards(c.faction);
+        return c == null || faction.HostileTowards(c.faction);
     }
 
 
-
+    public bool CanDamage(Character target, bool friendlyFire, bool selfDamage)
+    {
+        bool isSafeToDamage = HostileTowards(target);
+        bool isSelfButDamageable = target == this && selfDamage;
+        bool isAllyButDamageable = !isSafeToDamage && target != this && friendlyFire;
+        // If target is safe to attack
+        return (isSafeToDamage || isSelfButDamageable || isAllyButDamageable);
+    }
 
 
 

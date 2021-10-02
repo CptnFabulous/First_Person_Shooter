@@ -17,6 +17,19 @@ public class DamageHitbox : MonoBehaviour
         Collider.isTrigger = false;
     }
 
+    /// <summary>
+    /// Reference this function to damage the thing whose health meter this component is attached to
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="origin"></param>
+    /// <param name="typeOfDamage"></param>
+    public void Damage(int damage, Entity origin, DamageType typeOfDamage)
+    {
+        int finalDamage = Mathf.RoundToInt(damage * damageMultiplier);
+        healthScript.Damage(finalDamage, origin, typeOfDamage);
+    }
+
+
     public void Damage(int damage, Character origin, DamageType damageSource, bool isSevere)
     {
         Character c = Character.FromObject(gameObject);

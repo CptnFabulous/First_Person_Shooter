@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 7822610452673370667}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.375, y: 0.25, z: 0.375}
+  m_LocalScale: {x: 0.4, y: 0.25, z: 0.4}
   m_Children: []
   m_Father: {fileID: 8525560424541055415}
   m_RootOrder: 0
@@ -128,69 +128,91 @@ MonoBehaviour:
   projectileLifetime: 20
   onHit:
     m_PersistentCalls:
-      m_Calls: []
-  velocity: 0
-  gravityMultiplier: 0
-  diameter: 0
+      m_Calls:
+      - m_Target: {fileID: 8522233913276414410}
+        m_MethodName: SpawnObjectAtPoint
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1791795782036788706, guid: 1e01b96a16060de47bd9c0ebd588aa9e,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  velocity: 100
+  gravityMultiplier: 0.01
+  diameter: 0.5
   hitDetection:
     serializedVersion: 2
     m_Bits: 4294967295
   origin: {fileID: 0}
-  damage: 20
+  explosionStats:
+    damage: 25
+    damageFalloff:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    knockback: 50
+    knockbackFalloff:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    type: 12
+    blastRadius: 5
+    hitDetection:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    selfDamage: 0
+    friendlyFire: 0
+    onExplosionStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onExplosionEnd:
+      m_PersistentCalls:
+        m_Calls: []
   directHitMultiplier: 1.5
-  blastRadius: 5
-  explosionTime: 0
-  knockback: 50
-  damageFalloff:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1.000006
-      value: -0.00625
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  knockbackFalloff:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: -0.0067100525
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  impactEffect: {fileID: 2123855640293138813, guid: 6b8007166e0d3f94898409fc2d586769,
-    type: 3}
 --- !u!96 &2403464751674303578
 TrailRenderer:
   serializedVersion: 2
@@ -234,7 +256,7 @@ TrailRenderer:
   m_Time: 0.2
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.4
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -248,7 +270,7 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.09874362
+        time: 1
         value: 0
         inSlope: 0
         outSlope: 0
@@ -261,7 +283,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.90199995, g: 0.90199995, b: 0.90199995, a: 1}
+      key0: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 1, g: 1, b: 1, a: 0}
       key3: {r: 1, g: 1, b: 1, a: 0}
@@ -277,7 +299,7 @@ TrailRenderer:
       ctime5: 0
       ctime6: 0
       ctime7: 0
-      atime0: 0
+      atime0: 49151
       atime1: 65535
       atime2: 65535
       atime3: 65535
@@ -306,9 +328,10 @@ AudioSource:
   m_GameObject: {fileID: 8522233913276414411}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6177962412251847463, guid: 8bb1ee28d3725d941a4ba2e624e4686d,
+    type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2477036015384432997}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.6674786, y: 22.24, z: -44.6}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -47,7 +47,19 @@ MonoBehaviour:
   projectileLifetime: 20
   onHit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4662434428516752633}
+        m_MethodName: SpawnObjectOnSurface
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8093613007427399304, guid: 141515667f45add4da5c7e12c7ce8c6c,
+            type: 3}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   velocity: 500
   gravityMultiplier: 0.1
   diameter: 0.1
@@ -56,10 +68,11 @@ MonoBehaviour:
     m_Bits: 4294967295
   origin: {fileID: 0}
   damage: 3
-  knockback: 0
+  knockback: 20
   criticalMultiplier: 1
-  friendlyFire: 0
-  passThroughFriendlies: 1
+  type: 7
+  allowSelfDamage: 0
+  allowFriendlyFire: 0
   bulletDecal: {fileID: 8093613007427399318, guid: 141515667f45add4da5c7e12c7ce8c6c,
     type: 3}
 --- !u!96 &8466749447774014708

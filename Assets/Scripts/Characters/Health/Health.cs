@@ -36,13 +36,7 @@ public class Health : MonoBehaviour
         }
     }
 
-    /*
-    // Update is called once per frame
-    public virtual void Update()
-    {
-        
-    }
-    */
+    
 
     public virtual void Damage(int damageAmount, Entity origin, DamageType damageSource)
     {

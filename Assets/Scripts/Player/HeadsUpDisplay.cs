@@ -429,7 +429,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
     void UpdateObjectiveList()
     {
-        ObjectiveHandler oh = FindObjectOfType<ObjectiveHandler>();
+        ObjectiveHandler oh = ObjectiveHandler.Current;
         if (oh != null)
         {
             string list = "";
