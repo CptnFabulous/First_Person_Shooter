@@ -411,7 +411,7 @@ public class PlayerController : MonoBehaviour
             
 
             walkCycleTimer += timeToAdd; // Counts up bobTimer with a value based on walk cycle time and current movement speed
-            walkCycleTimer = Misc.InverseClamp(walkCycleTimer, 0, 1); // If timer exceeds one, revert to zero
+            walkCycleTimer = Misc.InverseClamp(walkCycleTimer, 0f, 1f); // If timer exceeds one, revert to zero
 
             // Calculate bob axis values (unclamped lerp is used so values return as -1 to 1)
             float bobX = bobCurveX.Evaluate(walkCycleTimer) * bobExtents.x;

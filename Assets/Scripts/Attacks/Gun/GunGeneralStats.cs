@@ -5,10 +5,7 @@ using UnityEngine.Events;
 
 public class GunGeneralStats : MonoBehaviour
 {
-    [Header("Projectile")]
-    public Projectile projectilePrefab;
-    public Transform muzzle;
-    public int projectileCount = 1;
+    
 
     [Header("Accuracy")]
     [Range(0, 180)] public float projectileSpread;
@@ -17,7 +14,7 @@ public class GunGeneralStats : MonoBehaviour
     [Header("Recoil")]
     public float recoil;
     public float recoilApplyRate;
-    public float recoilRecovery;
+    //public float recoilRecovery;
 
     //[Header("Spread")]
     //public float spreadMultiplier;
@@ -32,6 +29,15 @@ public class GunGeneralStats : MonoBehaviour
     [Header("Cosmetics")]
     public Transform heldPosition;
     public UnityEvent effectsOnFire;
+
+    [Header("Projectile")]
+    public Projectile projectilePrefab;
+    public Transform muzzle;
+    public int projectileCount = 1;
+
+
+
+
 
     public void Shoot(Character origin, Vector3 aimOrigin, Vector3 forward, Vector3 up)
     {
@@ -54,18 +60,21 @@ public class GunGeneralStats : MonoBehaviour
                 direction = aimOrigin + direction.normalized * range;
             }
 
-            Projectile p = projectilePrefab;
+            Projectile p =  Instantiate(projectilePrefab);
+            p.gameObject.SetActive(true);
             p.origin = origin;
 
             // Checks that the position 'processedDirection' is actually further away than the muzzle and that the bullets will not travel in the complete wrong direction
             if (Vector3.Angle(forward, direction - muzzle.position) < 90)
             {
-                Instantiate(p, muzzle.position, Quaternion.LookRotation(direction - muzzle.position, up));
+                p.transform.position = muzzle.position;
+                p.transform.rotation = Quaternion.LookRotation(direction - muzzle.position, up);
             }
             else
             {
                 // Otherwise, the gun barrel is probably clipping into a wall. Directly spawn the projectiles at the appropriate hit points.
-                Instantiate(p, direction, Quaternion.LookRotation(direction - aimOrigin, up));
+                p.transform.position = direction;
+                p.transform.rotation = Quaternion.LookRotation(direction - aimOrigin, up);
                 p.OnHit(targetFound);
             }
         }

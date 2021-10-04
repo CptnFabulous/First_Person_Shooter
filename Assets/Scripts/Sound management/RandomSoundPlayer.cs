@@ -10,17 +10,13 @@ public class RandomSoundPlayer : ScriptableObject
     public float minPitchVariance = 1;
     [Range(-3, 3)]
     public float maxPitchVariance = 1;
+    [Range(0, 1)]
+    public float minVolumeVariance = 1;
+    [Range(0, 1)]
+    public float maxVolumeVariance = 1;
     public float delay;
 
     WaitForSeconds delayYield;
-
-    public void PlayWithoutDelay(AudioSource source)
-    {
-        source.pitch = Random.Range(minPitchVariance, maxPitchVariance);
-        int index = Random.Range(0, sounds.Length - 1);
-        //Debug.Log("Playing sound clip " + sounds[index].name);
-        source.PlayOneShot(sounds[index]);
-    }
 
     public void Play(AudioSource source)
     {
@@ -32,6 +28,27 @@ public class RandomSoundPlayer : ScriptableObject
         MonoBehaviour behaviourToRunFrom = source.GetComponent<MonoBehaviour>();
         behaviourToRunFrom.StartCoroutine(DelayPlay(source));
     }
+
+    public void PlayWithoutDelay(AudioSource source)
+    {
+        source.pitch = Random.Range(minPitchVariance, maxPitchVariance);
+        source.volume = Random.Range(minVolumeVariance, maxVolumeVariance);
+
+        int index = Random.Range(0, sounds.Length - 1);
+
+        //Debug.Log("Playing sound clip " + sounds[index].name);
+        source.PlayOneShot(sounds[index]);
+    }
+
+    public void PlayWithoutSource(Transform positionTransform)
+    {
+        int index = Random.Range(0, sounds.Length - 1);
+        float volume = Random.Range(minVolumeVariance, maxVolumeVariance);
+        AudioSource.PlayClipAtPoint(sounds[index], positionTransform.position, volume);
+    }
+
+
+    
 
     public IEnumerator DelayPlay(AudioSource source)
     {

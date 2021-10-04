@@ -278,14 +278,13 @@ GameObject:
   m_Component:
   - component: {fileID: 7608029247106238803}
   - component: {fileID: 8468312003694360399}
-  - component: {fileID: 7792423665322626134}
   m_Layer: 0
   m_Name: PlayerMeleeAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7608029247106238803
 Transform:
   m_ObjectHideFlags: 0
@@ -317,69 +316,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHandler: {fileID: 7394104395992576367}
-  attack: {fileID: 7792423665322626134}
-  cooldown: 0.2
---- !u!114 &7792423665322626134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3334020181369310933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6925710033d12424b92edf973f10220a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 20
-  knockback: 5
-  windupDuration: 0.1
-  attackDuration: 0.1
-  returnDuration: 0.1
-  hitbox: {fileID: 7513574886907460880}
-  neutral: {fileID: 875532288336926737}
-  swingStart: {fileID: 3165495515856078652}
-  swingEnd: {fileID: 4474808769002423276}
-  boxcastOrigin: {fileID: 4834131237294189681}
-  boxcastDimensions: {x: 0.2, y: 1.2, z: 0.2}
-  hitDetectionRaycastLength: 0.1
-  hitDetection:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  debugMaterial: {fileID: 0}
-  effectsOnWindup:
-    m_PersistentCalls:
-      m_Calls: []
-  effectsOnSwing:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7394104395992576360}
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: f74c2e21d4c77db4aa1f72936c74e7a8,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  effectsOnHit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7394104395992576360}
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: 5d035cf46d3b97f4b88c9e10513bc0c9,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  attack:
+    damage: 15
+    knockback: 10
+    range: 3
+    angle: 90
+    detection:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    windup: 0.2
+    attackFriendlies: 0
+    type: 10
+    windupEffects:
+      m_PersistentCalls:
+        m_Calls: []
+    attackEffects:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7394104395992576360}
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: f74c2e21d4c77db4aa1f72936c74e7a8,
+              type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    hitEffects:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7394104395992576360}
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 5d035cf46d3b97f4b88c9e10513bc0c9,
+              type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  cooldown: 0.3
 --- !u!1 &3458720551978137422
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7513574886907460880
 Transform:
   m_ObjectHideFlags: 0
@@ -649,6 +630,7 @@ GameObject:
   - component: {fileID: 7394104395992576403}
   - component: {fileID: 7394104395992576364}
   - component: {fileID: 7394104395992576365}
+  - component: {fileID: 7392538297850820741}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -815,7 +797,6 @@ MonoBehaviour:
   properName: Player
   description: It's you!
   isUniquelyNamed: 1
-  timeScale: 0
   faction: {fileID: 11400000, guid: 79f801fc0ee06d946a4750707e3d1e2b, type: 2}
   movement: {fileID: 0}
   weapons: {fileID: 0}
@@ -1276,6 +1257,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hitboxes: []
+  allowPostmortemDamage: 0
 --- !u!114 &7394104395992576365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1291,6 +1273,25 @@ MonoBehaviour:
   healthScript: {fileID: 7394104395992576364}
   damageMultiplier: 1
   critical: 0
+--- !u!114 &7392538297850820741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7394104395992576411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec07a9f5070333542b308ac118fb1cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+  - m_PersistentCalls:
+      m_Calls: []
+  - m_PersistentCalls:
+      m_Calls: []
+  - m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7394104396082026298
 GameObject:
   m_ObjectHideFlags: 0
@@ -2476,18 +2477,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa3e84de4feb7314d80e85ed90615eb0, type: 3}
---- !u!114 &801657994281591209 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7907526511070327533, guid: aa3e84de4feb7314d80e85ed90615eb0,
-    type: 3}
-  m_PrefabInstance: {fileID: 7394104394944680772}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562e33d137182e34aafcc09c5b1b2a65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6907704516432270371 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4125361499564377959, guid: aa3e84de4feb7314d80e85ed90615eb0,
@@ -2500,15 +2489,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844cd25aa3dbab748901c4c5487fc268, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!223 &1662903634670720288 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 8182742341012162148, guid: aa3e84de4feb7314d80e85ed90615eb0,
-    type: 3}
-  m_PrefabInstance: {fileID: 7394104394944680772}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1662903634670720289 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8182742341012162149, guid: aa3e84de4feb7314d80e85ed90615eb0,
     type: 3}
   m_PrefabInstance: {fileID: 7394104394944680772}
   m_PrefabAsset: {fileID: 0}
+--- !u!223 &1662903634670720288 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 8182742341012162148, guid: aa3e84de4feb7314d80e85ed90615eb0,
+    type: 3}
+  m_PrefabInstance: {fileID: 7394104394944680772}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &801657994281591209 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7907526511070327533, guid: aa3e84de4feb7314d80e85ed90615eb0,
+    type: 3}
+  m_PrefabInstance: {fileID: 7394104394944680772}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562e33d137182e34aafcc09c5b1b2a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

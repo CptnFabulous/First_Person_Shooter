@@ -24,7 +24,7 @@ public class KillQuantityObjective : PlayerObjective
     public void UpdateObjective(KillMessage km)
     {
         print("Checking quantity objective");
-        if (state == ObjectiveState.Active && (km.victim == enemyType || km.victim.properName == enemyType.properName))
+        if (state == ObjectiveState.Active && (km.victim == enemyType || km.victim.GetComponent<Entity>().properName == enemyType.properName))
         {
             print("Enemy eliminated");
             amountEliminated += 1;

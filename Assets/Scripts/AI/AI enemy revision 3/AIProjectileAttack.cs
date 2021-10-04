@@ -15,12 +15,13 @@ public class AIProjectileAttack : AIAttack
         //Vector3 direction = wielder.currentTarget.transform.position - wielder.LookOrigin;
         Vector3 direction = DetermineEnemyPosition() - wielder.LookOrigin;
         AttackMessage m = AttackMessage.Ranged(wielder.characterData, wielder.LookOrigin, direction, stats.range, stats.projectilePrefab.diameter, stats.projectileSpread, stats.projectilePrefab.velocity, stats.projectilePrefab.hitDetection);
-        EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
+        EventJunction.Transmit(m);
+        //EventObserver.TransmitAttack(m); // Transmits a message of the attack the player is about to perform
     }
 
-    public override void TheAttackItself()
+    public override void SingleAttack()
     {
-        base.TheAttackItself();
+        base.SingleAttack();
         stats.Shoot(wielder.characterData, wielder.LookOrigin, wielder.LookDirection, wielder.LookUp);
     }
 }

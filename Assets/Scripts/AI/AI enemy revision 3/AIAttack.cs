@@ -124,7 +124,7 @@ public abstract class AIAttack : MonoBehaviour
 
         for (int i = 0; i < attacksInBurst; i++)
         {
-            TheAttackItself();
+            SingleAttack();
             
             if (i < attacksInBurst - 1)
             {
@@ -140,7 +140,7 @@ public abstract class AIAttack : MonoBehaviour
         onTelegraph.Invoke();
     }
 
-    public virtual void TheAttackItself()
+    public virtual void SingleAttack()
     {
         onAttack.Invoke();
     }

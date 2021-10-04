@@ -140,7 +140,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
   velocity: 100
   gravityMultiplier: 0.01
   diameter: 0.5

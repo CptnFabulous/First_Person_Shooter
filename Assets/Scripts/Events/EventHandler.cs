@@ -11,11 +11,26 @@ using UnityEngine.Events;
 
 public class EventHandler : MonoBehaviour
 {
-    public List<EventObserver> eventObservers = new List<EventObserver>();
-    // Add more delegates, functions, etc. if I need to add new game events in the future
+    static EventHandler instance;
+    public static EventHandler Current
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<EventHandler>();
+                if (instance == null)
+                {
+                    instance = new GameObject("Event Handler").AddComponent<EventHandler>();
+                }
+            }
 
+            return instance;
+        }
+    }
 
     
+    //public List<EventObserver> eventObservers = new List<EventObserver>();
 
 
     // Interface based (does not work properly)
@@ -98,58 +113,6 @@ public class EventHandler : MonoBehaviour
     }
     */
 
-    // Delegate based
-    /*
-    public event System.Action<AttackMessage> OnAttack;
-    public event System.Action<DamageMessage> OnDamage;
-    public event System.Action<KillMessage> OnKill;
-    public event System.Action<InteractMessage> OnInteract;
-    public event System.Action<SpawnMessage> OnSpawn;
-
-    static EventHandler internalReference;
-    public static EventHandler Current
-    {
-        get
-        {
-            if (internalReference == null) // If internal reference does not exist
-            {
-                // Assign an EventHandler that already exists
-                internalReference = FindObjectOfType<EventHandler>();
-
-                if (internalReference == null) // If it's still null because one was not found
-                {
-                    // Make a new one and record it
-                    GameObject manager = new GameObject("EventHandler");
-                    internalReference = manager.AddComponent<EventHandler>();
-                }
-            }
-
-            // Obtain the internal reference
-            return internalReference;
-        }
-    }
-
-    public static void TransmitAttack(AttackMessage message)
-    {
-        Current.OnAttack(message);
-    }
-    public static void TransmitDamage(DamageMessage message)
-    {
-        Current.OnDamage(message);
-    }
-    public static void TransmitKill(KillMessage message)
-    {
-        Current.OnKill(message);
-    }
-    public static void TransmitInteraction(InteractMessage message)
-    {
-        Current.OnInteract(message);
-    }
-    public static void TransmitSpawning(SpawnMessage message)
-    {
-        Current.OnSpawn(message);
-    }
-    */
 }
 
 public class AttackMessage
@@ -191,79 +154,7 @@ public class AttackMessage
     public Vector2 attackAngles;
     #endregion
 
-    #region Create new message
-    public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
-    {
-        AttackMessage m = new AttackMessage();
-
-
-
-        m.attacker = attacker;
-        m.type = AttackType.Ranged;
-        m.timeInitiated = Time.time;
-        m.origin = origin;
-        m.direction = direction;
-        m.maxRange = maxRange;
-        m.projectileDiameter = projectileDiameter;
-        m.coneAngle = coneAngle;
-        m.velocity = velocity;
-        m.hitDetection = hitDetection;
-
-        #region Get characters at risk
-
-        
-
-
-        List<Character> list = new List<Character>();
-        // Perform a vision cone check
-        RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
-        /*
-        string debugString = "Characters at risk from " + m.attacker.name + " on frame " + Time.frameCount + ":";
-        if (thingsInLineOfFire.Length < 1)
-        {
-            debugString = "Attack from " + m.attacker.name + " at time " + m.timeInitiated + " will not hit anything.";
-            //Misc.PauseForDebuggingPurposes();
-        }
-        */
-        for (int i = 0; i < thingsInLineOfFire.Length; i++)
-        {
-            // Check raycasthit collider to see if it is a character with a faction
-            Character c = Character.FromObject(thingsInLineOfFire[i].collider.gameObject);
-            // If there is a character class
-            // If the character class is not already in the list
-            // If the character class is considered an enemy of the attacker
-            if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
-            {
-                // If so, the character is in the attack's danger zone
-                //Debug.Log(c.name + " is in the line of fire of " + attacker.name + "'s attack");
-                list.Add(c);
-                //debugString += "\n" + c.name;
-            }
-        }
-        //Debug.Log(debugString);
-
-        m.charactersAtRisk = list.ToArray(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
-        #endregion
-
-        return m;
-    }
-
-    public static AttackMessage Melee(Character attacker, Vector3 direction, float radius, float angle, float maxRange, float delay)
-    {
-        return null;
-    }
-
-    public static AttackMessage AreaOfEffect(Character attacker, Vector3 point, float effectRadius)
-    {
-        return null;
-    }
-
-    public static AttackMessage ExplosiveProjectile(Character attacker, Vector3 direction, float radius, float angle, float speed, Vector3 impactPoint, float effectRadius)
-    {
-        //return new AttackMessage { attacker = attacker, }
-        return null;
-    }
-    #endregion
+    
 
     
 
@@ -339,16 +230,93 @@ public class AttackMessage
     }
 
 
+
+    #region Create new message
+    public static AttackMessage Ranged(Character attacker, Vector3 origin, Vector3 direction, float maxRange, float projectileDiameter, float coneAngle, float velocity, LayerMask hitDetection)
+    {
+        AttackMessage m = new AttackMessage();
+
+
+
+        m.attacker = attacker;
+        m.type = AttackType.Ranged;
+        m.timeInitiated = Time.time;
+        m.origin = origin;
+        m.direction = direction;
+        m.maxRange = maxRange;
+        m.projectileDiameter = projectileDiameter;
+        m.coneAngle = coneAngle;
+        m.velocity = velocity;
+        m.hitDetection = hitDetection;
+
+        #region Get characters at risk
+
+
+
+
+        List<Character> list = new List<Character>();
+        // Perform a vision cone check
+        RaycastHit[] thingsInLineOfFire = AIFunction.VisionCone(origin, direction, Vector3.up, coneAngle, maxRange, damageableThings, hitDetection);
+        /*
+        string debugString = "Characters at risk from " + m.attacker.name + " on frame " + Time.frameCount + ":";
+        if (thingsInLineOfFire.Length < 1)
+        {
+            debugString = "Attack from " + m.attacker.name + " at time " + m.timeInitiated + " will not hit anything.";
+            //Misc.PauseForDebuggingPurposes();
+        }
+        */
+        for (int i = 0; i < thingsInLineOfFire.Length; i++)
+        {
+            // Check raycasthit collider to see if it is a character with a faction
+            Character c = Character.FromObject(thingsInLineOfFire[i].collider.gameObject);
+            // If there is a character class
+            // If the character class is not already in the list
+            // If the character class is considered an enemy of the attacker
+            if (c != null && list.Contains(c) == false && attacker.HostileTowards(c))
+            {
+                // If so, the character is in the attack's danger zone
+                //Debug.Log(c.name + " is in the line of fire of " + attacker.name + "'s attack");
+                list.Add(c);
+                //debugString += "\n" + c.name;
+            }
+        }
+        //Debug.Log(debugString);
+
+        m.charactersAtRisk = list.ToArray(); // Performs a calculation to find all enemies within the attack's boundaries. DO THIS LAST, after all the proper variables have been established for accurate calculations
+        #endregion
+
+        return m;
+    }
+
+    public static AttackMessage Melee(Character attacker, Vector3 direction, float radius, float angle, float maxRange, float delay)
+    {
+        return null;
+    }
+
+    public static AttackMessage AreaOfEffect(Character attacker, Vector3 point, float effectRadius)
+    {
+        return null;
+    }
+
+    public static AttackMessage ExplosiveProjectile(Character attacker, Vector3 direction, float radius, float angle, float speed, Vector3 impactPoint, float effectRadius)
+    {
+        //return new AttackMessage { attacker = attacker, }
+        return null;
+    }
+    #endregion
+
+
 }
 
 public class DamageMessage
 {
-    public Character attacker;
-    public Character victim;
+    //public float time;
+    public Entity attacker;
+    public Health victim;
     public DamageType method;
     public int amount;
-
-    public DamageMessage(Character _attacker, Character _victim, DamageType _method, int _amount)
+    
+    public DamageMessage(Entity _attacker, Health _victim, DamageType _method, int _amount)
     {
         attacker = _attacker;
         victim = _victim;
@@ -359,11 +327,11 @@ public class DamageMessage
 
 public class KillMessage
 {
-    public Character attacker;
-    public Character victim;
+    public Entity attacker;
+    public Health victim;
     public DamageType causeOfDeath;
 
-    public KillMessage(Character _attacker, Character _victim, DamageType _causeOfDeath)
+    public KillMessage(Entity _attacker, Health _victim, DamageType _causeOfDeath)
     {
         attacker = _attacker;
         victim = _victim;
@@ -394,3 +362,41 @@ public class SpawnMessage
         location = _location;
     }
 }
+
+
+
+/*
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class EventObserver : MonoBehaviour
+{
+    
+    // These events can use multiple parameters at once, but I opted to use events with just one each, so I can easily alter required parameters on the fly
+    public event System.Action<Character, Character> OnAttack;
+    public event System.Action<Character, Character, DamageType, int> OnDamage;
+    public event System.Action<KillMessage> OnKill;
+    public event System.Action<PlayerHandler, Interactable> OnInteract;
+    public event System.Action<Entity, Vector3> OnSpawn;
+    
+
+    public event System.Action<AttackMessage> OnAttack;
+    public event System.Action<DamageMessage> OnDamage;
+    public event System.Action<KillMessage> OnKill;
+    public event System.Action<InteractMessage> OnInteract;
+    public event System.Action<SpawnMessage> OnSpawn;
+
+
+
+    public void OnEnable()
+    {
+        EventHandler.Current.eventObservers.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.Current.eventObservers.Remove(this);
+    }
+}
+*/

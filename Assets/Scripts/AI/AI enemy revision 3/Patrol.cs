@@ -12,7 +12,7 @@ public class Patrol : AIMovementBehaviour
 
 
     int index;
-    int indexChangeValue = 1;
+    //int indexChangeValue = 1;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

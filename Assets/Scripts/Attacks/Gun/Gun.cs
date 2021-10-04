@@ -255,7 +255,10 @@ public class Gun : MonoBehaviour
                 if (attackMessageLimitTimer >= attackMessageLimitDelay) // Sends attack message
                 {
                     AttackMessage am = AttackMessage.Ranged(playerHolding.handler, transform.position, transform.forward, general.range, general.projectilePrefab.diameter, playerHolding.standingAccuracy.Calculate() + general.projectileSpread, general.projectilePrefab.velocity, general.projectilePrefab.hitDetection);
-                    EventObserver.TransmitAttack(am);
+                    EventJunction.Transmit(am);
+                    
+                    
+                    //EventObserver.TransmitAttack(am);
                     attackMessageLimitTimer = 0;
                 }
                 #endregion

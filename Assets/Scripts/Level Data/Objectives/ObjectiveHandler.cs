@@ -19,7 +19,6 @@ public class ObjectiveHandler : MonoBehaviour
     }
     
     
-    EventObserver eo;
 
     public PlayerObjective[] objectives;
 
@@ -31,8 +30,7 @@ public class ObjectiveHandler : MonoBehaviour
     private void Awake()
     {
         // Add important functions to eventobserver
-        eo = GetComponent<EventObserver>();
-        eo.OnKill += CheckKillObjectives;
+        EventJunction.RefreshWithFunction(CheckKillObjectives, true);
 
 
         //CompleteLevel();

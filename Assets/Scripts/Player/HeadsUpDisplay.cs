@@ -11,6 +11,7 @@ public class HeadsUpDisplay : MonoBehaviour
     public PlayerHandler player;
     public Camera hudCamera;
     Canvas hudCanvas;
+    RectTransform canvasTransform;
 
     [Header("General elements")]
     public Color resourceNormalColour;
@@ -39,8 +40,8 @@ public class HeadsUpDisplay : MonoBehaviour
     public GameObject healthDisplay;
     public Text healthCounter;
     public Image healthBar;
-    public ColourTransitionEffect damageFlash;
-    public AudioClip damageNoise;
+    public UnityEvent onDamage;
+    public UnityEvent onHeal;
 
     [Header("Movement elements")]
     public UnityEvent effectsOnCrouch;
@@ -67,11 +68,9 @@ public class HeadsUpDisplay : MonoBehaviour
     public Image ammoBar;
 
     [Header("Weapon feedback")]
-    public AudioClip damageFeedback;
-    public AudioClip criticalFeedback;
-    public AudioClip killFeedback;
-    public ColourTransitionEffect damagePing;
-    public ColourTransitionEffect criticalPing;
+    public UnityEvent damageEffect;
+    public UnityEvent criticalEffect;
+    public UnityEvent killEffect;
 
     [Header("Weapon optics")]
     public ColourTransitionEffect opticsOverlay;
@@ -87,23 +86,25 @@ public class HeadsUpDisplay : MonoBehaviour
     {
         //player = GetComponent<PlayerHandler>();
         hudCanvas = GetComponent<Canvas>();
+        canvasTransform = hudCanvas.GetComponent<RectTransform>();
     }
 
     // Use this for initialization
     void Start()
     {
-        SetCrouchVisualEffects(false);
+        SetCrouchVisualEffects(player.movement.isCrouching);
         PopulateInteractionMenu(null);
+
+        EventJunction.RefreshWithFunction(CheckForHitMarker, true);
+        EventJunction.RefreshWithFunction(CheckForKillMarker, true);
     }
     
     // Update is called once per frame
     void Update()
     {
-        RectTransform rt = hudCanvas.GetComponent<RectTransform>();
         Transform playerHead = player.movement.head.transform;
 
         #region Objectives
-        //objectiveList.text = ObjectiveList();
         UpdateObjectiveList();
         #endregion
 
@@ -120,22 +121,9 @@ public class HeadsUpDisplay : MonoBehaviour
         minimapCamera.transform.localPosition = new Vector3(0, height, 0);
         #endregion
 
-        #region Interaction
-
-        #endregion
 
         #region Health HUD
-        healthCounter.text = player.health.values.current.ToString();
-        FillMeter(healthBar, player.health.values.current, player.health.values.max);
-        if (player.health.values.IsCritical)
-        {
-            healthCounter.color = resourceCriticalColour;
-            // Do other stuff for critical health e.g. greyscale screen, warnings
-        }
-        else
-        {
-            healthCounter.color = resourceNormalColour;
-        }
+        UpdateHealthMeter(player.health);
         #endregion
 
         #region Basic reticle and interacting
@@ -212,7 +200,7 @@ public class HeadsUpDisplay : MonoBehaviour
 
                     reticleOffsetPoint = hudCamera.WorldToScreenPoint(reticleOffsetPoint); // Obtains the screen position of this point
                     Vector2 canvasOffset = reticleCentre.rectTransform.rect.center;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasTransform, reticleOffsetPoint, hudCamera, out canvasOffset); // Converts screen point value to its appropriate location on the heads up display canvas
                     float reticleRadius = Vector2.Distance(reticleCentre.rectTransform.rect.center, canvasOffset); // Obtains the width of the weapon's cone of fire at the maximum range, in canvas space
 
                     // Adjust reticleRadius to match the canvas size
@@ -276,6 +264,22 @@ public class HeadsUpDisplay : MonoBehaviour
         #endregion
     }
 
+
+
+
+    
+    
+
+
+    void FillMeter(Image i, float current, float max)
+    {
+        i.fillAmount = current / max;
+    }
+    public void PlaySoundEffect(AudioClip clip)
+    {
+        player.audio.PlayOneShot(clip);
+    }
+
     public void SetCrouchVisualEffects(bool isCrouching)
     {
         if (isCrouching)
@@ -287,7 +291,6 @@ public class HeadsUpDisplay : MonoBehaviour
             effectsOnStand.Invoke();
         }
     }
-
     public void PopulateInteractionMenu(Interactable i)
     {
         // If this is run with i set to null, this means there is nothing to interact with.
@@ -296,7 +299,7 @@ public class HeadsUpDisplay : MonoBehaviour
             interactWindow.gameObject.SetActive(false);
             return;
         }
-        
+
         interactWindow.gameObject.SetActive(true);
 
         interactObjectName.text = i.name;
@@ -318,7 +321,20 @@ public class HeadsUpDisplay : MonoBehaviour
             interactButtonPrompt.sprite = interactable;
         }
     }
-
+    public void UpdateHealthMeter(Health healthData)
+    {
+        healthCounter.text = healthData.values.current.ToString();
+        FillMeter(healthBar, healthData.values.current, healthData.values.max);
+        if (player.health.values.IsCritical)
+        {
+            healthCounter.color = resourceCriticalColour;
+            // Do other stuff for critical health e.g. greyscale screen, warnings
+        }
+        else
+        {
+            healthCounter.color = resourceNormalColour;
+        }
+    }
 
     string AmmoInfo(Gun rw, int firingModeIndex)
     {
@@ -352,7 +368,6 @@ public class HeadsUpDisplay : MonoBehaviour
 
         return s;
     }
-
     void ColourReticle(Color c)
     {
         reticleCentre.color = c;
@@ -361,20 +376,6 @@ public class HeadsUpDisplay : MonoBehaviour
         reticleLeft.color = c;
         reticleRight.color = c;
     }
-
-    void FillMeter(Image i, float current, float max)
-    {
-        i.fillAmount = current / max;
-    }
-
-    public void PopulateWeaponWheel(Gun rw, int firingModeIndex)
-    {
-        selectorWeaponName.text = rw.name;
-        selectorWeaponFiringMode.text = rw.firingModes[firingModeIndex].name;
-        selectorWeaponRemainingAmmunition.text = AmmoInfo(rw, firingModeIndex);
-        selectorWeaponImage.sprite = rw.weaponSelectorIcon; // Possibly substitute for finding object mesh if weapon has a 3D model
-    }
-
     public void ADSTransition(float timer, Sprite opticsGraphic)
     {
         if (opticsGraphic != null)
@@ -401,31 +402,27 @@ public class HeadsUpDisplay : MonoBehaviour
             reticleRight.enabled = true;
         }
     }
-
-    public void PlayHitMarker(bool isCritical)
+    public void PopulateWeaponWheel(Gun rw, int firingModeIndex)
     {
-        if (isCritical)
+        selectorWeaponName.text = rw.name;
+        selectorWeaponFiringMode.text = rw.firingModes[firingModeIndex].name;
+        selectorWeaponRemainingAmmunition.text = AmmoInfo(rw, firingModeIndex);
+        selectorWeaponImage.sprite = rw.weaponSelectorIcon; // Possibly substitute for finding object mesh if weapon has a 3D model
+    }
+    public void CheckForHitMarker(DamageMessage message)
+    {
+        if (message.attacker == player)
         {
-            AudioSource.PlayClipAtPoint(criticalFeedback, transform.position);
-            criticalPing.Play();
-            damagePing.Stop();
-        }
-        else
-        {
-            AudioSource.PlayClipAtPoint(damageFeedback, transform.position);
-            damagePing.Play();
-            criticalPing.Stop();
+            damageEffect.Invoke();
         }
     }
-
-    public void PlayerDamageFeedback()
+    public void CheckForKillMarker(KillMessage message)
     {
-        damageFlash.Play();
-
+        if (message.attacker == player)
+        {
+            killEffect.Invoke();
+        }
     }
-
-
-
 
     void UpdateObjectiveList()
     {
@@ -466,4 +463,9 @@ public class HeadsUpDisplay : MonoBehaviour
             objectiveList.gameObject.SetActive(false);
         }
     }
+
+
+
+
+    
 }

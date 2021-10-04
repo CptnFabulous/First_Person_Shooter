@@ -45,7 +45,8 @@ public class Interactable : MonoBehaviour
         PlayerWhoJustInteractedWithThis = ph;
         
         onInteract.Invoke();
-        EventObserver.TransmitInteract(ph, this);
+        EventJunction.Transmit(new InteractMessage(ph, this));
+
         coolingDown = Cooldown(cooldown);
         StartCoroutine(coolingDown);
     }

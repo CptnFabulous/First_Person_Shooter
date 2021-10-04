@@ -12,7 +12,7 @@ public class Health : MonoBehaviour
     public UnityEvent onDeath;
     public UnityEvent onHeal;
     public DamageHitbox[] hitboxes;
-
+    public bool allowPostmortemDamage;
 
     public bool IsDead { get; private set; }
 
@@ -40,6 +40,12 @@ public class Health : MonoBehaviour
 
     public virtual void Damage(int damageAmount, Entity origin, DamageType damageSource)
     {
+        // Abort if already dead, unless the 'corpse' can be desecrated further
+        if (IsDead && allowPostmortemDamage == false)
+        {
+            return;
+        }
+        
         values.current -= damageAmount;
         lastAttacker = origin;
         lastDamageSource = damageSource;
@@ -53,6 +59,8 @@ public class Health : MonoBehaviour
         {
             onHeal.Invoke();
         }
+
+        EventJunction.Transmit(new DamageMessage(origin, this, damageSource, damageAmount));
 
         if (values.current <= 0)
         {
@@ -70,7 +78,7 @@ public class Health : MonoBehaviour
 
         IsDead = true;
         onDeath.Invoke();
-        EventObserver.TransmitKill(lastAttacker.GetComponent<Character>(), GetComponent<Character>(), causeOfDeath);
+        EventJunction.Transmit(new KillMessage(lastAttacker, this, causeOfDeath));
 
     }
 

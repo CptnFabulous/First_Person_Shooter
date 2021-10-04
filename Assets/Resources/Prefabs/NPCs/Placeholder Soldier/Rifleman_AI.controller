@@ -104,9 +104,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: Dodge
   ai: {fileID: 0}
-  movementSpeed: 30
+  movementSpeed: 7.5
   destinationThreshold: 0.1
-  checkRadius: 10
+  minCheckRadius: 5
+  maxCheckRadius: 15
   maxMoveDistance: 20
   numberOfChecks: 15
   coverCriteria:

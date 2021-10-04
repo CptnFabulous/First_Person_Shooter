@@ -60,6 +60,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 6e70f8f002e7a6640b21a46446f2a4c1, type: 2}
+        m_MethodName: PlayWithoutSource
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2483134584432345369}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   velocity: 500
   gravityMultiplier: 0.1
   diameter: 0.1
@@ -73,8 +84,6 @@ MonoBehaviour:
   type: 7
   allowSelfDamage: 0
   allowFriendlyFire: 0
-  bulletDecal: {fileID: 8093613007427399318, guid: 141515667f45add4da5c7e12c7ce8c6c,
-    type: 3}
 --- !u!96 &8466749447774014708
 TrailRenderer:
   serializedVersion: 2

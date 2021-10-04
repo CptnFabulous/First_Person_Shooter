@@ -5771,15 +5771,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 2510278049045554839, guid: 153814f4afb3c6f4ba878a07e64d3cca,
-    type: 3}
-  muzzle: {fileID: 8298018056528668264}
-  projectileCount: 1
   projectileSpread: 1
   range: 300
   recoil: 3
   recoilApplyRate: 12
-  recoilRecovery: 10
   consumesAmmo: 1
   ammoType: 0
   ammoPerShot: 1
@@ -5821,6 +5816,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  projectilePrefab: {fileID: 2510278049045554839, guid: 153814f4afb3c6f4ba878a07e64d3cca,
+    type: 3}
+  muzzle: {fileID: 8298018056528668264}
+  projectileCount: 1
 --- !u!1 &763419324
 GameObject:
   m_ObjectHideFlags: 0
@@ -7748,7 +7747,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 997892571}
-  - component: {fileID: 997892574}
   - component: {fileID: 997892572}
   - component: {fileID: 997892573}
   m_Layer: 0
@@ -7805,19 +7803,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 200
   delayBetweenChecks: 5
---- !u!114 &997892574
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997892570}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4e44b8d9bfb1ec4ba22300efacc80e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventHandler: {fileID: 0}
 --- !u!1 &1041827187
 GameObject:
   m_ObjectHideFlags: 0
@@ -34180,15 +34165,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 8016094866677976404, guid: 5fb6de227da303d439cfb2d7760af2f9,
-    type: 3}
-  muzzle: {fileID: 0}
-  projectileCount: 9
   projectileSpread: 2
   range: 200
   recoil: 6
   recoilApplyRate: 12
-  recoilRecovery: 10
   consumesAmmo: 1
   ammoType: 1
   ammoPerShot: 1
@@ -34230,6 +34210,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  projectilePrefab: {fileID: 8016094866677976404, guid: 5fb6de227da303d439cfb2d7760af2f9,
+    type: 3}
+  muzzle: {fileID: 0}
+  projectileCount: 9
 --- !u!4 &7154262863342141518
 Transform:
   m_ObjectHideFlags: 0
@@ -34320,15 +34304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 6905704790631562612, guid: a33deba38e120234393b9e3001c5ead4,
-    type: 3}
-  muzzle: {fileID: 0}
-  projectileCount: 1
   projectileSpread: 0
   range: 100
   recoil: 6
   recoilApplyRate: 12
-  recoilRecovery: 10
   consumesAmmo: 1
   ammoType: 2
   ammoPerShot: 1
@@ -34370,6 +34349,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  projectilePrefab: {fileID: 6905704790631562612, guid: a33deba38e120234393b9e3001c5ead4,
+    type: 3}
+  muzzle: {fileID: 0}
+  projectileCount: 1
 --- !u!4 &7154262863787074573
 Transform:
   m_ObjectHideFlags: 0
@@ -41381,15 +41364,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 6320666630984438089, guid: ae43fdf7744475742922a18cb078b731,
-    type: 3}
-  muzzle: {fileID: 5086846652940822933}
-  projectileCount: 1
   projectileSpread: 0.25
   range: 300
   recoil: 1
   recoilApplyRate: 12
-  recoilRecovery: 10
   consumesAmmo: 1
   ammoType: 3
   ammoPerShot: 1
@@ -41431,6 +41409,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  projectilePrefab: {fileID: 6320666630984438089, guid: ae43fdf7744475742922a18cb078b731,
+    type: 3}
+  muzzle: {fileID: 5086846652940822933}
+  projectileCount: 1
 --- !u!1 &8470318757597642844
 GameObject:
   m_ObjectHideFlags: 0
@@ -41523,15 +41505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectilePrefab: {fileID: 3441580320547347983, guid: 3a070b71fb6a90d4682292f55507cc57,
-    type: 3}
-  muzzle: {fileID: 0}
-  projectileCount: 1
   projectileSpread: 0
   range: 300
   recoil: 6
   recoilApplyRate: 12
-  recoilRecovery: 10
   consumesAmmo: 1
   ammoType: 4
   ammoPerShot: 1
@@ -41551,6 +41528,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  projectilePrefab: {fileID: 3441580320547347983, guid: 3a070b71fb6a90d4682292f55507cc57,
+    type: 3}
+  muzzle: {fileID: 0}
+  projectileCount: 1
 --- !u!114 &8470318757743825643
 MonoBehaviour:
   m_ObjectHideFlags: 0

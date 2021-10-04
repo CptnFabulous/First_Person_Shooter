@@ -41,8 +41,7 @@ public static class Misc
             return value;
         }
     }
-
-    public static float InverseClamp(int value, int min, int max)
+    public static int InverseClamp(int value, int min, int max)
     {
         if (value > max)
         {
@@ -166,8 +165,6 @@ public static class Misc
     */
     #endregion
 
-
-
     #region X where child is at the same X as another separate X (find better names for these)
     public static Vector3 PositionWhereChildIsAtSamePositionAsAnotherTransform(Vector3 transformToMove, Vector3 child, Vector3 position)
     {
@@ -205,12 +202,39 @@ public static class Misc
 
     #endregion
 
-    #region Even more miscellaneous
+    #region Random
     public static bool RandomBool(float trueChance = 0.5f)
     {
         // Randomly returns true or false. trueChance is used for probability - 0 means always false, 1 means always true
         return Random.Range(0f, 1f) < trueChance;
     }
+
+    /// <summary>
+    /// Produces a random index value, that is always different from the previous one
+    /// </summary>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <param name="previous"></param>
+    /// <returns></returns>
+    public static int NonRepeatedRandomIndex(int min, int max, int previous)
+    {
+        int index = Random.Range(min, max);
+        if (index == previous)
+        {
+            index = InverseClamp(index + 1, min, max);
+        }
+        return index;
+    }
+
+    public static int WeightedIndex(int length, AnimationCurve weighting)
+    {
+        float random = weighting.Evaluate(Random.Range(0f, 1f));
+        return Mathf.FloorToInt(random * length);
+    }
+
+    #endregion
+
+    #region Even more miscellaneous
 
     public static float GetDecimalFromFloat(float f)
     {

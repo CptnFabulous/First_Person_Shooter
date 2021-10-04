@@ -83,7 +83,7 @@ public class Projectile : MonoBehaviour
     public void SpawnObjectOnSurface(GameObject prefab)
     {
         GameObject newObject = Instantiate(prefab);
-        AttachObjectToHitSurface(newObject.transform, hit, Vector3.up, 0);
+        AttachObjectToHitSurface(newObject.transform, hit, Vector3.forward, 0);
     }
 
     public static void AttachObjectToHitSurface(Transform objectTransform, RaycastHit hit, Vector3 rotationAxis, float distanceOffSurface)

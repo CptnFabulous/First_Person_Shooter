@@ -9,7 +9,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     [HideInInspector] public NavMeshAgent na;
     [HideInInspector] public Character characterData;
     [HideInInspector] public AudioSource audioOutput;
-    [HideInInspector] public EventObserver eo;
+    //[HideInInspector] public EventObserver eo;
     public Animator animationController;
     public Animator aiStateMachine;
 
@@ -71,8 +71,8 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         characterData = GetComponent<Character>();
         audioOutput = GetComponent<AudioSource>();
 
-        eo = GetComponent<EventObserver>();
-        eo.OnAttack += Dodge;
+
+        EventJunction.RefreshWithFunction(Dodge, true);
     }
 
     // Update is called once per frame
