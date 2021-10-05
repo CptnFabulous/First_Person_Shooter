@@ -30,7 +30,7 @@ public class ObjectiveHandler : MonoBehaviour
     private void Awake()
     {
         // Add important functions to eventobserver
-        EventJunction.RefreshWithFunction(CheckKillObjectives, true);
+        EventJunction.Subscribe(CheckKillObjectives, true);
 
 
         //CompleteLevel();

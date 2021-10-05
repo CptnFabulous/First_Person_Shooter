@@ -23,4 +23,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9352b630d8ba20b4da7ed200ccf2a173, type: 3}
   minPitchVariance: 1
   maxPitchVariance: 1
+  minVolumeVariance: 0.5
+  maxVolumeVariance: 0.5
   delay: 0

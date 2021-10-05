@@ -38,7 +38,7 @@ public class Gun : MonoBehaviour
     public Animator animator;
     public Renderer weaponVisual;
     public Transform weaponVisualTransform;
-    public AudioSource weaponSoundSource;
+    //public AudioSource weaponSoundSource;
     public Sprite weaponSelectorIcon;
 
     [Header("Other")]
@@ -105,6 +105,9 @@ public class Gun : MonoBehaviour
     IEnumerator switching;
     IEnumerator reloading;
     IEnumerator animatingWeaponModel;
+
+
+    public IEnumerator currentAction;
 
 
     float attackMessageLimitTimer = float.MaxValue;
@@ -257,8 +260,7 @@ public class Gun : MonoBehaviour
                     AttackMessage am = AttackMessage.Ranged(playerHolding.handler, transform.position, transform.forward, general.range, general.projectilePrefab.diameter, playerHolding.standingAccuracy.Calculate() + general.projectileSpread, general.projectilePrefab.velocity, general.projectilePrefab.hitDetection);
                     EventJunction.Transmit(am);
                     
-                    
-                    //EventObserver.TransmitAttack(am);
+
                     attackMessageLimitTimer = 0;
                 }
                 #endregion
@@ -400,6 +402,44 @@ public class Gun : MonoBehaviour
         // 2: Just give it a spring joint and use Physics.AddForce or AddForceAtPosition to make it jump back
     }
 
+
+
+
+    public static readonly AnimationCurve cosmeticRecoilCurve = new AnimationCurve
+    {
+        keys = new Keyframe[]
+        {
+            new Keyframe(0, 0, 0, 90),
+            new Keyframe(0.25f, 1, 0, 0),
+            new Keyframe(1, 0, 0, 0),
+        }
+    };
+
+    
+    public void CosmeticRecoil(Transform recoilOrientation)
+    {
+        Debug.Log("Cosmetic recoil activated");
+        StartCoroutine(MoveWeaponCosmetically(general.heldPosition, recoilOrientation, cosmeticRecoilCurve));
+    }
+
+    public IEnumerator MoveWeaponCosmetically(Transform first, Transform second, AnimationCurve curve)
+    {
+        float timer = 0;
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / (60 / fireControls.roundsPerMinute * 2);
+            timer = Mathf.Clamp(timer, 0f, 1f);
+            Debug.Log(timer);
+
+            float value = curve.Evaluate(timer);
+            weaponVisualTransform.position = Vector3.Lerp(first.position, second.position, value);
+            weaponVisualTransform.rotation = Quaternion.Lerp(first.rotation, second.rotation, value);
+
+            yield return null;
+        }
+    }
+
+
     #region ADS functions
     public void ADSHandler()
     {
@@ -450,7 +490,6 @@ public class Gun : MonoBehaviour
         // Figure out sensitivity while aiming and print it. I presume that something with the mechanics is setting the sensitivity to nothing.
         // Debug.Log("Player camera sensitivity = " + playerHolding.ph.movement.sensitivityModifier.Calculate());
     }
-
     void LerpADS(float timer)
     {
         if (optics == null)
@@ -483,7 +522,6 @@ public class Gun : MonoBehaviour
 
         weaponVisual.enabled = (timer < optics.whenToDisableWeaponVisual);
     }
-
     void CancelADSInstantly()
     {
         adsTimer = 0;
@@ -530,12 +568,16 @@ public class Gun : MonoBehaviour
 
         // Start reload sequence, e.g. play animations
 
+        magazine.onReloadStart.Invoke();
+
         while (magazine.data.current < magazine.data.max || RemainingAmmo() <= 0)
         {
             yield return new WaitForSeconds(magazine.reloadTime);
             // Add ammunition to the magazine based off roundsReloadedPerCycle. Unless there is not enough ammo for a full cycle, in which case load all remaining ammo.
             magazine.data.current += Mathf.Min(magazine.roundsReloadedPerCycle, RemainingAmmo());
             magazine.data.current = Mathf.Clamp(magazine.data.current, 0, magazine.data.max); // Ensure magazine is not overloaded
+
+            magazine.onRoundsReloaded.Invoke();
         }
 
         // End reload sequence
@@ -548,6 +590,8 @@ public class Gun : MonoBehaviour
         {
             StopCoroutine(reloading);
             reloading = null;
+
+            magazine.onReloadEnd.Invoke();
         }
     }
 
@@ -610,6 +654,15 @@ public class Gun : MonoBehaviour
             animatingWeaponModel = null;
         }
     }
+
+
+    Vector3 position;
+    Vector3 rotation;
+    private void LateUpdate()
+    {
+        
+    }
+
     #endregion
 
 

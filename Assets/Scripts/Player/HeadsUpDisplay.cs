@@ -95,8 +95,9 @@ public class HeadsUpDisplay : MonoBehaviour
         SetCrouchVisualEffects(player.movement.isCrouching);
         PopulateInteractionMenu(null);
 
-        EventJunction.RefreshWithFunction(CheckForHitMarker, true);
-        EventJunction.RefreshWithFunction(CheckForKillMarker, true);
+        EventJunction.Subscribe(CheckToUpdateHealthMeter, true);
+        EventJunction.Subscribe(CheckForHitMarker, true);
+        EventJunction.Subscribe(CheckForKillMarker, true);
     }
     
     // Update is called once per frame
@@ -121,10 +122,6 @@ public class HeadsUpDisplay : MonoBehaviour
         minimapCamera.transform.localPosition = new Vector3(0, height, 0);
         #endregion
 
-
-        #region Health HUD
-        UpdateHealthMeter(player.health);
-        #endregion
 
         #region Basic reticle and interacting
         RaycastHit lookingAt;
@@ -321,19 +318,24 @@ public class HeadsUpDisplay : MonoBehaviour
             interactButtonPrompt.sprite = interactable;
         }
     }
-    public void UpdateHealthMeter(Health healthData)
+    public void CheckToUpdateHealthMeter(DamageMessage damageData)
     {
-        healthCounter.text = healthData.values.current.ToString();
-        FillMeter(healthBar, healthData.values.current, healthData.values.max);
-        if (player.health.values.IsCritical)
+        if (damageData.victim == player.health)
         {
-            healthCounter.color = resourceCriticalColour;
-            // Do other stuff for critical health e.g. greyscale screen, warnings
+            healthCounter.text = player.health.values.current.ToString();
+            FillMeter(healthBar, player.health.values.current, player.health.values.max);
+            if (player.health.values.IsCritical)
+            {
+                healthCounter.color = resourceCriticalColour;
+                // Do other stuff for critical health e.g. greyscale screen, warnings
+            }
+            else
+            {
+                healthCounter.color = resourceNormalColour;
+            }
         }
-        else
-        {
-            healthCounter.color = resourceNormalColour;
-        }
+        
+        
     }
 
     string AmmoInfo(Gun rw, int firingModeIndex)

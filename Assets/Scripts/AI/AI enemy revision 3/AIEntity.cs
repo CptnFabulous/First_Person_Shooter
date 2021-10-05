@@ -72,7 +72,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         audioOutput = GetComponent<AudioSource>();
 
 
-        EventJunction.RefreshWithFunction(Dodge, true);
+        EventJunction.Subscribe(Dodge, true);
     }
 
     // Update is called once per frame
