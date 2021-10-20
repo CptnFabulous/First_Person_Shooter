@@ -72,7 +72,18 @@ public class AIEntity : MonoBehaviour//, ILogHandler
         audioOutput = GetComponent<AudioSource>();
 
 
+        
+    }
+
+    private void OnEnable()
+    {
         EventJunction.Subscribe(Dodge, true);
+        //EventJunction.OnAttack += Dodge;
+    }
+
+    private void OnDisable()
+    {
+        EventJunction.Subscribe(Dodge, false);
     }
 
     // Update is called once per frame
@@ -250,6 +261,7 @@ public class AIEntity : MonoBehaviour//, ILogHandler
     #region Avoiding damage
     void Dodge(AttackMessage am)
     {
+        //Debug.Log("Dodge test from " + name);
         // If the cooldown has finished after the last dodge
         // If the AI is willing to dodge attacks
         // If the AI is not already dodging an attack

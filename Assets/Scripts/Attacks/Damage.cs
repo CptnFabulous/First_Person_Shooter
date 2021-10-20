@@ -24,6 +24,7 @@ public enum DamageType
     Corrosive,
     Poison,
     Asphyxiation,
+    Healing, // used for healing processes, since healing and taking damage are both altering a health value
     DeletionByGame // e.g. falling out of the level or similar non-diegetic game process
 }
 

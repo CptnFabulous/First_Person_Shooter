@@ -23,7 +23,7 @@ public class TimerObjective : PlayerObjective
         return (hours * 3600) + (minutes * 60) + seconds;
     }
 
-    public override void CompletedCheck()
+    public override void CheckCompletion()
     {
         if (timeElapsed >= TotalTime())
         {

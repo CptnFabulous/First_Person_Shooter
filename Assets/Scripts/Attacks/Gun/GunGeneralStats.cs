@@ -26,9 +26,7 @@ public class GunGeneralStats : MonoBehaviour
     public AmmunitionType ammoType;
     public int ammoPerShot = 1;
 
-    [Header("Cosmetics")]
-    public Transform heldPosition;
-    public UnityEvent effectsOnFire;
+    
 
     [Header("Projectile")]
     public Projectile projectilePrefab;
@@ -36,6 +34,9 @@ public class GunGeneralStats : MonoBehaviour
     public int projectileCount = 1;
 
 
+    [Header("Cosmetics")]
+    public Transform heldPosition;
+    public UnityEvent effectsOnFire;
 
 
 
@@ -81,4 +82,13 @@ public class GunGeneralStats : MonoBehaviour
 
         effectsOnFire.Invoke();
     }
+
+
+
+    /*
+    public void CosmeticRecoil(float force)
+    {
+        weaponVisualRigidbody.AddForceAtPosition(-muzzle.forward * force, muzzle.position, ForceMode.Impulse);
+    }
+    */
 }

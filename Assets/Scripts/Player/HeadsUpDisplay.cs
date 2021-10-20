@@ -320,6 +320,7 @@ public class HeadsUpDisplay : MonoBehaviour
     }
     public void CheckToUpdateHealthMeter(DamageMessage damageData)
     {
+        Debug.Log("Checking player's health meter, " + damageData.amount);
         if (damageData.victim == player.health)
         {
             healthCounter.text = player.health.values.current.ToString();
@@ -333,6 +334,12 @@ public class HeadsUpDisplay : MonoBehaviour
             {
                 healthCounter.color = resourceNormalColour;
             }
+            /*
+            if (damageData.amount > 0)
+            {
+
+            }
+            */
         }
         
         
@@ -413,14 +420,15 @@ public class HeadsUpDisplay : MonoBehaviour
     }
     public void CheckForHitMarker(DamageMessage message)
     {
-        if (message.attacker == player)
+        if (message.attacker == player && message.victim != player)
         {
+            Debug.Log("Damaged enemy on frame " + Time.frameCount);
             damageEffect.Invoke();
         }
     }
     public void CheckForKillMarker(KillMessage message)
     {
-        if (message.attacker == player)
+        if (message.attacker == player && message.victim != player)
         {
             killEffect.Invoke();
         }

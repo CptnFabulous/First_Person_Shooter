@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3422296976112288468}
   - component: {fileID: 6092026058370136131}
   m_Layer: 12
-  m_Name: weaponModelReferenceTransformThing
+  m_Name: weaponVisualTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -232,10 +232,24 @@ MonoBehaviour:
   consumesAmmo: 1
   ammoType: 3
   ammoPerShot: 1
+  projectilePrefab: {fileID: 1134990165457812464}
+  muzzle: {fileID: 9134199385667667167}
+  projectileCount: 1
   heldPosition: {fileID: 9134199386752990918}
   effectsOnFire:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 9134199385667667160}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 6092026058370136131}
         m_MethodName: PlayOneShot
         m_Mode: 2
@@ -248,20 +262,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 9134199386818329420}
-        m_MethodName: CosmeticRecoil
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 7311954728963892962}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  projectilePrefab: {fileID: 1134990165457812464}
-  muzzle: {fileID: 9134199385667667167}
-  projectileCount: 1
 --- !u!1 &5609149696579354521
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +315,9 @@ MonoBehaviour:
   consumesAmmo: 1
   ammoType: 4
   ammoPerShot: 1
+  projectilePrefab: {fileID: 8996766963182094018}
+  muzzle: {fileID: 9134199386789921512}
+  projectileCount: 1
   heldPosition: {fileID: 9134199386752990918}
   effectsOnFire:
     m_PersistentCalls:
@@ -331,9 +334,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  projectilePrefab: {fileID: 8996766963182094018}
-  muzzle: {fileID: 9134199386789921512}
-  projectileCount: 1
 --- !u!114 &5609149696579354530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6597,7 +6597,7 @@ GameObject:
   - component: {fileID: 9134199386419182425}
   - component: {fileID: 9134199386419182426}
   m_Layer: 12
-  m_Name: weaponVisual
+  m_Name: sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

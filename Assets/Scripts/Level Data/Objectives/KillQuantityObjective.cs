@@ -8,13 +8,15 @@ public class KillQuantityObjective : PlayerObjective
     public int quantity;
     [HideInInspector] public int amountEliminated;
 
-    public override void CompletedCheck()
+    /*
+    public override void CheckCompletion()
     {
         if (amountEliminated >= quantity)
         {
             Complete();
         }
     }
+    */
 
     public override string DisplayCriteria()
     {
@@ -28,6 +30,11 @@ public class KillQuantityObjective : PlayerObjective
         {
             print("Enemy eliminated");
             amountEliminated += 1;
+        }
+
+        if (amountEliminated >= quantity)
+        {
+            Complete();
         }
     }
 }

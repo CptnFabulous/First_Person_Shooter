@@ -30,7 +30,7 @@ public abstract class ItemPickup : MonoBehaviour
 
         if (consumeImmediately == true)
         {
-            print("Item has been picked up");
+            //print("Item has been picked up");
             Destroy(gameObject);
         }
     }

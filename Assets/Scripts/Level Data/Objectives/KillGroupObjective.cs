@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class KillGroupObjective : PlayerObjective
 {
-    public List<Character> enemies;
+    public List<Health> enemies;
 
-    public override void CompletedCheck()
+
+    private void Awake()
     {
-        if (enemies.Count <= 0) // Check if no enemies are alive
+        if (enemies == null || enemies.Count == 0)
         {
-            Complete();
+            enemies = new List<Health>(GetComponentsInChildren<Health>(false));
         }
     }
-
+    /*
+    public override void CheckCompletion()
+    {
+        return; // Redundant, 
+    }
+    */
     public override string DisplayCriteria()
     {
         return name + ": " + enemies.Count + " remaining";
@@ -21,15 +27,23 @@ public class KillGroupObjective : PlayerObjective
 
     public void UpdateObjective(KillMessage km)
     {
-        if (state == ObjectiveState.Active)
+        if (state != ObjectiveState.Active)
         {
-            foreach (Character c in enemies)
+            return;
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            if (enemies[i] == km.victim)
             {
-                if (c == km.victim)
-                {
-                    enemies.Remove(c);
-                }
+                enemies.Remove(enemies[i]);
+                break;
             }
+        }
+
+        if (enemies.Count <= 0)
+        {
+            Complete();
         }
     }
 }

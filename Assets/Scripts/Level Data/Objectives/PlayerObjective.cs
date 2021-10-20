@@ -19,9 +19,13 @@ public abstract class PlayerObjective : MonoBehaviour
     public PlayerObjective[] prerequisites;
     public UnityEvent onCompletion;
 
-    public virtual void CompletedCheck()
+    /// <summary>
+    /// Checks in Update() if this objective is complete. Only needs to be overridden for functions that aren't updated via events
+    /// </summary>
+    public virtual void CheckCompletion()
     {
-        Complete();
+        //Complete();
+        return;
     }
 
     public void ActivateCheck()

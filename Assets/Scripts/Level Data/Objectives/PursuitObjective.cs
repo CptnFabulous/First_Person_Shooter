@@ -5,23 +5,28 @@ using UnityEngine;
 public class PursuitObjective : PlayerObjective
 {
     public Transform location;
-    public float radius;
+    public float completionThreshold = 1;
 
-    float Distance()
+    float PlayerDistanceToTarget
     {
-        return Vector3.Distance(location.position, FindObjectOfType<PlayerHandler>().transform.position);
+        get
+        {
+            return Vector3.Distance(location.position, ObjectiveHandler.Current.CurrentPlayer.transform.position);
+        }
     }
 
-    public override void CompletedCheck()
+    public override void CheckCompletion()
     {
-        if (Distance() <= radius)
+        //Debug.Log("Checking completion status");
+        if (PlayerDistanceToTarget <= completionThreshold)
         {
+            //Debug.Log("Objective completed");
             Complete();
         }
     }
 
     public override string DisplayCriteria()
     {
-        return name + ": " + Mathf.RoundToInt(Distance()) + "m";
+        return name + ": " + Mathf.RoundToInt(PlayerDistanceToTarget) + "m";
     }
 }

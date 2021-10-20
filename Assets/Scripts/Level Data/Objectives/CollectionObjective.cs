@@ -8,7 +8,7 @@ public class CollectionObjective : PlayerObjective
     public int quantity;
     [HideInInspector] public int amountObtained;
 
-    public override void CompletedCheck()
+    public override void CheckCompletion()
     {
         if (amountObtained >= quantity)
         {

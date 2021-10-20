@@ -18,7 +18,8 @@ public class HealthPickup : ItemPickup
                     healthToReplenish = value;
                 }
 
-                h.values.current += healthToReplenish;
+                h.Damage(-healthToReplenish, ph, DamageType.Healing);
+                //h.values.current += healthToReplenish;
                 value -= healthToReplenish;
 
                 base.Pickup(ph);

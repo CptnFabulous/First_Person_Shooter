@@ -17,8 +17,19 @@ public class ObjectiveHandler : MonoBehaviour
             return current;
         }
     }
-    
-    
+
+    PlayerHandler currentPlayer;
+    public PlayerHandler CurrentPlayer
+    {
+        get
+        {
+            if (currentPlayer == null)
+            {
+                currentPlayer = FindObjectOfType<PlayerHandler>();
+            }
+            return currentPlayer;
+        }
+    }
 
     public PlayerObjective[] objectives;
 
@@ -54,7 +65,7 @@ public class ObjectiveHandler : MonoBehaviour
         {
             if (o.state == ObjectiveState.Active)
             {
-                o.CompletedCheck();
+                o.CheckCompletion();
             }
             if (o.state == ObjectiveState.Inactive)
             {
@@ -174,15 +185,7 @@ public class ObjectiveHandler : MonoBehaviour
             gsh.WinGame();
         }
 
-        /*
-        PlayerHandler[] players = FindObjectsOfType<PlayerHandler>();
-        foreach (PlayerHandler ph in players)
-        {
-            print("Player found");
-            print(ph.gsh.CurrentState());
-            ph.gsh.WinGame();
-        }
-        */
+
         screen.gameObject.SetActive(true);
         screen.GenerateScreen(this);
     }
