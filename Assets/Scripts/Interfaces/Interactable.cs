@@ -7,48 +7,32 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider))]
 public class Interactable : MonoBehaviour
 {
+    [System.Serializable]
+    public class InteractionEvent : UnityEvent<PlayerHandler> { }
+
     public bool enabled = true;
-    /*
-    private bool _enabled;
-    public bool Enabled
-    {
-        get
-        {
-            return _enabled;
-        }
-
-        set
-        {
-            _enabled = value;
-            foreach (var obj in GetComponents<Interactable>())
-            {
-                obj._enabled = value;
-            }
-        }
-    }
-    */
-
-    public UnityEvent onInteract;
+    public InteractionEvent onInteract;
     public float cooldown = 0.5f;
     public string instructionMessage = "Interact";
     public string inProgressMessage = "In progress";
     public string deniedMessage = "Cannot interact";
 
-    public PlayerHandler PlayerWhoJustInteractedWithThis { get; private set; }
-
     public bool InProgress { get; private set; } = false;
+
     
     IEnumerator coolingDown;
     
     public virtual void OnInteract(PlayerHandler ph)
     {
-        PlayerWhoJustInteractedWithThis = ph;
-        
-        onInteract.Invoke();
+        onInteract.Invoke(ph);
         EventJunction.Transmit(new InteractMessage(ph, this));
 
-        coolingDown = Cooldown(cooldown);
-        StartCoroutine(coolingDown);
+        if (cooldown > 0)
+        {
+            coolingDown = Cooldown(cooldown);
+            StartCoroutine(coolingDown);
+        }
+        
     }
 
     IEnumerator Cooldown(float duration)

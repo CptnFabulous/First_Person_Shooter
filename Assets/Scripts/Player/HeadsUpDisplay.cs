@@ -437,41 +437,40 @@ public class HeadsUpDisplay : MonoBehaviour
     void UpdateObjectiveList()
     {
         ObjectiveHandler oh = ObjectiveHandler.Current;
-        if (oh != null)
-        {
-            string list = "";
-
-            bool activeObjectives = false; // Used to check if there are any active objectives to display
-
-            foreach (PlayerObjective o in oh.objectives)
-            {
-                if (o.state == ObjectiveState.Active)
-                {
-                    activeObjectives = true;
-
-                    if (o.mandatory == false)
-                    {
-                        list += "OPTIONAL: ";
-                    }
-
-                    list += o.DisplayCriteria();
-
-                    list += "\n";
-                }
-            }
-
-            if (activeObjectives == false) // If there are no active objectives, list an alternate message
-            {
-                list += "All completed";
-            }
-
-            objectiveList.gameObject.SetActive(true);
-            objectiveList.text = list;
-        }
-        else
+        if (oh == null)
         {
             objectiveList.gameObject.SetActive(false);
+            return;
         }
+
+        string list = "";
+
+        bool activeObjectives = false; // Used to check if there are any active objectives to display
+
+        foreach (PlayerObjective o in oh.objectives)
+        {
+            if (o.state == ObjectiveState.Active)
+            {
+                activeObjectives = true;
+
+                if (o.mandatory == false)
+                {
+                    list += "OPTIONAL: ";
+                }
+
+                list += o.DisplayCriteria();
+
+                list += "\n";
+            }
+        }
+
+        if (activeObjectives == false) // If there are no active objectives, list an alternate message
+        {
+            list += "All completed";
+        }
+
+        objectiveList.gameObject.SetActive(true);
+        objectiveList.text = list;
     }
 
 

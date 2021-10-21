@@ -176,13 +176,18 @@ public class Gun : MonoBehaviour
 
     private void Start()
     {
-        playerHolding = GetComponentInParent<WeaponHandler>();
-
-        playerHolding.handler.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
-        playerHolding.handler.movement.movementSpeed.Add(speedWhileAiming, this);
-
-        OnEnable();
+        PlayerHandler ph = GetComponentInParent<PlayerHandler>();
+        if (ph != null)
+        {
+            PickUp(ph);
+        }
+        else
+        {
+            Drop();
+        }
     }
+
+    
 
     void Update()
     {
@@ -196,7 +201,7 @@ public class Gun : MonoBehaviour
         attackMessageLimitTimer += Time.deltaTime;
 
         // If the player is not switching weapons or fire modes, and is therefore able to operate the weapon
-        if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.MenuIsActive == false)
+        if (isSwitchingWeapon == false && isSwitchingFireMode == false && playerHolding.weaponSelector.InSelection == false)
         {
             #region Firing mode controls
             float scrollInput = Input.GetAxis("Mouse ScrollWheel");
@@ -405,44 +410,6 @@ public class Gun : MonoBehaviour
 
 
 
-    public static readonly AnimationCurve cosmeticRecoilCurve = new AnimationCurve
-    {
-        keys = new Keyframe[]
-        {
-            new Keyframe(0, 0, 0, 90),
-            new Keyframe(0.25f, 1, 0, 0),
-            new Keyframe(1, 0, 0, 0),
-        }
-    };
-
-    
-    public void CosmeticRecoil(Transform recoilOrientation)
-    {
-        Debug.Log("Cosmetic recoil activated");
-        StartCoroutine(MoveWeaponCosmetically(general.heldPosition, recoilOrientation, cosmeticRecoilCurve));
-    }
-
-    public IEnumerator MoveWeaponCosmetically(Transform first, Transform second, AnimationCurve curve)
-    {
-        float timer = 0;
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / (60 / fireControls.roundsPerMinute * 2);
-            timer = Mathf.Clamp(timer, 0f, 1f);
-            Debug.Log(timer);
-
-            float value = curve.Evaluate(timer);
-            weaponVisualTransform.position = Vector3.Lerp(first.position, second.position, value);
-            weaponVisualTransform.rotation = Quaternion.Lerp(first.rotation, second.rotation, value);
-
-            yield return null;
-        }
-    }
-
-
-
-    
-
 
 
     #region ADS functions
@@ -525,7 +492,8 @@ public class Gun : MonoBehaviour
         // Toggle overlay
         playerHolding.handler.hud.ADSTransition(timer, optics.scopeGraphic);
 
-        weaponVisual.enabled = (timer < optics.whenToDisableWeaponVisual);
+        weaponVisual.gameObject.SetActive(timer < optics.whenToDisableWeaponVisual);
+        //weaponVisual.enabled = (timer < optics.whenToDisableWeaponVisual);
     }
     void CancelADSInstantly()
     {
@@ -660,35 +628,46 @@ public class Gun : MonoBehaviour
         }
     }
 
-
+    /*
     Vector3 position;
     Vector3 rotation;
     private void LateUpdate()
     {
         
     }
-
+    */
     #endregion
 
 
     public void PickUp(PlayerHandler ph)
     {
         playerHolding = ph.weapons;
+        playerHolding.handler.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
+        playerHolding.handler.movement.movementSpeed.Add(speedWhileAiming, this);
         transform.SetParent(playerHolding.defaultHoldingPosition);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
         GetComponent<Collider>().enabled = false;
-        GetComponent<Rigidbody>().isKinematic = false;
-        //weaponVisualTransform.SetPositionAndRotation()
+        GetComponent<Rigidbody>().isKinematic = true;
+
         enabled = true;
+
+        playerHolding.GetHeldWeapons();
     }
+
 
     public void Drop()
     {
-        transform.SetParent(null);
+        //playerHolding.handler.movement.sensitivityModifier.Add(sensitivityWhileAiming, this);
+        //playerHolding.handler.movement.movementSpeed.Add(speedWhileAiming, this);
+        playerHolding = null;
+
         weaponVisualTransform.localPosition = Vector3.zero;
         weaponVisualTransform.localRotation = Quaternion.identity;
+
+        transform.SetParent(null);
         GetComponent<Collider>().enabled = true;
         GetComponent<Rigidbody>().isKinematic = false;
-        playerHolding = null;
         enabled = false;
     }
 

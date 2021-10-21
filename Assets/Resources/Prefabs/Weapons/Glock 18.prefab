@@ -171,13 +171,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193b37d7479c634b9a2c1d8599b7d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpread: 1
+  projectileSpread: 0.5
   range: 300
   recoil: 3
   recoilApplyRate: 12
   consumesAmmo: 1
   ammoType: 0
   ammoPerShot: 1
+  projectilePrefab: {fileID: 7324069285765721770}
+  muzzle: {fileID: 7361818274595612537}
+  projectileCount: 1
   heldPosition: {fileID: 7361818273535532384}
   effectsOnFire:
     m_PersistentCalls:
@@ -216,9 +219,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  projectilePrefab: {fileID: 7324069285765721770}
-  muzzle: {fileID: 7361818274595612537}
-  projectileCount: 1
 --- !u!1 &2893987888635974907
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3036280868347294390}
   m_LocalRotation: {x: -0.043574728, y: -0.112566575, z: -0.0019259155, w: 0.9926864}
-  m_LocalPosition: {x: 0.22944649, y: -0.2899426, z: 0.5632446}
+  m_LocalPosition: {x: 0.2129999, y: -0.284, z: 0.63499904}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7361818273333844223}
@@ -893,7 +893,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7361818273535532387}
   m_LocalRotation: {x: -0.043574728, y: -0.112566575, z: -0.0019259155, w: 0.9926864}
-  m_LocalPosition: {x: 0.22944649, y: -0.2899426, z: 0.5632446}
+  m_LocalPosition: {x: 0.213, y: -0.284, z: 0.635}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7361818273466652904}

@@ -11,7 +11,7 @@ public class GunOpticsStats : MonoBehaviour
     public bool disableReticle;
 
     [Header("Cosmetics")]
-    public Transform aimPosition;
+    //public Transform aimPosition;
     public Transform sightLine;
     public Sprite scopeGraphic;
     public float whenToDisableWeaponVisual = 0.5f;

@@ -90,6 +90,7 @@ public class Projectile : MonoBehaviour
     {
         objectTransform.position = hit.point + (hit.normal * distanceOffSurface);
         objectTransform.rotation = Quaternion.FromToRotation(rotationAxis, hit.normal);
+        //objectTransform.SetParent()
         objectTransform.parent = hit.transform;
     }
 }

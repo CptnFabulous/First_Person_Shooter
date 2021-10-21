@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class MultipleFunctionInteractable : Interactable
 {
+    /*
     [System.Serializable]
     public struct Interaction
     {
@@ -55,5 +56,5 @@ public class MultipleFunctionInteractable : Interactable
         
     }
 
-
+    */
 }

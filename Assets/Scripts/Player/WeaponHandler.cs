@@ -69,58 +69,28 @@ public class WeaponHandler : MonoBehaviour
         standingAccuracy.Add(runModifier, this);
         standingAccuracy.Add(crouchModifier, this);
 
-        RefreshWeapons(currentWeaponIndex);
+        GetHeldWeapons();
+
+        weaponSelector.onValueChanged.AddListener(ShowWeaponDetails);
+        weaponSelector.onValueConfirmed.AddListener(SelectWeaponAndFiringMode);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        #region Weapon selector
-        weaponSelector.WheelHandler();
-
-        handler.movement.canLook = !weaponSelector.MenuIsActive;
-
-        if (weaponSelector.MenuIsActive)
+        if (equippedWeapons.Length > 0)
         {
-            int wheelIndex = weaponSelector.CurrentlySelected;
-
-            int weaponIndex = 0;
-            int firingModeIndex = 0;
-
-            for (int w = 0; w < equippedWeapons.Length; w++)
-            {
-                for (int m = 0; m < equippedWeapons[w].firingModes.Length; m++)
-                {
-                    if (wheelIndex == 0)
-                    {
-                        weaponIndex = w;
-                        firingModeIndex = m;
-                    }
-
-                    wheelIndex -= 1;
-                }
-            }
-
-            handler.hud.PopulateWeaponWheel(equippedWeapons[weaponIndex], firingModeIndex);
-
-            if (weaponSelector.SelectionMade()) // If player has made a selection and exited the weapon wheel
-            {
-                //print("Selection made");
-                StartCoroutine(SwitchWeaponAndFiringMode(weaponIndex, firingModeIndex));
-            }
+            weaponSelector.Control();
         }
-        #endregion
 
-
+        handler.movement.canLook = !weaponSelector.InSelection;
         crouchModifier.SetActiveFully(handler.movement.isCrouching);
         runModifier.SetIntensity(handler.movement.MoveDirection.magnitude);
     }
 
-    public void RefreshWeapons(int index)
+    public void GetHeldWeapons()
     {
-        Debug.Log("Refreshing weapons");
-
         equippedWeapons = GetComponentsInChildren<Gun>();
         foreach (Gun rw in equippedWeapons)
         {
@@ -130,10 +100,14 @@ public class WeaponHandler : MonoBehaviour
 
         RefreshWeaponSelector();
 
-        StartCoroutine(SwitchWeapon(index));
-        //StartCoroutine(SwitchWeaponAndFiringMode(index, equippedWeapons[index].firingModeIndex));
+        /*
+        if (equippedWeapons.Length > 0)
+        {
+            StartCoroutine(SwitchWeaponAndFiringMode(currentWeaponIndex, equippedWeapons[currentWeaponIndex].firingModeIndex));
+        }
+        */
+        StartCoroutine(SwitchWeaponAndFiringMode(0, 0));
     }
-
     void RefreshWeaponSelector()
     {
         #region Determine number of segments on weapon wheel
@@ -157,22 +131,53 @@ public class WeaponHandler : MonoBehaviour
         }
         #endregion
 
-        weaponSelector.RefreshWheel(icons);
+        weaponSelector.RefreshOptions(icons);
     }
+    void GetIndexesFromSelector(int selectorIndex, out int weaponIndex, out int firingModeIndex)
+    {
+        weaponIndex = 0;
+        firingModeIndex = 0;
 
+        for (int w = 0; w < equippedWeapons.Length; w++)
+        {
+            for (int m = 0; m < equippedWeapons[w].firingModes.Length; m++)
+            {
+                if (selectorIndex == 0)
+                {
+                    weaponIndex = w;
+                    firingModeIndex = m;
+                }
+
+                selectorIndex -= 1;
+            }
+        }
+    }
+    void ShowWeaponDetails(int index)
+    {
+        GetIndexesFromSelector(index, out int weaponIndex, out int firingModeIndex);
+        handler.hud.PopulateWeaponWheel(equippedWeapons[weaponIndex], firingModeIndex);
+    }
+    void SelectWeaponAndFiringMode(int index)
+    {
+        GetIndexesFromSelector(index, out int weaponIndex, out int firingModeIndex);
+        StartCoroutine(SwitchWeaponAndFiringMode(weaponIndex, firingModeIndex));
+    }
+    
     IEnumerator SwitchWeaponAndFiringMode(int weaponIndex, int firingModeIndex)
     {
         if (equippedWeapons.Length < 1)
         {
             yield break;
         }
+
+        Debug.Log("Initiating switch");
         
         // Clamp indexes to ensure they always switch to a proper weapon and firing mode
         weaponIndex = Mathf.Clamp(weaponIndex, 0, equippedWeapons.Length - 1);
-        firingModeIndex = Mathf.Clamp(firingModeIndex, 0, equippedWeapons[weaponIndex].firingModes.Length);
+        firingModeIndex = Mathf.Clamp(firingModeIndex, 0, equippedWeapons[weaponIndex].firingModes.Length - 1);
 
         // If the new weapon is different from the old one, switch
-        if (equippedWeapons[weaponIndex] != equippedWeapons[currentWeaponIndex])
+        if (equippedWeapons[weaponIndex] != equippedWeapons[currentWeaponIndex] || equippedWeapons[weaponIndex].gameObject.activeSelf == false)
         {
             IsSwitchingWeapon = true;
 
@@ -203,41 +208,7 @@ public class WeaponHandler : MonoBehaviour
         }
     }
 
-    IEnumerator SwitchWeapon(int index)
-    {
-        Debug.Log("Weapon switch routine started");
-
-        if (equippedWeapons.Length < 1)
-        {
-            yield break;
-        }
-
-        IsSwitchingWeapon = true;
-        index = Mathf.Clamp(index, 0, equippedWeapons.Length - 1);
-
-        for (int i = 0; i < equippedWeapons.Length; i++)
-        {
-            Gun rw = equippedWeapons[i];
-
-            if (equippedWeapons[i].gameObject.activeSelf == true)
-            {
-                StartCoroutine(rw.Holster());
-                print(rw.name + " has been holstered.");
-            }
-        }
-
-        yield return new WaitUntil(() => AllOtherWeaponsHolstered());
-
-        StartCoroutine(equippedWeapons[index].Draw());
-
-
-        currentWeaponIndex = index;
-
-        yield return new WaitUntil(() => equippedWeapons[index].isSwitchingWeapon == false);
-
-        IsSwitchingWeapon = false;
-    }
-
+    /*
     void Equip(Gun rw, bool autoSwitch = true)
     {
         // Disable physics functions
@@ -292,5 +263,5 @@ public class WeaponHandler : MonoBehaviour
 
         RefreshWeapons(0);
     }
-
+    */
 }
